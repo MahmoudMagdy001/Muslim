@@ -1,0 +1,50 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # ⚙️ Const & Final
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_const_declarations: true
+    prefer_final_locals: true
+    prefer_final_fields: true
+
+    # 📐 Style & Clean Code
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    sized_box_for_whitespace: true
+    avoid_unnecessary_containers: true
+    always_put_required_named_parameters_first: true
+    prefer_expression_function_bodies: true
+    prefer_relative_imports: true
+    require_trailing_commas: true
+    cascade_invocations: true
+    use_super_parameters: true
+    use_key_in_widget_constructors: true
+    unnecessary_late: true
+    unnecessary_null_checks: true
+
+    # 💥 Safety
+    avoid_print: true
+    avoid_annotating_with_dynamic: true
+    parameter_assignments: true
+    empty_catches: true
+    avoid_returning_null_for_future: true
+    avoid_void_async: true
+    avoid_dynamic_calls: true
+    avoid_classes_with_only_static_members: true
+
+    # 🧹 Sorting
+    sort_constructors_first: true
+    sort_unnamed_constructors_first: true
+
+    # 📌 Explicitness
+    always_declare_return_types: true
+    omit_local_variable_types: false
+    prefer_typing_uninitialized_variables: true
+
+    # 🛠 Utility
+    avoid_field_initializers_in_const_classes: true
+    avoid_redundant_argument_values: true
+    join_return_with_assignment: true
+    
