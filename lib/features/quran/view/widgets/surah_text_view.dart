@@ -20,31 +20,19 @@ class SurahTextView extends StatefulWidget {
 class _SurahTextViewState extends State<SurahTextView> {
   final ScrollController _controller = ScrollController();
   GlobalKey? _currentKey;
-  late int _ayahCount;
-  late List<InlineSpan> _spans;
   int? _currentAyah;
   StreamSubscription? _playerSub;
-
-  @override
-  void initState() {
-    super.initState();
-    _ayahCount = quran.getVerseCount(widget.surahNumber);
-    _buildSpans();
-  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _playerSub ??= context.read<QuranPlayerCubit>().stream.listen((
-      playerState,
-    ) {
+    _playerSub ??= context.read<QuranPlayerCubit>().stream.listen((playerState) {
       final newAyah = playerState.currentAyah;
       if (!mounted) return;
       if (newAyah != _currentAyah) {
         setState(() {
           _currentAyah = newAyah;
-          _buildSpans();
         });
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _scrollToCurrentAyah();
@@ -60,21 +48,21 @@ class _SurahTextViewState extends State<SurahTextView> {
     super.dispose();
   }
 
-  void _buildSpans() {
-    _spans = <InlineSpan>[];
+  List<InlineSpan> _buildSpans(BuildContext context) {
+    final ayahCount = quran.getVerseCount(widget.surahNumber);
+    final spans = <InlineSpan>[];
     _currentKey = null;
 
-    for (int ayah = 1; ayah <= _ayahCount; ayah++) {
+    for (int ayah = 1; ayah <= ayahCount; ayah++) {
       final text = quran.getVerse(
         widget.surahNumber,
         ayah,
         verseEndSymbol: true,
       );
       final isCurrent = ayah == _currentAyah;
-
       final keyForThisAyah = isCurrent ? (_currentKey = GlobalKey()) : null;
 
-      _spans.add(
+      spans.add(
         TextSpan(
           children: [
             WidgetSpan(
@@ -84,7 +72,9 @@ class _SurahTextViewState extends State<SurahTextView> {
             TextSpan(
               text: '$text ',
               style: GoogleFonts.amiri().copyWith(
-                color: isCurrent ? AppColors.primary : AppColors.black87,
+                color: isCurrent
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).textTheme.bodyLarge?.color,
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
@@ -99,6 +89,7 @@ class _SurahTextViewState extends State<SurahTextView> {
         ),
       );
     }
+    return spans;
   }
 
   void _scrollToCurrentAyah() {
@@ -115,22 +106,22 @@ class _SurahTextViewState extends State<SurahTextView> {
 
   @override
   Widget build(BuildContext context) => Scrollbar(
-    controller: _controller,
-    child: SingleChildScrollView(
       controller: _controller,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: RepaintBoundary(
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              height: 2.3,
-              fontWeight: FontWeight.normal,
+      child: SingleChildScrollView(
+        controller: _controller,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: RepaintBoundary(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                height: 2.3,
+                fontWeight: FontWeight.normal,
+              ),
+              children: _buildSpans(context),
             ),
-            children: _spans,
           ),
         ),
       ),
-    ),
-  );
+    );
 }
