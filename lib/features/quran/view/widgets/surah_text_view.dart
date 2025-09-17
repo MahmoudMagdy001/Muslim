@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../core/theme/app_colors.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 
 class SurahTextView extends StatefulWidget {
