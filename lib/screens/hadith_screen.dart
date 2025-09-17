@@ -161,6 +161,7 @@ class _HadithsScreenState extends State<HadithsScreen> {
 }
 
 // ==================== Hadiths Content ====================
+
 class _HadithsContent extends StatelessWidget {
   const _HadithsContent({
     required this.hadithsNotifier,
@@ -168,40 +169,43 @@ class _HadithsContent extends StatelessWidget {
     required this.hasMoreNotifier,
     required this.scrollController,
   });
+
   final ValueNotifier<List<Hadith>> hadithsNotifier;
   final ValueNotifier<bool> isLoadingNotifier;
   final ValueNotifier<bool> hasMoreNotifier;
   final ScrollController scrollController;
 
   @override
-  Widget build(BuildContext context) => Scrollbar(
-    controller: scrollController,
-    thickness: 8.0,
-    radius: const Radius.circular(16),
-    trackVisibility: true,
-    interactive: true,
-    child: ValueListenableBuilder<List<Hadith>>(
+  Widget build(BuildContext context) => ValueListenableBuilder<List<Hadith>>(
       valueListenable: hadithsNotifier,
       builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
-        valueListenable: isLoadingNotifier,
-        builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
-          valueListenable: hasMoreNotifier,
-          builder: (context, hasMore, child) {
-            if (hadiths.isEmpty && isLoading) {
-              return const _LoadingWidget();
-            }
+          valueListenable: isLoadingNotifier,
+          builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
+              valueListenable: hasMoreNotifier,
+              builder: (context, hasMore, child) {
+                if (hadiths.isEmpty && isLoading) {
+                  // 🚀 مفيش Scrollbar هنا
+                  return const _LoadingWidget();
+                }
 
-            return _HadithsList(
-              hadiths: hadiths,
-              isLoading: isLoading,
-              hasMore: hasMore,
-              scrollController: scrollController,
-            );
-          },
+                // 🚀 Scrollbar يظهر بس لما فيه بيانات
+                return Scrollbar(
+                  controller: scrollController,
+                  thickness: 8.0,
+                  radius: const Radius.circular(16),
+                  trackVisibility: true,
+                  interactive: true,
+                  child: _HadithsList(
+                    hadiths: hadiths,
+                    isLoading: isLoading,
+                    hasMore: hasMore,
+                    scrollController: scrollController,
+                  ),
+                );
+              },
+            ),
         ),
-      ),
-    ),
-  );
+    );
 }
 
 // ==================== Loading Widget ====================
@@ -297,24 +301,18 @@ class _HadithCard extends StatelessWidget {
               const SizedBox(height: 16),
             ],
 
-            // Text(
-            //   'حديث رقم: ${hadith.hadithNumber}',
-            //   style: theme.textTheme.titleSmall?.copyWith(
-            //     color: theme.primaryColor,
-            //   ),
-            // ),
             SelectableText(
               hadith.hadithArabic,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 2),
+
+              style: theme.textTheme.titleMedium?.copyWith(height: 2  ),
             ),
             const SizedBox(height: 8),
             Text(
               'الحكم: $statusArabic',
               textAlign: TextAlign.end,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.primaryColor,
-                fontWeight: FontWeight.w600,
+
               ),
             ),
           ],
