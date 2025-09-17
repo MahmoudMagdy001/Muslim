@@ -16,7 +16,6 @@ class MuslimApp extends StatelessWidget {
   Widget build(BuildContext context) => MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => FontSizeProvider()),
-      // ChangeNotifierProvider(create: (_) => QuranAudioService()),
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ChangeNotifierProvider(create: (_) => ReciterProvider()),
     ],
