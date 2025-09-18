@@ -2,7 +2,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../core/consts/reciters_name_arabic.dart';
+import '../../settings/consts/reciters_name_arabic.dart';
 
 class QuranService {
   static final AudioPlayer _audioPlayer = AudioPlayer();

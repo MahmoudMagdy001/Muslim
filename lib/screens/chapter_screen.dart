@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'settings/provider/font_size_provider.dart';
 import 'hadith_screen.dart';
 
 class HadithChapter {
@@ -320,7 +319,6 @@ class _ChapterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final fontSize = context.select((FontSizeProvider p) => p.fontSize);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -340,7 +338,6 @@ class _ChapterCard extends StatelessWidget {
                 child: Text(
                   chapter.chapterName,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: fontSize,
                     fontWeight: FontWeight.w600,
                   ),
                   maxLines: 2,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'settings/provider/font_size_provider.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -111,7 +110,6 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final fontSize = Provider.of<FontSizeProvider>(context).fontSize;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -231,7 +229,6 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
                                                     .textTheme
                                                     .titleMedium
                                                     ?.copyWith(
-                                                      fontSize: fontSize,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -240,16 +237,12 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
                                               Text(
                                                 'المؤلف: $writerAr',
                                                 style: theme.textTheme.bodySmall
-                                                    ?.copyWith(
-                                                      fontSize: fontSize - 4,
-                                                    ),
+                                                    ?.copyWith(),
                                               ),
                                               Text(
                                                 'عدد الأبواب: ${book.chapterCount} - عدد الأحاديث: ${book.hadithCount}',
                                                 style: theme.textTheme.bodySmall
-                                                    ?.copyWith(
-                                                      fontSize: fontSize - 4,
-                                                    ),
+                                                    ?.copyWith(),
                                               ),
                                             ],
                                           ),
