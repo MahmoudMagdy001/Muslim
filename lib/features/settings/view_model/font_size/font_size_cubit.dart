@@ -1,25 +1,37 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class FontSizeProvider extends ChangeNotifier {
-  FontSizeProvider() {
+// State class
+class FontSizeState {
+  FontSizeState({required this.fontSize});
+  final double fontSize;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FontSizeState &&
+          runtimeType == other.runtimeType &&
+          fontSize == other.fontSize;
+
+  @override
+  int get hashCode => fontSize.hashCode;
+}
+
+// Cubit class
+class FontSizeCubit extends Cubit<FontSizeState> {
+  FontSizeCubit() : super(FontSizeState(fontSize: _defaultFontSize)) {
     _initializeFontSize();
   }
   static const double _defaultFontSize = 16.0;
   static const String _fontSizeKey = 'fontSize';
-
-  double _fontSize = _defaultFontSize;
-  double get fontSize => _fontSize;
 
   Future<void> _initializeFontSize() async {
     try {
       await _loadFontSize();
     } catch (error) {
       debugPrint('Error initializing font size: $error');
-      // Fall back to default value but still notify listeners
-      _fontSize = _defaultFontSize;
-      notifyListeners();
+      emit(FontSizeState(fontSize: _defaultFontSize));
     }
   }
 
@@ -28,25 +40,22 @@ class FontSizeProvider extends ChangeNotifier {
     final savedFontSize = prefs.getDouble(_fontSizeKey);
 
     if (savedFontSize != null) {
-      _fontSize = savedFontSize;
+      emit(FontSizeState(fontSize: savedFontSize));
     } else {
-      _fontSize = _defaultFontSize;
+      emit(FontSizeState(fontSize: _defaultFontSize));
     }
-    notifyListeners();
   }
 
   Future<void> setFontSize(double value) async {
-    if (value == _fontSize) return;
+    if (value == state.fontSize) return;
 
-    _fontSize = value;
-    notifyListeners();
+    emit(FontSizeState(fontSize: value));
 
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble(_fontSizeKey, value);
     } catch (error) {
       debugPrint('Error saving font size: $error');
-      // Revert the change if saving fails
       await _loadFontSize();
     }
   }

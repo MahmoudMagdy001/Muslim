@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../screens/layout_screen.dart';
-import '../../../screens/settings/provider/font_size_provider.dart';
-import '../../../screens/settings/provider/theme_provider.dart';
+import '../../../features/settings/view_model/theme/theme_cubit.dart';
+import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
 import '../../theme/app_theme.dart';
 
-/// App content that depends on providers
+/// App content that depends on cubits
 class AppContent extends StatelessWidget {
   const AppContent({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final fontSizeProvider = Provider.of<FontSizeProvider>(context);
-    final fontSize = fontSizeProvider.fontSize;
-    final themeFactory = AppThemeFactory(fontSize);
+  Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
+    builder: (context, themeState) => BlocBuilder<FontSizeCubit, FontSizeState>(
+      builder: (context, fontSizeState) {
+        final fontSize = fontSizeState.fontSize;
+        final themeFactory = AppThemeFactory(fontSize);
 
-    // Get themes
-    final ThemeData lightTheme = themeFactory.lightTheme;
-    final ThemeData darkTheme = themeFactory.darkTheme;
+        // Get themes
+        final ThemeData lightTheme = themeFactory.lightTheme;
+        final ThemeData darkTheme = themeFactory.darkTheme;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: themeProvider.themeMode,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      home: const LayoutScreen(),
-    );
-  }
+        return MaterialApp(
+          themeAnimationStyle: const AnimationStyle(
+            curve: Curves.easeIn,
+            duration: Duration(milliseconds: 500),
+            reverseCurve: Curves.easeOut,
+            reverseDuration: Duration(milliseconds: 500),
+          ),
+          debugShowCheckedModeBanner: false,
+          themeMode: themeState.themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          home: const LayoutScreen(),
+        );
+      },
+    ),
+  );
 }

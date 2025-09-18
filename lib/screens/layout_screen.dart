@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:provider/provider.dart';
+import '../features/settings/view/settings_view.dart';
+import '../features/settings/view_model/rectire/rectire_cubit.dart';
 import '../core/service/last_read_service.dart';
 import '../features/prayer_times/view/prayer_times_view.dart';
 import '../features/qiblah/view/qiblah_view.dart';
 import '../features/quran/view/quran_view.dart';
 import '../features/surahs_list/view/surahs_list_view.dart';
 import 'hadith_books_screen.dart';
-import 'settings/provider/rectire_provider.dart';
-import 'settings/settings_screen.dart';
 import 'package:quran/quran.dart' as quran;
 
 class LayoutScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _LayoutScreenState extends State<LayoutScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      Provider.of<ReciterProvider>(context, listen: false).refreshReciter();
+      context.read<ReciterCubit>().refreshReciter();
       _loadLastSurah();
     }
   }
@@ -135,7 +135,7 @@ class _DashboardGrid extends StatelessWidget {
   static MaterialPageRoute _settingsRoute(
     BuildContext context,
     String reciter,
-  ) => MaterialPageRoute(builder: (_) => const SettingsScreen());
+  ) => MaterialPageRoute(builder: (_) => const SettingsView());
 
   static MaterialPageRoute _qiblahRoute(BuildContext context, String reciter) =>
       MaterialPageRoute(builder: (_) => const QiblahView());
@@ -154,46 +154,47 @@ class _DashboardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final reciterProvider = Provider.of<ReciterProvider>(context);
 
-    return GestureDetector(
-      onTap: () async {
-        final route = routeBuilder(context, reciterProvider.selectedReciter);
-        await Navigator.of(context).push(route);
-        if (label == 'سور القرآن') {
-          if (context.mounted) {
-            context
-                .findAncestorStateOfType<_LayoutScreenState>()!
-                ._loadLastSurah();
+    return BlocBuilder<ReciterCubit, ReciterState>(
+      builder: (context, state) => GestureDetector(
+        onTap: () async {
+          final route = routeBuilder(context, state.selectedReciterId);
+          await Navigator.of(context).push(route);
+          if (label == 'سور القرآن') {
+            if (context.mounted) {
+              context
+                  .findAncestorStateOfType<_LayoutScreenState>()!
+                  ._loadLastSurah();
+            }
           }
-        }
-      },
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: theme.brightness == Brightness.dark
-                ? theme.colorScheme.primary.withAlpha(102) // 0.4 * 255
-                : theme.colorScheme.primary,
-            child: Icon(
-              icon,
-              color: theme.brightness == Brightness.dark
-                  ? Colors.white70
-                  : Colors.white,
-              size: 28,
+        },
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: theme.brightness == Brightness.dark
+                  ? theme.colorScheme.primary.withAlpha(102) // 0.4 * 255
+                  : theme.colorScheme.primary,
+              child: Icon(
+                icon,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.white,
+                size: 28,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.brightness == Brightness.dark
-                  ? Colors.white70
-                  : null,
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : null,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -205,21 +206,23 @@ class _LastSurahCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.findAncestorStateOfType<_LayoutScreenState>()!;
-    final reciterProvider = Provider.of<ReciterProvider>(context);
 
-    return ValueListenableBuilder<Map<String, dynamic>?>(
-      valueListenable: state._lastSurahDataNotifier,
-      builder: (context, data, child) {
-        if (data == null || data['surah'] == null) {
-          return _buildEmptyCard(context, reciterProvider.selectedReciter);
-        }
+    return BlocBuilder<ReciterCubit, ReciterState>(
+      builder: (context, reciterState) =>
+          ValueListenableBuilder<Map<String, dynamic>?>(
+            valueListenable: state._lastSurahDataNotifier,
+            builder: (context, data, child) {
+              if (data == null || data['surah'] == null) {
+                return _buildEmptyCard(context, reciterState.selectedReciterId);
+              }
 
-        return _buildLastSurahCard(
-          context,
-          data,
-          reciterProvider.selectedReciter,
-        );
-      },
+              return _buildLastSurahCard(
+                context,
+                data,
+                reciterState.selectedReciterId,
+              );
+            },
+          ),
     );
   }
 
@@ -237,15 +240,12 @@ class _LastSurahCard extends StatelessWidget {
             ElevatedButton(
               style: theme.elevatedButtonTheme.style,
               onPressed: () async {
-                final reciterProvider = Provider.of<ReciterProvider>(
-                  context,
-                  listen: false,
-                );
+                final reciterCubit = context.read<ReciterCubit>();
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => QuranView(
                       surahNumber: 1,
-                      reciter: reciterProvider.selectedReciter,
+                      reciter: reciterCubit.state.selectedReciterId,
                       currentAyah: 1,
                     ),
                   ),
