@@ -28,7 +28,7 @@ Future<void> main() async {
       initialMode = ThemeMode.system;
     }
 
-    final initialFontSize = prefs.getDouble('fontSize') ?? 16.0;
+    final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
 
     runApp(
       MultiBlocProvider(

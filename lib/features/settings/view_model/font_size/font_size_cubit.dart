@@ -23,7 +23,7 @@ class FontSizeCubit extends Cubit<FontSizeState> {
   FontSizeCubit(double initialFontSize)
     : super(FontSizeState(fontSize: initialFontSize));
 
-  static const double _defaultFontSize = 16.0;
+  static const double _defaultFontSize = 18.0;
   static const String _fontSizeKey = 'fontSize';
 
   static Future<double> loadInitialFontSize() async {

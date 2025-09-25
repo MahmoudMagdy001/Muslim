@@ -39,15 +39,13 @@ class _LayoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.all(16.0),
+    padding: const EdgeInsets.fromLTRB(5, 5, 5, 0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // const _LastSurahCard(),
-        const SizedBox(height: 20),
-        _DashboardGrid(),
-        const SizedBox(height: 20),
         const _PrayerTimesSection(),
+        const SizedBox(height: 10),
+        _DashboardGrid(),
       ],
     ),
   );
@@ -59,8 +57,8 @@ class _DashboardGrid extends StatelessWidget {
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
     crossAxisCount: 3,
-    crossAxisSpacing: 15,
-    mainAxisSpacing: 15,
+    crossAxisSpacing: 5,
+    mainAxisSpacing: 5,
     children: const [
       _DashboardButton(
         icon: Icons.auto_stories_rounded,
@@ -121,27 +119,29 @@ class _DashboardButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocBuilder<ReciterCubit, ReciterState>(
-      builder: (context, state) => GestureDetector(
+      builder: (context, state) => InkWell(
         onTap: () async {
           final route = routeBuilder(context, state.selectedReciterId);
           await Navigator.of(context).push(route);
         },
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             CircleAvatar(
-              radius: 28,
+              radius: 30,
               backgroundColor: theme.brightness == Brightness.dark
-                  ? theme.colorScheme.primary.withAlpha(102) // 0.4 * 255
+                  ? theme.colorScheme.primary.withAlpha(102)
                   : theme.colorScheme.primary,
               child: Icon(
                 icon,
                 color: theme.brightness == Brightness.dark
                     ? Colors.white70
                     : Colors.white,
-                size: 28,
+                size: 25,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               label,
               style: theme.textTheme.titleSmall?.copyWith(
@@ -162,20 +162,16 @@ class _PrayerTimesSection extends StatelessWidget {
   const _PrayerTimesSection();
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'مواقيت الصلاة',
-          style: theme.textTheme.titleLarge,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 10),
-        const PrayerTimesView(),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => const Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      // Text(
+      //   'مواقيت الصلاة',
+      //   style: theme.textTheme.titleLarge,
+      //   textAlign: TextAlign.center,
+      // ),
+      // const SizedBox(height: 10),
+      PrayerTimesView(),
+    ],
+  );
 }

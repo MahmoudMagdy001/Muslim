@@ -6,6 +6,8 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../features/prayer_times/service/prayer_times_service.dart';
+
 /// Application initialization and setup
 class AppInitializer {
   AppInitializer(this.prefs);
@@ -15,6 +17,8 @@ class AppInitializer {
     await _initializeAudioBackground();
     await _initializeNotifications();
     await _handleFirstRunSetup();
+    final prayerService = PrayerTimesService();
+    await prayerService.schedulePrayerNotifications();
   }
 
   Future<void> _initializeAudioBackground() async {
@@ -37,14 +41,16 @@ class AppInitializer {
       ),
       NotificationChannel(
         channelKey: 'prayer_reminder',
+        channelName: '⏰ تذكير الصلاة',
+        channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
         defaultColor: const Color(0xFF33A1E0),
-        channelName: 'تذكير الصلاة',
-        channelDescription: 'إشعار دائم بوقت الصلاة القادمة والوقت المتبقي',
-        importance: NotificationImportance.Default,
-        playSound: false,
-        enableVibration: false,
-        onlyAlertOnce: true,
+        ledColor: Colors.white,
+        importance: NotificationImportance.Max,
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
         locked: true,
+        defaultRingtoneType: DefaultRingtoneType.Notification,
       ),
     ]);
   }
