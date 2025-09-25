@@ -27,12 +27,10 @@ class QuranService {
     required int surahNumber,
     required String reciter,
   }) async {
-    // إذا كانت نفس السورة والقارئ، لا نعيد تحميلها
     if (_currentSurah == surahNumber && _currentReciter == reciter) {
       return;
     }
 
-    // تحديث القيم الحالية
     _currentSurah = surahNumber;
     _currentReciter = reciter;
 

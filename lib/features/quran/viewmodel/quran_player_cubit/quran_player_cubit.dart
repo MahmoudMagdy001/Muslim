@@ -55,8 +55,13 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   // Player Controls
   Future<void> play() async => await _repository.play();
   Future<void> pause() async => await _repository.pause();
-  Future<void> seek(Duration position, {int? index}) async =>
-      await _repository.seek(position, index: index);
+  Future<void> seek(Duration position, {int? index, int? surah}) async {
+    await _repository.seek(position, index: index);
+    if (surah != null) {
+      emit(state.copyWith(currentSurah: surah));
+    }
+  }
+
   Future<void> seekToNext() async => await _repository.seekToNext();
   Future<void> seekToPrevious() async => await _repository.seekToPrevious();
 

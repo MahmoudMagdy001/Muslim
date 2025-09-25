@@ -8,77 +8,90 @@ class FontSizeSection extends StatelessWidget {
   const FontSizeSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final fontSizeCubit = context.read<FontSizeCubit>();
-
-    return SectionCard(
-      title: 'حجم الخط',
-      child: BlocBuilder<FontSizeCubit, FontSizeState>(
-        builder: (context, state) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _FontSizeSlider(fontSizeCubit: fontSizeCubit),
-            const SizedBox(height: 8),
-            _FontSizeIndicator(fontSize: state.fontSize),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SectionCard(
+    title: 'حجم الخط',
+    child: BlocBuilder<FontSizeCubit, FontSizeState>(
+      builder: (context, state) => _FontSizeSwitch(currentSize: state.fontSize),
+    ),
+  );
 }
 
-class _FontSizeSlider extends StatelessWidget {
-  const _FontSizeSlider({required this.fontSizeCubit});
-  final FontSizeCubit fontSizeCubit;
+class _FontSizeSwitch extends StatelessWidget {
+  const _FontSizeSwitch({required this.currentSize});
+  final double currentSize;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<FontSizeCubit, FontSizeState>(
-      builder: (context, state) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+    return ListTile(
+      leading: const Icon(Icons.text_fields, size: 28),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('أصغر', style: theme.textTheme.bodyMedium),
-          Expanded(
-            child: Slider(
-              value: state.fontSize,
-              min: 12.0,
-              max: 23.0,
-              divisions: 11,
-              label: state.fontSize.round().toString(),
-              onChanged: (value) => fontSizeCubit.setFontSize(value),
-            ),
+          Text('تغيير حجم الخط', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(
+            _getLabelForFontSize(currentSize),
+            style: theme.textTheme.bodySmall,
           ),
-          Text('أكبر', style: theme.textTheme.bodyMedium),
         ],
       ),
+      trailing: const Icon(Icons.arrow_drop_down),
+      onTap: () => _showFontSizeDialog(context, currentSize),
     );
   }
-}
 
-class _FontSizeIndicator extends StatelessWidget {
-  const _FontSizeIndicator({required this.fontSize});
-  final double fontSize;
+  void _showFontSizeDialog(BuildContext context, double currentSize) {
+    final fontSizeCubit = context.read<FontSizeCubit>();
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: theme.primaryColor.withAlpha(25),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: theme.primaryColor.withAlpha(76)),
-        ),
-        child: Text(
-          'الحجم: ${fontSize.round()}',
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.primaryColor,
+    showDialog(
+      context: context,
+      builder: (context) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          title: const Text('اختر حجم الخط'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<double>(
+                title: const Text('صغير'),
+                value: 14,
+                groupValue: currentSize.roundToDouble(),
+                onChanged: (value) {
+                  fontSizeCubit.setFontSize(value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<double>(
+                title: const Text('متوسط'),
+                value: 18,
+                groupValue: currentSize.roundToDouble(),
+                onChanged: (value) {
+                  fontSizeCubit.setFontSize(value!);
+                  Navigator.pop(context);
+                },
+              ),
+              RadioListTile<double>(
+                title: const Text('كبير'),
+                value: 22,
+                groupValue: currentSize.roundToDouble(),
+                onChanged: (value) {
+                  fontSizeCubit.setFontSize(value!);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  String _getLabelForFontSize(double size) {
+    if (size.round() == 14) return 'صغير';
+    if (size.round() == 18) return 'متوسط';
+    if (size.round() == 22) return 'كبير';
+    return '${size.round()}';
   }
 }

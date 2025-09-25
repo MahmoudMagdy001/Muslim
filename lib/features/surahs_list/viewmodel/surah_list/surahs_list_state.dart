@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../model/surahs_list_model.dart';
+import '../../model/surahs_list_model.dart';
 
 enum SurahsListStatus { initial, loading, success, error }
 

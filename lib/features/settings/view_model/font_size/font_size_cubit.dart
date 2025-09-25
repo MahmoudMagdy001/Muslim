@@ -20,30 +20,15 @@ class FontSizeState {
 
 // Cubit class
 class FontSizeCubit extends Cubit<FontSizeState> {
-  FontSizeCubit() : super(FontSizeState(fontSize: _defaultFontSize)) {
-    _initializeFontSize();
-  }
+  FontSizeCubit(double initialFontSize)
+    : super(FontSizeState(fontSize: initialFontSize));
+
   static const double _defaultFontSize = 16.0;
   static const String _fontSizeKey = 'fontSize';
 
-  Future<void> _initializeFontSize() async {
-    try {
-      await _loadFontSize();
-    } catch (error) {
-      debugPrint('Error initializing font size: $error');
-      emit(FontSizeState(fontSize: _defaultFontSize));
-    }
-  }
-
-  Future<void> _loadFontSize() async {
+  static Future<double> loadInitialFontSize() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedFontSize = prefs.getDouble(_fontSizeKey);
-
-    if (savedFontSize != null) {
-      emit(FontSizeState(fontSize: savedFontSize));
-    } else {
-      emit(FontSizeState(fontSize: _defaultFontSize));
-    }
+    return prefs.getDouble(_fontSizeKey) ?? _defaultFontSize;
   }
 
   Future<void> setFontSize(double value) async {
@@ -56,7 +41,6 @@ class FontSizeCubit extends Cubit<FontSizeState> {
       await prefs.setDouble(_fontSizeKey, value);
     } catch (error) {
       debugPrint('Error saving font size: $error');
-      await _loadFontSize();
     }
   }
 }

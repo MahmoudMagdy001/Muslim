@@ -3,19 +3,20 @@ class QuranPlayerState {
     this.currentPosition = Duration.zero,
     this.totalDuration = Duration.zero,
     this.isPlaying = false,
-    this.currentAyah = 1,
+    this.currentAyah,
   });
 
   final Duration currentPosition;
   final Duration totalDuration;
   final bool isPlaying;
-  final int currentAyah;
+  final int? currentAyah;
 
   QuranPlayerState copyWith({
     Duration? currentPosition,
     Duration? totalDuration,
     bool? isPlaying,
     int? currentAyah,
+    int? currentSurah,
   }) => QuranPlayerState(
     currentPosition: currentPosition ?? this.currentPosition,
     totalDuration: totalDuration ?? this.totalDuration,

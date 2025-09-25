@@ -293,14 +293,11 @@ class _ChaptersList extends StatelessWidget {
 
           return Scrollbar(
             controller: scrollController,
-            thickness: 8.0,
-            radius: const Radius.circular(16),
-            trackVisibility: true,
-            interactive: true,
+
             child: ListView.builder(
               controller: scrollController,
               itemCount: chapters.length,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.only(left: 15),
               itemBuilder: (context, index) {
                 final chapter = chapters[index];
                 return _ChapterCard(chapter: chapter);

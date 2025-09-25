@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../repository/surahs_list_repository.dart';
+import '../../repository/surahs_list_repository.dart';
 import 'surahs_list_state.dart';
 
 class SurahListCubit extends Cubit<SurahsListState> {
