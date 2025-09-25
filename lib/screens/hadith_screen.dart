@@ -177,35 +177,32 @@ class _HadithsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<List<Hadith>>(
-      valueListenable: hadithsNotifier,
-      builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
-          valueListenable: isLoadingNotifier,
-          builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
-              valueListenable: hasMoreNotifier,
-              builder: (context, hasMore, child) {
-                if (hadiths.isEmpty && isLoading) {
-                  // 🚀 مفيش Scrollbar هنا
-                  return const _LoadingWidget();
-                }
+    valueListenable: hadithsNotifier,
+    builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
+      valueListenable: isLoadingNotifier,
+      builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
+        valueListenable: hasMoreNotifier,
+        builder: (context, hasMore, child) {
+          if (hadiths.isEmpty && isLoading) {
+            // 🚀 مفيش Scrollbar هنا
+            return const _LoadingWidget();
+          }
 
-                // 🚀 Scrollbar يظهر بس لما فيه بيانات
-                return Scrollbar(
-                  controller: scrollController,
-                  thickness: 8.0,
-                  radius: const Radius.circular(16),
-                  trackVisibility: true,
-                  interactive: true,
-                  child: _HadithsList(
-                    hadiths: hadiths,
-                    isLoading: isLoading,
-                    hasMore: hasMore,
-                    scrollController: scrollController,
-                  ),
-                );
-              },
+          // 🚀 Scrollbar يظهر بس لما فيه بيانات
+          return Scrollbar(
+            controller: scrollController,
+
+            child: _HadithsList(
+              hadiths: hadiths,
+              isLoading: isLoading,
+              hasMore: hasMore,
+              scrollController: scrollController,
             ),
-        ),
-    );
+          );
+        },
+      ),
+    ),
+  );
 }
 
 // ==================== Loading Widget ====================
@@ -244,7 +241,7 @@ class _HadithsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView.builder(
     controller: scrollController,
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    padding: const EdgeInsets.fromLTRB(15, 8, 8, 8),
     itemCount: hadiths.length + (hasMore ? 1 : 0),
     itemBuilder: (context, index) {
       if (index < hadiths.length) {
@@ -304,7 +301,7 @@ class _HadithCard extends StatelessWidget {
             SelectableText(
               hadith.hadithArabic,
 
-              style: theme.textTheme.titleMedium?.copyWith(height: 2  ),
+              style: theme.textTheme.titleMedium?.copyWith(height: 2),
             ),
             const SizedBox(height: 8),
             Text(
@@ -312,7 +309,6 @@ class _HadithCard extends StatelessWidget {
               textAlign: TextAlign.end,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.primaryColor,
-
               ),
             ),
           ],

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
+import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({required this.surahNumber, super.key});
@@ -26,7 +27,11 @@ class _SurahTextViewState extends State<SurahTextView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _playerSub ??= context.read<QuranPlayerCubit>().stream.listen((playerState) {
+    _playerSub ??= context.read<QuranPlayerCubit>().stream.listen((
+      playerState,
+    ) {
+      if (!playerState.isPlaying) return;
+
       final newAyah = playerState.currentAyah;
       if (!mounted) return;
       if (newAyah != _currentAyah) {
@@ -75,14 +80,68 @@ class _SurahTextViewState extends State<SurahTextView> {
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).textTheme.bodyLarge?.color,
               ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.read<QuranPlayerCubit>().seek(
-                    Duration.zero,
-                    index: ayah - 1,
-                  );
-                  context.read<QuranPlayerCubit>().play();
-                },
+              recognizer: () {
+                final tapRecognizer = TapGestureRecognizer();
+                Offset? tapPosition;
+                tapRecognizer
+                  ..onTapDown = (details) {
+                    tapPosition = details.globalPosition;
+                  }
+                  ..onTap = () async {
+                    final overlay =
+                        Overlay.of(context).context.findRenderObject()
+                            as RenderBox;
+                    final position = tapPosition ?? Offset.zero;
+                    final menuPosition = RelativeRect.fromLTRB(
+                      position.dx,
+                      position.dy,
+                      overlay.size.width - position.dx,
+                      overlay.size.height - position.dy,
+                    );
+
+                    final selected = await showMenu<String>(
+                      context: context,
+                      position: menuPosition,
+                      items: [
+                        const PopupMenuItem(
+                          value: 'play',
+                          child: Text('تشغيل من هذه الآية'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'bookmark',
+                          child: Text('حفظ علامة على هذه الآية'),
+                        ),
+                      ],
+                    );
+
+                    if (selected == 'play') {
+                      if (context.mounted) {
+                        context.read<QuranPlayerCubit>().seek(
+                          Duration.zero,
+                          index: ayah - 1,
+                        );
+                        context.read<QuranPlayerCubit>().play();
+                      }
+                    } else if (selected == 'bookmark') {
+                      if (context.mounted) {
+                        context.read<BookmarksCubit>().addBookmark(
+                          surah: widget.surahNumber,
+                          ayah: ayah,
+                          ayahText: text,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'تم حفظ علامه علي اية : $text رقم :$ayah',
+                            ),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    }
+                  };
+                return tapRecognizer;
+              }(),
             ),
           ],
         ),
@@ -105,22 +164,22 @@ class _SurahTextViewState extends State<SurahTextView> {
 
   @override
   Widget build(BuildContext context) => Scrollbar(
+    controller: _controller,
+    child: SingleChildScrollView(
       controller: _controller,
-      child: SingleChildScrollView(
-        controller: _controller,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: RepaintBoundary(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                height: 2.3,
-                fontWeight: FontWeight.normal,
-              ),
-              children: _buildSpans(context),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: RepaintBoundary(
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              height: 2.3,
+              fontWeight: FontWeight.normal,
             ),
+            children: _buildSpans(context),
           ),
         ),
       ),
-    );
+    ),
+  );
 }

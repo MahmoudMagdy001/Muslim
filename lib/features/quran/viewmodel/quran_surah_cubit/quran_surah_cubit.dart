@@ -31,12 +31,7 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
     );
 
     try {
-      final lastRead = await _repository.loadLastRead();
-      int startAyah = 1;
-      if (lastRead['surah'] == surahNumber && lastRead['ayah'] != null) {
-        startAyah = lastRead['ayah'];
-      }
-
+      const int startAyah = 1;
       await _repository.prepareSurahPlaylist(
         surahNumber: surahNumber,
         reciter: reciter,
@@ -53,7 +48,7 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
         ),
       );
 
-      await _repository.seek(Duration.zero, index: startAyah - 1);
+      // await _repository.seek(Duration.zero, index: startAyah - 1);
     } catch (e) {
       emit(
         state.copyWith(
@@ -71,12 +66,5 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
   void _updateLastLoadedInfo(int surahNumber, String reciter) {
     _lastLoadedSurah = surahNumber;
     _lastLoadedReciter = reciter;
-  }
-
-  Future<void> resumeLastRead(String reciter) async {
-    final lastRead = await _repository.loadLastRead();
-    if (lastRead['surah'] != null && lastRead['ayah'] != null) {
-      await loadSurah(lastRead['surah']!, reciter);
-    }
   }
 }

@@ -22,20 +22,9 @@ class ThemeState {
 
 // Cubit class
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit() : super(ThemeState(themeMode: ThemeMode.light)) {
-    _initializeTheme();
-  }
-  static const String _themeKey = 'themeMode';
+  ThemeCubit(ThemeMode initialMode) : super(ThemeState(themeMode: initialMode));
 
-  Future<void> _initializeTheme() async {
-    try {
-      await _loadTheme();
-    } catch (error) {
-      debugPrint('Error initializing theme: $error');
-      // Fall back to default value
-      emit(ThemeState(themeMode: ThemeMode.light));
-    }
-  }
+  static const String _themeKey = 'themeMode';
 
   Future<void> toggleTheme() async {
     final newThemeMode = state.isDarkMode ? ThemeMode.light : ThemeMode.dark;
@@ -52,7 +41,7 @@ class ThemeCubit extends Cubit<ThemeState> {
       await _saveTheme(themeMode);
     } catch (error) {
       debugPrint('Error saving theme: $error');
-      // Revert the change if saving fails
+
       emit(previousState);
     }
   }
@@ -60,22 +49,5 @@ class ThemeCubit extends Cubit<ThemeState> {
   Future<void> _saveTheme(ThemeMode themeMode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_themeKey, themeMode.toString());
-  }
-
-  Future<void> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    final themeText = prefs.getString(_themeKey);
-
-    if (themeText != null) {
-      ThemeMode loadedThemeMode;
-      if (themeText.contains('dark')) {
-        loadedThemeMode = ThemeMode.dark;
-      } else if (themeText.contains('light')) {
-        loadedThemeMode = ThemeMode.light;
-      } else {
-        loadedThemeMode = ThemeMode.system;
-      }
-      emit(ThemeState(themeMode: loadedThemeMode));
-    }
   }
 }

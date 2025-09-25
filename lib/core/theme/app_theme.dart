@@ -27,6 +27,7 @@ class AppThemeFactory {
         centerTitle: true,
         titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
       ),
+      tabBarTheme: _lightTabBarTheme(textStyles), // إضافة tab bar theme
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         secondary: AppColors.white,
@@ -58,6 +59,7 @@ class AppThemeFactory {
         centerTitle: true,
         titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
       ),
+      tabBarTheme: _darkTabBarTheme(textStyles), // إضافة tab bar theme
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.white,
@@ -75,6 +77,31 @@ class AppThemeFactory {
       scrollbarTheme: _darkScrollbarTheme, // إضافة scrollbar theme
     );
   }
+
+  // Tab Bar Themes
+  TabBarThemeData _lightTabBarTheme(AppTextStyles styles) => TabBarThemeData(
+    indicator: const BoxDecoration(
+      border: Border(bottom: BorderSide(color: AppColors.white, width: 3)),
+    ),
+    labelColor: AppColors.white,
+    unselectedLabelColor: AppColors.black54,
+    labelStyle: styles.titleSmall.copyWith(fontWeight: FontWeight.bold),
+    unselectedLabelStyle: styles.titleSmall.copyWith(
+      fontWeight: FontWeight.normal,
+    ),
+    indicatorSize: TabBarIndicatorSize.label,
+  );
+
+  TabBarThemeData _darkTabBarTheme(AppTextStyles styles) => TabBarThemeData(
+    indicator: const BoxDecoration(
+      border: Border(bottom: BorderSide(color: AppColors.primary, width: 3)),
+    ),
+    labelColor: AppColors.white,
+    unselectedLabelColor: Colors.white70,
+    labelStyle: styles.titleSmall.copyWith(fontWeight: FontWeight.bold),
+    unselectedLabelStyle: styles.titleSmall,
+    indicatorSize: TabBarIndicatorSize.label,
+  );
 
   // Text Themes
   TextTheme _buildLightTextTheme(AppTextStyles styles) =>

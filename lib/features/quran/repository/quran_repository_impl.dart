@@ -1,11 +1,10 @@
 import 'package:just_audio/just_audio.dart';
-import '../../../core/service/last_read_service.dart';
 import 'quran_repository.dart';
 import '../service/quran_service.dart';
 
 class QuranRepositoryImpl implements QuranRepository {
   final QuranService _quranService = QuranService();
-  final LastReadService _lastReadService = LastReadService();
+  // final LastReadService _lastReadService = LastReadService();
 
   @override
   Stream<Duration> get positionStream =>
@@ -47,14 +46,6 @@ class QuranRepositoryImpl implements QuranRepository {
 
   @override
   Future<void> seekToPrevious() async => await _quranService.seekToPrevious();
-
-  @override
-  Future<Map<String, dynamic>> loadLastRead() async =>
-      await _lastReadService.loadLastRead();
-
-  @override
-  Future<void> saveLastRead({required int surah, required int ayah}) async =>
-      await _lastReadService.saveLastRead(surah: surah, ayah: ayah);
 
   @override
   void dispose() {

@@ -15,8 +15,7 @@ abstract class QuranRepository {
   Future<void> seek(Duration position, {int? index});
   Future<void> seekToNext();
   Future<void> seekToPrevious();
-  Future<Map<String, dynamic>> loadLastRead();
-  Future<void> saveLastRead({required int surah, required int ayah});
+
   Future<Duration?> getCurrentDuration();
   void dispose();
 }

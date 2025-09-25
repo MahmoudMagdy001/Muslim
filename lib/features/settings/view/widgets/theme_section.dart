@@ -11,40 +11,93 @@ class ThemeSection extends StatelessWidget {
   Widget build(BuildContext context) => SectionCard(
     title: 'المظهر',
     child: BlocBuilder<ThemeCubit, ThemeState>(
-      builder: (context, state) => _ThemeSwitch(isDarkMode: state.isDarkMode),
+      builder: (context, state) => _ThemeTile(currentMode: state.themeMode),
     ),
   );
 }
 
-class _ThemeSwitch extends StatelessWidget {
-  const _ThemeSwitch({required this.isDarkMode});
-  final bool isDarkMode;
+class _ThemeTile extends StatelessWidget {
+  const _ThemeTile({required this.currentMode});
+  final ThemeMode currentMode;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    String title;
+    if (currentMode == ThemeMode.dark) {
+      title = 'الوضع الليلي';
+    } else if (currentMode == ThemeMode.light) {
+      title = 'الوضع النهاري';
+    } else {
+      title = 'حسب النظام';
+    }
+
     return ListTile(
-      leading: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode, size: 28),
+      leading: Icon(
+        currentMode == ThemeMode.dark
+            ? Icons.dark_mode
+            : currentMode == ThemeMode.light
+            ? Icons.light_mode
+            : Icons.brightness_auto,
+        size: 28,
+      ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            isDarkMode ? 'الوضع الليلي' : 'الوضع النهاري',
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(title, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
-          Text(
-            isDarkMode
-                ? 'التبديل إلى الوضع النهاري'
-                : 'التبديل إلى الوضع الليلي',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('اضغط لاختيار المظهر', style: theme.textTheme.bodySmall),
         ],
       ),
-      trailing: Switch(
-        value: isDarkMode,
-        onChanged: (_) => context.read<ThemeCubit>().toggleTheme(),
+
+      onTap: () => _showThemeDialog(context, currentMode),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context, ThemeMode currentMode) {
+    showDialog(
+      context: context,
+      builder: (context) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: SimpleDialog(
+          title: const Text('اختر المظهر'),
+          children: [
+            RadioListTile<ThemeMode>(
+              title: const Text('الوضع النهاري'),
+              value: ThemeMode.light,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<ThemeCubit>().setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('الوضع الليلي'),
+              value: ThemeMode.dark,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<ThemeCubit>().setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            RadioListTile<ThemeMode>(
+              title: const Text('حسب النظام'),
+              value: ThemeMode.system,
+              groupValue: currentMode,
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<ThemeCubit>().setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
