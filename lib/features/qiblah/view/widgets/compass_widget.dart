@@ -8,14 +8,13 @@ class CompassWidget extends StatelessWidget {
     required this.headingAngle,
     required this.qiblahAngle,
     required this.isAligned,
-  
+
     super.key,
   });
 
   final double headingAngle;
   final double qiblahAngle;
   final bool isAligned;
-
 
   static const _compassDiameterFactor = 0.8;
   static const _maxCompassDiameter = 300.0;
@@ -145,7 +144,7 @@ class CompassWidget extends StatelessWidget {
         style: TextStyle(
           color: isDark ? Colors.white : theme.colorScheme.onPrimary,
           fontWeight: FontWeight.bold,
-         
+
           shadows: const [Shadow(offset: Offset(0, 1), blurRadius: 4)],
         ),
       ),

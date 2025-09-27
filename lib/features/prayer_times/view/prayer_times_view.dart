@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+
 import '../../../core/widgets/custom_error_message.dart';
+import '../helper/prayer_consts.dart';
 import '../helper/time_left_format.dart';
-import '../viewmodel/prayer_times_cubit.dart';
-import '../viewmodel/prayer_times_state.dart';
 import '../repository/prayer_times_repository_impl.dart';
 import '../service/prayer_times_service.dart';
-import '../helper/prayer_consts.dart';
+import '../viewmodel/prayer_times_cubit.dart';
+import '../viewmodel/prayer_times_state.dart';
 import 'widgets/prayer_tile.dart';
 import 'widgets/prayer_tile_shimmer.dart';
 
@@ -19,7 +21,7 @@ class PrayerTimesView extends StatelessWidget {
     child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
       builder: (context, state) {
         if (state.status == PrayerTimesStatus.loading) {
-          return _buildLoadingState();
+          return _buildLoadingState(context);
         } else if (state.status == PrayerTimesStatus.error) {
           return CustomErrorMessage(errorMessage: state.message);
         } else if (state.status == PrayerTimesStatus.success &&
@@ -36,19 +38,50 @@ PrayerTimesCubit _createPrayerTimesCubit() => PrayerTimesCubit(
   repository: PrayerTimesNewRepositoryImpl(PrayerTimesService()),
 )..init();
 
-Widget _buildLoadingState() => GridView.builder(
-  shrinkWrap: true,
-  physics: const NeverScrollableScrollPhysics(),
-  itemCount: prayerOrder.length,
-  padding: const EdgeInsets.all(12),
-  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 12,
-    mainAxisSpacing: 12,
-    childAspectRatio: 0.9,
-  ),
-  itemBuilder: (context, index) => const PrayerTileShimmer(),
-);
+Widget _buildLoadingState(BuildContext context) {
+  final theme = Theme.of(context);
+  final isDark = theme.brightness == Brightness.dark;
+
+  return Column(
+    children: [
+      // Header Shimmer
+      const PrayerHeaderShimmer(),
+
+      const SizedBox(height: 16),
+
+      // Grid Shimmer
+      Shimmer.fromColors(
+        baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+        highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              prayerOrder.length,
+              (index) => Container(
+                width:
+                    MediaQuery.of(context).size.width / prayerOrder.length - 12,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[800] : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
 
 Widget _buildSuccessState(BuildContext context, PrayerTimesState state) {
   final theme = Theme.of(context);
@@ -84,6 +117,7 @@ Widget _buildSuccessState(BuildContext context, PrayerTimesState state) {
                           : Colors.white,
                     ),
                   ),
+
                   const SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,6 +131,23 @@ Widget _buildSuccessState(BuildContext context, PrayerTimesState state) {
                         style: theme.textTheme.titleMedium,
                       ),
                     ],
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    tooltip: 'أعادة جدوله الاشعارات',
+                    onPressed: () async {
+                      await context
+                          .read<PrayerTimesCubit>()
+                          .refreshPrayerTimes();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('تم تحديث جدولة الأشعارات بنجاح'),
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.refresh),
                   ),
                 ],
               ),

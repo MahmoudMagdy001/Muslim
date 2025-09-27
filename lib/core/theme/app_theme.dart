@@ -41,6 +41,7 @@ class AppThemeFactory {
       cardTheme: _cardTheme.copyWith(color: AppColors.lightCard),
       inputDecorationTheme: _lightInputDecorationTheme(textStyles),
       scrollbarTheme: _lightScrollbarTheme, // إضافة scrollbar theme
+      snackBarTheme: _lightSnackBarTheme(textStyles),
     );
   }
 
@@ -75,6 +76,7 @@ class AppThemeFactory {
       cardTheme: _cardTheme.copyWith(color: AppColors.darkCard),
       inputDecorationTheme: _darkInputDecorationTheme(textStyles),
       scrollbarTheme: _darkScrollbarTheme, // إضافة scrollbar theme
+      snackBarTheme: _darkSnackBarTheme(textStyles),
     );
   }
 
@@ -160,6 +162,17 @@ class AppThemeFactory {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: 2,
         ),
+      );
+
+  SnackBarThemeData _lightSnackBarTheme(AppTextStyles styles) =>
+      const SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+      );
+  SnackBarThemeData _darkSnackBarTheme(AppTextStyles styles) =>
+      const SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
       );
 
   ElevatedButtonThemeData _darkElevatedButtonTheme(AppTextStyles styles) =>
