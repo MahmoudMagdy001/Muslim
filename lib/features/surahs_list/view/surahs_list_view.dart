@@ -169,6 +169,8 @@ class _BookmarksTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: BlocBuilder<BookmarksCubit, BookmarksState>(
@@ -188,87 +190,109 @@ class _BookmarksTab extends StatelessWidget {
               final surahName = quran.getSurahNameArabic(bookMark.surahNumber);
               final ayahNumber = bookMark.ayahNumber;
               final ayahText = bookMark.ayahText;
+
               return Card(
-                child: ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'سورة $surahName',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        ayahText,
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          height: 1.9,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final result = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) => Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: AlertDialog(
-                            title: Text(
-                              'مسح العلامه',
-                              style: theme.textTheme.titleMedium,
-                            ),
-                            content: Text(
-                              'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: Text(
-                                  'تجاهل',
-                                  style: theme.textTheme.bodyMedium,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: Text(
-                                  'مسح',
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-
-                      if (result == true) {
-                        if (context.mounted) {
-                          context.read<BookmarksCubit>().removeBookmark(
-                            surah: bookMark.surahNumber,
-                            ayah: bookMark.ayahNumber,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'تم مسح العلامة من سورة $surahName آية $ayahNumber',
-                              ),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                  ),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: InkWell(
                   onTap: () => _openBookmark(
                     context,
                     bookMark.surahNumber,
                     bookMark.ayahNumber,
+                  ),
+                  borderRadius: BorderRadius.circular(12), // مهم جداً
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'سورة $surahName',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                                size: 20,
+                              ),
+                              onPressed: () async {
+                                final result = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => Directionality(
+                                    textDirection: TextDirection.rtl,
+                                    child: AlertDialog(
+                                      title: Text(
+                                        'مسح العلامه',
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                      content: Text(
+                                        'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: Text(
+                                            'تجاهل',
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          child: Text(
+                                            'مسح',
+                                            style: theme.textTheme.bodyMedium!
+                                                .copyWith(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+
+                                if (result == true) {
+                                  if (context.mounted) {
+                                    context
+                                        .read<BookmarksCubit>()
+                                        .removeBookmark(
+                                          surah: bookMark.surahNumber,
+                                          ayah: bookMark.ayahNumber,
+                                        );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'تم مسح العلامة من سورة $surahName آية $ayahNumber',
+                                        ),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          ayahText,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            height: 1.9,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

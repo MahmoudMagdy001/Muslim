@@ -1,9 +1,17 @@
-  import '../../../core/utils/format_helper.dart';
+import '../../../core/utils/format_helper.dart';
 
 String formatTimeLeft(Duration timeLeft) {
-    if (timeLeft.isNegative) return convertToArabicNumbers('00:00:00');
-    final h = timeLeft.inHours.toString().padLeft(2, '0');
-    final m = timeLeft.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final s = timeLeft.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return convertToArabicNumbers('$h:$m:$s');
-  }
+  if (timeLeft.isNegative) return '0 ثانية';
+
+  final h = timeLeft.inHours;
+  final m = timeLeft.inMinutes.remainder(60);
+  final s = timeLeft.inSeconds.remainder(60);
+
+  final parts = <String>[];
+
+  if (h > 0) parts.add('${convertToArabicNumbers(h.toString())} ساعة');
+  if (m > 0) parts.add('${convertToArabicNumbers(m.toString())} دقيقة');
+  if (s > 0) parts.add('${convertToArabicNumbers(s.toString())} ثانية');
+
+  return parts.join(' و ');
+}

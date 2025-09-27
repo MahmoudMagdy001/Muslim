@@ -56,13 +56,14 @@ class _ReciterTile extends StatelessWidget {
       await cubit.saveReciter(result);
 
       // إظهار SnackBar بعد تغيير القارئ بنجاح
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('تم تغيير القارئ إلى ${getReciterName(result)}'),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم تغيير القارئ إلى ${getReciterName(result)}'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 }

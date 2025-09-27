@@ -3,5 +3,5 @@
 import '../model/prayer_times_model.dart';
 
 abstract class PrayerTimesRepository {
-  Future<PrayerTimesResponse> getPrayerTimes();
+  Future<LocalPrayerTimes> getPrayerTimes();
 }

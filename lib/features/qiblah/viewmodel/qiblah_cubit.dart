@@ -20,7 +20,7 @@ class QiblahCubit extends Cubit<QiblahState> {
   StreamSubscription<ServiceStatus>? _locationSubscription;
   bool _hasTriggeredFeedback = false;
 
-  static const double _alignmentThreshold = 0.1; 
+  static const double _alignmentThreshold = 0.1;
   static const double _degreesToRadians = pi / 180;
 
   /// Initializes the cubit and sets up location service listeners

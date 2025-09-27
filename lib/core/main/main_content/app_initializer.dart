@@ -1,20 +1,21 @@
-import 'dart:io';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Application initialization and setup
 class AppInitializer {
   AppInitializer(this.prefs);
+
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
     await _initializeAudioBackground();
     await _initializeNotifications();
     await _handleFirstRunSetup();
+    // final prayerService = PrayerTimesService();
+    // await prayerService.schedulePrayerNotifications();
   }
 
   Future<void> _initializeAudioBackground() async {
@@ -37,14 +38,16 @@ class AppInitializer {
       ),
       NotificationChannel(
         channelKey: 'prayer_reminder',
+        channelName: '⏰ تذكير الصلاة',
+        channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
         defaultColor: const Color(0xFF33A1E0),
-        channelName: 'تذكير الصلاة',
-        channelDescription: 'إشعار دائم بوقت الصلاة القادمة والوقت المتبقي',
-        importance: NotificationImportance.Default,
-        playSound: false,
-        enableVibration: false,
-        onlyAlertOnce: true,
+        ledColor: Colors.white,
+        importance: NotificationImportance.Max,
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
         locked: true,
+        defaultRingtoneType: DefaultRingtoneType.Notification,
       ),
     ]);
   }
@@ -61,29 +64,33 @@ class AppInitializer {
 
   Future<void> _requestPermissions() async {
     try {
-      // Request notification permission
       if (await Permission.notification.isDenied) {
         await Permission.notification.request();
       }
+      if (await Permission.notification.isPermanentlyDenied) {
+        await openAppSettings();
+      }
 
-      // Request location permission
       if (await Permission.locationWhenInUse.isDenied) {
         await Permission.locationWhenInUse.request();
       }
+      if (await Permission.locationWhenInUse.isPermanentlyDenied) {
+        await openAppSettings();
+      }
 
-      // Android-specific permissions
-      if (Platform.isAndroid) {
-        await _requestAndroidPermissions();
+      final serviceEnabled =
+          await Permission.locationWhenInUse.serviceStatus.isEnabled;
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+      }
+      // Battery optimization
+      final batterOptimization =
+          await Permission.ignoreBatteryOptimizations.isDenied;
+      if (!batterOptimization) {
+        await Permission.ignoreBatteryOptimizations.request();
       }
     } catch (e) {
       debugPrint('Permission request error: $e');
-    }
-  }
-
-  Future<void> _requestAndroidPermissions() async {
-    // Battery optimization
-    if (await Permission.ignoreBatteryOptimizations.isDenied) {
-      await Permission.ignoreBatteryOptimizations.request();
     }
   }
 

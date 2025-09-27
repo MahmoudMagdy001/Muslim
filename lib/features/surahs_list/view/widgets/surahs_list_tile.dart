@@ -11,26 +11,31 @@ class SurahListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
               Container(
-                width: 40,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withAlpha((0.1 * 255).toInt()),
+                  color: colorScheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     surah.number.toString(),
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.primaryColor,
+                      color: colorScheme.primary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
                 ),
@@ -48,14 +53,17 @@ class SurahListTile extends StatelessWidget {
                       surah.nameArabic,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       '${surah.locationArabic} - ${surah.ayahCount} آيات',
-                      style: theme.textTheme.bodySmall?.copyWith(),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -65,7 +73,7 @@ class SurahListTile extends StatelessWidget {
 
               Icon(
                 Icons.arrow_forward_ios,
-                color: theme.iconTheme.color,
+                color: colorScheme.onSurfaceVariant,
                 size: 16,
               ),
             ],

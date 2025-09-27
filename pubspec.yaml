@@ -23,6 +23,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   shimmer: ^3.0.0
   geolocator: ^13.0.4
+  adhan: ^2.0.0+1
   
 
 
@@ -37,3 +38,4 @@ flutter:
 
   assets:
     - assets/images/kaaba.png
+    - assets/azkar/azkar.json

@@ -1,5 +1,3 @@
-// prayer_times_state.dart
-
 import '../model/prayer_times_model.dart';
 
 enum PrayerTimesStatus { initial, loading, success, error }
@@ -7,32 +5,33 @@ enum PrayerTimesStatus { initial, loading, success, error }
 class PrayerTimesState {
   const PrayerTimesState({
     this.status = PrayerTimesStatus.initial,
-    this.response,
-    this.timings,
+    this.localPrayerTimes,
     this.nextPrayer,
     this.timeLeft,
     this.message,
+    this.lastUpdated,
   });
+
   final PrayerTimesStatus status;
-  final PrayerTimesResponse? response;
-  final Timings? timings;
+  final LocalPrayerTimes? localPrayerTimes;
   final String? nextPrayer;
   final Duration? timeLeft;
   final String? message;
+  final DateTime? lastUpdated;
 
   PrayerTimesState copyWith({
     PrayerTimesStatus? status,
-    PrayerTimesResponse? response,
-    Timings? timings,
+    LocalPrayerTimes? localPrayerTimes,
     String? nextPrayer,
     Duration? timeLeft,
     String? message,
+    DateTime? lastUpdated,
   }) => PrayerTimesState(
     status: status ?? this.status,
-    response: response ?? this.response,
-    timings: timings ?? this.timings,
+    localPrayerTimes: localPrayerTimes ?? this.localPrayerTimes,
     nextPrayer: nextPrayer ?? this.nextPrayer,
     timeLeft: timeLeft ?? this.timeLeft,
     message: message ?? this.message,
+    lastUpdated: lastUpdated ?? this.lastUpdated,
   );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../helper/prayer_consts.dart';
 import '../../../../core/utils/format_helper.dart';
 
@@ -26,56 +27,42 @@ class PrayerTile extends StatelessWidget {
     final prayerColor = prayerColors[prayerKey] ?? Colors.blue;
     final formattedTime = formatTo12Hour(timing);
 
-    return Card(
-      color: isNext
-          ? theme.brightness == Brightness.dark
-                ? theme.colorScheme.primary.withAlpha(102)
-                : theme.colorScheme.primary
-          : null,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Icon(
+    return Column(
+      children: [
+        Icon(
           prayerIcon,
-          color: isNext ? Colors.white : prayerColor,
-          size: 30,
+          color: isNext ? AppColors.primary : prayerColor,
+          size: 25,
         ),
-        title: Text(
-          prayerName,
-          style: textTheme.titleMedium?.copyWith(
-            color: isNext ? Colors.white : null,
-            fontWeight: isNext ? FontWeight.bold : FontWeight.normal,
+        const SizedBox(height: 6),
+        Text(
+          formattedTime,
+          style: textTheme.bodyMedium?.copyWith(
+            color: isNext ? AppColors.primary : null,
+            fontWeight: isNext ? FontWeight.bold : FontWeight.w600,
           ),
         ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isNext && timeLeft != null && timeLeft!.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isNext ? Colors.white24 : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'المتبقي: $timeLeft',
-                  style: textTheme.bodySmall?.copyWith(
-                    color: isNext ? Colors.white : Colors.grey[700],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-            ],
-            Text(
-              formattedTime,
-              style: textTheme.titleMedium?.copyWith(
-                color: isNext ? Colors.white : null,
-                fontWeight: isNext ? FontWeight.bold : FontWeight.normal,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+        const SizedBox(height: 4),
+        Text(
+          prayerName,
+          style: textTheme.bodySmall?.copyWith(
+            color: isNext ? AppColors.primary : null,
+            fontWeight: isNext ? FontWeight.bold : FontWeight.normal,
+            fontSize: 12,
+          ),
+          textAlign: TextAlign.center,
         ),
-      ),
+        // if (isNext && timeLeft != null && timeLeft!.isNotEmpty) ...[
+        //   const SizedBox(height: 4),
+        //   Text(
+        //     '⏳ $timeLeft',
+        //     style: textTheme.bodySmall?.copyWith(
+        //       color: isNext ? AppColors.primary : Colors.grey[700],
+        //       fontSize: 11,
+        //     ),
+        //   ),
+        // ],
+      ],
     );
   }
 }
