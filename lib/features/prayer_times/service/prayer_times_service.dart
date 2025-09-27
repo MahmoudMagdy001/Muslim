@@ -12,7 +12,7 @@ class PrayerTimesService {
     final coords = await _getSavedOrFetchCoordinates();
 
     final params = CalculationMethod.egyptian.getParameters()
-      ..madhab = Madhab.hanafi;
+      ..madhab = Madhab.shafi;
 
     final prayerTimes = PrayerTimes.today(coords, params);
 
@@ -62,15 +62,25 @@ class PrayerTimesService {
       final hour = int.parse(parts[0]);
       final minute = int.parse(parts[1]);
 
-      final scheduled = DateTime(now.year, now.month, now.day, hour, minute);
+      // وقت الصلاة
+      final prayerDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        hour,
+        minute,
+      );
+
+      // طرح دقيقة واحدة قبل الصلاة
+      final scheduled = prayerDateTime.subtract(const Duration(minutes: 1));
 
       if (scheduled.isAfter(now)) {
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: prayerIds[prayerName]!,
             channelKey: 'prayer_reminder',
-            title: 'موعد $prayerName',
-            body: 'حان الآن موعد صلاة $prayerName',
+            title: 'تنبيه $prayerName',
+            body: 'باقي دقيقة على صلاة $prayerName',
             wakeUpScreen: true,
           ),
           schedule: NotificationCalendar(
@@ -83,9 +93,13 @@ class PrayerTimesService {
           ),
         );
 
-        print('✅ تم جدولة إشعار $prayerName عند ${scheduled.toLocal()}');
+        print(
+          '✅ تم جدولة إشعار $prayerName قبل الصلاة بدقيقة (${scheduled.toLocal()})',
+        );
       } else {
-        print('⚠️ تم تخطي $prayerName لأنه عدى (${scheduled.toLocal()})');
+        print(
+          '⚠️ تم تخطي إشعار $prayerName لأنه بعد الطرح عدى (${scheduled.toLocal()})',
+        );
       }
     }
 
@@ -113,8 +127,39 @@ class PrayerTimesService {
 
     final hasPermission = await _handleLocationPermission();
     if (!hasPermission) {
-      throw Exception('صلاحية الموقع مرفوضة أو الخدمة مش متاحة');
+
     }
+    Future<bool> _handleLocationPermission() async {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      // هل خدمة الموقع شغالة؟
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // تقدر تفتح إعدادات الموقع للمستخدم
+        await Geolocator.openLocationSettings();
+        return false;
+      }
+
+      // هل التطبيق واخد إذن؟
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        // هنا يطلب الصلاحية
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // المستخدم رفض
+          return false;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // المستخدم مانع الصلاحية نهائيًا
+        return false;
+      }
+
+      return true;
+    }
+
 
     final position = await Geolocator.getCurrentPosition();
     await prefs.setDouble('lat', position.latitude);
