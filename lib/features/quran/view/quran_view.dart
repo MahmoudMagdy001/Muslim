@@ -27,12 +27,13 @@ class QuranView extends StatelessWidget {
   Widget build(BuildContext context) => MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => QuranPlayerCubit(QuranRepositoryImpl()),
+        create: (context) =>
+            QuranPlayerCubit(QuranRepositoryImpl(), initialSurah: surahNumber),
       ),
       BlocProvider(
         create: (context) =>
             QuranSurahCubit(QuranRepositoryImpl())
-              ..loadSurah(surahNumber, reciter),
+              ..loadSurah(surahNumber, reciter, startAyah: currentAyah),
       ),
     ],
     child: QuranViewContent(

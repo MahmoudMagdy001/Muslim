@@ -211,8 +211,8 @@ class _RandomZekrWidgetState extends State<RandomZekrWidget> {
         'assets/azkar/azkar.json',
       );
       final data = jsonDecode(response) as List;
-      final List<String> loadedZekrs = (data as List<Map<String, dynamic>>)
-          .map((Map<String, dynamic> jsonItem) => jsonItem['zekr'] as String)
+      final List<String> loadedZekrs = data
+          .map((jsonItem) => jsonItem['zekr'] as String)
           .toList();
       if (loadedZekrs.isNotEmpty) {
         setState(() {

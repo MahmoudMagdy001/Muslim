@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/service/location_service.dart';
-import '../../../core/widgets/custom_error_message.dart';
 import 'widgets/compass_widget.dart';
 import '../service/qiblah_service.dart';
 import '../viewmodel/qiblah_cubit.dart';
@@ -31,7 +30,16 @@ class QiblahView extends StatelessWidget {
               }
 
               if (state.status == QiblahStatus.error) {
-                return CustomErrorMessage(errorMessage: state.message);
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      state.message ?? '❌ حدث خطأ غير متوقع',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  ),
+                );
               }
 
               return Stack(

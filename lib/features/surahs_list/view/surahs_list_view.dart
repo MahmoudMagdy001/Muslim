@@ -198,11 +198,13 @@ class _BookmarksTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: InkWell(
-                  onTap: () => _openBookmark(
-                    context,
-                    bookMark.surahNumber,
-                    bookMark.ayahNumber,
-                  ),
+                  onTap: () {
+                    _openBookmark(
+                      context,
+                      bookMark.surahNumber,
+                      bookMark.ayahNumber,
+                    );
+                  },
                   borderRadius: BorderRadius.circular(12), // مهم جداً
                   child: Padding(
                     padding: const EdgeInsets.all(16),
