@@ -7,7 +7,6 @@ import '../helper/prayer_consts.dart';
 import '../helper/time_left_format.dart';
 import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
-import 'widgets/prayer_header_shimmer.dart';
 import 'widgets/prayer_times_shimmer.dart';
 
 class PrayerTimesView extends StatelessWidget {
@@ -23,7 +22,7 @@ class PrayerTimesView extends StatelessWidget {
       child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
         builder: (context, state) {
           if (state.status == PrayerTimesStatus.loading) {
-            return _PrayerLoadingSliver(theme: theme);
+            return const _PrayerLoadingSliver();
           } else if (state.status == PrayerTimesStatus.error) {
             return _PrayerErrorSliver(
               message: state.message ?? 'حدث خطأ غير متوقع',
@@ -76,24 +75,11 @@ class _PrayerErrorSliver extends StatelessWidget {
 }
 
 class _PrayerLoadingSliver extends StatelessWidget {
-  const _PrayerLoadingSliver({required this.theme});
-
-  final ThemeData theme;
+  const _PrayerLoadingSliver();
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = theme.brightness == Brightness.dark;
-
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          PrayerHeaderShimmer(isDark: isDark),
-          const SizedBox(height: 16),
-          PrayerTimesShimmer(isDark: isDark),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      const SliverToBoxAdapter(child: PrayerTimesShimmer());
 }
 
 /// 📌 حالة النجاح لـ CustomScrollView

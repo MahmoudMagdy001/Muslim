@@ -1,40 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../helper/prayer_consts.dart';
-
 class PrayerTimesShimmer extends StatelessWidget {
-  const PrayerTimesShimmer({required this.isDark, super.key});
-
-  final bool isDark;
+  const PrayerTimesShimmer({super.key});
 
   @override
-  Widget build(BuildContext context) => Shimmer.fromColors(
-    baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-    highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(
-          prayerOrder.length,
-          (index) => Container(
-            width: MediaQuery.of(context).size.width / prayerOrder.length - 12,
-            height: 90,
-            decoration: BoxDecoration(
-              color: isDark ? Colors.grey[800] : Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha((0.1 * 255).toInt()),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseColor = theme.brightness == Brightness.dark
+        ? Colors.grey[700]!
+        : Colors.grey[300]!;
+    final highlightColor = theme.brightness == Brightness.dark
+        ? Colors.grey[500]!
+        : Colors.grey[100]!;
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Shimmer.fromColors(
+          baseColor: baseColor,
+          highlightColor: highlightColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 🟢 اسم المدينة
+              Container(
+                height: 14,
+                width: 100,
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 12),
+              ),
+
+              // 🟢 الهيدر (الهجري + زر تحديث)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(height: 14, width: 120, color: Colors.white),
+                  Container(height: 24, width: 24, color: Colors.white),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // 🟢 اسم الصلاة + وقتها
+              Row(
+                children: [
+                  Container(height: 16, width: 60, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Container(height: 16, width: 50, color: Colors.white),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // 🟢 الوقت المتبقي
+              Container(height: 14, width: 150, color: Colors.white),
+              const SizedBox(height: 20),
+
+              // 🟢 زر عرض المزيد
+              Container(
+                height: 40,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
