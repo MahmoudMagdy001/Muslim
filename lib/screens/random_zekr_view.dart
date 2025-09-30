@@ -29,6 +29,7 @@ class _RandomZekrWidgetState extends State<RandomZekrWidget> {
       );
       final data = jsonDecode(response) as List;
       final List<String> loadedZekrs = data
+          // ignore: avoid_dynamic_calls
           .map((jsonItem) => jsonItem['zekr'] as String)
           .toList();
 
@@ -93,10 +94,14 @@ class _RandomZekrWidgetState extends State<RandomZekrWidget> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withAlpha((0.05 * 255).toInt()),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
                 ),
               ),
               child: Text(
