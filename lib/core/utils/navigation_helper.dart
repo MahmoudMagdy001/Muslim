@@ -6,7 +6,7 @@ Future<T?> navigateWithTransition<T>(
   BuildContext context,
   Widget page, {
   TransitionType type = TransitionType.slideFromBottom,
-  Duration duration = const Duration(milliseconds: 400),
+  Duration duration = const Duration(milliseconds: 700),
 }) => Navigator.of(context).push<T>(
   PageRouteBuilder(
     transitionDuration: duration,

@@ -1,17 +1,16 @@
-import 'dart:convert';
-
+// layout_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../core/utils/navigation_helper.dart';
 import '../features/azkar/view/azkar_view.dart';
-import '../features/settings/view/settings_view.dart';
-import '../features/settings/view_model/rectire/rectire_cubit.dart';
 import '../features/prayer_times/view/prayer_times_view.dart';
 import '../features/qiblah/view/qiblah_view.dart';
-
+import '../features/settings/view/settings_view.dart';
+import '../features/settings/view_model/rectire/rectire_cubit.dart';
 import '../features/surahs_list/view/surahs_list_view.dart';
 import 'hadith_books_screen.dart';
+import 'random_zekr_view.dart';
 
 class LayoutScreen extends StatefulWidget {
   const LayoutScreen({super.key});
@@ -31,247 +30,134 @@ class _LayoutScreenState extends State<LayoutScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(title: const Text('مُسَلِّم')),
-        body: const _LayoutContent(),
-      ),
-    );
-  }
-}
-
-class _LayoutContent extends StatelessWidget {
-  const _LayoutContent();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(5, 5, 5, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _PrayerTimesSection(),
-
-          const SizedBox(height: 10),
-          _DashboardGrid(),
-          const SizedBox(height: 10),
-
-          RandomZekrWidget(theme: theme),
-        ],
-      ),
-    );
-  }
-}
-
-class _DashboardGrid extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => GridView.count(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    crossAxisCount: 3,
-    crossAxisSpacing: 5,
-    mainAxisSpacing: 5,
-    children: const [
-      _DashboardButton(
-        icon: Icons.auto_stories_rounded,
-        label: 'سور القرآن',
-        routeBuilder: _surahListRoute,
-      ),
-      _DashboardButton(
-        icon: Icons.library_books_rounded,
-        label: 'كتب الحديث',
-        routeBuilder: _hadithBooksRoute,
-      ),
-      _DashboardButton(
-        icon: Icons.menu_book_outlined,
-        label: 'الأذكار',
-        routeBuilder: _azkarRoute,
-      ),
-
-      _DashboardButton(
-        icon: Icons.explore_rounded,
-        label: 'اتجاه القبلة',
-        routeBuilder: _qiblahRoute,
-      ),
-      _DashboardButton(
-        icon: Icons.settings_rounded,
-        label: 'الإعدادات',
-        routeBuilder: _settingsRoute,
-      ),
-    ],
-  );
-
-  static MaterialPageRoute _surahListRoute(
-    BuildContext context,
-    String reciter,
-  ) => MaterialPageRoute(
-    builder: (_) => SurahsListView(selectedReciter: reciter),
-  );
-
-  static MaterialPageRoute _hadithBooksRoute(
-    BuildContext context,
-    String reciter,
-  ) => MaterialPageRoute(builder: (_) => const HadithBooksScreen());
-
-  static MaterialPageRoute _settingsRoute(
-    BuildContext context,
-    String reciter,
-  ) => MaterialPageRoute(builder: (_) => const SettingsView());
-  static MaterialPageRoute _azkarRoute(BuildContext context, String reciter) =>
-      MaterialPageRoute(builder: (_) => const AzkarView());
-
-  static MaterialPageRoute _qiblahRoute(BuildContext context, String reciter) =>
-      MaterialPageRoute(builder: (_) => const QiblahView());
-}
-
-class _DashboardButton extends StatelessWidget {
-  const _DashboardButton({
-    required this.icon,
-    required this.label,
-    required this.routeBuilder,
-  });
-  final IconData icon;
-  final String label;
-  final MaterialPageRoute Function(BuildContext, String) routeBuilder;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return BlocBuilder<ReciterCubit, ReciterState>(
-      builder: (context, state) => InkWell(
-        onTap: () async {
-          final route = routeBuilder(context, state.selectedReciterId);
-          await Navigator.of(context).push(route);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: theme.brightness == Brightness.dark
-                  ? theme.colorScheme.primary.withAlpha(102)
-                  : theme.colorScheme.primary,
-              child: Icon(
-                icon,
-                color: theme.brightness == Brightness.dark
-                    ? Colors.white70
-                    : Colors.white,
-                size: 25,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              label,
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: theme.brightness == Brightness.dark
-                    ? Colors.white70
-                    : null,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        body: Builder(
+          // ⬅ Builder بيرجع context مربوط بـ Scaffold ده
+          builder: (scaffoldContext) => _LayoutContent(scaffoldContext),
         ),
       ),
     );
   }
 }
 
-class _PrayerTimesSection extends StatelessWidget {
-  const _PrayerTimesSection();
+class _LayoutContent extends StatelessWidget {
+  const _LayoutContent(this.scaffoldContext);
+  final BuildContext scaffoldContext;
 
   @override
-  Widget build(BuildContext context) => const Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [PrayerTimesView()],
-  );
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(title: Text('مُسَلِّم'), pinned: true),
+        PrayerTimesView(scaffoldContext: scaffoldContext), // ⬅ مررت الـ context
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+          sliver: _DashboardGrid(theme: theme),
+        ),
+        const RandomZekrWidget(),
+      ],
+    );
+  }
 }
 
-class RandomZekrWidget extends StatefulWidget {
-  const RandomZekrWidget({required this.theme, super.key});
+class _DashboardGrid extends StatelessWidget {
+  const _DashboardGrid({required this.theme});
   final ThemeData theme;
 
   @override
-  State<RandomZekrWidget> createState() => _RandomZekrWidgetState();
+  Widget build(BuildContext context) {
+    final reciterCubit = context.watch<ReciterCubit>();
+
+    final List<DashboardItem> items = [
+      DashboardItem(
+        icon: Icons.auto_stories_rounded,
+        label: 'القرآن الكريم',
+        color: Colors.blue,
+        route: SurahsListView(
+          selectedReciter: reciterCubit.state.selectedReciter,
+        ),
+      ),
+      const DashboardItem(
+        icon: Icons.library_books_rounded,
+        label: 'الحديث',
+        color: Colors.green,
+        route: HadithBooksScreen(),
+      ),
+      const DashboardItem(
+        icon: Icons.psychology_rounded,
+        label: 'الأذكار',
+        color: Colors.orange,
+        route: AzkarView(),
+      ),
+      const DashboardItem(
+        icon: Icons.explore_rounded,
+        label: 'القبلة',
+        color: Colors.purple,
+        route: QiblahView(),
+      ),
+      const DashboardItem(
+        icon: Icons.settings_rounded,
+        label: 'الإعدادات',
+        color: Colors.grey,
+        route: SettingsView(),
+      ),
+    ];
+
+    return SliverAnimatedGrid(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 5,
+        crossAxisSpacing: 8,
+        childAspectRatio: 0.7,
+      ),
+      itemBuilder: (context, index, animation) => FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: animation,
+          child: _DashboardButton(item: items[index], theme: theme),
+        ),
+      ),
+      initialItemCount: items.length,
+    );
+  }
 }
 
-class _RandomZekrWidgetState extends State<RandomZekrWidget> {
-  List<String> _zekrList = [];
-  String _currentZekr = 'جاري تحميل الذكر...';
+class DashboardItem {
+  const DashboardItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.route,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Widget route;
+}
+
+class _DashboardButton extends StatelessWidget {
+  const _DashboardButton({required this.item, required this.theme});
+
+  final DashboardItem item;
+  final ThemeData theme;
 
   @override
-  void initState() {
-    super.initState();
-    _loadZekr();
-  }
-
-  Future<void> _loadZekr() async {
-    try {
-      final String response = await rootBundle.loadString(
-        'assets/azkar/azkar.json',
-      );
-      final data = jsonDecode(response) as List;
-      final List<String> loadedZekrs = data
-          .map((jsonItem) => jsonItem['zekr'] as String)
-          .toList();
-      if (loadedZekrs.isNotEmpty) {
-        setState(() {
-          _zekrList = loadedZekrs;
-          _currentZekr = _getRandomZekr(_zekrList);
-        });
-      } else {
-        setState(() {
-          _currentZekr = 'لا توجد أذكار لعرضها.';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _currentZekr = 'خطأ في تحميل الأذكار.';
-      });
-    }
-  }
-
-  String _getRandomZekr(List<String> list) {
-    if (list.isEmpty) return 'لا يوجد أذكار.';
-    final randomIndex = DateTime.now().millisecondsSinceEpoch % list.length;
-    return list[randomIndex];
-  }
-
-  @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'الذكر اليومي',
-                style: widget.theme.textTheme.bodyLarge?.copyWith(fontSize: 20),
-              ),
-              // IconButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       _currentZekr = _getRandomZekr(_zekrList);
-              //     });
-              //   },
-              //   icon: const Icon(Icons.refresh),
-              // ),
-            ],
+  Widget build(BuildContext context) => InkWell(
+    onTap: () => navigateWithTransition(context, item.route),
+    borderRadius: BorderRadius.circular(16),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(item.icon, color: item.color, size: 32),
+        const SizedBox(height: 12),
+        Text(
+          item.label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.textTheme.titleLarge?.color,
           ),
-          const SizedBox(height: 10),
-          Text(
-            _currentZekr,
-            textAlign: TextAlign.right,
-            style: widget.theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              height: 2.1,
-            ),
-          ),
-        ],
-      ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     ),
   );
 }

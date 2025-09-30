@@ -9,19 +9,22 @@ class SettingsContent extends StatelessWidget {
   const SettingsContent({super.key});
 
   @override
-  Widget build(BuildContext context) => const SingleChildScrollView(
-    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FontSizeSection(),
-        SizedBox(height: 20),
-        ThemeSection(),
-        SizedBox(height: 20),
-        ReciterSection(),
-        SizedBox(height: 20),
-        AppInfoSection(),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    const divider = Divider(thickness: 0.05);
+    return const SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FontSizeSection(),
+          divider,
+          ThemeSection(),
+          divider,
+          ReciterSection(),
+          divider,
+          AppInfoSection(),
+        ],
+      ),
+    );
+  }
 }

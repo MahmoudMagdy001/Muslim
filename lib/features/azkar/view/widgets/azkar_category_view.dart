@@ -26,7 +26,6 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
       'assets/azkar/azkar.json',
     );
     final data = jsonDecode(response) as List;
-    
 
     final List<AzkarModel> azkarList = data
         .map((e) => AzkarModel.fromJson(e))
@@ -103,7 +102,9 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: colorScheme.primary.withOpacity(0.1),
+                                color: colorScheme.primary.withAlpha(
+                                  (0.1 * 255).toInt(),
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Icon(

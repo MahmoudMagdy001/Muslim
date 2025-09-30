@@ -57,6 +57,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         nextPrayer: calculation.nextPrayer,
         timeLeft: calculation.timeLeft,
         lastUpdated: DateTime.now(),
+        city: times.city,
       ),
     );
   }

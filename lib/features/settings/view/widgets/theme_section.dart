@@ -1,18 +1,16 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../view_model/theme/theme_cubit.dart';
-import 'section_card.dart';
 
 class ThemeSection extends StatelessWidget {
   const ThemeSection({super.key});
 
   @override
-  Widget build(BuildContext context) => SectionCard(
-    title: 'المظهر',
-    child: BlocBuilder<ThemeCubit, ThemeState>(
-      builder: (context, state) => _ThemeTile(currentMode: state.themeMode),
-    ),
+  Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
+    builder: (context, state) => _ThemeTile(currentMode: state.themeMode),
   );
 }
 
@@ -34,37 +32,33 @@ class _ThemeTile extends StatelessWidget {
     }
 
     return ListTile(
-      leading: Icon(
-        currentMode == ThemeMode.dark
-            ? Icons.dark_mode
-            : currentMode == ThemeMode.light
-            ? Icons.light_mode
-            : Icons.brightness_auto,
-        size: 28,
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Text('اضغط لاختيار المظهر', style: theme.textTheme.bodySmall),
-        ],
-      ),
-
-      onTap: () => _showThemeDialog(context, currentMode),
+      leading: const Icon(Icons.brightness_6, size: 28),
+      title: Text('اختيار المظهر', style: theme.textTheme.titleMedium),
+      trailing: Text(title, style: theme.textTheme.bodySmall),
+      onTap: () => _showThemeBottomSheet(context, currentMode, theme),
     );
   }
 
-  void _showThemeDialog(BuildContext context, ThemeMode currentMode) {
-    showDialog(
+  void _showThemeBottomSheet(
+    BuildContext context,
+    ThemeMode currentMode,
+    ThemeData theme,
+  ) {
+    showModalBottomSheet(
+      showDragHandle: true,
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
       builder: (context) => Directionality(
         textDirection: TextDirection.rtl,
-        child: SimpleDialog(
-          title: const Text('اختر المظهر'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Text('اختر المظهر', style: theme.textTheme.titleMedium),
+
             RadioListTile<ThemeMode>(
-              title: const Text('الوضع النهاري'),
+              title: Text('الوضع النهاري', style: theme.textTheme.titleMedium),
               value: ThemeMode.light,
               groupValue: currentMode,
               onChanged: (value) {
@@ -75,7 +69,7 @@ class _ThemeTile extends StatelessWidget {
               },
             ),
             RadioListTile<ThemeMode>(
-              title: const Text('الوضع الليلي'),
+              title: Text('الوضع الليلي', style: theme.textTheme.titleMedium),
               value: ThemeMode.dark,
               groupValue: currentMode,
               onChanged: (value) {
@@ -86,7 +80,7 @@ class _ThemeTile extends StatelessWidget {
               },
             ),
             RadioListTile<ThemeMode>(
-              title: const Text('حسب النظام'),
+              title: Text('حسب النظام', style: theme.textTheme.titleMedium),
               value: ThemeMode.system,
               groupValue: currentMode,
               onChanged: (value) {
@@ -96,6 +90,7 @@ class _ThemeTile extends StatelessWidget {
                 }
               },
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

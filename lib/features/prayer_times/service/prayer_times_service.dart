@@ -1,6 +1,7 @@
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,25 +15,41 @@ class PrayerTimesService {
 
   final DateFormat _timeFormatter = DateFormat.Hm();
 
-  /// الحصول على مواقيت الصلاة
+  /// الحصول على مواقيت الصلاة + اسم المدينة
   Future<LocalPrayerTimes> getPrayerTimes() async {
     try {
       final coordinates = await _getCachedOrCurrentCoordinates();
-      return await _calculatePrayerTimes(coordinates);
+      if (coordinates == null) return await _getDefaultPrayerTimes();
+
+      String? cityName;
+      try {
+        geo.setLocaleIdentifier('ar');
+        final placemarks = await geo.placemarkFromCoordinates(
+          coordinates.latitude,
+          coordinates.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          cityName = place.locality?.isNotEmpty == true
+              ? place.locality
+              : place.administrativeArea;
+        }
+      } catch (e) {
+        debugPrint('⚠️ فشل geocoding: $e');
+      }
+
+      return await _calculatePrayerTimes(coordinates, cityName: cityName);
     } catch (error) {
       debugPrint('❌ خطأ في الحصول على مواقيت الصلاة: $error');
-      return _getDefaultPrayerTimes();
+      return await _getDefaultPrayerTimes();
     }
   }
 
   /// حساب مواقيت الصلاة بناءً على الإحداثيات
   Future<LocalPrayerTimes> _calculatePrayerTimes(
-    Coordinates? coordinates,
-  ) async {
-    if (coordinates == null) {
-      return _getDefaultPrayerTimes();
-    }
-
+    Coordinates coordinates, {
+    String? cityName,
+  }) async {
     final calculationParams = _getCalculationParameters();
     final prayerTimes = PrayerTimes.today(coordinates, calculationParams);
 
@@ -42,6 +59,7 @@ class PrayerTimesService {
       asr: _formatTime(prayerTimes.asr),
       maghrib: _formatTime(prayerTimes.maghrib),
       isha: _formatTime(prayerTimes.isha),
+      city: cityName ?? 'غير معروف',
     );
   }
 
@@ -53,25 +71,52 @@ class PrayerTimesService {
   String _formatTime(DateTime dateTime) =>
       _timeFormatter.format(dateTime.toLocal());
 
-  /// الحصول على مواقيت الصلاة الافتراضية (في حالة الخطأ)
-  LocalPrayerTimes _getDefaultPrayerTimes() => LocalPrayerTimes(
-    fajr: '--:--',
-    dhuhr: '--:--',
-    asr: '--:--',
-    maghrib: '--:--',
-    isha: '--:--',
-  );
+  /// الحصول على مواقيت الصلاة الافتراضية (القاهرة)
+  Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
+    final cairoCoordinates = Coordinates(30.0444, 31.2357);
+    final calculationParams = _getCalculationParameters();
+    final prayerTimes = PrayerTimes.today(cairoCoordinates, calculationParams);
+
+    // 🟢 نخزن القاهرة كإحداثيات افتراضية
+    final prefs = await SharedPreferences.getInstance();
+    await _cacheCoordinates(
+      prefs,
+      cairoCoordinates.latitude,
+      cairoCoordinates.longitude,
+    );
+
+    return LocalPrayerTimes(
+      fajr: _formatTime(prayerTimes.fajr),
+      dhuhr: _formatTime(prayerTimes.dhuhr),
+      asr: _formatTime(prayerTimes.asr),
+      maghrib: _formatTime(prayerTimes.maghrib),
+      isha: _formatTime(prayerTimes.isha),
+      city: 'القاهرة',
+    );
+  }
 
   /// الحصول على الإحداثيات المخزنة أو الحالية
+  /// الحصول على الإحداثيات (الأولوية: الحالي -> الكاش -> القاهرة)
   Future<Coordinates?> _getCachedOrCurrentCoordinates() async {
     final prefs = await SharedPreferences.getInstance();
-    final cachedCoordinates = await _getCachedCoordinates(prefs);
 
+    // 🟢 نحاول نجيب الموقع الحالي
+    try {
+      final position = await _getCurrentPosition();
+      await _cacheCoordinates(prefs, position.latitude, position.longitude);
+      return Coordinates(position.latitude, position.longitude);
+    } catch (e) {
+      debugPrint('⚠️ فشل في الحصول على الموقع الحالي: $e');
+    }
+
+    // 🟡 fallback على الكاش لو موجود وصالح
+    final cachedCoordinates = await _getCachedCoordinates(prefs);
     if (cachedCoordinates != null) {
       return cachedCoordinates;
     }
 
-    return await _fetchAndCacheCurrentCoordinates(prefs);
+    // 🔴 لو مفيش ولا ده ولا ده → null (هنتعامل معاه في getPrayerTimes)
+    return null;
   }
 
   /// الحصول على الإحداثيات المخزنة
@@ -94,20 +139,6 @@ class PrayerTimesService {
     return null;
   }
 
-  /// جلب الإحداثيات الحالية وتخزينها
-  Future<Coordinates?> _fetchAndCacheCurrentCoordinates(
-    SharedPreferences prefs,
-  ) async {
-    try {
-      final position = await _getCurrentPosition();
-      await _cacheCoordinates(prefs, position.latitude, position.longitude);
-      return Coordinates(position.latitude, position.longitude);
-    } catch (e) {
-      debugPrint('⚠️ فشل في الحصول على الموقع الحالي: $e');
-      return null;
-    }
-  }
-
   /// الحصول على الموقع الحالي
   Future<Position> _getCurrentPosition() async =>
       await Geolocator.getCurrentPosition();
@@ -123,7 +154,7 @@ class PrayerTimesService {
     await prefs.setInt(_lastUpdatedKey, DateTime.now().millisecondsSinceEpoch);
   }
 
-  /// مسح الإحداثيات المخزنة (لأغراض الت testing أو إعادة التعيين)
+  /// مسح الإحداثيات المخزنة
   Future<void> clearCachedCoordinates() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_latitudeKey);

@@ -223,10 +223,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                       onPressed: () {
                                         _incrementCounter(index);
                                       },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: colorScheme.primary,
-                                        foregroundColor: colorScheme.onPrimary,
-                                      ),
+
                                       child: const Text('تسبيح'),
                                     ),
                                   ),

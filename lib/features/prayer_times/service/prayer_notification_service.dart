@@ -61,9 +61,9 @@ class PrayerNotificationService {
 
     if (prayerDateTime == null) return false;
 
-    final scheduledTime = prayerDateTime.subtract(const Duration(minutes: 1));
+    // final scheduledTime = prayerDateTime.subtract(const Duration(minutes: 1));
 
-    if (scheduledTime.isAfter(now) ||
+    if (prayerDateTime.isAfter(now) ||
         (areAllPrayersFinished && prayerName == 'الفجر')) {
       final notificationId = _getPrayerNotificationId(prayerName);
 
@@ -76,16 +76,16 @@ class PrayerNotificationService {
           wakeUpScreen: true,
         ),
         schedule: NotificationCalendar(
-          year: scheduledTime.year,
-          month: scheduledTime.month,
-          day: scheduledTime.day,
-          hour: scheduledTime.hour,
-          minute: scheduledTime.minute,
+          year: prayerDateTime.year,
+          month: prayerDateTime.month,
+          day: prayerDateTime.day,
+          hour: prayerDateTime.hour,
+          minute: prayerDateTime.minute,
           second: 0,
         ),
       );
 
-      debugPrint('✅ تم جدولة إشعار $prayerName (${scheduledTime.toLocal()})');
+      debugPrint('✅ تم جدولة إشعار $prayerName (${prayerDateTime.toLocal()})');
       return true;
     }
 

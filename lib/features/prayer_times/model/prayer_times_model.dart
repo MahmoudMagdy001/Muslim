@@ -5,6 +5,7 @@ class LocalPrayerTimes {
     required this.asr,
     required this.maghrib,
     required this.isha,
+    required this.city,
   });
 
   final String fajr;
@@ -12,6 +13,7 @@ class LocalPrayerTimes {
   final String asr;
   final String maghrib;
   final String isha;
+  final String city;
 
   Map<String, String> toMap() => {
     'Fajr': fajr,
@@ -19,5 +21,6 @@ class LocalPrayerTimes {
     'Asr': asr,
     'Maghrib': maghrib,
     'Isha': isha,
+    'City': city,
   };
 }

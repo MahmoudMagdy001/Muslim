@@ -35,9 +35,7 @@ Future<void> main() async {
           BlocProvider(create: (_) => FontSizeCubit(initialFontSize)),
           BlocProvider(create: (_) => ThemeCubit(initialMode)),
           BlocProvider(create: (_) => ReciterCubit()),
-          BlocProvider(
-            create: (_) => BookmarksCubit(BookmarksService())..load(),
-          ),
+          BlocProvider(create: (_) => BookmarksCubit(BookmarksService())),
         ],
         child: const AppContent(),
       ),

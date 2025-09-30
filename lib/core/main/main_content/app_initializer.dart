@@ -13,9 +13,8 @@ class AppInitializer {
   Future<void> initialize() async {
     await _initializeAudioBackground();
     await _initializeNotifications();
-    await _handleFirstRunSetup();
-    // final prayerService = PrayerTimesService();
-    // await prayerService.schedulePrayerNotifications();
+    await _requestPermissions();
+    await _scheduleHourlyReminder();
   }
 
   Future<void> _initializeAudioBackground() async {
@@ -38,7 +37,7 @@ class AppInitializer {
       ),
       NotificationChannel(
         channelKey: 'prayer_reminder',
-        channelName: '⏰ تذكير الصلاة',
+        channelName: 'تذكير الصلاة',
         channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
         defaultColor: const Color(0xFF33A1E0),
         ledColor: Colors.white,
@@ -48,18 +47,9 @@ class AppInitializer {
         enableLights: true,
         locked: true,
         defaultRingtoneType: DefaultRingtoneType.Notification,
+        soundSource: 'resource://raw/azan',
       ),
     ]);
-  }
-
-  Future<void> _handleFirstRunSetup() async {
-    final bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
-
-    if (isFirstRun) {
-      await _requestPermissions();
-      await _scheduleHourlyReminder();
-      await prefs.setBool('isFirstRun', false);
-    }
   }
 
   Future<void> _requestPermissions() async {
