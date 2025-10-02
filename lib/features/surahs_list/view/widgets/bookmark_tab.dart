@@ -76,14 +76,14 @@ class BookmarksTab extends StatelessWidget {
                                 children: [
                                   Text(
                                     'سورة $surahName',
-                                    style: theme.textTheme.titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    style: theme.textTheme.titleLarge,
                                   ),
                                   IconButton(
+                                    tooltip: 'مسح العلامه',
                                     icon: const Icon(
                                       Icons.delete,
                                       color: Colors.red,
-                                      size: 20,
+                                      size: 25,
                                     ),
                                     onPressed: () async {
                                       final result = await showDialog(
@@ -166,7 +166,7 @@ class BookmarksTab extends StatelessWidget {
                               const SizedBox(height: 12),
                               Text(
                                 ayahText,
-                                style: theme.textTheme.bodyMedium!.copyWith(
+                                style: theme.textTheme.titleMedium!.copyWith(
                                   height: 1.9,
                                   color: colorScheme.onSurfaceVariant,
                                 ),

@@ -123,40 +123,6 @@ class _QuranViewContentState extends State<QuranViewContent> {
                 ],
               );
             }
-            // switch (state.status) {
-            //   case QuranSurahStatus.loading:
-            //     return const Center(child: CircularProgressIndicator());
-            //   case QuranSurahStatus.error:
-            //     return Center(
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [Text('حدث خطأ: ${state.message}')],
-            //       ),
-            //     );
-            //   case QuranSurahStatus.loaded:
-            //   case QuranSurahStatus.alreadyLoaded:
-            //     final actualSurahNumber =
-            //         state.surahNumber ?? widget.surahNumber;
-            //     WidgetsBinding.instance.addPostFrameCallback((_) {
-            //       _maybeSeekToStartAyah(context);
-            //     });
-            //     return Column(
-            //       children: [
-            //         Expanded(
-            //           child: SurahTextView(
-            //             key: ValueKey<int>(actualSurahNumber),
-            //             surahNumber: actualSurahNumber,
-            //           ),
-            //         ),
-            //         BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
-            //           builder: (context, playerState) =>
-            //               const PlayerControlsWidget(),
-            //         ),
-            //       ],
-            //     );
-            //   case QuranSurahStatus.initial:
-            //     return const SizedBox.shrink();
-            // }
           },
         ),
       ),

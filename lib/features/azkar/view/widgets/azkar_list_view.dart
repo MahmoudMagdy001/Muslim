@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../model/azkar_model/azkar_model.dart';
 
 class AzkarListView extends StatefulWidget {
@@ -221,6 +222,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                     width: 120,
                                     child: ElevatedButton(
                                       onPressed: () {
+                                        HapticFeedback.mediumImpact();
                                         _incrementCounter(index);
                                       },
 

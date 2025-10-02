@@ -22,7 +22,7 @@ class DashboardGrid extends StatelessWidget {
     final List<DashboardItemModel> items = [
       DashboardItemModel(
         icon: Icons.auto_stories_rounded,
-        label: 'القرآن الكريم',
+        label: 'القرآن',
         color: Colors.blue,
         route: SurahsListView(
           selectedReciter: reciterCubit.state.selectedReciter,
@@ -60,14 +60,14 @@ class DashboardGrid extends StatelessWidget {
         child: SizedBox(
           height: height * 0.07,
           child: ListView.builder(
-            cacheExtent: 80,
-            itemExtent: 80,
+            cacheExtent: 75,
             scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
               return SizedBox(
-                width: 80,
+                width: 75,
                 child: DashboardButton(item: item, theme: theme),
               );
             },

@@ -12,12 +12,12 @@ class DashboardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: () => navigateWithTransition(context, item.route),
-    borderRadius: BorderRadius.circular(26),
+    borderRadius: BorderRadius.circular(16),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(item.icon, color: item.color, size: 30),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Text(
           item.label,
           style: theme.textTheme.bodySmall?.copyWith(

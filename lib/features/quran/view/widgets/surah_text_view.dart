@@ -180,6 +180,7 @@ class _SurahTextViewState extends State<SurahTextView> {
               ayah: ayah,
               ayahText: text,
             );
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('تم حفظ علامه علي اية : $text رقم :$ayah'),
@@ -210,7 +211,7 @@ class _SurahTextViewState extends State<SurahTextView> {
     controller: _controller,
     child: SingleChildScrollView(
       controller: _controller,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: RepaintBoundary(
         child: RichText(
           textAlign: TextAlign.center,

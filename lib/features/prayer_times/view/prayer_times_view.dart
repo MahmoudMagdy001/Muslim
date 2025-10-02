@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 
@@ -174,6 +175,7 @@ class _CurrentPrayerCard extends StatelessWidget {
               Text(hijriDate, style: theme.textTheme.bodyMedium),
               IconButton(
                 onPressed: () async {
+                  HapticFeedback.mediumImpact();
                   await context.read<PrayerTimesCubit>().refreshPrayerTimes();
                   if (scaffoldContext.mounted) {
                     ScaffoldMessenger.of(
