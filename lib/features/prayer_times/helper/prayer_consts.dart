@@ -21,7 +21,7 @@ const List<Prayer> prayers = [
     name: 'Fajr',
     arabicName: 'الفجر',
     icon: Icons.wb_sunny,
-    color: Colors.cyan,
+    color: Colors.yellow,
   ),
   Prayer(
     id: 'Dhuhr',

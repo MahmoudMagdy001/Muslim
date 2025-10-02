@@ -12,7 +12,11 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
   static int? _lastLoadedSurah;
   static String? _lastLoadedReciter;
 
-  Future<void> loadSurah(int surahNumber, String reciter) async {
+  Future<void> loadSurah(
+    int surahNumber,
+    String reciter, {
+    int startAyah = 1,
+  }) async {
     if (_isSameSurahAndReciter(surahNumber, reciter)) {
       emit(
         state.copyWith(
@@ -20,6 +24,10 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
           surahNumber: state.surahNumber ?? surahNumber,
         ),
       );
+      if (startAyah > 1) {
+        // عمل seek للصوت من الآية
+        await _repository.seek(Duration.zero, index: startAyah - 1);
+      }
       return;
     }
 
@@ -31,7 +39,6 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
     );
 
     try {
-      const int startAyah = 1;
       await _repository.prepareSurahPlaylist(
         surahNumber: surahNumber,
         reciter: reciter,
@@ -48,7 +55,9 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
         ),
       );
 
-      // await _repository.seek(Duration.zero, index: startAyah - 1);
+      if (startAyah > 1) {
+        await _repository.seek(Duration.zero, index: startAyah - 1);
+      }
     } catch (e) {
       emit(
         state.copyWith(

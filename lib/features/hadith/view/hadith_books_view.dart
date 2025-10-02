@@ -3,73 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'chapter_screen.dart';
+import 'widgets/chapter_of_book.dart';
+import '../helper/hadith_helper.dart';
+import '../model/hadith_book_model.dart';
 
-class HadithBook {
-  HadithBook({
-    required this.id,
-    required this.bookName,
-    required this.writerName,
-    required this.hadithCount,
-    required this.chapterCount,
-    required this.writerDeath,
-    required this.bookSlug,
-  });
-
-  factory HadithBook.fromJson(Map<String, dynamic> json) => HadithBook(
-    id: json['id'].toString(),
-    bookName: json['bookName'] ?? '',
-    writerName: json['writerName'],
-    hadithCount: json['hadiths_count'],
-    chapterCount: json['chapters_count'],
-    writerDeath: json['writerDeath'],
-    bookSlug: json['bookSlug'],
-  );
-  final String id;
-  final String bookName;
-  final String writerName;
-  final String hadithCount;
-  final String chapterCount;
-  final String writerDeath;
-  final String bookSlug;
-}
-
-class HadithBooksScreen extends StatefulWidget {
-  const HadithBooksScreen({super.key});
+class HadithBooksView extends StatefulWidget {
+  const HadithBooksView({super.key});
 
   @override
-  HadithBooksScreenState createState() => HadithBooksScreenState();
+  HadithBooksViewState createState() => HadithBooksViewState();
 }
 
-class HadithBooksScreenState extends State<HadithBooksScreen> {
-  late Future<List<HadithBook>> booksFuture;
+class HadithBooksViewState extends State<HadithBooksView> {
+  late Future<List<HadithBookModel>> booksFuture;
   String _searchText = '';
-
-  final Map<String, String> booksArabic = {
-    'Sahih Bukhari': 'صحيح البخاري',
-    'Sahih Muslim': 'صحيح مسلم',
-    "Jami' Al-Tirmidhi": 'جامع الترمذي',
-    'Sunan Abu Dawood': 'سنن أبي داود',
-    'Sunan Ibn-e-Majah': 'سنن ابن ماجه',
-    'Sunan An-Nasa`i': 'سنن النسائي',
-    'Mishkat Al-Masabih': 'مشكاة المصابيح',
-    'Musnad Ahmad': 'مسند أحمد',
-    'Al-Silsila Sahiha': 'السلسلة الصحيحة',
-  };
-
-  final Map<String, String> writersArabic = {
-    'Imam Bukhari': 'الإمام البخاري',
-    'Imam Muslim': 'الإمام مسلم',
-    'Abu `Isa Muhammad at-Tirmidhi': 'الإمام أبو عيسى محمد الترمذي',
-    "Imam Abu Dawud Sulayman ibn al-Ash'ath as-Sijistani":
-        'الإمام أبو داود سليمان بن الأشعث السجستاني',
-    'Imam Muhammad bin Yazid Ibn Majah al-Qazvini':
-        'الإمام محمد بن يزيد ابن ماجه القزويني',
-    'Imam Ahmad an-Nasa`i': 'الإمام أحمد النسائي',
-    'Imam Khatib at-Tabrizi': 'الإمام الخطيب التبريزي',
-    'Imam Ahmad ibn Hanbal': 'الإمام أحمد بن حنبل',
-    'Allama Muhammad Nasir Uddin Al-Bani': 'العلامة محمد ناصر الدين الألباني',
-  };
 
   @override
   void initState() {
@@ -79,7 +26,7 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
 
   final apiKey = r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
-  Future<List<HadithBook>> fetchHadithBooks() async {
+  Future<List<HadithBookModel>> fetchHadithBooks() async {
     final url = Uri.parse('https://hadithapi.com/api/books?apiKey=$apiKey');
     final response = await http.get(url);
     if (response.statusCode == 200) {
@@ -87,14 +34,14 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
       // ignore: avoid_dynamic_calls
       final List booksJson = data['books'] ?? [];
 
-      return booksJson.map((json) => HadithBook.fromJson(json)).toList();
+      return booksJson.map((json) => HadithBookModel.fromJson(json)).toList();
     } else {
       throw Exception('فشل في جلب الكتب');
     }
   }
 
   // فلترة حسب البحث
-  List<HadithBook> _filterBooks(List<HadithBook> books) {
+  List<HadithBookModel> _filterBooks(List<HadithBookModel> books) {
     if (_searchText.isEmpty) return books;
     return books
         .where(
@@ -136,7 +83,7 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
 
               // ====== Books List ======
               Expanded(
-                child: FutureBuilder<List<HadithBook>>(
+                child: FutureBuilder<List<HadithBookModel>>(
                   future: booksFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -182,7 +129,7 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => ChaptersScreen(
+                                        builder: (_) => ChapterOfBook(
                                           bookSlug: book.bookSlug,
                                           bookName:
                                               booksArabic[book.bookName] ??
@@ -235,7 +182,7 @@ class HadithBooksScreenState extends State<HadithBooksScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                'المؤلف: $writerAr',
+                                                'الكاتب: $writerAr',
                                                 style: theme.textTheme.bodySmall
                                                     ?.copyWith(),
                                               ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/bookmark_model.dart';
@@ -10,10 +11,10 @@ class BookmarksService {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_prefsKey);
     if (jsonString == null || jsonString.isEmpty) return [];
-    final List<dynamic> list = json.decode(jsonString) as List<dynamic>;
+
+    final List<dynamic> list = json.decode(jsonString);
     return list
-        .whereType<Map<String, dynamic>>()
-        .map(AyahBookmark.fromJson)
+        .map((e) => AyahBookmark.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -21,5 +22,6 @@ class BookmarksService {
     final prefs = await SharedPreferences.getInstance();
     final encoded = json.encode(bookmarks.map((b) => b.toJson()).toList());
     await prefs.setString(_prefsKey, encoded);
+    debugPrint(encoded);
   }
 }

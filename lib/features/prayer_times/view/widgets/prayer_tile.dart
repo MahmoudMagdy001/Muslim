@@ -9,6 +9,7 @@ class PrayerTile extends StatelessWidget {
     required this.prayerKey,
     required this.timing,
     required this.isNext,
+    required this.theme,
     this.timeLeft,
     super.key,
   });
@@ -17,10 +18,10 @@ class PrayerTile extends StatelessWidget {
   final String timing;
   final bool isNext;
   final String? timeLeft;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final prayerName = prayerNamesAr[prayerKey] ?? prayerKey;
     final prayerIcon = prayerIcons[prayerKey] ?? Icons.access_time;
@@ -52,16 +53,6 @@ class PrayerTile extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        // if (isNext && timeLeft != null && timeLeft!.isNotEmpty) ...[
-        //   const SizedBox(height: 4),
-        //   Text(
-        //     '⏳ $timeLeft',
-        //     style: textTheme.bodySmall?.copyWith(
-        //       color: isNext ? AppColors.primary : Colors.grey[700],
-        //       fontSize: 11,
-        //     ),
-        //   ),
-        // ],
       ],
     );
   }

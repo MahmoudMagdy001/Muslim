@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,9 +13,8 @@ class AppInitializer {
   Future<void> initialize() async {
     await _initializeAudioBackground();
     await _initializeNotifications();
-    await _handleFirstRunSetup();
-    // final prayerService = PrayerTimesService();
-    // await prayerService.schedulePrayerNotifications();
+    await _requestPermissions();
+    await _scheduleHourlyReminder();
   }
 
   Future<void> _initializeAudioBackground() async {
@@ -23,74 +22,86 @@ class AppInitializer {
       androidNotificationChannelId: 'com.example.muslim.audio',
       androidNotificationChannelName: 'تشغيل التلاوة',
       androidNotificationOngoing: true,
+      androidNotificationIcon: 'drawable/ic_muslim_logo',
     );
   }
 
   Future<void> _initializeNotifications() async {
-    await AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-        channelKey: 'quran_channel',
-        channelName: 'Quran Reminders',
-        channelDescription: 'Reminders to read Quran',
-        defaultColor: const Color(0xFF33A1E0),
-        importance: NotificationImportance.High,
-        channelShowBadge: true,
-      ),
-      NotificationChannel(
-        channelKey: 'prayer_reminder',
-        channelName: '⏰ تذكير الصلاة',
-        channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
-        defaultColor: const Color(0xFF33A1E0),
-        ledColor: Colors.white,
-        importance: NotificationImportance.Max,
-        playSound: true,
-        enableVibration: true,
-        enableLights: true,
-        locked: true,
-        defaultRingtoneType: DefaultRingtoneType.Notification,
-      ),
-    ]);
-  }
-
-  Future<void> _handleFirstRunSetup() async {
-    final bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
-
-    if (isFirstRun) {
-      await _requestPermissions();
-      await _scheduleHourlyReminder();
-      await prefs.setBool('isFirstRun', false);
-    }
+    await AwesomeNotifications().initialize(
+      // أيقونة التطبيق الافتراضية
+      'resource://drawable/ic_muslim_logo', // اللوجو بتاعك
+      [
+        NotificationChannel(
+          channelKey: 'quran_channel',
+          channelName: 'Quran Reminders',
+          channelDescription: 'Reminders to read Quran',
+          defaultColor: const Color(0xFF33A1E0),
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+          icon: 'resource://drawable/ic_muslim_logo',
+        ),
+        NotificationChannel(
+          channelKey: 'prayer_reminder',
+          channelName: 'تذكير الصلاة',
+          channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
+          defaultColor: const Color(0xFF33A1E0),
+          ledColor: Colors.white,
+          importance: NotificationImportance.Max,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          locked: true,
+          defaultRingtoneType: DefaultRingtoneType.Notification,
+          soundSource: 'resource://raw/azan',
+          icon: 'resource://drawable/ic_muslim_logo',
+        ),
+      ],
+    );
   }
 
   Future<void> _requestPermissions() async {
     try {
-      if (await Permission.notification.isDenied) {
-        await Permission.notification.request();
-      }
-      if (await Permission.notification.isPermanentlyDenied) {
-        await openAppSettings();
-      }
-
-      if (await Permission.locationWhenInUse.isDenied) {
-        await Permission.locationWhenInUse.request();
-      }
-      if (await Permission.locationWhenInUse.isPermanentlyDenied) {
-        await openAppSettings();
-      }
-
-      final serviceEnabled =
-          await Permission.locationWhenInUse.serviceStatus.isEnabled;
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-      }
-      // Battery optimization
-      final batterOptimization =
-          await Permission.ignoreBatteryOptimizations.isDenied;
-      if (!batterOptimization) {
-        await Permission.ignoreBatteryOptimizations.request();
-      }
+      await _checkLocationPermission();
+      await _checkNotificationPermission();
+      await checkBatteryOptimization();
     } catch (e) {
       debugPrint('Permission request error: $e');
+    }
+  }
+
+  Future<void> _checkNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      await Permission.notification.request();
+    }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+
+  Future<void> _checkLocationPermission() async {
+    final status = await Permission.locationWhenInUse.status;
+    if (status.isDenied) {
+      await Permission.locationWhenInUse.request();
+    }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+
+  Future<void> checkBatteryOptimization() async {
+    try {
+      final isDisabled =
+          await DisableBatteryOptimization.isBatteryOptimizationDisabled;
+
+      if (isDisabled == false) {
+        // التطبيق Optimized → نفتح إعدادات البطارية
+        await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
+      } else {
+        debugPrint('✅ التطبيق غير محسن (Unrestricted)');
+      }
+    } catch (e) {
+      debugPrint('⚠️ خطأ في التحقق من Battery Optimization: $e');
     }
   }
 
@@ -105,6 +116,7 @@ class AppInitializer {
           channelKey: 'quran_channel',
           title: '📖 تذكير بقراءة القرآن',
           body: 'لا تنس وردك من القرآن الكريم الآن',
+          icon: 'resource://drawable/ic_muslim_logo',
         ),
         schedule: NotificationCalendar(
           minute: 0,

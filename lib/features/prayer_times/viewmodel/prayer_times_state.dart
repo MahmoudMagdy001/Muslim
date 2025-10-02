@@ -10,6 +10,7 @@ class PrayerTimesState {
     this.timeLeft,
     this.message,
     this.lastUpdated,
+    this.city,
   });
 
   final PrayerTimesStatus status;
@@ -18,6 +19,7 @@ class PrayerTimesState {
   final Duration? timeLeft;
   final String? message;
   final DateTime? lastUpdated;
+  final String? city;
 
   PrayerTimesState copyWith({
     PrayerTimesStatus? status,
@@ -26,6 +28,7 @@ class PrayerTimesState {
     Duration? timeLeft,
     String? message,
     DateTime? lastUpdated,
+    String? city,
   }) => PrayerTimesState(
     status: status ?? this.status,
     localPrayerTimes: localPrayerTimes ?? this.localPrayerTimes,
@@ -33,5 +36,6 @@ class PrayerTimesState {
     timeLeft: timeLeft ?? this.timeLeft,
     message: message ?? this.message,
     lastUpdated: lastUpdated ?? this.lastUpdated,
+    city: city ?? this.city,
   );
 }

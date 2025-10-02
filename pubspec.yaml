@@ -16,7 +16,6 @@ dependencies:
   shared_preferences: ^2.5.3
   google_fonts: ^6.3.1
   awesome_notifications: ^0.10.1
-  provider: ^6.1.5+1
   just_audio_background: ^0.0.1-beta.17
   permission_handler: ^12.0.1
   flutter_qiblah: ^3.1.0+1
@@ -24,18 +23,30 @@ dependencies:
   shimmer: ^3.0.0
   geolocator: ^13.0.4
   adhan: ^2.0.0+1
-  
-
-
+  hijri: ^3.0.0
+  geocoding: ^4.0.0
+  disable_battery_optimization: ^1.1.2
+  share_plus: ^12.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
 
   assets:
     - assets/images/kaaba.png
-    - assets/azkar/azkar.json
+    - assets/images/allah.png
+    - assets/images/seb7a.png
+    - assets/images/muslim_logo.png
+    - assets/json/azkar.json
+    - assets/json/names_of_allah.json
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/images/muslim_logo.png"
+  min_sdk_android: 21
+

@@ -5,9 +5,10 @@ import '../../repository/quran_repository.dart';
 import 'quran_player_state.dart';
 
 class QuranPlayerCubit extends Cubit<QuranPlayerState> {
-  QuranPlayerCubit(this._repository) : super(const QuranPlayerState()) {
+  QuranPlayerCubit(this._repository, {int? initialSurah}) // ← تعديل
+    : super(QuranPlayerState(currentSurah: initialSurah)) {
     _initializePlayerListeners();
-  }
+  } // ← تعديل
 
   final QuranRepository _repository;
   StreamSubscription? _positionSubscription;
@@ -28,6 +29,8 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     });
   }
 
+ 
+
   void _setupDurationListener() {
     _durationSubscription = _repository.durationStream.listen((duration) {
       if (duration != null && duration.inMilliseconds > 0) {
@@ -47,7 +50,10 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   void _setupCurrentIndexListener() {
     _currentIndexSubscription = _repository.currentIndexStream.listen((index) {
       if (index != null) {
-        emit(state.copyWith(currentAyah: index + 1));
+        final currentAyah = index + 1;
+        emit(state.copyWith(currentAyah: currentAyah));
+
+        // _saveCurrentAyah(currentAyah);
       }
     });
   }

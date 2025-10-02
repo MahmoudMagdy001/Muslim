@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 
-import 'section_card.dart';
 
 class AppInfoSection extends StatelessWidget {
   const AppInfoSection({super.key});
 
   @override
-  Widget build(BuildContext context) => SectionCard(
-    title: 'معلومات التطبيق',
-    child: Column(
-      children: [
-        const _AppInfoTile(
-          icon: Icons.info_outline,
-          title: 'إصدار التطبيق',
-          subtitle: 'الإصدار 1.0.0',
-        ),
-        const Divider(),
-        _AppInfoTile(
-          icon: Icons.privacy_tip_outlined,
-          title: 'سياسة الخصوصية',
-          onTap: () {},
-        ),
-      ],
-    ),
+  Widget build(BuildContext context) => Column(
+    children: [
+      const _AppInfoTile(
+        icon: Icons.info_outline,
+        title: 'إصدار التطبيق',
+        subtitle: 'الإصدار 1.0.0',
+      ),
+      const Divider(),
+      _AppInfoTile(
+        icon: Icons.privacy_tip_outlined,
+        title: 'سياسة الخصوصية',
+        onTap: () {},
+      ),
+    ],
   );
 }
 

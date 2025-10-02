@@ -4,23 +4,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // State class
 class ReciterState {
-  ReciterState({required this.selectedReciterId});
-  final String selectedReciterId;
+  ReciterState({required this.selectedReciter});
+  final String selectedReciter;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReciterState &&
           runtimeType == other.runtimeType &&
-          selectedReciterId == other.selectedReciterId;
+          selectedReciter == other.selectedReciter;
 
   @override
-  int get hashCode => selectedReciterId.hashCode;
+  int get hashCode => selectedReciter.hashCode;
 }
 
 // Cubit class
 class ReciterCubit extends Cubit<ReciterState> {
-  ReciterCubit() : super(ReciterState(selectedReciterId: _defaultReciter)) {
+  ReciterCubit() : super(ReciterState(selectedReciter: _defaultReciter)) {
     _initializeReciter();
   }
   static const String _defaultReciter = 'ar.alafasy';
@@ -32,7 +32,7 @@ class ReciterCubit extends Cubit<ReciterState> {
     } catch (error) {
       debugPrint('Error initializing reciter: $error');
       // Fall back to default value
-      emit(ReciterState(selectedReciterId: _defaultReciter));
+      emit(ReciterState(selectedReciter: _defaultReciter));
     }
   }
 
@@ -41,17 +41,17 @@ class ReciterCubit extends Cubit<ReciterState> {
     final savedReciter = prefs.getString(_reciterKey);
 
     if (savedReciter != null) {
-      emit(ReciterState(selectedReciterId: savedReciter));
+      emit(ReciterState(selectedReciter: savedReciter));
     } else {
-      emit(ReciterState(selectedReciterId: _defaultReciter));
+      emit(ReciterState(selectedReciter: _defaultReciter));
     }
   }
 
   Future<void> saveReciter(String reciterId) async {
-    if (reciterId == state.selectedReciterId) return;
+    if (reciterId == state.selectedReciter) return;
 
     final previousState = state;
-    emit(ReciterState(selectedReciterId: reciterId));
+    emit(ReciterState(selectedReciter: reciterId));
 
     try {
       final prefs = await SharedPreferences.getInstance();

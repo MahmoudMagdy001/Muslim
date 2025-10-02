@@ -4,36 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Hadith {
-  Hadith({
-    required this.id,
-    required this.hadithNumber,
-    required this.hadithArabic,
-    required this.headingArabic,
-    required this.status,
-  });
-
-  factory Hadith.fromJson(Map<String, dynamic> json) => Hadith(
-    id: json['id']?.toString() ?? '',
-    hadithNumber: json['hadithNumber']?.toString() ?? '',
-    hadithArabic: json['hadithArabic']?.toString() ?? '',
-    headingArabic: json['headingArabic']?.toString() ?? '',
-    status: json['status']?.toString() ?? '',
-  );
-  final String id;
-  final String hadithNumber;
-  final String hadithArabic;
-  final String headingArabic;
-  final String status;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Hadith && runtimeType == other.runtimeType && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-}
+import '../../model/hadith_model.dart';
 
 class HadithsScreen extends StatefulWidget {
   const HadithsScreen({
@@ -54,7 +25,7 @@ class _HadithsScreenState extends State<HadithsScreen> {
   static const String _apiKey =
       r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
-  late final ValueNotifier<List<Hadith>> _hadithsNotifier;
+  late final ValueNotifier<List<HadithModel>> _hadithsNotifier;
   late final ValueNotifier<int> _currentPageNotifier;
   late final ValueNotifier<bool> _isLoadingNotifier;
   late final ValueNotifier<bool> _hasMoreNotifier;
@@ -115,13 +86,13 @@ class _HadithsScreenState extends State<HadithsScreen> {
         final data = json.decode(response.body);
         final List hadithsJson = data['hadiths']['data'] as List? ?? [];
 
-        final List<Hadith> fetchedHadiths = hadithsJson
-            .map((json) => Hadith.fromJson(json as Map<String, dynamic>))
+        final List<HadithModel> fetchedHadiths = hadithsJson
+            .map((json) => HadithModel.fromJson(json as Map<String, dynamic>))
             .toList();
 
         if (loadMore) {
           final currentHadiths = _hadithsNotifier.value;
-          final updatedHadiths = List<Hadith>.from(currentHadiths)
+          final updatedHadiths = List<HadithModel>.from(currentHadiths)
             ..addAll(fetchedHadiths);
           _hadithsNotifier.value = List.unmodifiable(updatedHadiths);
           _currentPageNotifier.value = page;
@@ -170,39 +141,40 @@ class _HadithsContent extends StatelessWidget {
     required this.scrollController,
   });
 
-  final ValueNotifier<List<Hadith>> hadithsNotifier;
+  final ValueNotifier<List<HadithModel>> hadithsNotifier;
   final ValueNotifier<bool> isLoadingNotifier;
   final ValueNotifier<bool> hasMoreNotifier;
   final ScrollController scrollController;
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<List<Hadith>>(
-    valueListenable: hadithsNotifier,
-    builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
-      valueListenable: isLoadingNotifier,
-      builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
-        valueListenable: hasMoreNotifier,
-        builder: (context, hasMore, child) {
-          if (hadiths.isEmpty && isLoading) {
-            // 🚀 مفيش Scrollbar هنا
-            return const _LoadingWidget();
-          }
+  Widget build(BuildContext context) =>
+      ValueListenableBuilder<List<HadithModel>>(
+        valueListenable: hadithsNotifier,
+        builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
+          valueListenable: isLoadingNotifier,
+          builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
+            valueListenable: hasMoreNotifier,
+            builder: (context, hasMore, child) {
+              if (hadiths.isEmpty && isLoading) {
+                // 🚀 مفيش Scrollbar هنا
+                return const _LoadingWidget();
+              }
 
-          // 🚀 Scrollbar يظهر بس لما فيه بيانات
-          return Scrollbar(
-            controller: scrollController,
+              // 🚀 Scrollbar يظهر بس لما فيه بيانات
+              return Scrollbar(
+                controller: scrollController,
 
-            child: _HadithsList(
-              hadiths: hadiths,
-              isLoading: isLoading,
-              hasMore: hasMore,
-              scrollController: scrollController,
-            ),
-          );
-        },
-      ),
-    ),
-  );
+                child: _HadithsList(
+                  hadiths: hadiths,
+                  isLoading: isLoading,
+                  hasMore: hasMore,
+                  scrollController: scrollController,
+                ),
+              );
+            },
+          ),
+        ),
+      );
 }
 
 // ==================== Loading Widget ====================
@@ -233,7 +205,7 @@ class _HadithsList extends StatelessWidget {
     required this.hasMore,
     required this.scrollController,
   });
-  final List<Hadith> hadiths;
+  final List<HadithModel> hadiths;
   final bool isLoading;
   final bool hasMore;
   final ScrollController scrollController;
@@ -272,7 +244,7 @@ class _LoadingMoreWidget extends StatelessWidget {
 // ==================== Hadith Card ====================
 class _HadithCard extends StatelessWidget {
   const _HadithCard({required this.hadith});
-  final Hadith hadith;
+  final HadithModel hadith;
 
   @override
   Widget build(BuildContext context) {

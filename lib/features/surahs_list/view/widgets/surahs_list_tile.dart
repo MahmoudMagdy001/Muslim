@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/format_helper.dart';
 import '../../model/surahs_list_model.dart';
 
 class SurahListTile extends StatelessWidget {
@@ -13,71 +14,68 @@ class SurahListTile extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    surah.number.toString(),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(25, 15.0, 12.0, 16.0),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withAlpha((0.1 * 255).toInt()),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  convertToArabicNumbers(surah.number.toString()),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ),
+            ),
 
-              const SizedBox(width: 16),
+            const SizedBox(width: 16),
 
-              // Surah details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      surah.nameArabic,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            // Surah details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    surah.nameArabic,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${surah.locationArabic} - ${surah.ayahCount} آيات',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${surah.locationArabic} - ${convertToArabicNumbers(surah.ayahCount.toString())} آيات',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
+            ),
 
-              Icon(
-                Icons.arrow_forward_ios,
-                color: colorScheme.onSurfaceVariant,
-                size: 16,
-              ),
-            ],
-          ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: colorScheme.onSurfaceVariant,
+              size: 16,
+            ),
+          ],
         ),
       ),
     );

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls, deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 import '../../consts/reciters_name_arabic.dart';
@@ -25,38 +27,49 @@ class _ReciterDialogState extends State<ReciterDialog> {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: AlertDialog(
-        title: Text('اختر القارئ', style: theme.textTheme.titleLarge),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: recitersArabic.length,
-            itemBuilder: (context, index) => _ReciterRadioItem(
-              reciter: recitersArabic[index],
-              selectedReciterId: _selectedReciterId,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _selectedReciterId = value);
-                }
-              },
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'إلغاء',
-              style: TextStyle(
-                color: theme.colorScheme.onSurface.withAlpha(153),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('اختر القارئ', style: theme.textTheme.titleMedium),
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: recitersArabic.length,
+              itemBuilder: (context, index) => _ReciterRadioItem(
+                reciter: recitersArabic[index],
+                selectedReciterId: _selectedReciterId,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _selectedReciterId = value);
+                  }
+                },
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, _selectedReciterId),
-            child: const Text('حفظ'),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'إلغاء',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withAlpha(153),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, _selectedReciterId),
+                  child: const Text('حفظ'),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(height: 12),
         ],
       ),
     );
