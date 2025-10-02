@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -104,7 +105,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// تحديث يدوي لمواقيت الصلاة
   Future<void> refreshPrayerTimes() async {
     debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
-    await fetchPrayerTimes();
+    await init();
   }
 
   @override

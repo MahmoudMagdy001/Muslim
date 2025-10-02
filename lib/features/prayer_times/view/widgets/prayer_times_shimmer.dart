@@ -25,11 +25,13 @@ class PrayerTimesShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 🟢 اسم المدينة
-              Container(
-                height: 14,
-                width: 100,
-                color: Colors.white,
-                margin: const EdgeInsets.only(bottom: 12),
+              Center(
+                child: Container(
+                  height: 14,
+                  width: 100,
+                  color: Colors.white,
+                  margin: const EdgeInsets.only(bottom: 12),
+                ),
               ),
 
               // 🟢 الهيدر (الهجري + زر تحديث)
@@ -50,7 +52,7 @@ class PrayerTimesShimmer extends StatelessWidget {
                   Container(height: 16, width: 50, color: Colors.white),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 25),
 
               // 🟢 الوقت المتبقي
               Container(height: 14, width: 150, color: Colors.white),

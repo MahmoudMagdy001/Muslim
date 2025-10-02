@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,40 +54,52 @@ class AppInitializer {
 
   Future<void> _requestPermissions() async {
     try {
-      if (await Permission.notification.isDenied) {
-        await Permission.notification.request();
-      }
-      if (await Permission.notification.isPermanentlyDenied) {
-        await openAppSettings();
-      }
-
-      if (await Permission.locationWhenInUse.isDenied) {
-        await Permission.locationWhenInUse.request();
-      }
-      if (await Permission.locationWhenInUse.isPermanentlyDenied) {
-        await openAppSettings();
-      }
-
-      final serviceEnabled =
-          await Permission.locationWhenInUse.serviceStatus.isEnabled;
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-      }
-      // Battery optimization
-      final batterOptimization =
-          await Permission.ignoreBatteryOptimizations.isDenied;
-      if (!batterOptimization) {
-        await Permission.ignoreBatteryOptimizations.request();
-      }
+      await _checkLocationPermission();
+      await _checkNotificationPermission();
+      await checkBatteryOptimization();
     } catch (e) {
       debugPrint('Permission request error: $e');
     }
   }
 
+  Future<void> _checkNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      await Permission.notification.request();
+    }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+
+  Future<void> _checkLocationPermission() async {
+    final status = await Permission.locationWhenInUse.status;
+    if (status.isDenied) {
+      await Permission.locationWhenInUse.request();
+    }
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+
+  Future<void> checkBatteryOptimization() async {
+    try {
+      final isDisabled = await DisableBatteryOptimization.isBatteryOptimizationDisabled;
+
+      if (isDisabled == false) {
+        // التطبيق Optimized → نفتح إعدادات البطارية
+        await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
+      } else {
+        debugPrint('✅ التطبيق غير محسن (Unrestricted)');
+      }
+    } catch (e) {
+      debugPrint('⚠️ خطأ في التحقق من Battery Optimization: $e');
+    }
+  }
+
   Future<void> _scheduleHourlyReminder() async {
     try {
-      final timeZone = await AwesomeNotifications()
-          .getLocalTimeZoneIdentifier();
+      final timeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
       await AwesomeNotifications().createNotification(
         content: NotificationContent(

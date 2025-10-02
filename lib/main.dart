@@ -10,6 +10,20 @@ import 'features/settings/view_model/font_size/font_size_cubit.dart';
 import 'features/settings/view_model/rectire/rectire_cubit.dart';
 import 'features/settings/view_model/theme/theme_cubit.dart';
 
+ThemeMode _getInitialThemeMode(SharedPreferences prefs) {
+  final themeText = prefs.getString('themeMode');
+  if (themeText?.contains('dark') ?? false) {
+    return ThemeMode.dark;
+  } else if (themeText?.contains('light') ?? false) {
+    return ThemeMode.light;
+  } else {
+    return ThemeMode.system;
+  }
+}
+
+double _getInitialFontSize(SharedPreferences prefs) =>
+    prefs.getDouble('fontSize') ?? 18.0;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -17,17 +31,8 @@ Future<void> main() async {
     final initializer = AppInitializer(prefs);
     await initializer.initialize();
 
-    final themeText = prefs.getString('themeMode');
-    ThemeMode initialMode;
-    if (themeText?.contains('dark') ?? false) {
-      initialMode = ThemeMode.dark;
-    } else if (themeText?.contains('light') ?? false) {
-      initialMode = ThemeMode.light;
-    } else {
-      initialMode = ThemeMode.system;
-    }
-
-    final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
+    final initialMode = _getInitialThemeMode(prefs);
+    final initialFontSize = _getInitialFontSize(prefs);
 
     runApp(
       MultiBlocProvider(

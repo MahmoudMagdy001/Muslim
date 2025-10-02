@@ -10,40 +10,43 @@ import '../viewmodel/prayer_times_state.dart';
 import 'widgets/prayer_times_shimmer.dart';
 
 class PrayerTimesView extends StatelessWidget {
-  const PrayerTimesView({required this.scaffoldContext, super.key});
+  const PrayerTimesView({
+    required this.scaffoldContext,
+    required this.theme,
+    super.key,
+  });
 
   final BuildContext scaffoldContext;
+  final ThemeData theme;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return BlocProvider(
-      create: (_) => PrayerTimesCubit()..init(),
-      child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-        builder: (context, state) {
-          if (state.status == PrayerTimesStatus.loading) {
-            return const _PrayerLoadingSliver();
-          } else if (state.status == PrayerTimesStatus.error) {
-            return _PrayerErrorSliver(
-              message: state.message ?? 'حدث خطأ غير متوقع',
-            );
-          } else if (state.status == PrayerTimesStatus.success) {
-            return _PrayerSuccessSliver(
-              state: state,
-              theme: theme,
-              scaffoldContext: scaffoldContext,
-            );
-          } else {
-            return const SliverToBoxAdapter(child: SizedBox.shrink());
-          }
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) => PrayerTimesCubit()..init(),
+    child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+      builder: (context, state) {
+        if (state.status == PrayerTimesStatus.loading) {
+          return const _PrayerLoadingSliver();
+        } else if (state.status == PrayerTimesStatus.error) {
+          return _PrayerErrorSliver(
+            message: state.message ?? 'حدث خطأ غير متوقع',
+          );
+        } else if (state.status == PrayerTimesStatus.success) {
+          return _PrayerSuccessSliver(
+            state: state,
+            theme: theme,
+            scaffoldContext: scaffoldContext,
+          );
+        } else {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+      },
+    ),
+  );
 }
 
 class _PrayerErrorSliver extends StatelessWidget {
   const _PrayerErrorSliver({required this.message});
+
   final String message;
 
   @override
@@ -89,6 +92,7 @@ class _PrayerSuccessSliver extends StatelessWidget {
     required this.theme,
     required this.scaffoldContext,
   });
+
   final PrayerTimesState state;
   final ThemeData theme;
   final BuildContext scaffoldContext;
@@ -100,7 +104,7 @@ class _PrayerSuccessSliver extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.all(8),
         child: Column(
           children: [
             Column(

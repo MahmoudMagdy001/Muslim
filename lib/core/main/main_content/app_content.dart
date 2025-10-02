@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../screens/layout_screen.dart';
+import '../../../features/layout/view/layout_view.dart';
 import '../../../features/settings/view_model/theme/theme_cubit.dart';
 import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
 import '../../theme/app_theme.dart';
@@ -32,7 +32,7 @@ class AppContent extends StatelessWidget {
           themeMode: themeState.themeMode,
           theme: lightTheme,
           darkTheme: darkTheme,
-          home: const LayoutScreen(),
+          home: const LayoutView(),
         );
       },
     ),

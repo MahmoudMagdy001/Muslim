@@ -4,26 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'hadith_screen.dart';
+import '../../model/chapter_of_book_model.dart';
 
-class HadithChapter {
-  HadithChapter({
-    required this.id,
-    required this.chapterName,
-    required this.chapterNumber,
-  });
-
-  factory HadithChapter.fromJson(Map<String, dynamic> json) => HadithChapter(
-    id: json['id'].toString(),
-    chapterName: json['chapterArabic']?.toString() ?? '',
-    chapterNumber: json['chapterNumber']?.toString() ?? '',
-  );
-  final String id;
-  final String chapterName;
-  final String chapterNumber;
-}
-
-class ChaptersScreen extends StatefulWidget {
-  const ChaptersScreen({
+class ChapterOfBook extends StatefulWidget {
+  const ChapterOfBook({
     required this.bookSlug,
     required this.bookName,
     super.key,
@@ -32,13 +16,13 @@ class ChaptersScreen extends StatefulWidget {
   final String bookName;
 
   @override
-  State<ChaptersScreen> createState() => _ChaptersScreenState();
+  State<ChapterOfBook> createState() => _ChapterOfBookState();
 }
 
-class _ChaptersScreenState extends State<ChaptersScreen> {
-  late Future<List<HadithChapter>> _chaptersFuture;
-  late final ValueNotifier<List<HadithChapter>> _allChaptersNotifier;
-  late final ValueNotifier<List<HadithChapter>> _filteredChaptersNotifier;
+class _ChapterOfBookState extends State<ChapterOfBook> {
+  late Future<List<ChapterOfBookModel>> _chaptersFuture;
+  late final ValueNotifier<List<ChapterOfBookModel>> _allChaptersNotifier;
+  late final ValueNotifier<List<ChapterOfBookModel>> _filteredChaptersNotifier;
   late final TextEditingController _searchController;
   late final ScrollController _scrollController;
 
@@ -68,7 +52,7 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
     super.dispose();
   }
 
-  Future<List<HadithChapter>> _fetchChapters() async {
+  Future<List<ChapterOfBookModel>> _fetchChapters() async {
     try {
       final url = Uri.parse(
         'https://hadithapi.com/api/${widget.bookSlug}/chapters?apiKey=$_apiKey',
@@ -81,7 +65,10 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
         final List chaptersJson = data['chapters'] as List? ?? [];
 
         final chapters = chaptersJson
-            .map((json) => HadithChapter.fromJson(json as Map<String, dynamic>))
+            .map(
+              (json) =>
+                  ChapterOfBookModel.fromJson(json as Map<String, dynamic>),
+            )
             .toList();
 
         _allChaptersNotifier.value = List.unmodifiable(chapters);
@@ -126,7 +113,7 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
     textDirection: TextDirection.rtl,
     child: Scaffold(
       appBar: AppBar(title: Text('أبواب ${widget.bookName}')),
-      body: FutureBuilder<List<HadithChapter>>(
+      body: FutureBuilder<List<ChapterOfBookModel>>(
         future: _chaptersFuture,
         builder: (context, snapshot) => switch (snapshot.connectionState) {
           ConnectionState.waiting => const _LoadingWidget(),
@@ -234,8 +221,8 @@ class _ChaptersContent extends StatelessWidget {
     required this.searchController,
     required this.scrollController,
   });
-  final ValueNotifier<List<HadithChapter>> allChaptersNotifier;
-  final ValueNotifier<List<HadithChapter>> filteredChaptersNotifier;
+  final ValueNotifier<List<ChapterOfBookModel>> allChaptersNotifier;
+  final ValueNotifier<List<ChapterOfBookModel>> filteredChaptersNotifier;
   final TextEditingController searchController;
   final ScrollController scrollController;
 
@@ -279,12 +266,12 @@ class _ChaptersList extends StatelessWidget {
     required this.filteredChaptersNotifier,
     required this.scrollController,
   });
-  final ValueNotifier<List<HadithChapter>> filteredChaptersNotifier;
+  final ValueNotifier<List<ChapterOfBookModel>> filteredChaptersNotifier;
   final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) =>
-      ValueListenableBuilder<List<HadithChapter>>(
+      ValueListenableBuilder<List<ChapterOfBookModel>>(
         valueListenable: filteredChaptersNotifier,
         builder: (context, chapters, child) {
           if (chapters.isEmpty) {
@@ -311,7 +298,7 @@ class _ChaptersList extends StatelessWidget {
 // ==================== Chapter Card ====================
 class _ChapterCard extends StatelessWidget {
   const _ChapterCard({required this.chapter});
-  final HadithChapter chapter;
+  final ChapterOfBookModel chapter;
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +341,7 @@ class _ChapterCard extends StatelessWidget {
   }
 
   void _navigateToHadiths(BuildContext context) {
-    final state = context.findAncestorStateOfType<_ChaptersScreenState>()!;
+    final state = context.findAncestorStateOfType<_ChapterOfBookState>()!;
 
     Navigator.push(
       context,

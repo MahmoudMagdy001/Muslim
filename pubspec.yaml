@@ -25,7 +25,9 @@ dependencies:
   adhan: ^2.0.0+1
   hijri: ^3.0.0
   geocoding: ^4.0.0
-  
+  disable_battery_optimization: ^1.1.2
+  share_plus: ^12.0.0
+
 
 
 
@@ -39,4 +41,7 @@ flutter:
 
   assets:
     - assets/images/kaaba.png
-    - assets/azkar/azkar.json
+    - assets/images/allah.png
+    - assets/images/seb7a.png
+    - assets/json/azkar.json
+    - assets/json/names_of_allah.json
