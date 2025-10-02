@@ -61,8 +61,6 @@ class PrayerNotificationService {
 
     if (prayerDateTime == null) return false;
 
-    // final scheduledTime = prayerDateTime.subtract(const Duration(minutes: 1));
-
     if (prayerDateTime.isAfter(now) ||
         (areAllPrayersFinished && prayerName == 'الفجر')) {
       final notificationId = _getPrayerNotificationId(prayerName);
@@ -71,8 +69,8 @@ class PrayerNotificationService {
         content: NotificationContent(
           id: notificationId,
           channelKey: 'prayer_reminder',
-          title: 'اذان $prayerName',
-          body: 'باقي دقيقة على صلاة $prayerName',
+          title: 'أذان $prayerName',
+          body: 'حان الأن موعدأذان $prayerName',
           wakeUpScreen: true,
         ),
         schedule: NotificationCalendar(

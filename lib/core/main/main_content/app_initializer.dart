@@ -22,34 +22,41 @@ class AppInitializer {
       androidNotificationChannelId: 'com.example.muslim.audio',
       androidNotificationChannelName: 'تشغيل التلاوة',
       androidNotificationOngoing: true,
+      androidNotificationIcon: 'drawable/ic_muslim_logo',
     );
   }
 
   Future<void> _initializeNotifications() async {
-    await AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-        channelKey: 'quran_channel',
-        channelName: 'Quran Reminders',
-        channelDescription: 'Reminders to read Quran',
-        defaultColor: const Color(0xFF33A1E0),
-        importance: NotificationImportance.High,
-        channelShowBadge: true,
-      ),
-      NotificationChannel(
-        channelKey: 'prayer_reminder',
-        channelName: 'تذكير الصلاة',
-        channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
-        defaultColor: const Color(0xFF33A1E0),
-        ledColor: Colors.white,
-        importance: NotificationImportance.Max,
-        playSound: true,
-        enableVibration: true,
-        enableLights: true,
-        locked: true,
-        defaultRingtoneType: DefaultRingtoneType.Notification,
-        soundSource: 'resource://raw/azan',
-      ),
-    ]);
+    await AwesomeNotifications().initialize(
+      // أيقونة التطبيق الافتراضية
+      'resource://drawable/ic_muslim_logo', // اللوجو بتاعك
+      [
+        NotificationChannel(
+          channelKey: 'quran_channel',
+          channelName: 'Quran Reminders',
+          channelDescription: 'Reminders to read Quran',
+          defaultColor: const Color(0xFF33A1E0),
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+          icon: 'resource://drawable/ic_muslim_logo',
+        ),
+        NotificationChannel(
+          channelKey: 'prayer_reminder',
+          channelName: 'تذكير الصلاة',
+          channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
+          defaultColor: const Color(0xFF33A1E0),
+          ledColor: Colors.white,
+          importance: NotificationImportance.Max,
+          playSound: true,
+          enableVibration: true,
+          enableLights: true,
+          locked: true,
+          defaultRingtoneType: DefaultRingtoneType.Notification,
+          soundSource: 'resource://raw/azan',
+          icon: 'resource://drawable/ic_muslim_logo',
+        ),
+      ],
+    );
   }
 
   Future<void> _requestPermissions() async {
@@ -84,7 +91,8 @@ class AppInitializer {
 
   Future<void> checkBatteryOptimization() async {
     try {
-      final isDisabled = await DisableBatteryOptimization.isBatteryOptimizationDisabled;
+      final isDisabled =
+          await DisableBatteryOptimization.isBatteryOptimizationDisabled;
 
       if (isDisabled == false) {
         // التطبيق Optimized → نفتح إعدادات البطارية
@@ -99,7 +107,8 @@ class AppInitializer {
 
   Future<void> _scheduleHourlyReminder() async {
     try {
-      final timeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+      final timeZone = await AwesomeNotifications()
+          .getLocalTimeZoneIdentifier();
 
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -107,6 +116,7 @@ class AppInitializer {
           channelKey: 'quran_channel',
           title: '📖 تذكير بقراءة القرآن',
           body: 'لا تنس وردك من القرآن الكريم الآن',
+          icon: 'resource://drawable/ic_muslim_logo',
         ),
         schedule: NotificationCalendar(
           minute: 0,
