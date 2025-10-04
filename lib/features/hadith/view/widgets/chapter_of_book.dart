@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import '../../../../core/utils/navigation_helper.dart';
 import 'hadith_screen.dart';
 import '../../model/chapter_of_book_model.dart';
 
@@ -37,7 +38,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     _searchController = TextEditingController();
     _scrollController = ScrollController();
 
-    _chaptersFuture = _fetchChapters();
+    _chaptersFuture = _loadChapters();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -52,39 +53,52 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     super.dispose();
   }
 
-  Future<List<ChapterOfBookModel>> _fetchChapters() async {
-    try {
-      final url = Uri.parse(
-        'https://hadithapi.com/api/${widget.bookSlug}/chapters?apiKey=$_apiKey',
+  // ===== تحميل مع كاش =====
+  Future<List<ChapterOfBookModel>> _loadChapters() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'chapters_${widget.bookSlug}';
+    final cachedData = prefs.getString(key);
+
+    if (cachedData != null) {
+      final List decoded = json.decode(cachedData);
+      final chapters = decoded
+          .map((e) => ChapterOfBookModel.fromJson(e))
+          .toList();
+
+      _allChaptersNotifier.value = List.unmodifiable(chapters);
+      _filteredChaptersNotifier.value = List.unmodifiable(chapters);
+
+      return chapters;
+    } else {
+      final chapters = await _fetchChaptersFromApi();
+      prefs.setString(
+        key,
+        json.encode(chapters.map((e) => e.toJson()).toList()),
       );
-      final response = await http.get(url).timeout(const Duration(seconds: 10));
+      return chapters;
+    }
+  }
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // ignore: avoid_dynamic_calls
-        final List chaptersJson = data['chapters'] as List? ?? [];
+  Future<List<ChapterOfBookModel>> _fetchChaptersFromApi() async {
+    final url = Uri.parse(
+      'https://hadithapi.com/api/${widget.bookSlug}/chapters?apiKey=$_apiKey',
+    );
+    final response = await http.get(url).timeout(const Duration(seconds: 10));
 
-        final chapters = chaptersJson
-            .map(
-              (json) =>
-                  ChapterOfBookModel.fromJson(json as Map<String, dynamic>),
-            )
-            .toList();
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List chaptersJson = data['chapters'] as List? ?? [];
 
-        _allChaptersNotifier.value = List.unmodifiable(chapters);
-        _filteredChaptersNotifier.value = List.unmodifiable(chapters);
+      final chapters = chaptersJson
+          .map((json) => ChapterOfBookModel.fromJson(json))
+          .toList();
 
-        return chapters;
-      } else {
-        throw Exception('فشل في تحميل الأبواب: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('خطأ في تحميل الأبواب: $e')));
-      }
-      rethrow;
+      _allChaptersNotifier.value = List.unmodifiable(chapters);
+      _filteredChaptersNotifier.value = List.unmodifiable(chapters);
+
+      return chapters;
+    } else {
+      throw Exception('فشل في تحميل الأبواب: ${response.statusCode}');
     }
   }
 
@@ -284,7 +298,7 @@ class _ChaptersList extends StatelessWidget {
             child: ListView.builder(
               controller: scrollController,
               itemCount: chapters.length,
-              padding: const EdgeInsets.only(left: 15),
+              padding: const EdgeInsets.only(left: 20, right: 8),
               itemBuilder: (context, index) {
                 final chapter = chapters[index];
                 return _ChapterCard(chapter: chapter);
@@ -343,14 +357,13 @@ class _ChapterCard extends StatelessWidget {
   void _navigateToHadiths(BuildContext context) {
     final state = context.findAncestorStateOfType<_ChapterOfBookState>()!;
 
-    Navigator.push(
+    navigateWithTransition(
+      type: TransitionType.fade,
       context,
-      MaterialPageRoute(
-        builder: (_) => HadithsScreen(
-          bookSlug: state.widget.bookSlug,
-          chapterNumber: chapter.chapterNumber,
-          chapterName: chapter.chapterName,
-        ),
+      HadithsScreen(
+        bookSlug: state.widget.bookSlug,
+        chapterNumber: chapter.chapterNumber,
+        chapterName: chapter.chapterName,
       ),
     );
   }

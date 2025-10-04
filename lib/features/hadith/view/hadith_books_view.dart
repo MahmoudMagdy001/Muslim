@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import '../../../core/utils/navigation_helper.dart';
 import 'widgets/chapter_of_book.dart';
 import '../helper/hadith_helper.dart';
 import '../model/hadith_book_model.dart';
@@ -18,22 +19,41 @@ class HadithBooksViewState extends State<HadithBooksView> {
   late Future<List<HadithBookModel>> booksFuture;
   String _searchText = '';
 
+  final apiKey = r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
+
   @override
   void initState() {
     super.initState();
-    booksFuture = fetchHadithBooks();
+    booksFuture = _loadBooks();
   }
 
-  final apiKey = r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
+  // تحميل الكتب مع كاش
+  Future<List<HadithBookModel>> _loadBooks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cachedData = prefs.getString('hadith_books');
 
+    if (cachedData != null) {
+      final List decoded = json.decode(cachedData);
+      return decoded.map((e) => HadithBookModel.fromJson(e)).toList();
+    } else {
+      final books = await fetchHadithBooks();
+      prefs.setString(
+        'hadith_books',
+        json.encode(books.map((e) => e.toJson()).toList()),
+      );
+      return books;
+    }
+  }
+
+  // جلب الكتب من API
   Future<List<HadithBookModel>> fetchHadithBooks() async {
     final url = Uri.parse('https://hadithapi.com/api/books?apiKey=$apiKey');
     final response = await http.get(url);
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       // ignore: avoid_dynamic_calls
       final List booksJson = data['books'] ?? [];
-
       return booksJson.map((json) => HadithBookModel.fromJson(json)).toList();
     } else {
       throw Exception('فشل في جلب الكتب');
@@ -68,7 +88,7 @@ class HadithBooksViewState extends State<HadithBooksView> {
               // ====== Search Bar ======
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: 12,
                   vertical: 5,
                 ),
                 child: TextField(
@@ -111,7 +131,7 @@ class HadithBooksViewState extends State<HadithBooksView> {
                     final books = _filterBooks(snapshot.data!);
 
                     return ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       itemCount: books.length,
                       itemBuilder: (context, index) {
                         final book = books[index];
@@ -126,22 +146,19 @@ class HadithBooksViewState extends State<HadithBooksView> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(12),
                                   onTap: () {
-                                    Navigator.push(
+                                    navigateWithTransition(
+                                      type: TransitionType.fade,
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (_) => ChapterOfBook(
-                                          bookSlug: book.bookSlug,
-                                          bookName:
-                                              booksArabic[book.bookName] ??
-                                              book.bookName,
-                                        ),
+                                      ChapterOfBook(
+                                        bookSlug: book.bookSlug,
+                                        bookName:
+                                            booksArabic[book.bookName] ??
+                                            book.bookName,
                                       ),
                                     );
                                   },
-
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
-
                                     child: Row(
                                       children: [
                                         // دائرة فيها رقم الكتاب
@@ -183,13 +200,13 @@ class HadithBooksViewState extends State<HadithBooksView> {
                                               const SizedBox(height: 4),
                                               Text(
                                                 'الكاتب: $writerAr',
-                                                style: theme.textTheme.bodySmall
-                                                    ?.copyWith(),
+                                                style:
+                                                    theme.textTheme.bodySmall,
                                               ),
                                               Text(
                                                 'عدد الأبواب: ${book.chapterCount} - عدد الأحاديث: ${book.hadithCount}',
-                                                style: theme.textTheme.bodySmall
-                                                    ?.copyWith(),
+                                                style:
+                                                    theme.textTheme.bodySmall,
                                               ),
                                             ],
                                           ),

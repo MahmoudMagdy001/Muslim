@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/hadith_model.dart';
 
@@ -25,12 +26,14 @@ class _HadithsScreenState extends State<HadithsScreen> {
   static const String _apiKey =
       r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
+  // مفتاح التخزين في Shared Preferences
+  String get _cacheKey => 'hadiths_${widget.bookSlug}_${widget.chapterNumber}';
+
   late final ValueNotifier<List<HadithModel>> _hadithsNotifier;
   late final ValueNotifier<int> _currentPageNotifier;
   late final ValueNotifier<bool> _isLoadingNotifier;
   late final ValueNotifier<bool> _hasMoreNotifier;
   late final ScrollController _scrollController;
-  late final TextEditingController _searchController;
 
   @override
   void initState() {
@@ -40,11 +43,94 @@ class _HadithsScreenState extends State<HadithsScreen> {
     _isLoadingNotifier = ValueNotifier(false);
     _hasMoreNotifier = ValueNotifier(true);
     _scrollController = ScrollController();
-    _searchController = TextEditingController();
 
-    _fetchHadiths();
+    _loadCachedData().then((_) => _fetchHadiths());
 
     _scrollController.addListener(_scrollListener);
+  }
+
+  // تحميل البيانات المخزنة مسبقاً
+  // تحميل البيانات المخزنة مسبقاً
+  Future<void> _loadCachedData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString(_cacheKey);
+
+      if (cachedData != null) {
+        final dynamic decodedData = json.decode(cachedData);
+
+        // 👇 التحقق من نوع البيانات أولاً
+        if (decodedData is Map<String, dynamic>) {
+          final Map<String, dynamic> data = decodedData;
+          final dynamic hadithsData = data['hadiths'];
+
+          List<dynamic> hadithsJson = [];
+
+          // 👇 معالجة أنواع البيانات المختلفة
+          if (hadithsData is List) {
+            hadithsJson = hadithsData;
+          } else if (hadithsData is Map<String, dynamic>) {
+            // لو البيانات بتكون { 'data': [...] }
+            hadithsJson = hadithsData['data'] as List? ?? [];
+          }
+
+          final List<HadithModel> cachedHadiths = hadithsJson
+              .map((json) => HadithModel.fromJson(json as Map<String, dynamic>))
+              .toList();
+
+          _hadithsNotifier.value = List.unmodifiable(cachedHadiths);
+
+          // تحميل الصفحة التالية من البيانات المخزنة
+          final cachedPage = data['current_page'] as int? ?? 1;
+          _currentPageNotifier.value = cachedPage;
+
+          // معرفة إذا كان هناك المزيد من الصفحات
+          _hasMoreNotifier.value = data['has_more'] as bool? ?? true;
+
+          debugPrint('تم تحميل ${cachedHadiths.length} حديث من الكاش');
+        } else {
+          debugPrint('صيغة البيانات المخزنة غير صحيحة');
+          await _clearCache(); // مسح الكاش التالف
+        }
+      }
+    } catch (e) {
+      debugPrint('خطأ في تحميل البيانات المخزنة: $e');
+      await _clearCache(); // مسح الكاش التالف
+    }
+  }
+
+  // حفظ البيانات في الكاش
+  Future<void> _saveToCache(
+    List<HadithModel> hadiths,
+    int currentPage,
+    bool hasMore,
+  ) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final data = {
+        'hadiths': hadiths.map((h) => h.toJson()).toList(),
+        'current_page': currentPage,
+        'has_more': hasMore,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      };
+      await prefs.setString(_cacheKey, json.encode(data));
+    } catch (e) {
+      debugPrint('خطأ في حفظ البيانات: $e');
+    }
+  }
+
+  // التحقق من وجود الكاش (بدون صلاحية زمنية)
+  Future<bool> _isCacheValid() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString(_cacheKey);
+
+      // 👇 مجرد وجود الكاش يبقى صالح للأبد
+      return cachedData != null;
+    } catch (e) {
+      debugPrint('خطأ في التحقق من صلاحية الكاش: $e');
+    }
+    return false;
   }
 
   void _scrollListener() {
@@ -56,21 +142,14 @@ class _HadithsScreenState extends State<HadithsScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_scrollListener)
-      ..dispose();
-    _searchController.dispose();
-    _hadithsNotifier.dispose();
-    _currentPageNotifier.dispose();
-    _isLoadingNotifier.dispose();
-    _hasMoreNotifier.dispose();
-    super.dispose();
-  }
-
   Future<void> _fetchHadiths({bool loadMore = false}) async {
     if (_isLoadingNotifier.value || !_hasMoreNotifier.value) return;
+
+    // استخدام الكاش إذا كان موجوداً ولم يكن تحميل للمزيد
+    if (!loadMore && await _isCacheValid()) {
+      debugPrint('استخدام البيانات المخزنة');
+      return;
+    }
 
     _isLoadingNotifier.value = true;
 
@@ -101,7 +180,15 @@ class _HadithsScreenState extends State<HadithsScreen> {
           _currentPageNotifier.value = 1;
         }
 
-        _hasMoreNotifier.value = data['hadiths']['next_page_url'] != null;
+        final bool hasMoreData = data['hadiths']['next_page_url'] != null;
+        _hasMoreNotifier.value = hasMoreData;
+
+        // حفظ البيانات في الكاش
+        await _saveToCache(
+          _hadithsNotifier.value,
+          _currentPageNotifier.value,
+          hasMoreData,
+        );
       } else {
         throw Exception('فشل في تحميل الأحاديث: ${response.statusCode}');
       }
@@ -116,11 +203,34 @@ class _HadithsScreenState extends State<HadithsScreen> {
     }
   }
 
+  // دالة لمسح الكاش (اختيارية)
+  Future<void> _clearCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_cacheKey);
+      _hadithsNotifier.value = [];
+      _currentPageNotifier.value = 1;
+      _hasMoreNotifier.value = true;
+      _fetchHadiths();
+    } catch (e) {
+      debugPrint('خطأ في مسح الكاش: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Directionality(
     textDirection: TextDirection.rtl,
     child: Scaffold(
-      appBar: AppBar(title: Text('أحاديث ${widget.chapterName}')),
+      appBar: AppBar(
+        title: Text('أحاديث ${widget.chapterName}'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _clearCache,
+            tooltip: 'تحديث البيانات',
+          ),
+        ],
+      ),
       body: _HadithsContent(
         hadithsNotifier: _hadithsNotifier,
         isLoadingNotifier: _isLoadingNotifier,
@@ -131,7 +241,7 @@ class _HadithsScreenState extends State<HadithsScreen> {
   );
 }
 
-// ==================== Hadiths Content ====================
+// ==================== باقي الكود بدون تغيير ====================
 
 class _HadithsContent extends StatelessWidget {
   const _HadithsContent({
@@ -156,14 +266,11 @@ class _HadithsContent extends StatelessWidget {
             valueListenable: hasMoreNotifier,
             builder: (context, hasMore, child) {
               if (hadiths.isEmpty && isLoading) {
-                // 🚀 مفيش Scrollbar هنا
                 return const _LoadingWidget();
               }
 
-              // 🚀 Scrollbar يظهر بس لما فيه بيانات
               return Scrollbar(
                 controller: scrollController,
-
                 child: _HadithsList(
                   hadiths: hadiths,
                   isLoading: isLoading,
@@ -177,7 +284,6 @@ class _HadithsContent extends StatelessWidget {
       );
 }
 
-// ==================== Loading Widget ====================
 class _LoadingWidget extends StatelessWidget {
   const _LoadingWidget();
 
@@ -197,7 +303,6 @@ class _LoadingWidget extends StatelessWidget {
   }
 }
 
-// ==================== Hadiths List ====================
 class _HadithsList extends StatelessWidget {
   const _HadithsList({
     required this.hadiths,
@@ -225,7 +330,6 @@ class _HadithsList extends StatelessWidget {
   );
 }
 
-// ==================== Loading More Widget ====================
 class _LoadingMoreWidget extends StatelessWidget {
   const _LoadingMoreWidget();
 
@@ -241,7 +345,6 @@ class _LoadingMoreWidget extends StatelessWidget {
   }
 }
 
-// ==================== Hadith Card ====================
 class _HadithCard extends StatelessWidget {
   const _HadithCard({required this.hadith});
   final HadithModel hadith;
@@ -259,7 +362,6 @@ class _HadithCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 👇 عنوان الباب لو موجود
             if (hadith.headingArabic.isNotEmpty) ...[
               Text(
                 hadith.headingArabic,
@@ -272,7 +374,6 @@ class _HadithCard extends StatelessWidget {
 
             SelectableText(
               hadith.hadithArabic,
-
               style: theme.textTheme.titleMedium?.copyWith(height: 2),
             ),
             const SizedBox(height: 8),

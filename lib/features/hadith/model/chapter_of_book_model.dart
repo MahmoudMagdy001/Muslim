@@ -11,6 +11,13 @@ class ChapterOfBookModel {
         chapterName: json['chapterArabic']?.toString() ?? '',
         chapterNumber: json['chapterNumber']?.toString() ?? '',
       );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'chapterArabic': chapterName,
+    'chapterNumber': chapterNumber,
+  };
+
   final String id;
   final String chapterName;
   final String chapterNumber;

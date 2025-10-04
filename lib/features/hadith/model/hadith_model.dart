@@ -14,6 +14,15 @@ class HadithModel {
     headingArabic: json['headingArabic']?.toString() ?? '',
     status: json['status']?.toString() ?? '',
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'hadithNumber': hadithNumber,
+    'hadithArabic': hadithArabic,
+    'headingArabic': headingArabic,
+    'status': status,
+  };
+
   final String id;
   final String hadithNumber;
   final String hadithArabic;
