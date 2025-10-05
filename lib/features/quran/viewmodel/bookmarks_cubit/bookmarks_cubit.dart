@@ -26,25 +26,37 @@ class BookmarksCubit extends Cubit<BookmarksState> {
     required int ayah,
     required String ayahText,
   }) async {
-    final updated = List<AyahBookmark>.from(state.bookmarks)
-      ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah)
-      ..add(
-        AyahBookmark(
-          surahNumber: surah,
-          ayahNumber: ayah,
-          timestampMs: DateTime.now().millisecondsSinceEpoch,
-          ayahText: ayahText,
-        ),
-      )
-      ..sort((a, b) => b.timestampMs.compareTo(a.timestampMs));
-    emit(state.copyWith(bookmarks: updated));
-    await _service.saveBookmarks(updated);
+    try {
+      final updated = List<AyahBookmark>.from(state.bookmarks)
+        ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah)
+        ..add(
+          AyahBookmark(
+            surahNumber: surah,
+            ayahNumber: ayah,
+            timestampMs: DateTime.now().millisecondsSinceEpoch,
+            ayahText: ayahText,
+          ),
+        )
+        ..sort((a, b) => b.timestampMs.compareTo(a.timestampMs));
+
+      emit(state.copyWith(bookmarks: updated));
+      await _service.saveBookmarks(updated);
+    } catch (e) {
+      // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
+      print('Error adding bookmark: $e');
+    }
   }
 
   Future<void> removeBookmark({required int surah, required int ayah}) async {
-    final updated = List<AyahBookmark>.from(state.bookmarks)
-      ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah);
-    emit(state.copyWith(bookmarks: updated));
-    await _service.saveBookmarks(updated);
+    try {
+      final updated = List<AyahBookmark>.from(state.bookmarks)
+        ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah);
+
+      emit(state.copyWith(bookmarks: updated));
+      await _service.saveBookmarks(updated);
+    } catch (e) {
+      // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
+      print('Error removing bookmark: $e');
+    }
   }
 }
