@@ -30,6 +30,11 @@ class AppInitializer {
     }
   }
 
+  Locale getInitialLanguage() {
+    final langCode = prefs.getString('appLanguage') ?? 'en';
+    return Locale(langCode);
+  }
+
   Future<void> _initializeAudioBackground() async {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'com.example.muslim.audio',

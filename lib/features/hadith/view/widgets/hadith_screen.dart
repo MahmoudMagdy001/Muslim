@@ -218,25 +218,22 @@ class _HadithsScreenState extends State<HadithsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(
-        title: Text('أحاديث ${widget.chapterName}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _clearCache,
-            tooltip: 'تحديث البيانات',
-          ),
-        ],
-      ),
-      body: _HadithsContent(
-        hadithsNotifier: _hadithsNotifier,
-        isLoadingNotifier: _isLoadingNotifier,
-        hasMoreNotifier: _hasMoreNotifier,
-        scrollController: _scrollController,
-      ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: Text('أحاديث ${widget.chapterName}'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: _clearCache,
+          tooltip: 'تحديث البيانات',
+        ),
+      ],
+    ),
+    body: _HadithsContent(
+      hadithsNotifier: _hadithsNotifier,
+      isLoadingNotifier: _isLoadingNotifier,
+      hasMoreNotifier: _hasMoreNotifier,
+      scrollController: _scrollController,
     ),
   );
 }

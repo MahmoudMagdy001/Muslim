@@ -78,157 +78,154 @@ class HadithBooksViewState extends State<HadithBooksView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('كتب الحديث')),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // ====== Search Bar ======
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 5,
-                ),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'ابحث باسم الكتاب...',
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  ),
-                  onChanged: (val) => setState(() => _searchText = val),
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('كتب الحديث')),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ====== Search Bar ======
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 5,
               ),
-
-              // ====== Books List ======
-              Expanded(
-                child: FutureBuilder<List<HadithBookModel>>(
-                  future: booksFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: theme.colorScheme.primary,
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'حدث خطأ: ${snapshot.error}',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      );
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'لا توجد كتب',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      );
-                    }
-
-                    final books = _filterBooks(snapshot.data!);
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      itemCount: books.length,
-                      itemBuilder: (context, index) {
-                        final book = books[index];
-
-                        final nameAr =
-                            booksArabic[book.bookName] ?? book.bookName;
-                        final writerAr =
-                            writersArabic[book.writerName] ?? book.writerName;
-
-                        return book.hadithCount != '0'
-                            ? Card(
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(12),
-                                  onTap: () {
-                                    navigateWithTransition(
-                                      type: TransitionType.fade,
-                                      context,
-                                      ChapterOfBook(
-                                        bookSlug: book.bookSlug,
-                                        bookName:
-                                            booksArabic[book.bookName] ??
-                                            book.bookName,
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Row(
-                                      children: [
-                                        // دائرة فيها رقم الكتاب
-                                        Container(
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: theme.primaryColor.withAlpha(
-                                              (0.1 * 255).toInt(),
-                                            ),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Text(
-                                            book.id,
-                                            style: theme.textTheme.titleMedium
-                                                ?.copyWith(
-                                                  color: theme.primaryColor,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 16),
-
-                                        // تفاصيل الكتاب
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                nameAr,
-                                                style: theme
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'الكاتب: $writerAr',
-                                                style:
-                                                    theme.textTheme.bodySmall,
-                                              ),
-                                              Text(
-                                                'عدد الأبواب: ${book.chapterCount} - عدد الأحاديث: ${book.hadithCount}',
-                                                style:
-                                                    theme.textTheme.bodySmall,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: theme.iconTheme.color,
-                                          size: 16,
-                                        ),
-                                      ],
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText: 'ابحث باسم الكتاب...',
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                ),
+                onChanged: (val) => setState(() => _searchText = val),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
+              ),
+            ),
+    
+            // ====== Books List ======
+            Expanded(
+              child: FutureBuilder<List<HadithBookModel>>(
+                future: booksFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: theme.colorScheme.primary,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        'حدث خطأ: ${snapshot.error}',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'لا توجد كتب',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+    
+                  final books = _filterBooks(snapshot.data!);
+    
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    itemCount: books.length,
+                    itemBuilder: (context, index) {
+                      final book = books[index];
+    
+                      final nameAr =
+                          booksArabic[book.bookName] ?? book.bookName;
+                      final writerAr =
+                          writersArabic[book.writerName] ?? book.writerName;
+    
+                      return book.hadithCount != '0'
+                          ? Card(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: () {
+                                  navigateWithTransition(
+                                    type: TransitionType.fade,
+                                    context,
+                                    ChapterOfBook(
+                                      bookSlug: book.bookSlug,
+                                      bookName:
+                                          booksArabic[book.bookName] ??
+                                          book.bookName,
                                     ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    children: [
+                                      // دائرة فيها رقم الكتاب
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: theme.primaryColor.withAlpha(
+                                            (0.1 * 255).toInt(),
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Text(
+                                          book.id,
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
+                                                color: theme.primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+    
+                                      // تفاصيل الكتاب
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              nameAr,
+                                              style: theme
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'الكاتب: $writerAr',
+                                              style:
+                                                  theme.textTheme.bodySmall,
+                                            ),
+                                            Text(
+                                              'عدد الأبواب: ${book.chapterCount} - عدد الأحاديث: ${book.hadithCount}',
+                                              style:
+                                                  theme.textTheme.bodySmall,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: theme.iconTheme.color,
+                                        size: 16,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    );
-                  },
-                ),
+                              ),
+                            )
+                          : const SizedBox.shrink();
+                    },
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

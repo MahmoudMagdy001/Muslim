@@ -78,53 +78,50 @@ class _QuranViewContentState extends State<QuranViewContent> {
   Widget build(BuildContext context) {
     final surahName = quran.getSurahNameArabic(widget.surahNumber);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(title: Text('سورة $surahName')),
-        body: BlocBuilder<QuranSurahCubit, QuranSurahState>(
-          builder: (context, state) {
-            if (state.status == QuranSurahStatus.loaded) {
-              final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _maybeSeekToStartAyah(context);
-              });
-              return Column(
-                children: [
-                  Expanded(
-                    child: SurahTextView(
-                      key: ValueKey<int>(actualSurahNumber),
-                      surahNumber: actualSurahNumber,
-                    ),
+    return Scaffold(
+      appBar: AppBar(title: Text('سورة $surahName')),
+      body: BlocBuilder<QuranSurahCubit, QuranSurahState>(
+        builder: (context, state) {
+          if (state.status == QuranSurahStatus.loaded) {
+            final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _maybeSeekToStartAyah(context);
+            });
+            return Column(
+              children: [
+                Expanded(
+                  child: SurahTextView(
+                    key: ValueKey<int>(actualSurahNumber),
+                    surahNumber: actualSurahNumber,
                   ),
-                  BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
-                    builder: (context, playerState) =>
-                        const PlayerControlsWidget(),
+                ),
+                BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
+                  builder: (context, playerState) =>
+                      const PlayerControlsWidget(),
+                ),
+              ],
+            );
+          } else {
+            final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _maybeSeekToStartAyah(context);
+            });
+            return Column(
+              children: [
+                Expanded(
+                  child: SurahTextView(
+                    key: ValueKey<int>(actualSurahNumber),
+                    surahNumber: actualSurahNumber,
                   ),
-                ],
-              );
-            } else {
-              final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _maybeSeekToStartAyah(context);
-              });
-              return Column(
-                children: [
-                  Expanded(
-                    child: SurahTextView(
-                      key: ValueKey<int>(actualSurahNumber),
-                      surahNumber: actualSurahNumber,
-                    ),
-                  ),
-                  BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
-                    builder: (context, playerState) =>
-                        const PlayerControlsWidget(),
-                  ),
-                ],
-              );
-            }
-          },
-        ),
+                ),
+                BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
+                  builder: (context, playerState) =>
+                      const PlayerControlsWidget(),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

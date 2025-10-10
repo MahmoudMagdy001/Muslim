@@ -123,26 +123,23 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(title: Text('أبواب ${widget.bookName}')),
-      body: FutureBuilder<List<ChapterOfBookModel>>(
-        future: _chaptersFuture,
-        builder: (context, snapshot) => switch (snapshot.connectionState) {
-          ConnectionState.waiting => const _LoadingWidget(),
-          ConnectionState.done =>
-            snapshot.hasError
-                ? _ErrorWidget(error: snapshot.error)
-                : _ChaptersContent(
-                    allChaptersNotifier: _allChaptersNotifier,
-                    filteredChaptersNotifier: _filteredChaptersNotifier,
-                    searchController: _searchController,
-                    scrollController: _scrollController,
-                  ),
-          _ => const _EmptyWidget(),
-        },
-      ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('أبواب ${widget.bookName}')),
+    body: FutureBuilder<List<ChapterOfBookModel>>(
+      future: _chaptersFuture,
+      builder: (context, snapshot) => switch (snapshot.connectionState) {
+        ConnectionState.waiting => const _LoadingWidget(),
+        ConnectionState.done =>
+          snapshot.hasError
+              ? _ErrorWidget(error: snapshot.error)
+              : _ChaptersContent(
+                  allChaptersNotifier: _allChaptersNotifier,
+                  filteredChaptersNotifier: _filteredChaptersNotifier,
+                  searchController: _searchController,
+                  scrollController: _scrollController,
+                ),
+        _ => const _EmptyWidget(),
+      },
     ),
   );
 }

@@ -45,116 +45,113 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('أسماء الله الحسنى')),
-        body: FutureBuilder<NamesOfAllahModel>(
-          future: _namesOfAllahFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final allData = snapshot.data!.items;
-              // فلترة حسب البحث
-              final filteredData = allData.where((item) {
-                final name = item.name;
-                final text = item.text;
-                return name.contains(searchQuery) || text.contains(searchQuery);
-              }).toList();
-
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'ابحث عن اسم...',
-                        prefixIcon: Icon(Icons.search),
-                      ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('أسماء الله الحسنى')),
+      body: FutureBuilder<NamesOfAllahModel>(
+        future: _namesOfAllahFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final allData = snapshot.data!.items;
+            // فلترة حسب البحث
+            final filteredData = allData.where((item) {
+              final name = item.name;
+              final text = item.text;
+              return name.contains(searchQuery) || text.contains(searchQuery);
+            }).toList();
+    
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'ابحث عن اسم...',
+                      prefixIcon: Icon(Icons.search),
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: filteredData.length,
-                      itemBuilder: (context, index) {
-                        final data = filteredData[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: ListTile(
-                            leading: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary.withAlpha(
-                                  (0.1 * 255).toInt(),
-                                ),
-                                shape: BoxShape.circle,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredData.length,
+                    itemBuilder: (context, index) {
+                      final data = filteredData[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: ListTile(
+                          leading: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withAlpha(
+                                (0.1 * 255).toInt(),
                               ),
-                              child: Center(
-                                child: Text(
-                                  convertToArabicNumbers(data.id.toString()),
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: theme.colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                convertToArabicNumbers(data.id.toString()),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
-                            title: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        data.name,
-                                        style: theme.textTheme.titleLarge,
-                                      ),
-                                      const Spacer(),
-                                      IconButton(
-                                        icon: const Icon(Icons.share_rounded),
-                                        onPressed: () {
-                                          SharePlus.instance.share(
-                                            ShareParams(
-                                              text: 'المعني: ${data.text}',
-                                              title: data.name,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'المعني : ${data.text}',
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // 👇 زرار Share
                           ),
-                        );
-                      },
-                    ),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      data.name,
+                                      style: theme.textTheme.titleLarge,
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      icon: const Icon(Icons.share_rounded),
+                                      onPressed: () {
+                                        SharePlus.instance.share(
+                                          ShareParams(
+                                            text: 'المعني: ${data.text}',
+                                            title: data.name,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'المعني : ${data.text}',
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
+    
+                          // 👇 زرار Share
+                        ),
+                      );
+                    },
                   ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
-        ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }

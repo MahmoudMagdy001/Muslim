@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/service/location_service.dart';
 import '../../../hadith/view/hadith_books_view.dart';
 import '../../../azkar/view/azkar_view.dart';
+import '../../../qiblah/service/qiblah_service.dart';
 import '../../../qiblah/view/qiblah_view.dart';
+import '../../../qiblah/viewmodel/qiblah_cubit.dart';
 import '../../../settings/view/settings_view.dart';
 import '../../../settings/view_model/rectire/rectire_cubit.dart';
 import '../../../surahs_list/view/surahs_list_view.dart';
@@ -40,11 +43,17 @@ class DashboardGrid extends StatelessWidget {
         color: Colors.orange,
         route: AzkarView(),
       ),
-      const DashboardItemModel(
+      DashboardItemModel(
         icon: Icons.explore_rounded,
         label: 'القبلة',
         color: Colors.purple,
-        route: QiblahView(),
+        route: BlocProvider(
+          create: (_) => QiblahCubit(
+            service: QiblahService(),
+            locationService: LocationService(),
+          )..init(),
+          child: const QiblahView(),
+        ),
       ),
       const DashboardItemModel(
         icon: Icons.settings_rounded,

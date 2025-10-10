@@ -39,42 +39,39 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
   }
 
   @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(title: const Text('قائمة أنواع الأذكار'), centerTitle: true),
-      body: FutureBuilder<Map<String, List<AzkarModel>>>(
-        future: _groupedAzkarFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('جاري تحميل الأذكار...'),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('حدث خطأ: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('لا توجد أذكار متاحة'));
-          } else {
-            final groupedAzkar = snapshot.data!;
-            return ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: groupedAzkar.keys.length,
-              itemBuilder: (context, index) {
-                final category = groupedAzkar.keys.elementAt(index);
-                final azkarList = groupedAzkar[category]!;
-                return _AzkarCategoryListItem(category: category, azkarList: azkarList);
-              },
-            );
-          }
-        },
-      ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('قائمة أنواع الأذكار'), centerTitle: true),
+    body: FutureBuilder<Map<String, List<AzkarModel>>>(
+      future: _groupedAzkarFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('جاري تحميل الأذكار...'),
+              ],
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('حدث خطأ: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('لا توجد أذكار متاحة'));
+        } else {
+          final groupedAzkar = snapshot.data!;
+          return ListView.builder(
+            padding: const EdgeInsets.all(8),
+            itemCount: groupedAzkar.keys.length,
+            itemBuilder: (context, index) {
+              final category = groupedAzkar.keys.elementAt(index);
+              final azkarList = groupedAzkar[category]!;
+              return _AzkarCategoryListItem(category: category, azkarList: azkarList);
+            },
+          );
+        }
+      },
     ),
   );
 }

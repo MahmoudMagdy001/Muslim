@@ -41,10 +41,7 @@ class _ReciterTile extends StatelessWidget {
         minChildSize: 0.3,
         initialChildSize: 0.6,
         expand: false,
-        builder: (context, scrollController) => Directionality(
-          textDirection: TextDirection.rtl,
-          child: ReciterDialog(selectedReciterId: currentReciter),
-        ),
+        builder: (context, scrollController) => ReciterDialog(selectedReciterId: currentReciter),
       ),
     );
 

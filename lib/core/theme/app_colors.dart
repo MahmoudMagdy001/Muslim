@@ -20,4 +20,17 @@ class AppColors {
   static const Color lightInactiveTrack = Color(0xFFE2E8F0);
   static const Color lightCard = Color(0xFFFFFFFF);
   static const Color darkCard = Color(0xFF1E1E1E);
+
+  // Gradient colors
+  static const List<Color> darkGradientColors = [
+    Color(0x8033A1E0),
+    Color(0x661A5A8A),
+    Color(0x4D0D3A5A),
+  ];
+
+  static const List<Color> lightGradientColors = [
+    Color(0xFF33A1E0),
+    Color(0xFF66B8E8),
+    Colors.white,
+  ];
 }
