@@ -36,9 +36,12 @@ class _HadithBooksViewState extends State<HadithBooksView> {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List booksJson = data['books'] ?? [];
-      return booksJson.map((json) => HadithBookModel.fromJson(json)).toList();
+      final Map<String, dynamic> data =
+          json.decode(response.body) as Map<String, dynamic>;
+      final List<dynamic> booksJson = data['books'] as List<dynamic>? ?? [];
+      return booksJson
+          .map((json) => HadithBookModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } else {
       throw Exception('فشل في جلب الكتب');
     }

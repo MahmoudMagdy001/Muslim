@@ -45,16 +45,19 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
       'https://hadithapi.com/api/${widget.bookSlug}/chapters?apiKey=$_apiKey',
     );
     final res = await http.get(url);
-
-    if (res.statusCode != 200) throw Exception('فشل التحميل');
-
-    final data = json.decode(res.body);
-    final chapters = (data['chapters'] as List)
-        .map((e) => ChapterOfBookModel.fromJson(e))
+    if (res.statusCode != 200) {
+      throw Exception('فشل التحميل');
+    }
+    final Map<String, dynamic> data =
+        json.decode(res.body) as Map<String, dynamic>;
+    final List<dynamic> chaptersJson = data['chapters'] as List<dynamic>? ?? [];
+    final chapters = chaptersJson
+        .map((e) => ChapterOfBookModel.fromJson(e as Map<String, dynamic>))
         .toList();
 
     _allChapters = chapters;
     _filtered = chapters;
+
     return chapters;
   }
 

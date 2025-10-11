@@ -98,127 +98,127 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// No description provided for @azkarCategoryList.
+  /// Title for Azkar category list screen
   ///
   /// In en, this message translates to:
   /// **'List of Azkar Categories'**
   String get azkarCategoryList;
 
-  /// No description provided for @azkarLoadingText.
+  /// Loading message for Azkar screen
   ///
   /// In en, this message translates to:
   /// **'Loading Azkar...'**
   String get azkarLoadingText;
 
-  /// No description provided for @azkarError.
+  /// Error message when no Azkar are available
   ///
   /// In en, this message translates to:
   /// **'No Azkar available at the moment'**
   String get azkarError;
 
-  /// No description provided for @azkar.
+  /// Title text for Azkar screen
   ///
   /// In en, this message translates to:
   /// **'Azkar'**
   String get azkar;
 
-  /// No description provided for @revision.
+  /// Label for reference section
   ///
   /// In en, this message translates to:
   /// **'Reference'**
   String get revision;
 
-  /// No description provided for @tasbih.
+  /// Title for Tasbih section
   ///
   /// In en, this message translates to:
   /// **'Tasbih'**
   String get tasbih;
 
-  /// No description provided for @reset.
+  /// Label for reset button
   ///
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
 
-  /// No description provided for @hadithBooks.
+  /// Title for Hadith books list
   ///
   /// In en, this message translates to:
   /// **'Hadith Books'**
   String get hadithBooks;
 
-  /// No description provided for @hadithBooksError.
+  /// Error message when Hadith books fail to load
   ///
   /// In en, this message translates to:
   /// **'Failed to fetch books'**
   String get hadithBooksError;
 
-  /// No description provided for @hadithBooksSearch.
+  /// Search hint for Hadith books list
   ///
   /// In en, this message translates to:
   /// **'Search by book name...'**
   String get hadithBooksSearch;
 
-  /// No description provided for @hadithBooksEmpty.
+  /// Message shown when no Hadith books are available
   ///
   /// In en, this message translates to:
   /// **'No books available'**
   String get hadithBooksEmpty;
 
-  /// No description provided for @writer.
+  /// Label for book author
   ///
   /// In en, this message translates to:
   /// **'Author'**
   String get writer;
 
-  /// No description provided for @numberOfChapters.
+  /// Label showing number of chapters in a book
   ///
   /// In en, this message translates to:
   /// **'Number of Chapters:'**
   String get numberOfChapters;
 
-  /// No description provided for @numberOfHadiths.
+  /// Label showing number of Hadiths in a book
   ///
   /// In en, this message translates to:
   /// **'Number of Hadiths:'**
   String get numberOfHadiths;
 
-  /// No description provided for @chapters.
+  /// Title for chapters list
   ///
   /// In en, this message translates to:
   /// **'Chapters'**
   String get chapters;
 
-  /// No description provided for @errorMain.
+  /// Generic error prefix text
   ///
   /// In en, this message translates to:
   /// **'An error occurred:'**
   String get errorMain;
 
-  /// No description provided for @chaptersEmpty.
+  /// Message shown when no chapters are available
   ///
   /// In en, this message translates to:
   /// **'No chapters available'**
   String get chaptersEmpty;
 
-  /// No description provided for @chaptersSearch.
+  /// Search placeholder for chapters list
   ///
   /// In en, this message translates to:
   /// **'Search for a chapter...'**
   String get chaptersSearch;
 
-  /// No description provided for @hadithError.
+  /// Error message when Hadiths fail to load
   ///
   /// In en, this message translates to:
   /// **'Failed to load Hadiths'**
   String get hadithError;
 
-  /// No description provided for @hadithstitle.
+  /// Title for Hadiths list
   ///
   /// In en, this message translates to:
   /// **'Hadiths'**
   String get hadithstitle;
 
-  /// No description provided for @hadithStatus.
+  /// Label for Hadith status (authenticity)
   ///
   /// In en, this message translates to:
   /// **'Status'**
