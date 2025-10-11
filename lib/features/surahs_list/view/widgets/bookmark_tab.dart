@@ -24,9 +24,14 @@ class BookmarksTab extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
+    return BlocListener<BookmarksCubit, BookmarksState>(
+      listener: (context, state) {
+        // يمكنك إضافة أي تفاعل إضافي هنا عند تغيير الحالة
+      },
       child: BlocBuilder<BookmarksCubit, BookmarksState>(
+        buildWhen: (previous, current) =>
+            previous.bookmarks != current.bookmarks ||
+            previous.status != current.status,
         builder: (context, state) {
           if (state.status == BookmarksStatus.loading) {
             return const Center(child: CircularProgressIndicator());
@@ -89,62 +94,59 @@ class BookmarksTab extends StatelessWidget {
                                       final result = await showDialog(
                                         context: context,
                                         builder: (BuildContext context) =>
-                                            Directionality(
-                                              textDirection: TextDirection.rtl,
-                                              child: AlertDialog(
-                                                title: Text(
-                                                  'مسح العلامه',
-                                                  style: theme
-                                                      .textTheme
-                                                      .titleMedium,
-                                                ),
-                                                content: Text(
-                                                  'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
-                                                  style: theme
-                                                      .textTheme
-                                                      .bodyMedium,
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop(false),
-                                                    child: Text(
-                                                      'تجاهل',
-                                                      style: theme
-                                                          .textTheme
-                                                          .bodyMedium,
-                                                    ),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop(true),
-                                                    child: Text(
-                                                      'مسح',
-                                                      style: theme
-                                                          .textTheme
-                                                          .bodyMedium!
-                                                          .copyWith(
-                                                            color: Colors.red,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ],
+                                            AlertDialog(
+                                              title: Text(
+                                                'مسح العلامه',
+                                                style:
+                                                    theme.textTheme.titleMedium,
                                               ),
+                                              content: Text(
+                                                'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
+                                                style:
+                                                    theme.textTheme.bodyMedium,
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(
+                                                    context,
+                                                  ).pop(false),
+                                                  child: Text(
+                                                    'تجاهل',
+                                                    style: theme
+                                                        .textTheme
+                                                        .bodyMedium,
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(
+                                                    context,
+                                                  ).pop(true),
+                                                  child: Text(
+                                                    'مسح',
+                                                    style: theme
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                          color: Colors.red,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                       );
 
                                       if (result == true) {
+                                        // استخدم await للتأكد من اكتمال العملية
                                         if (context.mounted) {
-                                          context
+                                          await context
                                               .read<BookmarksCubit>()
                                               .removeBookmark(
                                                 surah: bookMark.surahNumber,
                                                 ayah: bookMark.ayahNumber,
                                               );
+                                        }
+
+                                        if (context.mounted) {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(

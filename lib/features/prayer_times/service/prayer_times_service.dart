@@ -11,7 +11,6 @@ class PrayerTimesService {
   static const String _latitudeKey = 'lat';
   static const String _longitudeKey = 'lng';
   static const String _lastUpdatedKey = 'last_updated';
-  static const int _cacheDurationHours = 24;
 
   final DateFormat _timeFormatter = DateFormat.Hm();
 
@@ -123,20 +122,12 @@ class PrayerTimesService {
   Future<Coordinates?> _getCachedCoordinates(SharedPreferences prefs) async {
     final lat = prefs.getDouble(_latitudeKey);
     final lng = prefs.getDouble(_longitudeKey);
-    final lastUpdatedMillis = prefs.getInt(_lastUpdatedKey);
 
-    if (lat == null || lng == null || lastUpdatedMillis == null) {
+    if (lat == null || lng == null) {
       return null;
     }
 
-    final lastUpdated = DateTime.fromMillisecondsSinceEpoch(lastUpdatedMillis);
-    final timeDiff = DateTime.now().difference(lastUpdated);
-
-    if (timeDiff.inHours < _cacheDurationHours) {
-      return Coordinates(lat, lng);
-    }
-
-    return null;
+    return Coordinates(lat, lng);
   }
 
   /// الحصول على الموقع الحالي
@@ -152,23 +143,5 @@ class PrayerTimesService {
     await prefs.setDouble(_latitudeKey, latitude);
     await prefs.setDouble(_longitudeKey, longitude);
     await prefs.setInt(_lastUpdatedKey, DateTime.now().millisecondsSinceEpoch);
-  }
-
-  /// مسح الإحداثيات المخزنة
-  Future<void> clearCachedCoordinates() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_latitudeKey);
-    await prefs.remove(_longitudeKey);
-    await prefs.remove(_lastUpdatedKey);
-  }
-
-  /// الحصول على آخر وقت تم فيه تحديث الإحداثيات
-  Future<DateTime?> getLastCoordinatesUpdate() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastUpdatedMillis = prefs.getInt(_lastUpdatedKey);
-
-    return lastUpdatedMillis != null
-        ? DateTime.fromMillisecondsSinceEpoch(lastUpdatedMillis)
-        : null;
   }
 }

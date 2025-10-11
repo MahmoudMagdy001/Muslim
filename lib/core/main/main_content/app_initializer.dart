@@ -17,6 +17,24 @@ class AppInitializer {
     await _scheduleHourlyReminder();
   }
 
+  double getInitialFontSize() => prefs.getDouble('fontSize') ?? 18.0;
+
+  ThemeMode getInitialThemeMode() {
+    final themeText = prefs.getString('themeMode');
+    if (themeText?.contains('dark') ?? false) {
+      return ThemeMode.dark;
+    } else if (themeText?.contains('light') ?? false) {
+      return ThemeMode.light;
+    } else {
+      return ThemeMode.system;
+    }
+  }
+
+  Locale getInitialLanguage() {
+    final langCode = prefs.getString('appLanguage') ?? 'en';
+    return Locale(langCode);
+  }
+
   Future<void> _initializeAudioBackground() async {
     await JustAudioBackground.init(
       androidNotificationChannelId: 'com.example.muslim.audio',

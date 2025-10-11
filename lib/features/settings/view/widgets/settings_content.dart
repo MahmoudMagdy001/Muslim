@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_info_section.dart';
 import 'font_size_section.dart';
+import 'language_section.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
 
@@ -21,6 +22,8 @@ class SettingsContent extends StatelessWidget {
           ThemeSection(),
           divider,
           ReciterSection(),
+          divider,
+          LanguageSection(),
           divider,
           AppInfoSection(),
         ],

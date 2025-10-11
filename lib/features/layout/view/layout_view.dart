@@ -20,14 +20,11 @@ class _LayoutViewState extends State<LayoutView>
     super.build(context);
     final theme = Theme.of(context);
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('مُسَلِّم')),
-        body: SafeArea(
-          child: Builder(
-            builder: (scaffoldContext) => LayoutContent(scaffoldContext, theme),
-          ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('مُسَلِّم')),
+      body: SafeArea(
+        child: Builder(
+          builder: (scaffoldContext) => LayoutContent(scaffoldContext, theme),
         ),
       ),
     );

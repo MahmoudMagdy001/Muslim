@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/ext/extention.dart';
 import '../../model/hadith_model.dart';
 
 class HadithsScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class HadithsScreen extends StatefulWidget {
     required this.chapterName,
     super.key,
   });
+
   final String bookSlug;
   final String chapterNumber;
   final String chapterName;
@@ -25,34 +28,80 @@ class _HadithsScreenState extends State<HadithsScreen> {
   static const String _apiKey =
       r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
-  late final ValueNotifier<List<HadithModel>> _hadithsNotifier;
-  late final ValueNotifier<int> _currentPageNotifier;
-  late final ValueNotifier<bool> _isLoadingNotifier;
-  late final ValueNotifier<bool> _hasMoreNotifier;
-  late final ScrollController _scrollController;
-  late final TextEditingController _searchController;
+  final List<HadithModel> _hadiths = [];
+  final ScrollController _scrollController = ScrollController();
+
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _currentPage = 1;
 
   @override
   void initState() {
     super.initState();
-    _hadithsNotifier = ValueNotifier([]);
-    _currentPageNotifier = ValueNotifier(1);
-    _isLoadingNotifier = ValueNotifier(false);
-    _hasMoreNotifier = ValueNotifier(true);
-    _scrollController = ScrollController();
-    _searchController = TextEditingController();
-
     _fetchHadiths();
-
     _scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      if (!_isLoadingNotifier.value && _hasMoreNotifier.value) {
+      if (!_isLoading && _hasMore) {
         _fetchHadiths(loadMore: true);
       }
+    }
+  }
+
+  Future<void> _fetchHadiths({bool loadMore = false}) async {
+    if (_isLoading) return;
+
+    if (!mounted) return;
+    setState(() => _isLoading = true);
+
+    try {
+      final page = loadMore ? _currentPage + 1 : 1;
+      final url = Uri.parse(
+        'https://hadithapi.com/api/hadiths/?apiKey=$_apiKey&book=${widget.bookSlug}&chapter=${widget.chapterNumber}&page=$page',
+      );
+
+      final response = await http.get(url);
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List hadithsJson = data['hadiths']['data'] ?? [];
+
+        final List<HadithModel> newHadiths = hadithsJson
+            .map((e) => HadithModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        if (!mounted) return;
+        setState(() {
+          if (loadMore) {
+            _hadiths.addAll(newHadiths);
+            _currentPage = page;
+          } else {
+            _hadiths
+              ..clear()
+              ..addAll(newHadiths);
+            _currentPage = 1;
+          }
+          _hasMore = data['hadiths']['next_page_url'] != null;
+        });
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.localization.hadithError)),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${context.localization.errorMain} $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -61,231 +110,103 @@ class _HadithsScreenState extends State<HadithsScreen> {
     _scrollController
       ..removeListener(_scrollListener)
       ..dispose();
-    _searchController.dispose();
-    _hadithsNotifier.dispose();
-    _currentPageNotifier.dispose();
-    _isLoadingNotifier.dispose();
-    _hasMoreNotifier.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchHadiths({bool loadMore = false}) async {
-    if (_isLoadingNotifier.value || !_hasMoreNotifier.value) return;
-
-    _isLoadingNotifier.value = true;
-
-    try {
-      final page = loadMore ? _currentPageNotifier.value + 1 : 1;
-      final url = Uri.parse(
-        'https://hadithapi.com/api/hadiths/?apiKey=$_apiKey&book=${widget.bookSlug}&chapter=${widget.chapterNumber}&page=$page',
-      );
-
-      final response = await http.get(url).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List hadithsJson = data['hadiths']['data'] as List? ?? [];
-
-        final List<HadithModel> fetchedHadiths = hadithsJson
-            .map((json) => HadithModel.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        if (loadMore) {
-          final currentHadiths = _hadithsNotifier.value;
-          final updatedHadiths = List<HadithModel>.from(currentHadiths)
-            ..addAll(fetchedHadiths);
-          _hadithsNotifier.value = List.unmodifiable(updatedHadiths);
-          _currentPageNotifier.value = page;
-        } else {
-          _hadithsNotifier.value = List.unmodifiable(fetchedHadiths);
-          _currentPageNotifier.value = 1;
-        }
-
-        _hasMoreNotifier.value = data['hadiths']['next_page_url'] != null;
-      } else {
-        throw Exception('فشل في تحميل الأحاديث: ${response.statusCode}');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('خطأ في تحميل الأحاديث: $e')));
-      }
-    } finally {
-      _isLoadingNotifier.value = false;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(title: Text('أحاديث ${widget.chapterName}')),
-      body: _HadithsContent(
-        hadithsNotifier: _hadithsNotifier,
-        isLoadingNotifier: _isLoadingNotifier,
-        hasMoreNotifier: _hasMoreNotifier,
-        scrollController: _scrollController,
-      ),
-    ),
-  );
-}
-
-// ==================== Hadiths Content ====================
-
-class _HadithsContent extends StatelessWidget {
-  const _HadithsContent({
-    required this.hadithsNotifier,
-    required this.isLoadingNotifier,
-    required this.hasMoreNotifier,
-    required this.scrollController,
-  });
-
-  final ValueNotifier<List<HadithModel>> hadithsNotifier;
-  final ValueNotifier<bool> isLoadingNotifier;
-  final ValueNotifier<bool> hasMoreNotifier;
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context) =>
-      ValueListenableBuilder<List<HadithModel>>(
-        valueListenable: hadithsNotifier,
-        builder: (context, hadiths, child) => ValueListenableBuilder<bool>(
-          valueListenable: isLoadingNotifier,
-          builder: (context, isLoading, child) => ValueListenableBuilder<bool>(
-            valueListenable: hasMoreNotifier,
-            builder: (context, hasMore, child) {
-              if (hadiths.isEmpty && isLoading) {
-                // 🚀 مفيش Scrollbar هنا
-                return const _LoadingWidget();
-              }
-
-              // 🚀 Scrollbar يظهر بس لما فيه بيانات
-              return Scrollbar(
-                controller: scrollController,
-
-                child: _HadithsList(
-                  hadiths: hadiths,
-                  isLoading: isLoading,
-                  hasMore: hasMore,
-                  scrollController: scrollController,
-                ),
-              );
-            },
-          ),
-        ),
-      );
-}
-
-// ==================== Loading Widget ====================
-class _LoadingWidget extends StatelessWidget {
-  const _LoadingWidget();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(color: theme.colorScheme.primary),
-          const SizedBox(height: 16),
-          Text('جاري تحميل الأحاديث...', style: theme.textTheme.bodyMedium),
-        ],
-      ),
-    );
-  }
-}
+    final locale = Localizations.localeOf(context).languageCode;
+    final isArabic = locale == 'ar';
 
-// ==================== Hadiths List ====================
-class _HadithsList extends StatelessWidget {
-  const _HadithsList({
-    required this.hadiths,
-    required this.isLoading,
-    required this.hasMore,
-    required this.scrollController,
-  });
-  final List<HadithModel> hadiths;
-  final bool isLoading;
-  final bool hasMore;
-  final ScrollController scrollController;
-
-  @override
-  Widget build(BuildContext context) => ListView.builder(
-    controller: scrollController,
-    padding: const EdgeInsets.fromLTRB(15, 8, 8, 8),
-    itemCount: hadiths.length + (hasMore ? 1 : 0),
-    itemBuilder: (context, index) {
-      if (index < hadiths.length) {
-        return _HadithCard(hadith: hadiths[index]);
-      } else {
-        return const _LoadingMoreWidget();
-      }
-    },
-  );
-}
-
-// ==================== Loading More Widget ====================
-class _LoadingMoreWidget extends StatelessWidget {
-  const _LoadingMoreWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: CircularProgressIndicator(color: theme.colorScheme.primary),
-      ),
-    );
-  }
-}
-
-// ==================== Hadith Card ====================
-class _HadithCard extends StatelessWidget {
-  const _HadithCard({required this.hadith});
-  final HadithModel hadith;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final statusArabic = _HadithCard._statusMap[hadith.status] ?? hadith.status;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 👇 عنوان الباب لو موجود
-            if (hadith.headingArabic.isNotEmpty) ...[
-              Text(
-                hadith.headingArabic,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.primaryColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            SelectableText(
-              hadith.hadithArabic,
-
-              style: theme.textTheme.titleMedium?.copyWith(height: 2),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'الحكم: $statusArabic',
-              textAlign: TextAlign.end,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.primaryColor,
-              ),
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '${context.localization.hadithstitle} ${widget.chapterName}',
         ),
       ),
+      body: _hadiths.isEmpty && _isLoading
+          ? Skeletonizer(
+              child: ListView.builder(
+                padding: const EdgeInsetsDirectional.only(
+                  start: 8,
+                  end: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                itemCount: 5,
+                itemBuilder: (context, index) => const _SkeletonHadithItem(),
+              ),
+            )
+          : Scrollbar(
+              controller: _scrollController,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsetsDirectional.only(
+                  start: 8,
+                  end: 16,
+                  top: 10,
+                  bottom: 10,
+                ),
+                itemCount: _hadiths.length + (_hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index < _hadiths.length) {
+                    final hadith = _hadiths[index];
+
+                    final hadithText = isArabic
+                        ? hadith.hadithArabic
+                        : hadith.hadithEnglish;
+
+                    final heading = isArabic
+                        ? hadith.headingArabic
+                        : hadith.headingEnglish;
+
+                    final status = isArabic
+                        ? _statusMap[hadith.status]!
+                        : hadith.status;
+
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (heading.isNotEmpty) ...[
+                              Text(
+                                heading,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.primaryColor,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                            SelectableText(
+                              hadithText,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                height: isArabic ? 2 : 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${context.localization.hadithStatus}: $status',
+                              textAlign: TextAlign.end,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                },
+              ),
+            ),
     );
   }
 
@@ -297,4 +218,29 @@ class _HadithCard extends StatelessWidget {
     'Da`eef': 'ضعيف',
     'da`eef': 'ضعيف',
   };
+}
+
+class _SkeletonHadithItem extends StatelessWidget {
+  const _SkeletonHadithItem();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('hadith.headingArabic', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 16),
+            const Text('hadith.hadithArabic\nhadith.hadithArabic'),
+            const SizedBox(height: 8),
+            const Text('الحكم: صحيح'),
+          ],
+        ),
+      ),
+    );
+  }
 }

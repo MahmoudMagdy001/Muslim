@@ -1,0 +1,29 @@
+{
+  "azkarCategoryList": "قائمة أنواع الأذكار",
+  "azkarLoadingText": "جاري تحميل الأذكار...",
+  "azkarError": "لا توجد أذكار متاحة حاليًا",
+  "azkar": "الأذكار",
+  "revision": "المرجع",
+  "tasbih": "التسبيح",
+  "reset": "إعادة التعيين",
+
+  "hadithBooks": "كتب الحديث",
+  "hadithBooksError": "فشل في جلب الكتب",
+  "hadithBooksSearch": "ابحث باسم الكتاب...",
+  "hadithBooksEmpty": "لا توجد كتب متاحة",
+  "writer": "المؤلف",
+  "numberOfChapters": "عدد الأبواب:",
+  "numberOfHadiths": "عدد الأحاديث:",
+
+  "chapters" : "أبواب",
+  "errorMain" :"حدث خطأ:",
+  "chaptersEmpty" : "لا توجد أبواب",
+  "chaptersSearch" :"ابحث عن باب...",
+
+  "hadithError": "فشل في تحميل الأحاديث",
+  "hadithstitle": "أحاديث",
+  "hadithStatus" :"الحكم"
+
+
+
+}

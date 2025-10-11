@@ -20,26 +20,23 @@ class SurahsListView extends StatelessWidget {
         ),
       ),
     ],
-    child: Directionality(
-      textDirection: TextDirection.rtl,
-      child: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('القرآن الكريم'),
-            bottom: const TabBar(
-              tabs: [
-                Tab(text: 'السور'),
-                Tab(text: 'العلامات'),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              SurahListTab(selectedReciter: selectedReciter),
-              BookmarksTab(reciter: selectedReciter),
+    child: DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('القرآن الكريم'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'السور'),
+              Tab(text: 'العلامات'),
             ],
           ),
+        ),
+        body: TabBarView(
+          children: [
+            SurahListTab(selectedReciter: selectedReciter),
+            BookmarksTab(reciter: selectedReciter),
+          ],
         ),
       ),
     ),

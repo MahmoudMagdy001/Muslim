@@ -50,49 +50,46 @@ class _ThemeTile extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
       ),
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('اختر المظهر', style: theme.textTheme.titleMedium),
-
-            RadioListTile<ThemeMode>(
-              title: Text('الوضع النهاري', style: theme.textTheme.titleMedium),
-              value: ThemeMode.light,
-              groupValue: currentMode,
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<ThemeCubit>().setThemeMode(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: Text('الوضع الليلي', style: theme.textTheme.titleMedium),
-              value: ThemeMode.dark,
-              groupValue: currentMode,
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<ThemeCubit>().setThemeMode(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            RadioListTile<ThemeMode>(
-              title: Text('حسب النظام', style: theme.textTheme.titleMedium),
-              value: ThemeMode.system,
-              groupValue: currentMode,
-              onChanged: (value) {
-                if (value != null) {
-                  context.read<ThemeCubit>().setThemeMode(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-          ],
-        ),
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('اختر المظهر', style: theme.textTheme.titleMedium),
+      
+          RadioListTile<ThemeMode>(
+            title: Text('الوضع النهاري', style: theme.textTheme.titleMedium),
+            value: ThemeMode.light,
+            groupValue: currentMode,
+            onChanged: (value) {
+              if (value != null) {
+                context.read<ThemeCubit>().setThemeMode(value);
+                Navigator.pop(context);
+              }
+            },
+          ),
+          RadioListTile<ThemeMode>(
+            title: Text('الوضع الليلي', style: theme.textTheme.titleMedium),
+            value: ThemeMode.dark,
+            groupValue: currentMode,
+            onChanged: (value) {
+              if (value != null) {
+                context.read<ThemeCubit>().setThemeMode(value);
+                Navigator.pop(context);
+              }
+            },
+          ),
+          RadioListTile<ThemeMode>(
+            title: Text('حسب النظام', style: theme.textTheme.titleMedium),
+            value: ThemeMode.system,
+            groupValue: currentMode,
+            onChanged: (value) {
+              if (value != null) {
+                context.read<ThemeCubit>().setThemeMode(value);
+                Navigator.pop(context);
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
       ),
     );
   }

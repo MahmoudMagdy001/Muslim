@@ -48,42 +48,39 @@ class _FontSizeSwitch extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
       ),
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('اختر حجم الخط', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            RadioListTile<double>(
-              title: Text('صغير', style: theme.textTheme.titleMedium),
-              value: 14,
-              groupValue: currentSize.roundToDouble(),
-              onChanged: (value) {
-                fontSizeCubit.setFontSize(value!);
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<double>(
-              title: Text('متوسط', style: theme.textTheme.titleMedium),
-              value: 18,
-              groupValue: currentSize.roundToDouble(),
-              onChanged: (value) {
-                fontSizeCubit.setFontSize(value!);
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile<double>(
-              title: Text('كبير', style: theme.textTheme.titleMedium),
-              value: 22,
-              groupValue: currentSize.roundToDouble(),
-              onChanged: (value) {
-                fontSizeCubit.setFontSize(value!);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('اختر حجم الخط', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          RadioListTile<double>(
+            title: Text('صغير', style: theme.textTheme.titleMedium),
+            value: 14,
+            groupValue: currentSize.roundToDouble(),
+            onChanged: (value) {
+              fontSizeCubit.setFontSize(value!);
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile<double>(
+            title: Text('متوسط', style: theme.textTheme.titleMedium),
+            value: 18,
+            groupValue: currentSize.roundToDouble(),
+            onChanged: (value) {
+              fontSizeCubit.setFontSize(value!);
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile<double>(
+            title: Text('كبير', style: theme.textTheme.titleMedium),
+            value: 22,
+            groupValue: currentSize.roundToDouble(),
+            onChanged: (value) {
+              fontSizeCubit.setFontSize(value!);
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
     );
   }

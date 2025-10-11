@@ -70,7 +70,7 @@ class PrayerNotificationService {
           id: notificationId,
           channelKey: 'prayer_reminder',
           title: 'أذان $prayerName',
-          body: 'حان الأن موعدأذان $prayerName',
+          body: 'حان الأن موعد أذان $prayerName',
           wakeUpScreen: true,
         ),
         schedule: NotificationCalendar(

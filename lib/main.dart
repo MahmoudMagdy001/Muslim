@@ -7,22 +7,10 @@ import 'core/main/main_content/app_initializer.dart';
 import 'features/quran/service/bookmarks_service.dart';
 import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'features/settings/view_model/font_size/font_size_cubit.dart';
+import 'features/settings/view_model/language/language_cubit.dart';
 import 'features/settings/view_model/rectire/rectire_cubit.dart';
 import 'features/settings/view_model/theme/theme_cubit.dart';
-
-ThemeMode _getInitialThemeMode(SharedPreferences prefs) {
-  final themeText = prefs.getString('themeMode');
-  if (themeText?.contains('dark') ?? false) {
-    return ThemeMode.dark;
-  } else if (themeText?.contains('light') ?? false) {
-    return ThemeMode.light;
-  } else {
-    return ThemeMode.system;
-  }
-}
-
-double _getInitialFontSize(SharedPreferences prefs) =>
-    prefs.getDouble('fontSize') ?? 18.0;
+import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +19,9 @@ Future<void> main() async {
     final initializer = AppInitializer(prefs);
     await initializer.initialize();
 
-    final initialMode = _getInitialThemeMode(prefs);
-    final initialFontSize = _getInitialFontSize(prefs);
+    final initialLocale = initializer.getInitialLanguage();
+    final initialMode = initializer.getInitialThemeMode();
+    final initialFontSize = initializer.getInitialFontSize();
 
     runApp(
       MultiBlocProvider(
@@ -41,8 +30,12 @@ Future<void> main() async {
           BlocProvider(create: (_) => ThemeCubit(initialMode)),
           BlocProvider(create: (_) => ReciterCubit()),
           BlocProvider(create: (_) => BookmarksCubit(BookmarksService())),
+          BlocProvider(create: (_) => LanguageCubit(initialLocale)),
         ],
-        child: const AppContent(),
+        child: const AppContent(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
       ),
     );
   } catch (e) {

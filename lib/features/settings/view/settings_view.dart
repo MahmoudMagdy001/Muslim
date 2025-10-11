@@ -6,11 +6,8 @@ class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
-  Widget build(BuildContext context) => Directionality(
-    textDirection: TextDirection.rtl,
-    child: Scaffold(
-      appBar: AppBar(title: const Text('الإعدادات')),
-      body: const SettingsContent(),
-    ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('الإعدادات')),
+    body: const SettingsContent(),
   );
 }

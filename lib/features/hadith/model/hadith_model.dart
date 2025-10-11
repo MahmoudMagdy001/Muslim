@@ -4,6 +4,8 @@ class HadithModel {
     required this.hadithNumber,
     required this.hadithArabic,
     required this.headingArabic,
+    required this.headingEnglish,
+    required this.hadithEnglish,
     required this.status,
   });
 
@@ -11,13 +13,28 @@ class HadithModel {
     id: json['id']?.toString() ?? '',
     hadithNumber: json['hadithNumber']?.toString() ?? '',
     hadithArabic: json['hadithArabic']?.toString() ?? '',
+    hadithEnglish: json['hadithEnglish']?.toString() ?? '',
     headingArabic: json['headingArabic']?.toString() ?? '',
+    headingEnglish: json['headingEnglish']?.toString() ?? '',
     status: json['status']?.toString() ?? '',
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'hadithNumber': hadithNumber,
+    'hadithArabic': hadithArabic,
+    'hadithEnglish': hadithEnglish,
+    'headingArabic': headingArabic,
+    'headingEnglish': headingEnglish,
+    'status': status,
+  };
+
   final String id;
   final String hadithNumber;
   final String hadithArabic;
+  final String hadithEnglish;
   final String headingArabic;
+  final String headingEnglish;
   final String status;
 
   @override
