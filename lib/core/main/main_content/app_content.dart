@@ -32,6 +32,13 @@ class AppContent extends StatelessWidget {
               final darkTheme = themeFactory.darkTheme;
 
               return MaterialApp(
+                themeAnimationStyle: const AnimationStyle(
+                  curve: Curves.easeIn,
+                  duration: Duration(milliseconds: 500),
+                  reverseCurve: Curves.easeOut,
+                  reverseDuration: Duration(milliseconds: 500),
+                ),
+
                 debugShowCheckedModeBanner: false,
                 themeMode: themeState.themeMode,
                 theme: lightTheme,

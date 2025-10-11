@@ -58,7 +58,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
               final text = item.text;
               return name.contains(searchQuery) || text.contains(searchQuery);
             }).toList();
-    
+
             return Column(
               children: [
                 Padding(
@@ -104,9 +104,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                             ),
                           ),
                           title: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8.0,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -138,7 +136,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                               ],
                             ),
                           ),
-    
+
                           // 👇 زرار Share
                         ),
                       );

@@ -97,6 +97,132 @@ abstract class AppLocalizations {
     Locale('ar'),
     Locale('en'),
   ];
+
+  /// No description provided for @azkarCategoryList.
+  ///
+  /// In en, this message translates to:
+  /// **'List of Azkar Categories'**
+  String get azkarCategoryList;
+
+  /// No description provided for @azkarLoadingText.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading Azkar...'**
+  String get azkarLoadingText;
+
+  /// No description provided for @azkarError.
+  ///
+  /// In en, this message translates to:
+  /// **'No Azkar available at the moment'**
+  String get azkarError;
+
+  /// No description provided for @azkar.
+  ///
+  /// In en, this message translates to:
+  /// **'Azkar'**
+  String get azkar;
+
+  /// No description provided for @revision.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get revision;
+
+  /// No description provided for @tasbih.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih'**
+  String get tasbih;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @hadithBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith Books'**
+  String get hadithBooks;
+
+  /// No description provided for @hadithBooksError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to fetch books'**
+  String get hadithBooksError;
+
+  /// No description provided for @hadithBooksSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by book name...'**
+  String get hadithBooksSearch;
+
+  /// No description provided for @hadithBooksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No books available'**
+  String get hadithBooksEmpty;
+
+  /// No description provided for @writer.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get writer;
+
+  /// No description provided for @numberOfChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Chapters:'**
+  String get numberOfChapters;
+
+  /// No description provided for @numberOfHadiths.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Hadiths:'**
+  String get numberOfHadiths;
+
+  /// No description provided for @chapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get chapters;
+
+  /// No description provided for @errorMain.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred:'**
+  String get errorMain;
+
+  /// No description provided for @chaptersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No chapters available'**
+  String get chaptersEmpty;
+
+  /// No description provided for @chaptersSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a chapter...'**
+  String get chaptersSearch;
+
+  /// No description provided for @hadithError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load Hadiths'**
+  String get hadithError;
+
+  /// No description provided for @hadithstitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadiths'**
+  String get hadithstitle;
+
+  /// No description provided for @hadithStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get hadithStatus;
 }
 
 class _AppLocalizationsDelegate

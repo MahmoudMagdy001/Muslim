@@ -1,0 +1,26 @@
+{
+  "azkarCategoryList": "List of Azkar Categories",
+  "azkarLoadingText": "Loading Azkar...",
+  "azkarError": "No Azkar available at the moment",
+  "azkar": "Azkar",
+  "revision": "Reference",
+  "tasbih": "Tasbih",
+  "reset": "Reset",
+
+  "hadithBooks": "Hadith Books",
+  "hadithBooksError": "Failed to fetch books",
+  "hadithBooksSearch": "Search by book name...",
+  "hadithBooksEmpty": "No books available",
+  "writer": "Author",
+  "numberOfChapters": "Number of Chapters:",
+  "numberOfHadiths": "Number of Hadiths:",
+
+  "chapters": "Chapters",
+  "errorMain": "An error occurred:",
+  "chaptersEmpty": "No chapters available",
+  "chaptersSearch": "Search for a chapter...",
+
+  "hadithError": "Failed to load Hadiths",
+  "hadithstitle": "Hadiths",
+  "hadithStatus": "Status"
+}

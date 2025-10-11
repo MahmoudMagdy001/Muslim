@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/bookmark_model.dart';
@@ -43,7 +44,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       await _service.saveBookmarks(updated);
     } catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
-      print('Error adding bookmark: $e');
+      debugPrint('Error adding bookmark: $e');
     }
   }
 
@@ -56,7 +57,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       await _service.saveBookmarks(updated);
     } catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
-      print('Error removing bookmark: $e');
+      debugPrint('Error removing bookmark: $e');
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../../core/ext/extention.dart';
 import '../../model/azkar_model/azkar_model.dart';
 
 class AzkarListView extends StatefulWidget {
@@ -46,6 +47,7 @@ class _AzkarListViewState extends State<AzkarListView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final local = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.category)),
@@ -57,8 +59,8 @@ class _AzkarListViewState extends State<AzkarListView> {
           final total = totalCounts[index];
           final isFinished = current >= total;
           final progress = total > 0 ? current / total : 0.0;
-          final hasCount = total > 0; // تحقق من وجود تكرار
-    
+          final hasCount = total > 0;
+
           return AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -82,7 +84,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                         Text(
                           item.zekr ?? '',
                           style: theme.textTheme.titleMedium?.copyWith(
-                            height: 2.1,
+                            height: local == 'ar' ? 2.1 : 1.5,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: isFinished && hasCount
@@ -90,9 +92,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                 : colorScheme.onSurface,
                           ),
                         ),
-    
                         const SizedBox(height: 12),
-    
                         // المرجع
                         if (item.reference?.isNotEmpty ?? false)
                           Container(
@@ -116,7 +116,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  'المرجع: ${item.reference}',
+                                  '${context.localization.revision}: ${item.reference}',
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.w500,
@@ -125,10 +125,10 @@ class _AzkarListViewState extends State<AzkarListView> {
                               ],
                             ),
                           ),
-    
+                        const SizedBox(height: 10),
+
                         // الوصف / الفوائد
                         if (item.description?.isNotEmpty ?? false) ...[
-                          const SizedBox(height: 12),
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
@@ -147,10 +147,9 @@ class _AzkarListViewState extends State<AzkarListView> {
                                 Expanded(
                                   child: Text(
                                     item.description!,
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -160,7 +159,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                       ],
                     ),
                   ),
-    
+
                   // قسم التكرار (يظهر فقط لو فيه تكرار)
                   if (hasCount) ...[
                     const SizedBox(height: 16),
@@ -170,13 +169,12 @@ class _AzkarListViewState extends State<AzkarListView> {
                         LinearProgressIndicator(
                           value: progress,
                           minHeight: 6,
-                          backgroundColor:
-                              colorScheme.surfaceContainerHighest,
+                          backgroundColor: colorScheme.surfaceContainerHighest,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             colorScheme.primary,
                           ),
                         ),
-    
+
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -189,27 +187,24 @@ class _AzkarListViewState extends State<AzkarListView> {
                                 children: [
                                   Text(
                                     current.toString(),
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.primary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     '/',
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.primary,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.primary,
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     total.toString(),
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.primary,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.primary,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -223,8 +218,8 @@ class _AzkarListViewState extends State<AzkarListView> {
                                       HapticFeedback.mediumImpact();
                                       _incrementCounter(index);
                                     },
-    
-                                    child: const Text('تسبيح'),
+
+                                    child: Text(context.localization.tasbih),
                                   ),
                                 ),
                               ] else
@@ -241,16 +236,14 @@ class _AzkarListViewState extends State<AzkarListView> {
                                       color: colorScheme.primary,
                                     ),
                                     label: Text(
-                                      'إعادة',
+                                      context.localization.reset,
                                       style: TextStyle(
                                         color: colorScheme.primary,
                                       ),
                                     ),
                                     style: OutlinedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          8,
-                                        ),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       side: BorderSide(
                                         color: colorScheme.primary,

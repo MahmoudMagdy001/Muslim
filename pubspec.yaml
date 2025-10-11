@@ -47,6 +47,7 @@ flutter:
     - assets/images/seb7a.png
     - assets/images/muslim_logo.png
     - assets/json/azkar.json
+    - assets/json/azkar_en.json
     - assets/json/names_of_allah.json
 
 flutter_launcher_icons:

@@ -39,7 +39,7 @@ class BookmarksTab extends StatelessWidget {
           if (state.bookmarks.isEmpty) {
             return const Center(child: Text('لا توجد علامات بعد'));
           }
-    
+
           return Scrollbar(
             child: CustomScrollView(
               slivers: [
@@ -51,7 +51,7 @@ class BookmarksTab extends StatelessWidget {
                     );
                     final ayahNumber = bookMark.ayahNumber;
                     final ayahText = bookMark.ayahText;
-    
+
                     return Card(
                       margin: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -97,22 +97,19 @@ class BookmarksTab extends StatelessWidget {
                                             AlertDialog(
                                               title: Text(
                                                 'مسح العلامه',
-                                                style: theme
-                                                    .textTheme
-                                                    .titleMedium,
+                                                style:
+                                                    theme.textTheme.titleMedium,
                                               ),
                                               content: Text(
                                                 'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
-                                                style: theme
-                                                    .textTheme
-                                                    .bodyMedium,
+                                                style:
+                                                    theme.textTheme.bodyMedium,
                                               ),
                                               actions: [
                                                 TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(
-                                                        context,
-                                                      ).pop(false),
+                                                  onPressed: () => Navigator.of(
+                                                    context,
+                                                  ).pop(false),
                                                   child: Text(
                                                     'تجاهل',
                                                     style: theme
@@ -121,10 +118,9 @@ class BookmarksTab extends StatelessWidget {
                                                   ),
                                                 ),
                                                 TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(
-                                                        context,
-                                                      ).pop(true),
+                                                  onPressed: () => Navigator.of(
+                                                    context,
+                                                  ).pop(true),
                                                   child: Text(
                                                     'مسح',
                                                     style: theme
@@ -138,16 +134,18 @@ class BookmarksTab extends StatelessWidget {
                                               ],
                                             ),
                                       );
-    
+
                                       if (result == true) {
                                         // استخدم await للتأكد من اكتمال العملية
-                                        await context
-                                            .read<BookmarksCubit>()
-                                            .removeBookmark(
-                                              surah: bookMark.surahNumber,
-                                              ayah: bookMark.ayahNumber,
-                                            );
-    
+                                        if (context.mounted) {
+                                          await context
+                                              .read<BookmarksCubit>()
+                                              .removeBookmark(
+                                                surah: bookMark.surahNumber,
+                                                ayah: bookMark.ayahNumber,
+                                              );
+                                        }
+
                                         if (context.mounted) {
                                           ScaffoldMessenger.of(
                                             context,
