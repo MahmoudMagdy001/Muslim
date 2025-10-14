@@ -17,6 +17,21 @@ class LocationService {
 
     return LocationStatus(enabled: enabled, permission: permission);
   }
+
+  /// ✅ احصل على الموقع الحالي مع التحقق من الصلاحيات
+  Future<Position?> getCurrentLocate() async {
+    final status = await checkLocationStatus();
+
+    if (!status.enabled) {
+      return null;
+    }
+
+    if (!status.isGranted) {
+      return null;
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
 }
 
 class LocationStatus {

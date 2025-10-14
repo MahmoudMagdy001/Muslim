@@ -23,7 +23,7 @@ class CompassWidget extends StatelessWidget {
   static const _arrowHeightFactor = 0.85;
   static const _fixedArrowTopPosition = -57.2;
   static const _fixedArrowSize = 100.0;
-  static const _alignedTextBottomPosition = -140.0;
+  static const _alignedTextBottomPosition = -80.0;
   static const _kaabaIconTopPosition = -100.0;
   static const _kaabaIconSize = 80.0;
 
@@ -52,7 +52,6 @@ class CompassWidget extends StatelessWidget {
               _buildKaabaIcon(),
             ],
           ),
-          const SizedBox(height: 20),
         ],
       ),
     );
