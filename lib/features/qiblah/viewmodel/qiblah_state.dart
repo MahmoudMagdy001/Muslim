@@ -23,8 +23,8 @@ class QiblahState {
   final bool isAligned;
   final Position? userLocation;
   final List<LatLng>? routePoints;
-  final double? distance; // in km
-  final double? duration; // in minutes
+  final double? distance;
+  final double? duration;
 
   QiblahState copyWith({
     QiblahStatus? status,

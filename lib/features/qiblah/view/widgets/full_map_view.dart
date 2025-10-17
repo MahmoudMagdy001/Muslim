@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 
+import '../../../../core/utils/format_helper.dart';
+
 class FullMapView extends StatefulWidget {
   const FullMapView({required this.userLocation, super.key});
 
@@ -105,7 +107,7 @@ class _FullMapViewState extends State<FullMapView> {
                   children: [
                     const Icon(Icons.place, color: Colors.green),
                     Text(
-                      'المسافة إلى الكعبة: ${distanceKm.toStringAsFixed(2)} كم',
+                      'المسافة إلى الكعبة: ${convertToArabicNumbers(distanceKm.toStringAsFixed(2))} كم',
                       style: theme.textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),

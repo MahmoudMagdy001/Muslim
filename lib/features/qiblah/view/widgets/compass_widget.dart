@@ -8,13 +8,14 @@ class CompassWidget extends StatelessWidget {
     required this.headingAngle,
     required this.qiblahAngle,
     required this.isAligned,
-
+    required this.isLoading,
     super.key,
   });
 
   final double headingAngle;
   final double qiblahAngle;
   final bool isAligned;
+  final bool isLoading;
 
   static const _compassDiameterFactor = 0.8;
   static const _maxCompassDiameter = 300.0;
@@ -42,16 +43,30 @@ class CompassWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              _buildMainCircle(compassSize, theme, isDark),
-              _buildFixedArrow(theme, isDark),
-              if (isAligned) _buildAlignedText(theme, isDark),
-              _buildKaabaIcon(),
-            ],
-          ),
+          if (isLoading) ...[
+            // Loading indicator with message
+            const Column(
+              children: [
+                CircularProgressIndicator(strokeWidth: 4.0),
+                SizedBox(height: 16),
+                Text(
+                  'جاري تجهيز البوصلة...',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ] else ...[
+            Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                _buildMainCircle(compassSize, theme, isDark),
+                _buildFixedArrow(theme, isDark),
+                if (isAligned) _buildAlignedText(theme, isDark),
+                _buildKaabaIcon(),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -65,7 +80,6 @@ class CompassWidget extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isDark ? Colors.grey.shade900 : Colors.white,
-
           border: Border.all(
             color: isAligned
                 ? theme.colorScheme.primary
@@ -143,7 +157,6 @@ class CompassWidget extends StatelessWidget {
         style: TextStyle(
           color: isDark ? Colors.white : theme.colorScheme.onPrimary,
           fontWeight: FontWeight.bold,
-
           shadows: const [Shadow(offset: Offset(0, 1), blurRadius: 4)],
         ),
       ),
