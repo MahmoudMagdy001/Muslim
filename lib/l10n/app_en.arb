@@ -1,26 +1,129 @@
 {
+  "@@locale": "en",
+
   "azkarCategoryList": "List of Azkar Categories",
+  "@azkarCategoryList": {
+    "description": "Title for Azkar category list screen",
+    "type": "text"
+  },
+
   "azkarLoadingText": "Loading Azkar...",
+  "@azkarLoadingText": {
+    "description": "Loading message for Azkar screen",
+    "type": "text"
+  },
+
   "azkarError": "No Azkar available at the moment",
+  "@azkarError": {
+    "description": "Error message when no Azkar are available",
+    "type": "text"
+  },
+
   "azkar": "Azkar",
+  "@azkar": {
+    "description": "Title text for Azkar screen",
+    "type": "text"
+  },
+
   "revision": "Reference",
+  "@revision": {
+    "description": "Label for reference section",
+    "type": "text"
+  },
+
   "tasbih": "Tasbih",
+  "@tasbih": {
+    "description": "Title for Tasbih section",
+    "type": "text"
+  },
+
   "reset": "Reset",
+  "@reset": {
+    "description": "Label for reset button",
+    "type": "text"
+  },
 
   "hadithBooks": "Hadith Books",
+  "@hadithBooks": {
+    "description": "Title for Hadith books list",
+    "type": "text"
+  },
+
   "hadithBooksError": "Failed to fetch books",
+  "@hadithBooksError": {
+    "description": "Error message when Hadith books fail to load",
+    "type": "text"
+  },
+
   "hadithBooksSearch": "Search by book name...",
+  "@hadithBooksSearch": {
+    "description": "Search hint for Hadith books list",
+    "type": "text"
+  },
+
   "hadithBooksEmpty": "No books available",
+  "@hadithBooksEmpty": {
+    "description": "Message shown when no Hadith books are available",
+    "type": "text"
+  },
+
   "writer": "Author",
+  "@writer": {
+    "description": "Label for book author",
+    "type": "text"
+  },
+
   "numberOfChapters": "Number of Chapters:",
+  "@numberOfChapters": {
+    "description": "Label showing number of chapters in a book",
+    "type": "text"
+  },
+
   "numberOfHadiths": "Number of Hadiths:",
+  "@numberOfHadiths": {
+    "description": "Label showing number of Hadiths in a book",
+    "type": "text"
+  },
 
   "chapters": "Chapters",
+  "@chapters": {
+    "description": "Title for chapters list",
+    "type": "text"
+  },
+
   "errorMain": "An error occurred:",
+  "@errorMain": {
+    "description": "Generic error prefix text",
+    "type": "text"
+  },
+
   "chaptersEmpty": "No chapters available",
+  "@chaptersEmpty": {
+    "description": "Message shown when no chapters are available",
+    "type": "text"
+  },
+
   "chaptersSearch": "Search for a chapter...",
+  "@chaptersSearch": {
+    "description": "Search placeholder for chapters list",
+    "type": "text"
+  },
 
   "hadithError": "Failed to load Hadiths",
+  "@hadithError": {
+    "description": "Error message when Hadiths fail to load",
+    "type": "text"
+  },
+
   "hadithstitle": "Hadiths",
-  "hadithStatus": "Status"
+  "@hadithstitle": {
+    "description": "Title for Hadiths list",
+    "type": "text"
+  },
+
+  "hadithStatus": "Status",
+  "@hadithStatus": {
+    "description": "Label for Hadith status (authenticity)",
+    "type": "text"
+  }
 }

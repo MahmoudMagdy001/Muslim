@@ -27,7 +27,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tasbih => 'التسبيح';
 
   @override
-  String get reset => 'إعادة التعيين';
+  String get reset => 'إعادة';
 
   @override
   String get hadithBooks => 'كتب الحديث';

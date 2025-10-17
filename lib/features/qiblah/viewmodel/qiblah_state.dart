@@ -1,3 +1,6 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+
 enum QiblahStatus { initial, loading, success, error }
 
 class QiblahState {
@@ -7,6 +10,10 @@ class QiblahState {
     this.qiblahAngle = 0.0,
     this.headingAngle = 0.0,
     this.isAligned = false,
+    this.userLocation,
+    this.routePoints,
+    this.distance,
+    this.duration,
   });
 
   final QiblahStatus status;
@@ -14,6 +21,10 @@ class QiblahState {
   final double qiblahAngle;
   final double headingAngle;
   final bool isAligned;
+  final Position? userLocation;
+  final List<LatLng>? routePoints;
+  final double? distance;
+  final double? duration;
 
   QiblahState copyWith({
     QiblahStatus? status,
@@ -21,11 +32,19 @@ class QiblahState {
     double? qiblahAngle,
     double? headingAngle,
     bool? isAligned,
+    Position? userLocation,
+    List<LatLng>? routePoints,
+    double? distance,
+    double? duration,
   }) => QiblahState(
     status: status ?? this.status,
     message: message ?? this.message,
     qiblahAngle: qiblahAngle ?? this.qiblahAngle,
     headingAngle: headingAngle ?? this.headingAngle,
     isAligned: isAligned ?? this.isAligned,
+    userLocation: userLocation ?? this.userLocation,
+    routePoints: routePoints ?? this.routePoints,
+    distance: distance ?? this.distance,
+    duration: duration ?? this.duration,
   );
 }

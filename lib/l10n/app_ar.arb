@@ -1,29 +1,129 @@
 {
+  "@@locale": "ar",
+
   "azkarCategoryList": "قائمة أنواع الأذكار",
+  "@azkarCategoryList": {
+    "description": "Title for Azkar category list screen",
+    "type": "text"
+  },
+
   "azkarLoadingText": "جاري تحميل الأذكار...",
+  "@azkarLoadingText": {
+    "description": "Loading message for Azkar screen",
+    "type": "text"
+  },
+
   "azkarError": "لا توجد أذكار متاحة حاليًا",
+  "@azkarError": {
+    "description": "Error message when no Azkar available",
+    "type": "text"
+  },
+
   "azkar": "الأذكار",
+  "@azkar": {
+    "description": "Title text for Azkar screen",
+    "type": "text"
+  },
+
   "revision": "المرجع",
+  "@revision": {
+    "description": "Label for revision section",
+    "type": "text"
+  },
+
   "tasbih": "التسبيح",
-  "reset": "إعادة التعيين",
+  "@tasbih": {
+    "description": "Title for Tasbih section",
+    "type": "text"
+  },
+
+  "reset": "إعادة",
+  "@reset": {
+    "description": "Label for reset button",
+    "type": "text"
+  },
 
   "hadithBooks": "كتب الحديث",
-  "hadithBooksError": "فشل في جلب الكتب",
-  "hadithBooksSearch": "ابحث باسم الكتاب...",
-  "hadithBooksEmpty": "لا توجد كتب متاحة",
-  "writer": "المؤلف",
-  "numberOfChapters": "عدد الأبواب:",
-  "numberOfHadiths": "عدد الأحاديث:",
+  "@hadithBooks": {
+    "description": "Title for Hadith books list",
+    "type": "text"
+  },
 
-  "chapters" : "أبواب",
-  "errorMain" :"حدث خطأ:",
-  "chaptersEmpty" : "لا توجد أبواب",
-  "chaptersSearch" :"ابحث عن باب...",
+  "hadithBooksError": "فشل في جلب الكتب",
+  "@hadithBooksError": {
+    "description": "Error message when Hadith books fail to load",
+    "type": "text"
+  },
+
+  "hadithBooksSearch": "ابحث باسم الكتاب...",
+  "@hadithBooksSearch": {
+    "description": "Search hint for Hadith books list",
+    "type": "text"
+  },
+
+  "hadithBooksEmpty": "لا توجد كتب متاحة",
+  "@hadithBooksEmpty": {
+    "description": "Message when no Hadith books found",
+    "type": "text"
+  },
+
+  "writer": "المؤلف",
+  "@writer": {
+    "description": "Label for book writer",
+    "type": "text"
+  },
+
+  "numberOfChapters": "عدد الأبواب:",
+  "@numberOfChapters": {
+    "description": "Label showing number of chapters in a book",
+    "type": "text"
+  },
+
+  "numberOfHadiths": "عدد الأحاديث:",
+  "@numberOfHadiths": {
+    "description": "Label showing number of Hadiths in a book",
+    "type": "text"
+  },
+
+  "chapters": "أبواب",
+  "@chapters": {
+    "description": "Title for chapters list",
+    "type": "text"
+  },
+
+  "errorMain": "حدث خطأ:",
+  "@errorMain": {
+    "description": "Generic error prefix text",
+    "type": "text"
+  },
+
+  "chaptersEmpty": "لا توجد أبواب",
+  "@chaptersEmpty": {
+    "description": "Message when no chapters available",
+    "type": "text"
+  },
+
+  "chaptersSearch": "ابحث عن باب...",
+  "@chaptersSearch": {
+    "description": "Search placeholder for chapters list",
+    "type": "text"
+  },
 
   "hadithError": "فشل في تحميل الأحاديث",
+  "@hadithError": {
+    "description": "Error message when Hadiths fail to load",
+    "type": "text"
+  },
+
   "hadithstitle": "أحاديث",
-  "hadithStatus" :"الحكم"
+  "@hadithstitle": {
+    "description": "Title for Hadiths list",
+    "type": "text"
+  },
 
-
-
+  "hadithStatus": "الحكم",
+  "@hadithStatus": {
+    "description": "Label for Hadith status (authenticity)",
+    "type": "text"
+  }
 }
