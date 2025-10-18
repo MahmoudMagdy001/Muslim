@@ -13,45 +13,47 @@ class QiblahView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('اتجاه القبلة')),
-    body: BlocBuilder<QiblahCubit, QiblahState>(
-      buildWhen: (previous, current) =>
-          previous.status != current.status ||
-          previous.qiblahAngle != current.qiblahAngle ||
-          previous.routePoints != current.routePoints,
-      builder: (context, state) {
-        if (state.status == QiblahStatus.error) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error, size: 64, color: Colors.red),
-                const SizedBox(height: 16),
-                Text('حدث خطأ: ${state.message}'),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<QiblahCubit>().init();
-                  },
-                  child: const Text('إعادة المحاولة'),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return QiblahSuccessWidget(
-            headingAngle: state.headingAngle,
-            qiblahAngle: state.qiblahAngle,
-            isAligned: state.isAligned,
-            userLocation: state.userLocation != null
-                ? LatLng(
-                    state.userLocation!.latitude,
-                    state.userLocation!.longitude,
-                  )
-                : null,
-            isLoading: state.status == QiblahStatus.loading,
-          );
-        }
-      },
+    body: SafeArea(
+      child: BlocBuilder<QiblahCubit, QiblahState>(
+        buildWhen: (previous, current) =>
+            previous.status != current.status ||
+            previous.qiblahAngle != current.qiblahAngle ||
+            previous.routePoints != current.routePoints,
+        builder: (context, state) {
+          if (state.status == QiblahStatus.error) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('حدث خطأ: ${state.message}'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<QiblahCubit>().init();
+                    },
+                    child: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return QiblahSuccessWidget(
+              headingAngle: state.headingAngle,
+              qiblahAngle: state.qiblahAngle,
+              isAligned: state.isAligned,
+              userLocation: state.userLocation != null
+                  ? LatLng(
+                      state.userLocation!.latitude,
+                      state.userLocation!.longitude,
+                    )
+                  : null,
+              isLoading: state.status == QiblahStatus.loading,
+            );
+          }
+        },
+      ),
     ),
   );
 }

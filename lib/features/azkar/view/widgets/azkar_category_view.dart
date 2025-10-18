@@ -16,6 +16,7 @@ class AzkarCategoriesView extends StatefulWidget {
 
 class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
   Future<Map<String, List<AzkarModel>>>? _groupedAzkarFuture;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void didChangeDependencies() {
@@ -51,42 +52,54 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: Text(context.localization.azkarCategoryList)),
-    body: FutureBuilder<Map<String, List<AzkarModel>>>(
-      future: _groupedAzkarFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: 16),
-                Text(context.localization.azkarLoadingText),
-              ],
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('${context.localization.azkarError} ${snapshot.error}'),
-          );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text(context.localization.azkarError));
-        } else {
-          final groupedAzkar = snapshot.data!;
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: groupedAzkar.keys.length,
-            itemBuilder: (context, index) {
-              final category = groupedAzkar.keys.elementAt(index);
-              final azkarList = groupedAzkar[category]!;
-              return _AzkarCategoryListItem(
-                category: category,
-                azkarList: azkarList,
-              );
-            },
-          );
-        }
-      },
+    body: SafeArea(
+      child: FutureBuilder<Map<String, List<AzkarModel>>>(
+        future: _groupedAzkarFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(context.localization.azkarLoadingText),
+                ],
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                '${context.localization.azkarError} ${snapshot.error}',
+              ),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text(context.localization.azkarError));
+          } else {
+            final groupedAzkar = snapshot.data!;
+            return Scrollbar(
+              controller: _scrollController,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsetsDirectional.only(
+                  start: 8,
+                  end: 16,
+                  top: 5,
+                ),
+                itemCount: groupedAzkar.keys.length,
+                itemBuilder: (context, index) {
+                  final category = groupedAzkar.keys.elementAt(index);
+                  final azkarList = groupedAzkar[category]!;
+                  return _AzkarCategoryListItem(
+                    category: category,
+                    azkarList: azkarList,
+                  );
+                },
+              ),
+            );
+          }
+        },
+      ),
     ),
   );
 }

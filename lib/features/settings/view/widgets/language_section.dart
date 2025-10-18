@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../view_model/language/language_cubit.dart';
 import '../../view_model/language/language_state.dart';
 
@@ -44,17 +45,12 @@ class _LanguageTile extends StatelessWidget {
     Locale currentLocale,
     ThemeData theme,
   ) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    showCustomModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('اختر اللغة', style: theme.textTheme.titleMedium),
-      
           RadioListTile<Locale>(
             title: Text('العربية', style: theme.textTheme.titleMedium),
             value: const Locale('ar'),

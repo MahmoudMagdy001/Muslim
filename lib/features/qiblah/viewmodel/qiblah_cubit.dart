@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
@@ -240,7 +241,7 @@ class QiblahCubit extends Cubit<QiblahState> {
         ),
       );
     } catch (e) {
-      print('Route fetch error: $e');
+      debugPrint('Route fetch error: $e');
       // If route fetch fails, but we have compass data, don't show error
       if (state.status == QiblahStatus.loading) {
         emit(

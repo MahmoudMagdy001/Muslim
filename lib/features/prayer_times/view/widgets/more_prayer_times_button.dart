@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../viewmodel/prayer_times_cubit.dart';
 import 'all_prayer_times_modal.dart';
 
@@ -48,8 +49,7 @@ class MorePrayerTimesButton extends StatelessWidget {
     final state = context.read<PrayerTimesCubit>().state;
     final timingsMap = state.localPrayerTimes?.toMap() ?? {};
 
-    showModalBottomSheet(
-      showDragHandle: true,
+    showCustomModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (context) => AllPrayerTimesModal(

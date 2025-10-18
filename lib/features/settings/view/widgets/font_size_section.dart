@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../view_model/font_size/font_size_cubit.dart';
 
 class FontSizeSection extends StatelessWidget {
@@ -41,13 +42,8 @@ class _FontSizeSwitch extends StatelessWidget {
     ThemeData theme,
   ) {
     final fontSizeCubit = context.read<FontSizeCubit>();
-
-    showModalBottomSheet(
-      showDragHandle: true,
+    showCustomModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -63,7 +59,7 @@ class _FontSizeSwitch extends StatelessWidget {
             },
           ),
           RadioListTile<double>(
-            title: Text('متوسط', style: theme.textTheme.titleMedium),
+            title: Text('افتراضي', style: theme.textTheme.titleMedium),
             value: 18,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
@@ -87,7 +83,7 @@ class _FontSizeSwitch extends StatelessWidget {
 
   String _getLabelForFontSize(double size) {
     if (size.round() == 14) return 'صغير';
-    if (size.round() == 18) return 'متوسط';
+    if (size.round() == 18) return 'افتراضي';
     if (size.round() == 22) return 'كبير';
     return '${size.round()}';
   }

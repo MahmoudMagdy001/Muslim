@@ -31,7 +31,7 @@ class AppInitializer {
   }
 
   Locale getInitialLanguage() {
-    final langCode = prefs.getString('appLanguage') ?? 'en';
+    final langCode = prefs.getString('appLanguage') ?? 'ar';
     return Locale(langCode);
   }
 
