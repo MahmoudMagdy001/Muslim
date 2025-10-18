@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../view_model/theme/theme_cubit.dart';
 
 class ThemeSection extends StatelessWidget {
@@ -44,17 +45,13 @@ class _ThemeTile extends StatelessWidget {
     ThemeMode currentMode,
     ThemeData theme,
   ) {
-    showModalBottomSheet(
-      showDragHandle: true,
+    showCustomModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('اختر المظهر', style: theme.textTheme.titleMedium),
-      
+
           RadioListTile<ThemeMode>(
             title: Text('الوضع النهاري', style: theme.textTheme.titleMedium),
             value: ThemeMode.light,

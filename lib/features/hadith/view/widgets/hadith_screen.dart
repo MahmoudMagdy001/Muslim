@@ -138,73 +138,75 @@ class _HadithsScreenState extends State<HadithsScreen> {
                 itemBuilder: (context, index) => const _SkeletonHadithItem(),
               ),
             )
-          : Scrollbar(
-              controller: _scrollController,
-              child: ListView.builder(
+          : SafeArea(
+              child: Scrollbar(
                 controller: _scrollController,
-                padding: const EdgeInsetsDirectional.only(
-                  start: 8,
-                  end: 16,
-                  top: 10,
-                  bottom: 10,
-                ),
-                itemCount: _hadiths.length + (_hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < _hadiths.length) {
-                    final hadith = _hadiths[index];
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 8,
+                    end: 16,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  itemCount: _hadiths.length + (_hasMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < _hadiths.length) {
+                      final hadith = _hadiths[index];
 
-                    final hadithText = isArabic
-                        ? hadith.hadithArabic
-                        : hadith.hadithEnglish;
+                      final hadithText = isArabic
+                          ? hadith.hadithArabic
+                          : hadith.hadithEnglish;
 
-                    final heading = isArabic
-                        ? hadith.headingArabic
-                        : hadith.headingEnglish;
+                      final heading = isArabic
+                          ? hadith.headingArabic
+                          : hadith.headingEnglish;
 
-                    final status = isArabic
-                        ? _statusMap[hadith.status]!
-                        : hadith.status;
+                      final status = isArabic
+                          ? _statusMap[hadith.status]!
+                          : hadith.status;
 
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (heading.isNotEmpty) ...[
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (heading.isNotEmpty) ...[
+                                Text(
+                                  heading,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                              SelectableText(
+                                hadithText,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  height: isArabic ? 2 : 1.4,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
                               Text(
-                                heading,
+                                '${context.localization.hadithStatus}: $status',
+                                textAlign: TextAlign.end,
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: theme.primaryColor,
                                 ),
                               ),
-                              const SizedBox(height: 16),
                             ],
-                            SelectableText(
-                              hadithText,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                height: isArabic ? 2 : 1.4,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${context.localization.hadithStatus}: $status',
-                              textAlign: TextAlign.end,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.primaryColor,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  } else {
-                    return const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                },
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
     );

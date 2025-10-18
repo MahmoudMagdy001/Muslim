@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../consts/reciters_name_arabic.dart';
 import '../../view_model/rectire/rectire_cubit.dart';
 import 'rectire_dialog.dart'; // هنستخدمه جوة الـ bottom sheet
@@ -33,16 +34,12 @@ class _ReciterTile extends StatelessWidget {
     final cubit = context.read<ReciterCubit>();
     final currentReciter = cubit.state.selectedReciter;
 
-    final result = await showModalBottomSheet<String>(
+    final result = await showCustomModalBottomSheet<String>(
       context: context,
+      minChildSize: 0.3,
+      initialChildSize: 0.6,
       isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => DraggableScrollableSheet(
-        minChildSize: 0.3,
-        initialChildSize: 0.6,
-        expand: false,
-        builder: (context, scrollController) => ReciterDialog(selectedReciterId: currentReciter),
-      ),
+      builder: (context) => ReciterDialog(selectedReciterId: currentReciter),
     );
 
     if (result != null && result != currentReciter) {

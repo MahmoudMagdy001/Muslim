@@ -94,115 +94,119 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
       appBar: AppBar(
         title: Text('${context.localization.chapters} ${widget.bookName}'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: context.localization.chaptersSearch,
-                prefixIcon: const Icon(Icons.search),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: context.localization.chaptersSearch,
+                  prefixIcon: const Icon(Icons.search),
+                ),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
               ),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<ChapterOfBookModel>>(
-              future: _chapters,
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return Skeletonizer(
-                    child: ListView.builder(
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 8,
-                        end: 16,
-                        top: 5,
-                        bottom: 10,
+            Expanded(
+              child: FutureBuilder<List<ChapterOfBookModel>>(
+                future: _chapters,
+                builder: (context, snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return Skeletonizer(
+                      child: ListView.builder(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: 8,
+                          end: 16,
+                          top: 5,
+                          bottom: 10,
+                        ),
+                        itemCount: 10,
+                        itemBuilder: (context, index) =>
+                            const _SkeletonChapterItem(),
                       ),
-                      itemCount: 10,
-                      itemBuilder: (context, index) =>
-                          const _SkeletonChapterItem(),
-                    ),
-                  );
-                } else if (snap.hasError) {
-                  return Center(
-                    child: Text(
-                      '${context.localization.errorMain}: ${snap.error}',
-                    ),
-                  );
-                } else if (!snap.hasData || snap.data!.isEmpty) {
-                  return Center(
-                    child: Text(context.localization.chaptersEmpty),
-                  );
-                } else {
-                  final chapters = _filtered;
-                  return Scrollbar(
-                    controller: _scrollController,
-                    child: ListView.builder(
+                    );
+                  } else if (snap.hasError) {
+                    return Center(
+                      child: Text(
+                        '${context.localization.errorMain}: ${snap.error}',
+                      ),
+                    );
+                  } else if (!snap.hasData || snap.data!.isEmpty) {
+                    return Center(
+                      child: Text(context.localization.chaptersEmpty),
+                    );
+                  } else {
+                    final chapters = _filtered;
+                    return Scrollbar(
                       controller: _scrollController,
-                      itemCount: chapters.length,
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 8,
-                        end: 16,
-                        top: 5,
-                        bottom: 10,
-                      ),
-                      itemBuilder: (context, i) {
-                        final chapter = chapters[i];
-                        final chapterName = !isArabic
-                            ? chapter.chapterNameEn
-                            : chapter.chapterNameAr;
-                        final chapterNumber = !isArabic
-                            ? chapter.chapterNumber
-                            : convertToArabicNumbers(chapter.chapterNumber);
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: chapters.length,
+                        padding: const EdgeInsetsDirectional.only(
+                          start: 8,
+                          end: 16,
+                          top: 5,
+                          bottom: 10,
+                        ),
+                        itemBuilder: (context, i) {
+                          final chapter = chapters[i];
+                          final chapterName = !isArabic
+                              ? chapter.chapterNameEn
+                              : chapter.chapterNameAr;
+                          final chapterNumber = !isArabic
+                              ? chapter.chapterNumber
+                              : convertToArabicNumbers(chapter.chapterNumber);
 
-                        return SizedBox(
-                          height: 100,
-                          child: Card(
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
-                              onTap: () => navigateWithTransition(
-                                context,
-                                HadithsScreen(
-                                  bookSlug: widget.bookSlug,
-                                  chapterNumber: chapter.chapterNumber,
-                                  chapterName: chapterName,
+                          return SizedBox(
+                            height: 100,
+                            child: Card(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: () => navigateWithTransition(
+                                  context,
+                                  HadithsScreen(
+                                    bookSlug: widget.bookSlug,
+                                    chapterNumber: chapter.chapterNumber,
+                                    chapterName: chapterName,
+                                  ),
+                                  type: TransitionType.fade,
                                 ),
-                                type: TransitionType.fade,
-                              ),
-                              child: Center(
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: theme.primaryColor
-                                        .withAlpha((0.1 * 255).toInt()),
-                                    child: Text(
-                                      chapterNumber,
-                                      style: theme.textTheme.titleMedium
-                                          ?.copyWith(color: theme.primaryColor),
+                                child: Center(
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundColor: theme.primaryColor
+                                          .withAlpha((0.1 * 255).toInt()),
+                                      child: Text(
+                                        chapterNumber,
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              color: theme.primaryColor,
+                                            ),
+                                      ),
                                     ),
-                                  ),
-                                  title: Text(
-                                    chapterName,
-                                    style: theme.textTheme.titleMedium,
-                                  ),
-                                  trailing: const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
+                                    title: Text(
+                                      chapterName,
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    trailing: const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

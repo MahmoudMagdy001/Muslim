@@ -80,109 +80,111 @@ class _HadithBooksViewState extends State<HadithBooksView> {
 
     return Scaffold(
       appBar: AppBar(title: Text(context.localization.hadithBooks)),
-      body: Column(
-        children: [
-          // ====== Search Bar ======
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: context.localization.hadithBooksSearch,
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ====== Search Bar ======
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: context.localization.hadithBooksSearch,
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                ),
+                onChanged: (val) => setState(() => _searchText = val),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
               ),
-              onChanged: (val) => setState(() => _searchText = val),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
-          ),
 
-          // ====== Books List ======
-          Expanded(
-            child: FutureBuilder<List<HadithBookModel>>(
-              future: _booksFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Skeletonizer(
+            // ====== Books List ======
+            Expanded(
+              child: FutureBuilder<List<HadithBookModel>>(
+                future: _booksFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Skeletonizer(
+                      child: ListView.builder(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: 8,
+                          end: 8,
+                          bottom: 10,
+                        ),
+                        itemCount: 8,
+                        itemBuilder: (context, index) =>
+                            const _SkeletonBookItem(),
+                      ),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${context.localization.hadithBooksError} ${snapshot.error}',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text(
+                        context.localization.hadithBooksEmpty,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+
+                  final books = _filterBooks(snapshot.data!);
+
+                  return Scrollbar(
+                    controller: _scrollController,
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: const EdgeInsetsDirectional.only(
                         start: 8,
-                        end: 8,
+                        end: 16,
+                        top: 5,
                         bottom: 10,
                       ),
-                      itemCount: 8,
-                      itemBuilder: (context, index) =>
-                          const _SkeletonBookItem(),
+                      itemCount: books.length,
+                      itemBuilder: (context, index) {
+                        final book = books[index];
+
+                        final id = !isArabic
+                            ? book.id
+                            : convertToArabicNumbers(book.id);
+                        final name = !isArabic
+                            ? book.bookName
+                            : booksArabic[book.bookName]!;
+                        final writer = !isArabic
+                            ? book.writerName
+                            : writersArabic[book.writerName]!;
+                        final chpaterCount = !isArabic
+                            ? book.chapterCount
+                            : convertToArabicNumbers(book.chapterCount);
+                        final hadithCount = !isArabic
+                            ? book.hadithCount
+                            : convertToArabicNumbers(book.hadithCount);
+
+                        if (book.hadithCount == '0') {
+                          return const SizedBox.shrink();
+                        }
+
+                        return SuccessWidget(
+                          book: book,
+                          name: name,
+                          theme: theme,
+                          id: id,
+                          writer: writer,
+                          chpaterCount: chpaterCount,
+                          hadithCount: hadithCount,
+                        );
+                      },
                     ),
                   );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      '${context.localization.hadithBooksError} ${snapshot.error}',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Text(
-                      context.localization.hadithBooksEmpty,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  );
-                }
-
-                final books = _filterBooks(snapshot.data!);
-
-                return Scrollbar(
-                  controller: _scrollController,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsetsDirectional.only(
-                      start: 8,
-                      end: 16,
-                      top: 5,
-                      bottom: 10,
-                    ),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-
-                      final id = !isArabic
-                          ? book.id
-                          : convertToArabicNumbers(book.id);
-                      final name = !isArabic
-                          ? book.bookName
-                          : booksArabic[book.bookName]!;
-                      final writer = !isArabic
-                          ? book.writerName
-                          : writersArabic[book.writerName]!;
-                      final chpaterCount = !isArabic
-                          ? book.chapterCount
-                          : convertToArabicNumbers(book.chapterCount);
-                      final hadithCount = !isArabic
-                          ? book.hadithCount
-                          : convertToArabicNumbers(book.hadithCount);
-
-                      if (book.hadithCount == '0') {
-                        return const SizedBox.shrink();
-                      }
-
-                      return SuccessWidget(
-                        book: book,
-                        name: name,
-                        theme: theme,
-                        id: id,
-                        writer: writer,
-                        chpaterCount: chpaterCount,
-                        hadithCount: hadithCount,
-                      );
-                    },
-                  ),
-                );
-              },
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

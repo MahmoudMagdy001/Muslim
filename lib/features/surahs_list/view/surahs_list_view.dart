@@ -32,11 +32,13 @@ class SurahsListView extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            SurahListTab(selectedReciter: selectedReciter),
-            BookmarksTab(reciter: selectedReciter),
-          ],
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              SurahListTab(selectedReciter: selectedReciter),
+              BookmarksTab(reciter: selectedReciter),
+            ],
+          ),
         ),
       ),
     ),
