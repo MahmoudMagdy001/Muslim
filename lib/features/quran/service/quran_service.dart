@@ -26,6 +26,7 @@ class QuranService {
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
+    required bool includeBasmala,
   }) async {
     if (_currentSurah == surahNumber && _currentReciter == reciter) {
       return;
@@ -35,9 +36,31 @@ class QuranService {
     _currentReciter = reciter;
 
     final ayahCount = quran.getVerseCount(surahNumber);
+    final List<AudioSource> playlist = [];
 
-    final playlist = [
-      for (int verseNumber = 1; verseNumber <= ayahCount; verseNumber++)
+    // ✅ أضف البسملة فقط إذا الشرط محقق
+    if (includeBasmala && surahNumber != 1 && surahNumber != 9) {
+      playlist.add(
+        AudioSource.uri(
+          Uri.parse(
+            ayahAudioUrl(
+              reciter,
+              globalAyahNumber(1, 1),
+            ), // آية البسملة من الفاتحة
+          ),
+          tag: MediaItem(
+            id: 'bismillah',
+            album: 'بداية التلاوة',
+            title: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            artist: 'القارئ : ${getReciterName(reciter)}',
+          ),
+        ),
+      );
+    }
+
+    // ✅ أضف باقي آيات السورة
+    for (int verseNumber = 1; verseNumber <= ayahCount; verseNumber++) {
+      playlist.add(
         AudioSource.uri(
           Uri.parse(
             ayahAudioUrl(reciter, globalAyahNumber(surahNumber, verseNumber)),
@@ -50,7 +73,8 @@ class QuranService {
             artist: 'القارئ : ${getReciterName(reciter)}',
           ),
         ),
-    ];
+      );
+    }
 
     try {
       await _audioPlayer.stop();

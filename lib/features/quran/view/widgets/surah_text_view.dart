@@ -7,6 +7,7 @@ import 'package:quran/quran.dart' as quran;
 
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import '../../viewmodel/quran_surah_cubit/quran_surah_cubit.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({required this.surahNumber, this.startAyah, super.key});
@@ -25,7 +26,7 @@ class _SurahTextViewState extends State<SurahTextView> {
   StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
 
-  // إضافة cache للنص
+  // cache للنص لتقليل إعادة البناء
   List<InlineSpan>? _cachedSpans;
   int? _cachedSurahNumber;
   int? _cachedCurrentAyah;
@@ -65,7 +66,7 @@ class _SurahTextViewState extends State<SurahTextView> {
 
     Scrollable.ensureVisible(
       ctx,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 200),
       alignment: 0.4,
     );
   }
@@ -78,10 +79,16 @@ class _SurahTextViewState extends State<SurahTextView> {
   }
 
   List<InlineSpan> _buildSpans(BuildContext context) {
-    // استخدام cache لتجنب إعادة البناء غير الضرورية
+    final surahState = context.watch<QuranSurahCubit>().state;
+    final hasIntroBasmala = surahState.hasIntroBasmala;
+
+    final adjustedAyah = hasIntroBasmala && _currentAyah != null
+        ? _currentAyah! - 1
+        : _currentAyah;
+
     if (_cachedSpans != null &&
         _cachedSurahNumber == widget.surahNumber &&
-        _cachedCurrentAyah == _currentAyah) {
+        _cachedCurrentAyah == adjustedAyah) {
       return _cachedSpans!;
     }
 
@@ -90,12 +97,11 @@ class _SurahTextViewState extends State<SurahTextView> {
     _currentKey = null;
 
     for (int ayah = 1; ayah <= ayahCount; ayah++) {
-      final text = quran.getVerse(
-        widget.surahNumber,
-        ayah,
-        verseEndSymbol: true,
-      );
-      final isCurrent = ayah == _currentAyah;
+      final endSymbol = quran.getVerseEndSymbol(ayah);
+
+      final text = quran.getVerse(widget.surahNumber, ayah);
+
+      final isCurrent = ayah == adjustedAyah;
       final keyForThisAyah = isCurrent
           ? (_currentKey = GlobalKey())
           : GlobalKey();
@@ -108,6 +114,7 @@ class _SurahTextViewState extends State<SurahTextView> {
               alignment: PlaceholderAlignment.top,
               child: SizedBox(key: keyForThisAyah, width: 0, height: 0),
             ),
+
             TextSpan(
               text: '$text ',
               style: GoogleFonts.amiri().copyWith(
@@ -115,23 +122,29 @@ class _SurahTextViewState extends State<SurahTextView> {
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).textTheme.bodyLarge?.color,
               ),
-              recognizer: _createGestureRecognizer(ayah, text),
+              recognizer: _createGestureRecognizer(ayah, text, hasIntroBasmala),
             ),
+
+            TextSpan(text: endSymbol, style: GoogleFonts.amiri().copyWith()),
+
+            const TextSpan(text: ' '),
           ],
         ),
       );
     }
 
-    // حفظ في cache
     _cachedSpans = spans;
     _cachedSurahNumber = widget.surahNumber;
-    _cachedCurrentAyah = _currentAyah;
+    _cachedCurrentAyah = adjustedAyah;
 
     return spans;
   }
 
-  // فصل إنشاء GestureRecognizer لتحسين الأداء
-  TapGestureRecognizer _createGestureRecognizer(int ayah, String text) {
+  TapGestureRecognizer _createGestureRecognizer(
+    int ayah,
+    String text,
+    bool hasIntroBasmala,
+  ) {
     final tapRecognizer = TapGestureRecognizer();
     Offset? tapPosition;
 
@@ -153,12 +166,9 @@ class _SurahTextViewState extends State<SurahTextView> {
         final selected = await showMenu<String>(
           context: context,
           position: menuPosition,
-          items: [
-            const PopupMenuItem(
-              value: 'play',
-              child: Text('تشغيل من هذه الآية'),
-            ),
-            const PopupMenuItem(
+          items: const [
+            PopupMenuItem(value: 'play', child: Text('تشغيل من هذه الآية')),
+            PopupMenuItem(
               value: 'bookmark',
               child: Text('حفظ علامة على هذه الآية'),
             ),
@@ -167,9 +177,11 @@ class _SurahTextViewState extends State<SurahTextView> {
 
         if (selected == 'play') {
           if (mounted) {
+            // لو فيه بسملة مضافة، الآية في الصوتيات offset +1
+            final audioIndex = hasIntroBasmala ? ayah : ayah - 1;
             context.read<QuranPlayerCubit>().seek(
               Duration.zero,
-              index: ayah - 1,
+              index: audioIndex,
             );
             context.read<QuranPlayerCubit>().play();
           }
@@ -183,7 +195,7 @@ class _SurahTextViewState extends State<SurahTextView> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('تم حفظ علامه علي اية : $text رقم :$ayah'),
+                content: Text('تم حفظ علامة على آية رقم $ayah'),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -207,20 +219,27 @@ class _SurahTextViewState extends State<SurahTextView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scrollbar(
-    controller: _controller,
-    child: SingleChildScrollView(
+  Widget build(BuildContext context) => Expanded(
+    child: Scrollbar(
       controller: _controller,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      child: RepaintBoundary(
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              height: 2.3,
-              fontWeight: FontWeight.normal,
+      child: SingleChildScrollView(
+        controller: _controller,
+        padding: const EdgeInsetsDirectional.only(
+          start: 6,
+          end: 18,
+          top: 5,
+          bottom: 5,
+        ),
+        child: RepaintBoundary(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                height: 2.3,
+                fontWeight: FontWeight.normal,
+              ),
+              children: _buildSpans(context),
             ),
-            children: _buildSpans(context),
           ),
         ),
       ),

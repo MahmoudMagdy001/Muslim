@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/navigation_helper.dart';
 import 'full_map_view.dart';
 
 class QiblahMapWidget extends StatelessWidget {
@@ -34,11 +35,10 @@ class QiblahMapWidget extends StatelessWidget {
               child: FlutterMap(
                 options: MapOptions(
                   onTap: (tapPosition, point) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            FullMapView(userLocation: userLocation!),
-                      ),
+                    navigateWithTransition(
+                      type: TransitionType.fade,
+                      context,
+                      FullMapView(userLocation: userLocation!),
                     );
                   },
                   initialCenter: userLocation ?? _kaabaLocation,
@@ -58,7 +58,7 @@ class QiblahMapWidget extends StatelessWidget {
                       polylines: [
                         Polyline(
                           points: [userLocation!, _kaabaLocation],
-                          strokeWidth: 3,
+                          strokeWidth: 2,
                           color: theme.colorScheme.primary,
                         ),
                       ],
@@ -73,6 +73,7 @@ class QiblahMapWidget extends StatelessWidget {
                           child: Icon(
                             Icons.my_location,
                             color: theme.colorScheme.primary,
+                            size: 25,
                           ),
                         ),
                         const Marker(

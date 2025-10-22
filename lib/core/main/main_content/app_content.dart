@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../features/layout/view/layout_view.dart';
@@ -30,6 +31,36 @@ class AppContent extends StatelessWidget {
               final themeFactory = AppThemeFactory(fontSize);
               final lightTheme = themeFactory.lightTheme;
               final darkTheme = themeFactory.darkTheme;
+
+              final theme = Theme.of(context);
+              final isDark = theme.brightness == Brightness.dark;
+
+              // ← تحديث SystemUIOverlayStyle ديناميكياً مع تغيير الثيم
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                SystemChrome.setSystemUIOverlayStyle(
+                  SystemUiOverlayStyle(
+                    // إعدادات الـ Navigation Bar (أسفل الشاشة)
+                    systemNavigationBarColor: Colors.transparent,
+                    systemNavigationBarDividerColor: Colors.transparent,
+                    systemNavigationBarIconBrightness: isDark
+                        ? Brightness.light
+                        : Brightness.dark,
+
+                    // إعدادات الـ Status Bar (أعلى الشاشة)
+                    statusBarColor: Colors.transparent,
+                    statusBarIconBrightness: isDark
+                        ? Brightness.light
+                        : Brightness.dark,
+                    statusBarBrightness: isDark
+                        ? Brightness.dark
+                        : Brightness.light,
+
+                    // إعدادات إضافية لتحسين المظهر
+                    systemNavigationBarContrastEnforced: false,
+                    systemStatusBarContrastEnforced: false,
+                  ),
+                );
+              });
 
               return MaterialApp(
                 themeAnimationStyle: const AnimationStyle(
