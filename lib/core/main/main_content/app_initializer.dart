@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
+
+import '../../../features/prayer_times/service/work_manager_service.dart';
 
 class AppInitializer {
   AppInitializer(this.prefs);
@@ -11,6 +14,7 @@ class AppInitializer {
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
+    await workManagerNotify();
     await _initializeAudioBackground();
     await _initializeNotifications();
     await _requestPermissions();
@@ -29,6 +33,25 @@ class AppInitializer {
       return ThemeMode.system;
     }
   }
+   // أضف هذه الدالة في ملف منفصل أو في نفس الملف
+ 
+
+  // تحتاج إضافة هذا في workManagerNotify()
+  Future<void> workManagerNotify() async {
+    debugPrint('بدأ جدولة الاشعارات ف الخلفيه');
+
+    await Workmanager().initialize(callbackDispatcher);
+    await Workmanager().registerPeriodicTask(
+      '001',
+      updatePrayerTimesTask,
+      frequency: const Duration(minutes: 15),
+      initialDelay: const Duration(minutes: 5),
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+        requiresBatteryNotLow: false,
+      ),
+    );
+  }
 
   Locale getInitialLanguage() {
     final langCode = prefs.getString('appLanguage') ?? 'ar';
@@ -45,36 +68,33 @@ class AppInitializer {
   }
 
   Future<void> _initializeNotifications() async {
-    await AwesomeNotifications().initialize(
-      // أيقونة التطبيق الافتراضية
-      'resource://drawable/ic_muslim_logo', // اللوجو بتاعك
-      [
-        NotificationChannel(
-          channelKey: 'quran_channel',
-          channelName: 'Quran Reminders',
-          channelDescription: 'Reminders to read Quran',
-          defaultColor: const Color(0xFF33A1E0),
-          importance: NotificationImportance.High,
-          channelShowBadge: true,
-          icon: 'resource://drawable/ic_muslim_logo',
-        ),
-        NotificationChannel(
-          channelKey: 'prayer_reminder',
-          channelName: 'تذكير الصلاة',
-          channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
-          defaultColor: const Color(0xFF33A1E0),
-          ledColor: Colors.white,
-          importance: NotificationImportance.Max,
-          playSound: true,
-          enableVibration: true,
-          enableLights: true,
-          locked: true,
-          defaultRingtoneType: DefaultRingtoneType.Notification,
-          soundSource: 'resource://raw/azan',
-          icon: 'resource://drawable/ic_muslim_logo',
-        ),
-      ],
-    );
+    await AwesomeNotifications()
+        .initialize('resource://drawable/ic_muslim_logo', [
+          NotificationChannel(
+            channelKey: 'quran_channel',
+            channelName: 'Quran Reminders',
+            channelDescription: 'Reminders to read Quran',
+            defaultColor: const Color(0xFF33A1E0),
+            importance: NotificationImportance.High,
+            channelShowBadge: true,
+            icon: 'resource://drawable/ic_muslim_logo',
+          ),
+          NotificationChannel(
+            channelKey: 'prayer_reminder',
+            channelName: 'تذكير الصلاة',
+            channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
+            defaultColor: const Color(0xFF33A1E0),
+            ledColor: Colors.white,
+            importance: NotificationImportance.Max,
+            playSound: true,
+            enableVibration: true,
+            enableLights: true,
+            locked: true,
+            defaultRingtoneType: DefaultRingtoneType.Notification,
+            soundSource: 'resource://raw/azan',
+            icon: 'resource://drawable/ic_muslim_logo',
+          ),
+        ]);
   }
 
   Future<void> _requestPermissions() async {
@@ -113,7 +133,6 @@ class AppInitializer {
           await DisableBatteryOptimization.isBatteryOptimizationDisabled;
 
       if (isDisabled == false) {
-        // التطبيق Optimized → نفتح إعدادات البطارية
         await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
       } else {
         debugPrint('✅ التطبيق غير محسن (Unrestricted)');

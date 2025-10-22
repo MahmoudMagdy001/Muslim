@@ -18,7 +18,12 @@ class SurahListTile extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 15.0, 12.0, 16.0),
+        padding: const EdgeInsetsDirectional.only(
+          top: 15,
+          bottom: 15,
+          start: 6,
+          end: 18,
+        ),
         child: Row(
           children: [
             Container(
@@ -46,7 +51,7 @@ class SurahListTile extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+
                 children: [
                   Text(
                     surah.nameArabic,

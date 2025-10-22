@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 
@@ -15,26 +16,75 @@ class FullMapView extends StatefulWidget {
   State<FullMapView> createState() => _FullMapViewState();
 }
 
-class _FullMapViewState extends State<FullMapView> {
-  final MapController _mapController = MapController();
+class _FullMapViewState extends State<FullMapView>
+    with TickerProviderStateMixin {
+  late final AnimatedMapController _animatedMapController;
+  late LatLng _currentLocation;
+  double _currentZoom = 6;
+
+  @override
+  void initState() {
+    super.initState();
+    _animatedMapController = AnimatedMapController(vsync: this);
+    _currentLocation = widget.userLocation;
+  }
 
   double getDistanceInKm() {
     const distance = latlng.Distance();
     final km = distance.as(
       LengthUnit.Kilometer,
-      widget.userLocation,
+      _currentLocation,
       FullMapView._kaabaLocation,
     );
     return km;
   }
 
+  /// عرض المسار بالكامل بأنيميشن سلس
   void _fitBounds() {
-    final bounds = LatLngBounds(
-      widget.userLocation,
-      FullMapView._kaabaLocation,
+    final bounds = LatLngBounds(_currentLocation, FullMapView._kaabaLocation);
+    _animatedMapController.animatedFitCamera(
+      cameraFit: CameraFit.bounds(
+        bounds: bounds,
+        padding: const EdgeInsets.all(60),
+      ),
+      duration: const Duration(seconds: 2),
+      curve: Curves.easeInOut,
     );
-    _mapController.fitCamera(
-      CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(60)),
+  }
+
+  /// الانتقال إلى موقعي بأنيميشن سلس
+  Future<void> _locateMe() async {
+    await _animatedMapController.animateTo(
+      dest: _currentLocation,
+      zoom: 14.5,
+      curve: Curves.easeInOut,
+      duration: const Duration(seconds: 2),
+    );
+    _currentZoom = 12;
+  }
+
+  /// تكبير الخريطة
+  /// تكبير الخريطة
+  void _zoomIn() {
+    // نضمن ألا يتعدى الزوم أقصى قيمة
+    _currentZoom = (_currentZoom + 1).clamp(0, 18);
+    _animatedMapController.animateTo(
+      zoom: _currentZoom,
+      dest: _animatedMapController.mapController.camera.center,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+    );
+  }
+
+  /// تصغير الخريطة
+  void _zoomOut() {
+    // نضمن ألا يقل الزوم عن 0
+    _currentZoom = (_currentZoom - 1).clamp(0, 18);
+    _animatedMapController.animateTo(
+      zoom: _currentZoom,
+      dest: _animatedMapController.mapController.camera.center,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
     );
   }
 
@@ -50,10 +100,14 @@ class _FullMapViewState extends State<FullMapView> {
         child: Stack(
           children: [
             FlutterMap(
-              mapController: _mapController,
+              mapController: _animatedMapController.mapController,
               options: MapOptions(
-                initialCenter: widget.userLocation,
-                initialZoom: 6,
+                initialCenter: _currentLocation,
+                initialZoom: _currentZoom,
+                onMapEvent: (event) {
+                  _currentZoom =
+                      _animatedMapController.mapController.camera.zoom;
+                },
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                 ),
@@ -66,8 +120,8 @@ class _FullMapViewState extends State<FullMapView> {
                 PolylineLayer(
                   polylines: [
                     Polyline(
-                      points: [widget.userLocation, FullMapView._kaabaLocation],
-                      strokeWidth: 4,
+                      points: [_currentLocation, FullMapView._kaabaLocation],
+                      strokeWidth: 3,
                       color: theme.colorScheme.primary,
                     ),
                   ],
@@ -75,13 +129,13 @@ class _FullMapViewState extends State<FullMapView> {
                 MarkerLayer(
                   markers: [
                     Marker(
-                      point: widget.userLocation,
+                      point: _currentLocation,
                       width: 45,
                       height: 45,
                       child: Icon(
                         Icons.my_location,
                         color: theme.colorScheme.primary,
-                        size: 40,
+                        size: 30,
                       ),
                     ),
                     const Marker(
@@ -123,6 +177,36 @@ class _FullMapViewState extends State<FullMapView> {
                     ],
                   ),
                 ),
+              ),
+            ),
+
+            // أزرار التحكم بالزوم + موقعي
+            Positioned(
+              bottom: 100,
+              right: 20,
+              child: Column(
+                children: [
+                  FloatingActionButton.small(
+                    heroTag: 'zoom_in',
+                    onPressed: _zoomIn,
+                    backgroundColor: theme.colorScheme.primary,
+                    child: const Icon(Icons.add, color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton.small(
+                    heroTag: 'zoom_out',
+                    onPressed: _zoomOut,
+                    backgroundColor: theme.colorScheme.primary,
+                    child: const Icon(Icons.remove, color: Colors.white),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    heroTag: 'locate_me',
+                    onPressed: _locateMe,
+                    backgroundColor: theme.colorScheme.primary,
+                    child: const Icon(Icons.my_location, color: Colors.white),
+                  ),
+                ],
               ),
             ),
           ],

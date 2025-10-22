@@ -26,9 +26,10 @@ class QuranRepositoryImpl implements QuranRepository {
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
+    required bool includeBasmala,
   }) async => await _quranService.prepareSurahPlaylist(
     surahNumber: surahNumber,
-    reciter: reciter,
+    reciter: reciter, includeBasmala: includeBasmala,
   );
 
   @override

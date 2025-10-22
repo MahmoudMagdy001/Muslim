@@ -39,9 +39,12 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
     );
 
     try {
+      final bool hasIntroBasmala = surahNumber != 1 && surahNumber != 9;
+
       await _repository.prepareSurahPlaylist(
         surahNumber: surahNumber,
         reciter: reciter,
+        includeBasmala: hasIntroBasmala,
       );
 
       _updateLastLoadedInfo(surahNumber, reciter);
@@ -52,6 +55,7 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
           surahNumber: surahNumber,
           ayahCount: quran.getVerseCount(surahNumber),
           startAyah: startAyah,
+          hasIntroBasmala: hasIntroBasmala,
         ),
       );
 
