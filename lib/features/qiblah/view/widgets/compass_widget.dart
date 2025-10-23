@@ -169,6 +169,8 @@ class CompassWidget extends StatelessWidget {
       decoration: const BoxDecoration(shape: BoxShape.circle),
       child: ClipOval(
         child: Image.asset(
+          cacheHeight: 210,
+          cacheWidth: 210,
           'assets/images/kaaba.png',
           width: _kaabaIconSize,
           fit: BoxFit.cover,

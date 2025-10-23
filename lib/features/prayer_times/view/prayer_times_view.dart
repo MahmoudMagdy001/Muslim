@@ -4,11 +4,9 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../core/utils/format_helper.dart';
-
 import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
 import 'widgets/current_prayer_card_widget.dart';
-import 'widgets/more_prayer_times_button.dart';
 
 class PrayerTimesView extends StatelessWidget {
   const PrayerTimesView({
@@ -23,23 +21,21 @@ class PrayerTimesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) => PrayerTimesCubit()..init(),
-    child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-      builder: (context, state) {
-        if (state.status == PrayerTimesStatus.error) {
-          return _PrayerErrorSliver(
-            message: state.message ?? 'حدث خطأ غير متوقع',
+    child: BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
+      selector: (state) => state.status,
+      builder: (context, status) {
+        if (status == PrayerTimesStatus.error) {
+          final message = context.select(
+            (PrayerTimesCubit cubit) =>
+                cubit.state.message ?? 'حدث خطأ غير متوقع',
           );
+          return _PrayerErrorSliver(message: message);
         }
 
-        // ✅ نستخدم Skeletonizer هنا
         return SliverToBoxAdapter(
           child: Skeletonizer(
-            enabled: state.status == PrayerTimesStatus.loading,
-            child: _PrayerSuccessSliver(
-              state: state,
-              theme: theme,
-              scaffoldContext: scaffoldContext,
-            ),
+            enabled: status == PrayerTimesStatus.loading,
+            child: const _PrayerSuccessSliver(),
           ),
         );
       },
@@ -80,46 +76,18 @@ class _PrayerErrorSliver extends StatelessWidget {
   );
 }
 
-/// 📌 حالة النجاح
 class _PrayerSuccessSliver extends StatelessWidget {
-  const _PrayerSuccessSliver({
-    required this.state,
-    required this.theme,
-    required this.scaffoldContext,
-  });
-
-  final PrayerTimesState state;
-  final ThemeData theme;
-  final BuildContext scaffoldContext;
+  const _PrayerSuccessSliver();
 
   @override
   Widget build(BuildContext context) {
-    final timingsMap = state.localPrayerTimes?.toMap() ?? {};
+    final theme = Theme.of(context);
     final hijriDate = _getHijriDate();
 
-    return Card(
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
-          Text(
-            state.city ?? '--------------',
-            style: theme.textTheme.bodyMedium,
-          ),
-          CurrentPrayerCard(
-            state: state,
-            timingsMap: timingsMap,
-            hijriDate: hijriDate,
-            scaffoldContext: scaffoldContext,
-          ),
-          const Divider(thickness: 0.1),
-          MorePrayerTimesButton(theme: theme, hijriDate: hijriDate),
-        ],
-      ),
-    );
+    return CurrentPrayerCard(hijriDate: hijriDate, theme: theme);
   }
 
-  String _getHijriDate() {
+  static String _getHijriDate() {
     final hijri = HijriCalendar.now();
     final day = convertToArabicNumbers(hijri.hDay.toString());
     final year = convertToArabicNumbers(hijri.hYear.toString());

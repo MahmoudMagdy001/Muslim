@@ -32,6 +32,8 @@ class FeatureCard extends StatelessWidget {
               ),
               const Spacer(),
               Image.asset(
+                cacheHeight: 126,
+                cacheWidth: 126,
                 image,
                 height: theme.textTheme.bodyMedium!.fontSize! * 3,
                 color: theme.iconTheme.color,

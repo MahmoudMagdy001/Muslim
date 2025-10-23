@@ -138,12 +138,15 @@ class _FullMapViewState extends State<FullMapView>
                         size: 30,
                       ),
                     ),
-                    const Marker(
+                    Marker(
                       point: FullMapView._kaabaLocation,
                       width: 50,
                       height: 50,
-                      child: Image(
-                        image: AssetImage('assets/images/kaaba.png'),
+                      child: Image.asset(
+                        'assets/images/kaaba.png',
+                        cacheHeight: 131,
+                        cacheWidth: 131,
+                        width: 40,
                       ),
                     ),
                   ],

@@ -76,12 +76,14 @@ class QiblahMapWidget extends StatelessWidget {
                             size: 25,
                           ),
                         ),
-                        const Marker(
+                        Marker(
                           point: _kaabaLocation,
                           width: 40,
                           height: 40,
-                          child: Image(
-                            image: AssetImage('assets/images/kaaba.png'),
+                          child: Image.asset(
+                            'assets/images/kaaba.png',
+                            cacheHeight: 105,
+                            cacheWidth: 105,
                             width: 30,
                           ),
                         ),
