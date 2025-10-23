@@ -33,8 +33,6 @@ class AppInitializer {
       return ThemeMode.system;
     }
   }
-   // أضف هذه الدالة في ملف منفصل أو في نفس الملف
- 
 
   // تحتاج إضافة هذا في workManagerNotify()
   Future<void> workManagerNotify() async {
@@ -44,8 +42,8 @@ class AppInitializer {
     await Workmanager().registerPeriodicTask(
       '001',
       updatePrayerTimesTask,
-      frequency: const Duration(minutes: 15),
-      initialDelay: const Duration(minutes: 5),
+      frequency: const Duration(hours: 12),
+      initialDelay: const Duration(minutes: 15),
       constraints: Constraints(
         networkType: NetworkType.connected,
         requiresBatteryNotLow: false,

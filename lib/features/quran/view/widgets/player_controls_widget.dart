@@ -18,7 +18,7 @@ class _PlayerControlsWidgetState extends State<PlayerControlsWidget> {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 5),
+      padding: const EdgeInsetsDirectional.only(bottom: 45, top: 15),
       child: BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
         builder: (context, state) {
           String formatDuration(Duration d) {
