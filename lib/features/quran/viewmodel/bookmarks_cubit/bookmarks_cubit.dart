@@ -6,9 +6,7 @@ import '../../service/bookmarks_service.dart';
 import 'bookmarks_state.dart';
 
 class BookmarksCubit extends Cubit<BookmarksState> {
-  BookmarksCubit(this._service) : super(const BookmarksState()) {
-    load();
-  }
+  BookmarksCubit(this._service) : super(const BookmarksState());
 
   final BookmarksService _service;
 

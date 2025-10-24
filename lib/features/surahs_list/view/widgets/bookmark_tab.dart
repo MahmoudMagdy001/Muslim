@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../quran/model/bookmark_model.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../../../../core/utils/navigation_helper.dart';
@@ -24,43 +25,47 @@ class BookmarksTab extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return BlocListener<BookmarksCubit, BookmarksState>(
-      listener: (context, state) {
-        // يمكنك إضافة أي تفاعل إضافي هنا عند تغيير الحالة
-      },
-      child: BlocBuilder<BookmarksCubit, BookmarksState>(
-        buildWhen: (previous, current) =>
-            previous.bookmarks != current.bookmarks ||
-            previous.status != current.status,
-        builder: (context, state) {
-          if (state.status == BookmarksStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state.bookmarks.isEmpty) {
-            return const Center(child: Text('لا توجد علامات بعد'));
-          }
+    final cubit = context.read<BookmarksCubit>();
 
-          return Scrollbar(
-            child: CustomScrollView(
-              slivers: [
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final bookMark = state.bookmarks[index];
-                    final surahName = quran.getSurahNameArabic(
-                      bookMark.surahNumber,
-                    );
-                    final ayahNumber = bookMark.ayahNumber;
-                    final ayahText = bookMark.ayahText;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (cubit.state.bookmarks.isEmpty &&
+          cubit.state.status != BookmarksStatus.loading) {
+        cubit.load();
+      }
+    });
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+    return BlocBuilder<BookmarksCubit, BookmarksState>(
+      buildWhen: (previous, current) =>
+          previous.bookmarks != current.bookmarks ||
+          previous.status != current.status,
+      builder: (context, state) {
+        if (state.status == BookmarksStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.bookmarks.isEmpty) {
+          return const Center(child: Text('لا توجد علامات بعد'));
+        }
+
+        return Scrollbar(
+          child: CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final bookMark = state.bookmarks[index];
+                  final surahName = quran.getSurahNameArabic(
+                    bookMark.surahNumber,
+                  );
+                  final ayahNumber = bookMark.ayahNumber;
+                  final ayahText = bookMark.ayahText;
+
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      bottom: 5,
+                      top: 5,
+                      start: 5,
+                      end: 15,
+                    ),
+                    child: Card(
                       child: InkWell(
                         onTap: () {
                           _openBookmark(
@@ -71,7 +76,7 @@ class BookmarksTab extends StatelessWidget {
                         },
                         borderRadius: BorderRadius.circular(12),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsetsDirectional.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -83,85 +88,13 @@ class BookmarksTab extends StatelessWidget {
                                     'سورة $surahName',
                                     style: theme.textTheme.titleLarge,
                                   ),
-                                  IconButton(
-                                    tooltip: 'مسح العلامه',
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                      size: 25,
-                                    ),
-                                    onPressed: () async {
-                                      final result = await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                              title: Text(
-                                                'مسح العلامه',
-                                                style:
-                                                    theme.textTheme.titleMedium,
-                                              ),
-                                              content: Text(
-                                                'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
-                                                style:
-                                                    theme.textTheme.bodyMedium,
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(
-                                                    context,
-                                                  ).pop(false),
-                                                  child: Text(
-                                                    'تجاهل',
-                                                    style: theme
-                                                        .textTheme
-                                                        .bodyMedium,
-                                                  ),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(
-                                                    context,
-                                                  ).pop(true),
-                                                  child: Text(
-                                                    'مسح',
-                                                    style: theme
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                          color: Colors.red,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      );
-
-                                      if (result == true) {
-                                        // استخدم await للتأكد من اكتمال العملية
-                                        if (context.mounted) {
-                                          await context
-                                              .read<BookmarksCubit>()
-                                              .removeBookmark(
-                                                surah: bookMark.surahNumber,
-                                                ayah: bookMark.ayahNumber,
-                                              );
-                                        }
-
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'تم مسح العلامة من سورة $surahName آية $ayahNumber',
-                                              ),
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    },
+                                  deleteButton(
+                                    context,
+                                    theme,
+                                    surahName,
+                                    ayahNumber,
+                                    cubit,
+                                    bookMark,
                                   ),
                                 ],
                               ),
@@ -177,14 +110,78 @@ class BookmarksTab extends StatelessWidget {
                           ),
                         ),
                       ),
-                    );
-                  }, childCount: state.bookmarks.length),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+                    ),
+                  );
+                }, childCount: state.bookmarks.length),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+
+  IconButton deleteButton(
+    BuildContext context,
+    ThemeData theme,
+    String surahName,
+    int ayahNumber,
+    BookmarksCubit cubit,
+    AyahBookmark bookMark,
+  ) => IconButton(
+    tooltip: 'مسح العلامه',
+    icon: const Icon(Icons.delete, color: Colors.red, size: 25),
+    onPressed: () async {
+      final result = await deleteDialog(context, theme, surahName, ayahNumber);
+
+      if (result == true) {
+        if (context.mounted) {
+          await cubit.removeBookmark(
+            surah: bookMark.surahNumber,
+            ayah: bookMark.ayahNumber,
+          );
+        }
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'تم مسح العلامة من سورة $surahName آية $ayahNumber',
+              ),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    },
+  );
+
+  Future<dynamic> deleteDialog(
+    BuildContext context,
+    ThemeData theme,
+    String surahName,
+    int ayahNumber,
+  ) => showDialog(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text('مسح العلامه', style: theme.textTheme.titleMedium),
+      content: Text(
+        'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
+        style: theme.textTheme.bodyMedium,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text('تجاهل', style: theme.textTheme.bodyMedium),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            'مسح',
+            style: theme.textTheme.bodyMedium!.copyWith(color: Colors.red),
+          ),
+        ),
+      ],
+    ),
+  );
 }

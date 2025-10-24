@@ -16,10 +16,9 @@ import 'l10n/app_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ← إضافة SystemChrome هنا قبل أي شيء
   await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
-    overlays: [SystemUiOverlay.top], // إظهار الـ status bar فقط
+    overlays: [SystemUiOverlay.top],
   );
 
   try {

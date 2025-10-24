@@ -7,7 +7,6 @@ import 'package:quran/quran.dart' as quran;
 
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
-import '../../viewmodel/quran_surah_cubit/quran_surah_cubit.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({required this.surahNumber, this.startAyah, super.key});
@@ -26,7 +25,6 @@ class _SurahTextViewState extends State<SurahTextView> {
   StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
 
-  // cache للنص لتقليل إعادة البناء
   List<InlineSpan>? _cachedSpans;
   int? _cachedSurahNumber;
   int? _cachedCurrentAyah;
@@ -79,12 +77,7 @@ class _SurahTextViewState extends State<SurahTextView> {
   }
 
   List<InlineSpan> _buildSpans(BuildContext context) {
-    final surahState = context.watch<QuranSurahCubit>().state;
-    final hasIntroBasmala = surahState.hasIntroBasmala;
-
-    final adjustedAyah = hasIntroBasmala && _currentAyah != null
-        ? _currentAyah! - 1
-        : _currentAyah;
+    final adjustedAyah = _currentAyah;
 
     if (_cachedSpans != null &&
         _cachedSurahNumber == widget.surahNumber &&
@@ -98,7 +91,6 @@ class _SurahTextViewState extends State<SurahTextView> {
 
     for (int ayah = 1; ayah <= ayahCount; ayah++) {
       final endSymbol = quran.getVerseEndSymbol(ayah);
-
       final text = quran.getVerse(widget.surahNumber, ayah);
 
       final isCurrent = ayah == adjustedAyah;
@@ -114,7 +106,6 @@ class _SurahTextViewState extends State<SurahTextView> {
               alignment: PlaceholderAlignment.top,
               child: SizedBox(key: keyForThisAyah, width: 0, height: 0),
             ),
-
             TextSpan(
               text: '$text ',
               style: GoogleFonts.amiri().copyWith(
@@ -122,11 +113,9 @@ class _SurahTextViewState extends State<SurahTextView> {
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).textTheme.bodyLarge?.color,
               ),
-              recognizer: _createGestureRecognizer(ayah, text, hasIntroBasmala),
+              recognizer: _createGestureRecognizer(ayah, text),
             ),
-
             TextSpan(text: endSymbol, style: GoogleFonts.amiri().copyWith()),
-
             const TextSpan(text: ' '),
           ],
         ),
@@ -140,11 +129,7 @@ class _SurahTextViewState extends State<SurahTextView> {
     return spans;
   }
 
-  TapGestureRecognizer _createGestureRecognizer(
-    int ayah,
-    String text,
-    bool hasIntroBasmala,
-  ) {
+  TapGestureRecognizer _createGestureRecognizer(int ayah, String text) {
     final tapRecognizer = TapGestureRecognizer();
     Offset? tapPosition;
 
@@ -177,12 +162,7 @@ class _SurahTextViewState extends State<SurahTextView> {
 
         if (selected == 'play') {
           if (mounted) {
-            // لو فيه بسملة مضافة، الآية في الصوتيات offset +1
-            final audioIndex = hasIntroBasmala ? ayah : ayah - 1;
-            context.read<QuranPlayerCubit>().seek(
-              Duration.zero,
-              index: audioIndex,
-            );
+            context.read<QuranPlayerCubit>().seek(Duration.zero, index: ayah);
             context.read<QuranPlayerCubit>().play();
           }
         } else if (selected == 'bookmark') {

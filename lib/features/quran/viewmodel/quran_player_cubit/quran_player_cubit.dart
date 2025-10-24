@@ -5,78 +5,84 @@ import '../../repository/quran_repository.dart';
 import 'quran_player_state.dart';
 
 class QuranPlayerCubit extends Cubit<QuranPlayerState> {
-  QuranPlayerCubit(this._repository, {int? initialSurah}) // ← تعديل
+  QuranPlayerCubit(this._repository, {int? initialSurah})
     : super(QuranPlayerState(currentSurah: initialSurah)) {
-    _initializePlayerListeners();
-  } // ← تعديل
+    _initializeListeners();
+  }
 
   final QuranRepository _repository;
-  StreamSubscription? _positionSubscription;
-  StreamSubscription? _durationSubscription;
-  StreamSubscription? _playerStateSubscription;
-  StreamSubscription? _currentIndexSubscription;
+  final List<StreamSubscription> _subscriptions = [];
 
-  void _initializePlayerListeners() {
-    _setupPositionListener();
-    _setupDurationListener();
-    _setupPlayerStateListener();
-    _setupCurrentIndexListener();
+  // -------------------- Initialization -------------------- //
+
+  void _initializeListeners() {
+    _listenToPosition();
+    _listenToDuration();
+    _listenToPlayerState();
+    _listenToCurrentIndex();
   }
 
-  void _setupPositionListener() {
-    _positionSubscription = _repository.positionStream.listen((position) {
-      emit(state.copyWith(currentPosition: position));
-    });
+  // -------------------- Stream Listeners -------------------- //
+
+  void _listenToPosition() {
+    _subscriptions.add(
+      _repository.positionStream.listen(
+        (position) => emit(state.copyWith(currentPosition: position)),
+      ),
+    );
   }
 
- 
-
-  void _setupDurationListener() {
-    _durationSubscription = _repository.durationStream.listen((duration) {
-      if (duration != null && duration.inMilliseconds > 0) {
-        emit(state.copyWith(totalDuration: duration));
-      }
-    });
+  void _listenToDuration() {
+    _subscriptions.add(
+      _repository.durationStream.listen((duration) {
+        if (duration != null && duration.inMilliseconds > 0) {
+          emit(state.copyWith(totalDuration: duration));
+        }
+      }),
+    );
   }
 
-  void _setupPlayerStateListener() {
-    _playerStateSubscription = _repository.playerStateStream.listen((
-      playerState,
-    ) {
-      emit(state.copyWith(isPlaying: playerState.playing));
-    });
+  void _listenToPlayerState() {
+    _subscriptions.add(
+      _repository.playerStateStream.listen(
+        (playerState) => emit(state.copyWith(isPlaying: playerState.playing)),
+      ),
+    );
   }
 
-  void _setupCurrentIndexListener() {
-    _currentIndexSubscription = _repository.currentIndexStream.listen((index) {
-      if (index != null) {
-        final currentAyah = index + 1;
-        emit(state.copyWith(currentAyah: currentAyah));
-
-        // _saveCurrentAyah(currentAyah);
-      }
-    });
+  void _listenToCurrentIndex() {
+    _subscriptions.add(
+      _repository.currentIndexStream.listen((index) {
+        if (index != null) {
+          final currentAyah = index + 1;
+          emit(state.copyWith(currentAyah: currentAyah));
+        }
+      }),
+    );
   }
 
-  // Player Controls
-  Future<void> play() async => await _repository.play();
-  Future<void> pause() async => await _repository.pause();
+  // -------------------- Player Controls -------------------- //
+
+  Future<void> play() => _repository.play();
+
+  Future<void> pause() => _repository.pause();
+
   Future<void> seek(Duration position, {int? index, int? surah}) async {
     await _repository.seek(position, index: index);
-    if (surah != null) {
-      emit(state.copyWith(currentSurah: surah));
-    }
+    if (surah != null) emit(state.copyWith(currentSurah: surah));
   }
 
-  Future<void> seekToNext() async => await _repository.seekToNext();
-  Future<void> seekToPrevious() async => await _repository.seekToPrevious();
+  Future<void> seekToNext() => _repository.seekToNext();
+
+  Future<void> seekToPrevious() => _repository.seekToPrevious();
+
+  // -------------------- Cleanup -------------------- //
 
   @override
-  Future<void> close() {
-    _positionSubscription?.cancel();
-    _durationSubscription?.cancel();
-    _playerStateSubscription?.cancel();
-    _currentIndexSubscription?.cancel();
+  Future<void> close() async {
+    for (final sub in _subscriptions) {
+      await sub.cancel();
+    }
     return super.close();
   }
 }

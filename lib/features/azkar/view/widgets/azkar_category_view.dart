@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/ext/extention.dart';
+import '../../../../core/utils/navigation_helper.dart';
 import '../../model/azkar_model/azkar_model.dart';
 import 'azkar_list_view.dart';
 
@@ -123,12 +124,10 @@ class _AzkarCategoryListItem extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          Navigator.push(
+          navigateWithTransition(
+            type: TransitionType.fade,
             context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  AzkarListView(category: category, azkarList: azkarList),
-            ),
+            AzkarListView(category: category, azkarList: azkarList),
           );
         },
         child: Container(

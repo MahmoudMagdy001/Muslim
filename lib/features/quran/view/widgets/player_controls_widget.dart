@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_state.dart';
@@ -35,7 +36,10 @@ class _PlayerControlsWidgetState extends State<PlayerControlsWidget> {
 
           return Column(
             children: [
-              Slider(
+              SfSlider(
+                enableTooltip: true,
+                activeColor: theme.colorScheme.primary,
+                inactiveColor: theme.colorScheme.primary.withAlpha(40),
                 value: state.currentPosition.inSeconds.toDouble().clamp(
                   0.0,
                   state.totalDuration.inSeconds.toDouble().clamp(
@@ -48,6 +52,7 @@ class _PlayerControlsWidgetState extends State<PlayerControlsWidget> {
                     : 1,
                 onChanged: (value) {
                   context.read<QuranPlayerCubit>().seek(
+                    // ignore: avoid_dynamic_calls
                     Duration(seconds: value.toInt()),
                   );
                 },
