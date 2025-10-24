@@ -9,7 +9,6 @@ abstract class QuranRepository {
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
-    required bool includeBasmala,
   });
   Future<void> play();
   Future<void> pause();

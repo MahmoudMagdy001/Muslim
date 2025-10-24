@@ -9,25 +9,21 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
   QuranSurahCubit(this._repository) : super(const QuranSurahState());
 
   final QuranRepository _repository;
+
   static int? _lastLoadedSurah;
   static String? _lastLoadedReciter;
 
+  /// تحميل سورة معينة مع اختيار القارئ والآية الابتدائية.
   Future<void> loadSurah(
     int surahNumber,
     String reciter, {
     int startAyah = 1,
   }) async {
-    if (_isSameSurahAndReciter(surahNumber, reciter)) {
-      emit(
-        state.copyWith(
-          status: QuranSurahStatus.alreadyLoaded,
-          surahNumber: state.surahNumber ?? surahNumber,
-        ),
-      );
-      if (startAyah > 1) {
-        // عمل seek للصوت من الآية
-        await _repository.seek(Duration.zero, index: startAyah - 1);
-      }
+    final isSameSurah = _isSameSurahAndReciter(surahNumber, reciter);
+
+    if (isSameSurah) {
+      _emitAlreadyLoaded(surahNumber);
+      await _seekToAyahIfNeeded(startAyah);
       return;
     }
 
@@ -39,42 +35,65 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
     );
 
     try {
-      final bool hasIntroBasmala = surahNumber != 1 && surahNumber != 9;
-
-      await _repository.prepareSurahPlaylist(
-        surahNumber: surahNumber,
-        reciter: reciter,
-        includeBasmala: hasIntroBasmala,
-      );
-
-      _updateLastLoadedInfo(surahNumber, reciter);
-
-      emit(
-        state.copyWith(
-          status: QuranSurahStatus.loaded,
-          surahNumber: surahNumber,
-          ayahCount: quran.getVerseCount(surahNumber),
-          startAyah: startAyah,
-          hasIntroBasmala: hasIntroBasmala,
-        ),
-      );
-
-      if (startAyah > 1) {
-        await _repository.seek(Duration.zero, index: startAyah - 1);
-      }
+      await _prepareAndEmitLoaded(surahNumber, reciter, startAyah);
     } catch (e) {
-      emit(
-        state.copyWith(
-          status: QuranSurahStatus.error,
-          message: e.toString(),
-          surahNumber: surahNumber,
-        ),
-      );
+      _emitError(surahNumber, e);
     }
   }
 
+  // ------------------ Internal Helpers ------------------ //
+
   bool _isSameSurahAndReciter(int surahNumber, String reciter) =>
       _lastLoadedSurah == surahNumber && _lastLoadedReciter == reciter;
+
+  Future<void> _prepareAndEmitLoaded(
+    int surahNumber,
+    String reciter,
+    int startAyah,
+  ) async {
+    await _repository.prepareSurahPlaylist(
+      surahNumber: surahNumber,
+      reciter: reciter,
+    );
+
+    _updateLastLoadedInfo(surahNumber, reciter);
+
+    emit(
+      state.copyWith(
+        status: QuranSurahStatus.loaded,
+        surahNumber: surahNumber,
+        ayahCount: quran.getVerseCount(surahNumber),
+        startAyah: startAyah,
+      ),
+    );
+
+    await _seekToAyahIfNeeded(startAyah);
+  }
+
+  Future<void> _seekToAyahIfNeeded(int startAyah) async {
+    if (startAyah > 1) {
+      await _repository.seek(Duration.zero, index: startAyah - 1);
+    }
+  }
+
+  void _emitAlreadyLoaded(int surahNumber) {
+    emit(
+      state.copyWith(
+        status: QuranSurahStatus.alreadyLoaded,
+        surahNumber: state.surahNumber ?? surahNumber,
+      ),
+    );
+  }
+
+  void _emitError(int surahNumber, Object error) {
+    emit(
+      state.copyWith(
+        status: QuranSurahStatus.error,
+        message: error.toString(),
+        surahNumber: surahNumber,
+      ),
+    );
+  }
 
   void _updateLastLoadedInfo(int surahNumber, String reciter) {
     _lastLoadedSurah = surahNumber;

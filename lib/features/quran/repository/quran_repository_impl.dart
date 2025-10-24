@@ -4,7 +4,6 @@ import '../service/quran_service.dart';
 
 class QuranRepositoryImpl implements QuranRepository {
   final QuranService _quranService = QuranService();
-  // final LastReadService _lastReadService = LastReadService();
 
   @override
   Stream<Duration> get positionStream =>
@@ -26,10 +25,9 @@ class QuranRepositoryImpl implements QuranRepository {
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
-    required bool includeBasmala,
   }) async => await _quranService.prepareSurahPlaylist(
     surahNumber: surahNumber,
-    reciter: reciter, includeBasmala: includeBasmala,
+    reciter: reciter,
   );
 
   @override
