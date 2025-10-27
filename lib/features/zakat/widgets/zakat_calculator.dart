@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -32,8 +34,9 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
   }
 
   Future<void> fetchGoldPrice() async {
-    const apiUrl = 'https://www.goldapi.io/api/XAU/EGP';
-    const apiKey = 'goldapi-l32r3smh52b689-io';
+    const goldApiUrl = 'https://api.gold-api.com/price/XAU';
+    const exchangeApiUrl =
+        'https://api.exchangerate.host/latest?base=USD&symbols=EGP';
 
     try {
       setState(() {
@@ -41,26 +44,44 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         errorMessage = null;
       });
 
-      final response = await http
-          .get(Uri.parse(apiUrl), headers: {'x-access-token': apiKey})
+      // --- 1️⃣ جلب سعر الذهب بالدولار ---
+      final goldResponse = await http
+          .get(Uri.parse(goldApiUrl))
           .timeout(const Duration(seconds: 10));
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          goldPricePerGram = data['price_gram_21k']?.toDouble() ?? 0.0;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          isLoading = false;
-          errorMessage = 'تعذر جلب سعر الذهب. الرجاء المحاولة لاحقاً.';
-        });
+      if (goldResponse.statusCode != 200) {
+        throw Exception('فشل في جلب سعر الذهب');
       }
+
+      final goldData = json.decode(goldResponse.body);
+      final pricePerOunceUSD = (goldData['price'] as num?)?.toDouble() ?? 0.0;
+
+      // --- 2️⃣ جلب سعر الدولار مقابل الجنيه ---
+      final exchangeResponse = await http
+          .get(Uri.parse(exchangeApiUrl))
+          .timeout(const Duration(seconds: 10));
+
+      if (exchangeResponse.statusCode != 200) {
+        throw Exception('فشل في جلب سعر الدولار مقابل الجنيه');
+      }
+
+      final exchangeData = json.decode(exchangeResponse.body);
+      final usdToEgp =
+          (exchangeData['rates']?['EGP'] as num?)?.toDouble() ?? 50.0;
+
+      // --- 3️⃣ تحويل السعر من أونصة إلى جرام ---
+      const ounceToGram = 31.1035;
+      final pricePerGramUSD = pricePerOunceUSD / ounceToGram;
+      final pricePerGramEGP = pricePerGramUSD * usdToEgp;
+
+      setState(() {
+        goldPricePerGram = pricePerGramEGP;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
-        errorMessage = 'خطأ في الاتصال بالإنترنت. تأكد من اتصالك بالشبكة.';
+        errorMessage = 'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
       });
     }
   }

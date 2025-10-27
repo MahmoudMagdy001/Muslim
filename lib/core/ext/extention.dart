@@ -7,6 +7,10 @@ extension ContextExtension on BuildContext {
 
   /// للوصول إلى الثيم
   ThemeData get theme => Theme.of(this);
+}
 
-
+// enums/display_mode.dart
+enum DisplayMode {
+  horizontal, // الطريقة القديمة
+  vertical, // كل آية في سطر
 }

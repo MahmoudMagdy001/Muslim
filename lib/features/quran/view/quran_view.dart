@@ -89,10 +89,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
               });
               return Column(
                 children: [
-                  SurahTextView(
-                    key: ValueKey<int>(actualSurahNumber),
-                    surahNumber: actualSurahNumber,
-                  ),
+                  Expanded(child: _buildHorizontalView(actualSurahNumber)),
                   const PlayerControlsWidget(),
                 ],
               );
@@ -103,10 +100,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
               });
               return Column(
                 children: [
-                  SurahTextView(
-                    key: ValueKey<int>(actualSurahNumber),
-                    surahNumber: actualSurahNumber,
-                  ),
+                  Expanded(child: _buildHorizontalView(actualSurahNumber)),
                   const PlayerControlsWidget(),
                 ],
               );
@@ -116,4 +110,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
       ),
     );
   }
+
+  Widget _buildHorizontalView(int surahNumber) =>
+      SurahTextView(surahNumber: surahNumber, startAyah: widget.startAyah);
 }
