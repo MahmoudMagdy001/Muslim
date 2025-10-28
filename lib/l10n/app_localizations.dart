@@ -98,13 +98,97 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
-  /// Title for Azkar category list screen
+  /// The main application name displayed in the interface
   ///
   /// In en, this message translates to:
-  /// **'List of Azkar Categories'**
+  /// **'Musallem'**
+  String get appName;
+
+  /// Button to navigate to the Holy Quran screen
+  ///
+  /// In en, this message translates to:
+  /// **'Quran'**
+  String get quranButton;
+
+  /// Button to navigate to the Hadith screen
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith'**
+  String get hadithButton;
+
+  /// Button to navigate to the Azkar screen
+  ///
+  /// In en, this message translates to:
+  /// **'Azkar'**
+  String get azkarButton;
+
+  /// Button to navigate to the Qiblah direction screen
+  ///
+  /// In en, this message translates to:
+  /// **'Qiblah'**
+  String get qiblahButton;
+
+  /// Button to navigate to the app settings
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsButton;
+
+  /// Title for the Zakat section in the app
+  ///
+  /// In en, this message translates to:
+  /// **'My Zakat'**
+  String get zakat;
+
+  /// Prophetic saying displayed on the Zakat screen
+  ///
+  /// In en, this message translates to:
+  /// **'The Prophet ﷺ said: Charity does not decrease wealth.'**
+  String get zakatDuaa;
+
+  /// Motivational text encouraging users to start calculating their Zakat
+  ///
+  /// In en, this message translates to:
+  /// **'Start calculating your Zakat now and remember its great virtue.'**
+  String get zakatStart;
+
+  /// Title for the Names of Allah screen
+  ///
+  /// In en, this message translates to:
+  /// **'Names of Allah'**
+  String get namesOfAllah;
+
+  /// Title for the digital Sebha screen
+  ///
+  /// In en, this message translates to:
+  /// **'Sebha'**
+  String get sebha;
+
+  /// Title for the Tasbih section in the Sebha screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih'**
+  String get tasbih;
+
+  /// Button to reset the counter in the Sebha
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// Title for the general Azkar screen
+  ///
+  /// In en, this message translates to:
+  /// **'Azkar'**
+  String get azkar;
+
+  /// Title for the Azkar category list screen
+  ///
+  /// In en, this message translates to:
+  /// **'Azkar Categories'**
   String get azkarCategoryList;
 
-  /// Loading message for Azkar screen
+  /// Text displayed while Azkar data is loading
   ///
   /// In en, this message translates to:
   /// **'Loading Azkar...'**
@@ -116,113 +200,173 @@ abstract class AppLocalizations {
   /// **'No Azkar available at the moment'**
   String get azkarError;
 
-  /// Title text for Azkar screen
-  ///
-  /// In en, this message translates to:
-  /// **'Azkar'**
-  String get azkar;
-
-  /// Label for reference section
-  ///
-  /// In en, this message translates to:
-  /// **'Reference'**
-  String get revision;
-
-  /// Title for Tasbih section
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbih'**
-  String get tasbih;
-
-  /// Label for reset button
-  ///
-  /// In en, this message translates to:
-  /// **'Reset'**
-  String get reset;
-
-  /// Title for Hadith books list
+  /// Title for the Hadith books list screen
   ///
   /// In en, this message translates to:
   /// **'Hadith Books'**
   String get hadithBooks;
 
-  /// Error message when Hadith books fail to load
+  /// Error message when fetching Hadith books fails
   ///
   /// In en, this message translates to:
   /// **'Failed to fetch books'**
   String get hadithBooksError;
 
-  /// Search hint for Hadith books list
+  /// Search hint text in the Hadith books list
   ///
   /// In en, this message translates to:
   /// **'Search by book name...'**
   String get hadithBooksSearch;
 
-  /// Message shown when no Hadith books are available
+  /// Message when no Hadith books are available
   ///
   /// In en, this message translates to:
   /// **'No books available'**
   String get hadithBooksEmpty;
 
-  /// Label for book author
+  /// Label for the book author field
   ///
   /// In en, this message translates to:
   /// **'Author'**
   String get writer;
 
-  /// Label showing number of chapters in a book
+  /// Text showing the number of chapters in a book
   ///
   /// In en, this message translates to:
-  /// **'Number of Chapters:'**
+  /// **'Number of chapters:'**
   String get numberOfChapters;
 
-  /// Label showing number of Hadiths in a book
+  /// Text showing the number of hadiths in a book
   ///
   /// In en, this message translates to:
-  /// **'Number of Hadiths:'**
+  /// **'Number of hadiths:'**
   String get numberOfHadiths;
 
-  /// Title for chapters list
+  /// Title for the list of chapters in a Hadith book
   ///
   /// In en, this message translates to:
   /// **'Chapters'**
   String get chapters;
 
-  /// Generic error prefix text
-  ///
-  /// In en, this message translates to:
-  /// **'An error occurred:'**
-  String get errorMain;
-
-  /// Message shown when no chapters are available
+  /// Message when a Hadith book has no chapters
   ///
   /// In en, this message translates to:
   /// **'No chapters available'**
   String get chaptersEmpty;
 
-  /// Search placeholder for chapters list
+  /// Search hint for the chapters list
   ///
   /// In en, this message translates to:
   /// **'Search for a chapter...'**
   String get chaptersSearch;
 
-  /// Error message when Hadiths fail to load
+  /// Error message when hadiths fail to load
   ///
   /// In en, this message translates to:
-  /// **'Failed to load Hadiths'**
+  /// **'Failed to load hadiths'**
   String get hadithError;
 
-  /// Title for Hadiths list
+  /// Title for the hadith list screen
   ///
   /// In en, this message translates to:
   /// **'Hadiths'**
-  String get hadithstitle;
+  String get hadithsTitle;
 
-  /// Label for Hadith status (authenticity)
+  /// Label for displaying the hadith's authenticity or grading
   ///
   /// In en, this message translates to:
   /// **'Status'**
   String get hadithStatus;
+
+  /// Label for the reference section in hadiths or azkar
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get revision;
+
+  /// General error prefix text used in messages
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred:'**
+  String get errorMain;
+
+  /// Button to retry after an error occurs
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// General loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Message shown when there is no internet connection
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet connection'**
+  String get noInternet;
+
+  /// Title for the main home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  /// Button to refresh prayer times
+  ///
+  /// In en, this message translates to:
+  /// **'Update Prayer Times'**
+  String get updatePrayerTimes;
+
+  /// Button hint to show full prayer schedule
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view more prayer times'**
+  String get morePrayerTimesButton;
+
+  /// Label for prayer times section
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Times'**
+  String get prayerTimesText;
+
+  /// Label for Quran section
+  ///
+  /// In en, this message translates to:
+  /// **'Holy Quran'**
+  String get quranText;
+
+  /// Label for Surah list screen
+  ///
+  /// In en, this message translates to:
+  /// **'Surahs'**
+  String get surahsText;
+
+  /// Label for the bookmarks section
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarksText;
+
+  /// Hint text for searching surahs
+  ///
+  /// In en, this message translates to:
+  /// **'Search by surah name...'**
+  String get searchForSurahName;
+
+  /// Label for displaying search results
+  ///
+  /// In en, this message translates to:
+  /// **'Search results:'**
+  String get searchResult;
+
+  /// Message shown when no bookmarks are saved
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get emptyBookmarks;
 }
 
 class _AppLocalizationsDelegate

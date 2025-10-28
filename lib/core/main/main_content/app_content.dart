@@ -35,18 +35,15 @@ class AppContent extends StatelessWidget {
               final theme = Theme.of(context);
               final isDark = theme.brightness == Brightness.dark;
 
-              // ← تحديث SystemUIOverlayStyle ديناميكياً مع تغيير الثيم
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 SystemChrome.setSystemUIOverlayStyle(
                   SystemUiOverlayStyle(
-                    // إعدادات الـ Navigation Bar (أسفل الشاشة)
                     systemNavigationBarColor: Colors.transparent,
                     systemNavigationBarDividerColor: Colors.transparent,
                     systemNavigationBarIconBrightness: isDark
                         ? Brightness.light
                         : Brightness.dark,
 
-                    // إعدادات الـ Status Bar (أعلى الشاشة)
                     statusBarColor: Colors.transparent,
                     statusBarIconBrightness: isDark
                         ? Brightness.light
@@ -55,7 +52,6 @@ class AppContent extends StatelessWidget {
                         ? Brightness.dark
                         : Brightness.light,
 
-                    // إعدادات إضافية لتحسين المظهر
                     systemNavigationBarContrastEnforced: false,
                     systemStatusBarContrastEnforced: false,
                   ),

@@ -1,6 +1,7 @@
 // layout_screen.dart
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import 'widgets/layout_content.dart';
 
 class LayoutView extends StatefulWidget {
@@ -19,12 +20,17 @@ class _LayoutViewState extends State<LayoutView>
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
+    final localization = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('مُسَلِّم')),
+      appBar: AppBar(title: Text(localization.appName)),
       body: SafeArea(
         child: Builder(
-          builder: (scaffoldContext) => LayoutContent(scaffoldContext, theme),
+          builder: (scaffoldContext) => LayoutContent(
+            scaffoldContext,
+            theme,
+            localizations: localization,
+          ),
         ),
       ),
     );

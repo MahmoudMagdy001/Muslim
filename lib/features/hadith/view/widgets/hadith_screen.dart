@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../core/ext/extention.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../model/hadith_model.dart';
 
 class HadithsScreen extends StatefulWidget {
@@ -13,12 +13,14 @@ class HadithsScreen extends StatefulWidget {
     required this.bookSlug,
     required this.chapterNumber,
     required this.chapterName,
+    required this.localizations,
     super.key,
   });
 
   final String bookSlug;
   final String chapterNumber;
   final String chapterName;
+  final AppLocalizations localizations;
 
   @override
   State<HadithsScreen> createState() => _HadithsScreenState();
@@ -90,14 +92,14 @@ class _HadithsScreenState extends State<HadithsScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.localization.hadithError)),
+            SnackBar(content: Text(widget.localizations.hadithError)),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${context.localization.errorMain} $e')),
+          SnackBar(content: Text('${widget.localizations.errorMain} $e')),
         );
       }
     } finally {
@@ -118,12 +120,11 @@ class _HadithsScreenState extends State<HadithsScreen> {
     final theme = Theme.of(context);
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
+    final localization = widget.localizations;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '${context.localization.hadithstitle} ${widget.chapterName}',
-        ),
+        title: Text('${localization.hadithsTitle} ${widget.chapterName}'),
       ),
       body: _hadiths.isEmpty && _isLoading
           ? Skeletonizer(
@@ -189,7 +190,7 @@ class _HadithsScreenState extends State<HadithsScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                '${context.localization.hadithStatus}: $status',
+                                '${localization.hadithStatus}: $status',
                                 textAlign: TextAlign.end,
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: theme.primaryColor,

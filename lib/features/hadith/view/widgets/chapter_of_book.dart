@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../../core/ext/extention.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'hadith_screen.dart';
 import '../../model/chapter_of_book_model.dart';
 
@@ -89,10 +89,11 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
     final theme = Theme.of(context);
+    final localization = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${context.localization.chapters} ${widget.bookName}'),
+        title: Text('${localization.chapters} ${widget.bookName}'),
       ),
       body: SafeArea(
         child: Column(
@@ -102,7 +103,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: context.localization.chaptersSearch,
+                  hintText: localization.chaptersSearch,
                   prefixIcon: const Icon(Icons.search),
                 ),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -128,14 +129,10 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
                     );
                   } else if (snap.hasError) {
                     return Center(
-                      child: Text(
-                        '${context.localization.errorMain}: ${snap.error}',
-                      ),
+                      child: Text('${localization.errorMain}: ${snap.error}'),
                     );
                   } else if (!snap.hasData || snap.data!.isEmpty) {
-                    return Center(
-                      child: Text(context.localization.chaptersEmpty),
-                    );
+                    return Center(child: Text(localization.chaptersEmpty));
                   } else {
                     final chapters = _filtered;
                     return Scrollbar(
@@ -169,6 +166,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
                                     bookSlug: widget.bookSlug,
                                     chapterNumber: chapter.chapterNumber,
                                     chapterName: chapterName,
+                                    localizations: localization,
                                   ),
                                   type: TransitionType.fade,
                                 ),

@@ -41,10 +41,42 @@ String getArabicMonthName(int month) {
   }
 }
 
-String formatTo12Hour(String time24) {
+String getEnglishHijriMonthName(int month) {
+  switch (month) {
+    case 1:
+      return 'Muharram';
+    case 2:
+      return 'Safar';
+    case 3:
+      return 'Rabi al-Awwal';
+    case 4:
+      return 'Rabi al-Thani';
+    case 5:
+      return 'Jumada al-Awwal';
+    case 6:
+      return 'Jumada al-Thani';
+    case 7:
+      return 'Rajab';
+    case 8:
+      return 'Sha’ban';
+    case 9:
+      return 'Ramadan';
+    case 10:
+      return 'Shawwal';
+    case 11:
+      return 'Dhul-Qadah';
+    case 12:
+      return 'Dhul-Hijjah';
+    default:
+      return '';
+  }
+}
+
+String formatTo12Hour(String time24, bool isArabic) {
   try {
     final date = DateFormat('HH:mm').parse(time24);
     final formatted = DateFormat('hh:mm a').format(date);
+    if (!isArabic) return formatted;
     return convertToArabicNumbers(
       formatted.replaceAll('AM', 'ص').replaceAll('PM', 'م'),
     );

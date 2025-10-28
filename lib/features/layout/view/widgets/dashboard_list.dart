@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/service/location_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../hadith/view/hadith_books_view.dart';
 import '../../../azkar/view/azkar_view.dart';
 import '../../../qiblah/service/qiblah_service.dart';
@@ -14,9 +15,14 @@ import '../../model/dashboard_item_model.dart';
 import 'dashboard_button.dart';
 
 class DashboardGrid extends StatelessWidget {
-  const DashboardGrid({required this.theme, super.key});
+  const DashboardGrid({
+    required this.theme,
+    required this.localizations,
+    super.key,
+  });
 
   final ThemeData theme;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) {
@@ -24,28 +30,29 @@ class DashboardGrid extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final List<DashboardItemModel> items = [
       DashboardItemModel(
+        
         icon: Icons.auto_stories_rounded,
-        label: 'القرآن',
+        label: localizations.quranButton,
         color: Colors.blue,
         route: SurahsListView(
           selectedReciter: reciterCubit.state.selectedReciter,
         ),
       ),
-      const DashboardItemModel(
+      DashboardItemModel(
         icon: Icons.library_books_rounded,
-        label: 'الحديث',
+        label: localizations.hadithButton,
         color: Colors.green,
-        route: HadithBooksView(),
+        route: const HadithBooksView(),
       ),
-      const DashboardItemModel(
+      DashboardItemModel(
         icon: Icons.psychology_rounded,
-        label: 'الأذكار',
+        label: localizations.azkarButton,
         color: Colors.orange,
-        route: AzkarView(),
+        route: const AzkarView(),
       ),
       DashboardItemModel(
         icon: Icons.explore_rounded,
-        label: 'القبلة',
+        label: localizations.qiblahButton,
         color: Colors.purple,
         route: BlocProvider(
           create: (_) => QiblahCubit(
@@ -55,11 +62,11 @@ class DashboardGrid extends StatelessWidget {
           child: const QiblahView(),
         ),
       ),
-      const DashboardItemModel(
+      DashboardItemModel(
         icon: Icons.settings_rounded,
-        label: 'الإعدادات',
+        label: localizations.settingsButton,
         color: Colors.grey,
-        route: SettingsView(),
+        route: const SettingsView(),
       ),
     ];
 

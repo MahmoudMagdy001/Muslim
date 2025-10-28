@@ -75,10 +75,15 @@ class _QuranViewContentState extends State<QuranViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    final surahName = quran.getSurahNameArabic(widget.surahNumber);
+    final lcoale = Localizations.localeOf(context);
+    final isArabic = lcoale.languageCode == 'ar';
+
+    final surahName = isArabic
+        ? quran.getSurahNameArabic(widget.surahNumber)
+        : quran.getSurahName(widget.surahNumber);
 
     return Scaffold(
-      appBar: AppBar(title: Text('سورة $surahName')),
+      appBar: AppBar(title: Text(surahName)),
       body: SafeArea(
         child: BlocBuilder<QuranSurahCubit, QuranSurahState>(
           builder: (context, state) {
@@ -89,7 +94,13 @@ class _QuranViewContentState extends State<QuranViewContent> {
               });
               return Column(
                 children: [
-                  Expanded(child: _buildHorizontalView(actualSurahNumber)),
+                  Expanded(
+                    child: SurahTextView(
+                      surahNumber: actualSurahNumber,
+                      startAyah: widget.startAyah,
+                      isArabic: isArabic,
+                    ),
+                  ),
                   const PlayerControlsWidget(),
                 ],
               );
@@ -100,7 +111,13 @@ class _QuranViewContentState extends State<QuranViewContent> {
               });
               return Column(
                 children: [
-                  Expanded(child: _buildHorizontalView(actualSurahNumber)),
+                  Expanded(
+                    child: SurahTextView(
+                      surahNumber: actualSurahNumber,
+                      startAyah: widget.startAyah,
+                      isArabic: isArabic,
+                    ),
+                  ),
                   const PlayerControlsWidget(),
                 ],
               );
@@ -110,7 +127,4 @@ class _QuranViewContentState extends State<QuranViewContent> {
       ),
     );
   }
-
-  Widget _buildHorizontalView(int surahNumber) =>
-      SurahTextView(surahNumber: surahNumber, startAyah: widget.startAyah);
 }

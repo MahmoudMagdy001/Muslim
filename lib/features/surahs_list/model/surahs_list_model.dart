@@ -1,16 +1,16 @@
 class SurahsListModel {
   const SurahsListModel({
     required this.number,
-    required this.nameArabic,
+    required this.surahName,
     required this.ayahCount,
-    required this.location,
+    // required this.location,
     required this.locationArabic,
   });
 
   final int number;
-  final String nameArabic;
+  final String surahName;
   final int ayahCount;
-  final String location;
+  // final String location;
   final String locationArabic;
 
   @override
@@ -18,13 +18,18 @@ class SurahsListModel {
     if (identical(this, other)) return true;
     return other is SurahsListModel &&
         other.number == number &&
-        other.nameArabic == nameArabic &&
+        other.surahName == surahName &&
         other.ayahCount == ayahCount &&
-        other.location == location &&
+        // other.location == location &&
         other.locationArabic == locationArabic;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(number, nameArabic, ayahCount, location, locationArabic);
+  int get hashCode => Object.hash(
+    number,
+    surahName,
+    ayahCount,
+    //  location,
+    locationArabic,
+  );
 }

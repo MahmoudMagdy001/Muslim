@@ -1,12 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../../features/prayer_times/service/work_manager_service.dart';
+import '../../service/permissions_sevice.dart';
 
 class AppInitializer {
   AppInitializer(this.prefs);
@@ -17,7 +16,7 @@ class AppInitializer {
     await workManagerNotify();
     await _initializeAudioBackground();
     await _initializeNotifications();
-    await _requestPermissions();
+    await requestAllPermissions();
     await _scheduleHourlyReminder();
   }
 
@@ -34,7 +33,6 @@ class AppInitializer {
     }
   }
 
-  // تحتاج إضافة هذا في workManagerNotify()
   Future<void> workManagerNotify() async {
     debugPrint('بدأ جدولة الاشعارات ف الخلفيه');
 
@@ -93,51 +91,6 @@ class AppInitializer {
             icon: 'resource://drawable/ic_muslim_logo',
           ),
         ]);
-  }
-
-  Future<void> _requestPermissions() async {
-    try {
-      await _checkLocationPermission();
-      await _checkNotificationPermission();
-      await checkBatteryOptimization();
-    } catch (e) {
-      debugPrint('Permission request error: $e');
-    }
-  }
-
-  Future<void> _checkNotificationPermission() async {
-    final status = await Permission.notification.status;
-    if (status.isDenied) {
-      await Permission.notification.request();
-    }
-    if (status.isPermanentlyDenied) {
-      await openAppSettings();
-    }
-  }
-
-  Future<void> _checkLocationPermission() async {
-    final status = await Permission.locationWhenInUse.status;
-    if (status.isDenied) {
-      await Permission.locationWhenInUse.request();
-    }
-    if (status.isPermanentlyDenied) {
-      await openAppSettings();
-    }
-  }
-
-  Future<void> checkBatteryOptimization() async {
-    try {
-      final isDisabled =
-          await DisableBatteryOptimization.isBatteryOptimizationDisabled;
-
-      if (isDisabled == false) {
-        await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
-      } else {
-        debugPrint('✅ التطبيق غير محسن (Unrestricted)');
-      }
-    } catch (e) {
-      debugPrint('⚠️ خطأ في التحقق من Battery Optimization: $e');
-    }
   }
 
   Future<void> _scheduleHourlyReminder() async {

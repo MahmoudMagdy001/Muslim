@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../core/utils/format_helper.dart';
 import 'crops_zakat_tab.dart';
-import 'zakat_card_widget.dart';
+import 'zakat_card.dart';
 
 // ==================== Main Calculator Widget ====================
 class ZakatCalculator extends StatefulWidget {
