@@ -4,9 +4,9 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import 'dart:convert';
 
-import '../../../core/ext/extention.dart';
 import '../../../core/utils/format_helper.dart';
 import '../../../core/utils/navigation_helper.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/chapter_of_book.dart';
 import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
@@ -77,9 +77,10 @@ class _HadithBooksViewState extends State<HadithBooksView> {
     final theme = Theme.of(context);
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
+    final localization = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.localization.hadithBooks)),
+      appBar: AppBar(title: Text(localization.hadithBooks)),
       body: SafeArea(
         child: Column(
           children: [
@@ -88,7 +89,7 @@ class _HadithBooksViewState extends State<HadithBooksView> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: context.localization.hadithBooksSearch,
+                  hintText: localization.hadithBooksSearch,
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 ),
                 onChanged: (val) => setState(() => _searchText = val),
@@ -119,14 +120,14 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                   if (snapshot.hasError) {
                     return Center(
                       child: Text(
-                        '${context.localization.hadithBooksError} ${snapshot.error}',
+                        '${localization.hadithBooksError} ${snapshot.error}',
                         style: theme.textTheme.bodyMedium,
                       ),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Center(
                       child: Text(
-                        context.localization.hadithBooksEmpty,
+                        localization.hadithBooksEmpty,
                         style: theme.textTheme.bodyMedium,
                       ),
                     );
@@ -176,6 +177,7 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                           writer: writer,
                           chpaterCount: chpaterCount,
                           hadithCount: hadithCount,
+                          localization: localization,
                         );
                       },
                     ),
@@ -248,6 +250,7 @@ class SuccessWidget extends StatelessWidget {
     required this.writer,
     required this.chpaterCount,
     required this.hadithCount,
+    required this.localization,
     super.key,
   });
 
@@ -258,6 +261,7 @@ class SuccessWidget extends StatelessWidget {
   final String writer;
   final String chpaterCount;
   final String hadithCount;
+  final AppLocalizations localization;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -304,19 +308,19 @@ class SuccessWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${context.localization.writer}: $writer',
+                    '${localization.writer}: $writer',
                     style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 4),
 
                   Text(
-                    '${context.localization.numberOfChapters} $chpaterCount',
+                    '${localization.numberOfChapters} $chpaterCount',
                     style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 4),
 
                   Text(
-                    '${context.localization.numberOfHadiths} $hadithCount',
+                    '${localization.numberOfHadiths} $hadithCount',
                     style: theme.textTheme.bodySmall,
                   ),
                 ],

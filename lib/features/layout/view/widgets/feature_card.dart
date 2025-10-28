@@ -17,6 +17,7 @@ class FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Expanded(
     child: Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -25,17 +26,20 @@ class FeatureCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                label,
-                style: theme.textTheme.bodyMedium,
-                textAlign: TextAlign.center,
+              Flexible(
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               Image.asset(
-                cacheHeight: 126,
-                cacheWidth: 126,
                 image,
                 height: theme.textTheme.bodyMedium!.fontSize! * 3,
+                fit: BoxFit.contain,
                 color: theme.iconTheme.color,
               ),
             ],

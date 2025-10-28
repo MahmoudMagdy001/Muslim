@@ -43,7 +43,7 @@ void callbackDispatcher() {
     try {
       final prayerService = PrayerTimesService();
       final notificationService = PrayerNotificationService();
-      final times = await prayerService.getPrayerTimes();
+      final times = await prayerService.getPrayerTimes(isArabic: true);
       await notificationService.schedulePrayerNotifications(times);
 
       debugPrint(

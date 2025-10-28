@@ -3,24 +3,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/surahs_list_model.dart';
 import 'surahs_list_repository.dart';
-import '../service/surahs_list_service.dart';
 
 class SurahsListRepositoryImpl implements SurahsListRepository {
-  SurahsListRepositoryImpl(this.service);
-  final SurahsListService service;
+  SurahsListRepositoryImpl();
 
   @override
-  Future<List<SurahsListModel>> getAllSurahs() async =>
+  Future<List<SurahsListModel>> getAllSurahs({required bool isArabic}) async =>
       List.generate(114, (index) {
         final surahNumber = index + 1;
         final location = quran.getPlaceOfRevelation(surahNumber);
 
         return SurahsListModel(
           number: surahNumber,
-          nameArabic: quran.getSurahNameArabic(surahNumber),
+          surahName: isArabic
+              ? quran.getSurahNameArabic(surahNumber)
+              : quran.getSurahName(surahNumber),
           ayahCount: quran.getVerseCount(surahNumber),
-          location: location,
-          locationArabic: location == 'Makkah' ? 'مكية' : 'مدنية',
+          // location: location,
+          locationArabic: isArabic
+              ? location == 'Makkah'
+                    ? 'مكية'
+                    : 'مدنية'
+              : location,
         );
       });
 

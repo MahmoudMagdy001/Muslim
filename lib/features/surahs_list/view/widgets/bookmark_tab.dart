@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../quran/model/bookmark_model.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -9,8 +10,13 @@ import '../../../quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import '../../../quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
 
 class BookmarksTab extends StatelessWidget {
-  const BookmarksTab({required this.reciter, super.key});
+  const BookmarksTab({
+    required this.reciter,
+    required this.localizations,
+    super.key,
+  });
   final String reciter;
+  final AppLocalizations localizations;
 
   Future<void> _openBookmark(BuildContext context, int surah, int ayah) async {
     await navigateWithTransition(
@@ -43,7 +49,7 @@ class BookmarksTab extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (state.bookmarks.isEmpty) {
-          return const Center(child: Text('لا توجد علامات بعد'));
+          return Center(child: Text(localizations.emptyBookmarks));
         }
 
         return Scrollbar(
@@ -85,7 +91,7 @@ class BookmarksTab extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'سورة $surahName',
+                                    surahName,
                                     style: theme.textTheme.titleLarge,
                                   ),
                                   deleteButton(

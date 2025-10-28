@@ -4,10 +4,16 @@ import '../../../../core/utils/format_helper.dart';
 import '../../model/surahs_list_model.dart';
 
 class SurahListTile extends StatelessWidget {
-  const SurahListTile({required this.surah, required this.onTap, super.key});
+  const SurahListTile({
+    required this.surah,
+    required this.onTap,
+    required this.isArabic,
+    super.key,
+  });
 
   final SurahsListModel surah;
   final VoidCallback onTap;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +41,12 @@ class SurahListTile extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  convertToArabicNumbers(surah.number.toString()),
+                  isArabic
+                      ? convertToArabicNumbers(surah.number.toString())
+                      : surah.number.toString(),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
                   ),
                 ),
               ),
@@ -54,17 +61,16 @@ class SurahListTile extends StatelessWidget {
 
                 children: [
                   Text(
-                    surah.nameArabic,
+                    surah.surahName,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${surah.locationArabic} - ${convertToArabicNumbers(surah.ayahCount.toString())} آيات',
+                    '${surah.locationArabic} - ${isArabic ? '${convertToArabicNumbers(surah.ayahCount.toString())} آيات' : '${surah.ayahCount.toString()} Verses'}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

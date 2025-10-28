@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/ext/extention.dart';
 import '../../../../core/utils/navigation_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../model/azkar_model/azkar_model.dart';
 import 'azkar_list_view.dart';
 
@@ -51,72 +51,80 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(context.localization.azkarCategoryList)),
-    body: SafeArea(
-      child: FutureBuilder<Map<String, List<AzkarModel>>>(
-        future: _groupedAzkarFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(context.localization.azkarLoadingText),
-                ],
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                '${context.localization.azkarError} ${snapshot.error}',
-              ),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text(context.localization.azkarError));
-          } else {
-            final groupedAzkar = snapshot.data!;
-            return Scrollbar(
-              controller: _scrollController,
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsetsDirectional.only(
-                  start: 8,
-                  end: 16,
-                  top: 5,
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final localization = AppLocalizations.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(localization.azkarCategoryList)),
+      body: SafeArea(
+        child: FutureBuilder<Map<String, List<AzkarModel>>>(
+          future: _groupedAzkarFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(localization.azkarLoadingText),
+                  ],
                 ),
-                itemCount: groupedAzkar.keys.length,
-                itemBuilder: (context, index) {
-                  final category = groupedAzkar.keys.elementAt(index);
-                  final azkarList = groupedAzkar[category]!;
-                  return _AzkarCategoryListItem(
-                    category: category,
-                    azkarList: azkarList,
-                  );
-                },
-              ),
-            );
-          }
-        },
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('${localization.azkarError} ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text(localization.azkarError));
+            } else {
+              final groupedAzkar = snapshot.data!;
+              return Scrollbar(
+                controller: _scrollController,
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 8,
+                    end: 16,
+                    top: 5,
+                  ),
+                  itemCount: groupedAzkar.keys.length,
+                  itemBuilder: (context, index) {
+                    final category = groupedAzkar.keys.elementAt(index);
+                    final azkarList = groupedAzkar[category]!;
+                    return _AzkarCategoryListItem(
+                      category: category,
+                      azkarList: azkarList,
+                      theme: theme,
+                      localization: localization,
+                    );
+                  },
+                ),
+              );
+            }
+          },
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _AzkarCategoryListItem extends StatelessWidget {
   const _AzkarCategoryListItem({
     required this.category,
     required this.azkarList,
+    required this.theme,
+    required this.localization,
   });
 
   final String category;
   final List<AzkarModel> azkarList;
+  final ThemeData theme;
+  final AppLocalizations localization;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final count = azkarList.length;
 
@@ -157,7 +165,7 @@ class _AzkarCategoryListItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '$count ${context.localization.azkar}',
+                      '$count ${localization.azkar}',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),

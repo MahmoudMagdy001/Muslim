@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/service/permissions_sevice.dart';
 import '../model/prayer_times_model.dart';
 import '../service/prayer_calculator_service.dart';
 import '../service/prayer_notification_service.dart';
@@ -24,16 +25,36 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   Timer? _midnightTimer;
 
   /// التهيئة وجلب مواقيت الصلاة
-  Future<void> init() async {
-    await fetchPrayerTimes();
+  Future<void> init({required bool isArabic}) async {
+    await checkAllPermissions();
+    await fetchPrayerTimes(isArabic: isArabic);
+  }
+
+  Future<void> checkAllPermissions() async {
+    emit(state.copyWith(status: PrayerTimesStatus.checkingPermissions));
+
+    try {
+      requestAllPermissions();
+      debugPrint('✅ تم التحقق من جميع الصلاحيات بنجاح');
+    } catch (error) {
+      debugPrint('❌ خطأ في التحقق من الصلاحيات: $error');
+      emit(
+        state.copyWith(
+          status: PrayerTimesStatus.permissionError,
+          message: 'يجب منح الصلاحيات المطلوبة لعرض مواقيت الصلاة',
+        ),
+      );
+    }
   }
 
   /// جلب مواقيت الصلاة
-  Future<void> fetchPrayerTimes() async {
+  Future<void> fetchPrayerTimes({required bool isArabic}) async {
     emit(state.copyWith(status: PrayerTimesStatus.loading));
 
     try {
-      final localPrayerTimes = await _prayerTimesService.getPrayerTimes();
+      final localPrayerTimes = await _prayerTimesService.getPrayerTimes(
+        isArabic: isArabic,
+      );
       await _handlePrayerTimesSuccess(localPrayerTimes);
     } catch (error) {
       _handlePrayerTimesError(error);
@@ -68,7 +89,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     emit(
       state.copyWith(
         status: PrayerTimesStatus.error,
-        message: 'فشل في جلب مواقيت الصلاة: ${error.toString()}',
+        message: 'من فضلك فعل الاشعارات للحصول علي مواقيت الصلاه',
       ),
     );
   }
@@ -103,9 +124,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   /// تحديث يدوي لمواقيت الصلاة
-  Future<void> refreshPrayerTimes() async {
+  Future<void> refreshPrayerTimes({required bool isArabic}) async {
     debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
-    await init();
+    await init(isArabic: isArabic);
   }
 
   @override

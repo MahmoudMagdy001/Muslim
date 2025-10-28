@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../core/ext/extention.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../model/azkar_model/azkar_model.dart';
 
 class AzkarListView extends StatefulWidget {
@@ -49,6 +49,7 @@ class _AzkarListViewState extends State<AzkarListView> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final local = Localizations.localeOf(context).languageCode;
+    final localization = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.category)),
@@ -125,7 +126,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    '${context.localization.revision}: ${item.reference}',
+                                    '${localization.revision}: ${item.reference}',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: colorScheme.primary,
                                       fontWeight: FontWeight.w500,
@@ -233,7 +234,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                         _incrementCounter(index);
                                       },
 
-                                      child: Text(context.localization.tasbih),
+                                      child: Text(localization.tasbih),
                                     ),
                                   ),
                                 ] else
@@ -250,7 +251,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                                         color: colorScheme.primary,
                                       ),
                                       label: Text(
-                                        context.localization.reset,
+                                        localization.reset,
                                         style: TextStyle(
                                           color: colorScheme.primary,
                                         ),

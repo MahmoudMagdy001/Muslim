@@ -7,16 +7,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:quran/quran.dart' as quran;
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 
 class SurahTextView extends StatefulWidget {
-  const SurahTextView({required this.surahNumber, this.startAyah, super.key});
+  const SurahTextView({
+    required this.surahNumber,
+    required this.isArabic,
+    this.startAyah,
+    super.key,
+  });
 
   final int surahNumber;
   final int? startAyah;
+  final bool isArabic;
 
   @override
   State<SurahTextView> createState() => _SurahTextViewState();
@@ -99,10 +106,10 @@ class _SurahTextViewState extends State<SurahTextView> {
       }
 
       final tafsir = data.first;
+      // ignore: avoid_dynamic_calls
       final text = tafsir['text']?.toString().trim() ?? '';
       return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
     } catch (e) {
-      print('Tafsir error: $e');
       return 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.';
     }
   }
@@ -119,7 +126,7 @@ class _SurahTextViewState extends State<SurahTextView> {
     {'id': 8, 'name': 'تفسير الطبري'},
   ];
 
-  List<InlineSpan> _buildSpans(BuildContext context) {
+  List<InlineSpan> _buildSpans(BuildContext context, bool isArabic) {
     final adjustedAyah = _currentAyah;
 
     if (_cachedSpans != null &&
@@ -133,8 +140,10 @@ class _SurahTextViewState extends State<SurahTextView> {
     _currentKey = null;
 
     for (int ayah = 1; ayah <= ayahCount; ayah++) {
-      final endSymbol = quran.getVerseEndSymbol(ayah);
-      final text = quran.getVerse(widget.surahNumber, ayah);
+      final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
+      final text = isArabic
+          ? quran.getVerse(widget.surahNumber, ayah)
+          : quran.getVerseTranslation(widget.surahNumber, ayah);
 
       final isCurrent = ayah == adjustedAyah;
       final keyForThisAyah = isCurrent
@@ -158,6 +167,7 @@ class _SurahTextViewState extends State<SurahTextView> {
               ),
               recognizer: _createGestureRecognizer(ayah, text),
             ),
+
             TextSpan(text: endSymbol, style: GoogleFonts.amiri()),
             const TextSpan(text: ' '),
           ],
@@ -255,13 +265,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                         child: Text(
                           tafsir['name'],
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onPrimaryContainer,
-                              ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
                     );
@@ -273,18 +277,19 @@ class _SurahTextViewState extends State<SurahTextView> {
 
           if (selectedTafsir == null) return;
 
-          // ✅ عرض مؤشر تحميل أثناء جلب التفسير
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => const Center(child: CircularProgressIndicator()),
-          );
-
+          if (mounted) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const Center(child: CircularProgressIndicator()),
+            );
+          }
           final tafsirText = await fetchTafsirById(
             selectedTafsir['id'],
             widget.surahNumber,
             ayah,
           );
+          final surahName = quran.getSurahNameArabic(widget.surahNumber);
 
           if (mounted) Navigator.pop(context);
 
@@ -296,12 +301,11 @@ class _SurahTextViewState extends State<SurahTextView> {
               initialChildSize: 0.7,
               maxChildSize: 0.9,
               builder: (context) => SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      '${selectedTafsir['name']} - للآية رقم $ayah',
+                      '${selectedTafsir['name']} - للآية رقم $ayah - سورة $surahName',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
@@ -309,20 +313,61 @@ class _SurahTextViewState extends State<SurahTextView> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      text,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        text,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      tafsirText ?? 'لا يوجد تفسير متاح حاليًا.',
-                      textAlign: TextAlign.justify,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(height: 1.7),
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        tafsirText ?? 'لا يوجد تفسير متاح حاليًا.',
+                        textAlign: TextAlign.justify,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(height: 1.7),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0,
+                        vertical: 15,
+                      ),
+                      child: SizedBox(
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            SharePlus.instance.share(
+                              ShareParams(
+                                text:
+                                    '''
+📖 ${selectedTafsir['name']}
+سورة $surahName - الآية رقم $ayah
+
+────────────────────────────
+${quran.getVerse(widget.surahNumber, ayah)}
+────────────────────────────
+
+💬 التفسير:
+$tafsirText
+
+────────────────────────────
+🔗 تم مشاركته من تطبيق مسلم 
+    ''',
+                              ),
+                            );
+                          },
+                          child: const Text('مشاركة التفسير'),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -363,10 +408,10 @@ class _SurahTextViewState extends State<SurahTextView> {
           textAlign: TextAlign.center,
           text: TextSpan(
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              height: 2.3,
+              height: widget.isArabic ? 2.3 : 1.7,
               fontWeight: FontWeight.normal,
             ),
-            children: _buildSpans(context),
+            children: _buildSpans(context, widget.isArabic),
           ),
         ),
       ),

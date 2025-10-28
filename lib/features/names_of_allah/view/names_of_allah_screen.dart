@@ -120,8 +120,14 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                                       onPressed: () {
                                         SharePlus.instance.share(
                                           ShareParams(
-                                            text: 'المعني: ${data.text}',
-                                            title: data.name,
+                                            text:
+                                                '''
+ الأسم: ${data.name}
+
+ المعنى: ${data.text}
+
+🔗 تم مشاركته من تطبيق مسلم 
+''',
                                           ),
                                         );
                                       },

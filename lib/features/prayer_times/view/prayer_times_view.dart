@@ -4,6 +4,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../core/utils/format_helper.dart';
+import '../../../l10n/app_localizations.dart';
 import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
 import 'widgets/current_prayer_card_widget.dart';
@@ -12,41 +13,63 @@ class PrayerTimesView extends StatelessWidget {
   const PrayerTimesView({
     required this.scaffoldContext,
     required this.theme,
+    required this.localizations,
     super.key,
   });
 
   final BuildContext scaffoldContext;
   final ThemeData theme;
+  final AppLocalizations localizations;
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) => PrayerTimesCubit()..init(),
-    child: BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
-      selector: (state) => state.status,
-      builder: (context, status) {
-        if (status == PrayerTimesStatus.error) {
-          final message = context.select(
-            (PrayerTimesCubit cubit) =>
-                cubit.state.message ?? 'حدث خطأ غير متوقع',
-          );
-          return _PrayerErrorSliver(message: message);
-        }
+  Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
 
-        return SliverToBoxAdapter(
-          child: Skeletonizer(
-            enabled: status == PrayerTimesStatus.loading,
-            child: const _PrayerSuccessSliver(),
+    return BlocProvider(
+      create: (_) => PrayerTimesCubit()..init(isArabic: isArabic),
+      child:
+          BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
+            selector: (state) => state.status,
+            builder: (context, status) {
+              if (status == PrayerTimesStatus.error ||
+                  status == PrayerTimesStatus.permissionError) {
+                final message = context.select(
+                  (PrayerTimesCubit cubit) =>
+                      cubit.state.message ?? localizations.errorMain,
+                );
+                return _PrayerErrorSliver(
+                  message: message,
+                  localizations: localizations,
+                  isArabic: isArabic,
+                );
+              }
+
+              return SliverToBoxAdapter(
+                child: Skeletonizer(
+                  enabled: status == PrayerTimesStatus.loading,
+                  child: _PrayerSuccessSliver(
+                    localizations: localizations,
+                    isArabic: isArabic,
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      },
-    ),
-  );
+    );
+  }
 }
 
 class _PrayerErrorSliver extends StatelessWidget {
-  const _PrayerErrorSliver({required this.message});
+  const _PrayerErrorSliver({
+    required this.message,
+    required this.localizations,
+    required this.isArabic,
+  });
 
   final String message;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => SliverToBoxAdapter(
@@ -64,10 +87,12 @@ class _PrayerErrorSliver extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () async {
-                await context.read<PrayerTimesCubit>().refreshPrayerTimes();
+                await context.read<PrayerTimesCubit>().refreshPrayerTimes(
+                  isArabic: isArabic,
+                );
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('إعادة المحاولة'),
+              label: Text(localizations.retry),
             ),
           ],
         ),
@@ -77,21 +102,37 @@ class _PrayerErrorSliver extends StatelessWidget {
 }
 
 class _PrayerSuccessSliver extends StatelessWidget {
-  const _PrayerSuccessSliver();
+  const _PrayerSuccessSliver({
+    required this.localizations,
+    required this.isArabic,
+  });
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final hijriDate = _getHijriDate();
 
-    return CurrentPrayerCard(hijriDate: hijriDate, theme: theme);
+    final hijriDate = _getHijriDate(isArabic);
+
+    return CurrentPrayerCard(
+      hijriDate: hijriDate,
+      theme: theme,
+      localizations: localizations,
+    );
   }
 
-  static String _getHijriDate() {
+  static String _getHijriDate(bool isArabic) {
     final hijri = HijriCalendar.now();
-    final day = convertToArabicNumbers(hijri.hDay.toString());
-    final year = convertToArabicNumbers(hijri.hYear.toString());
-    final monthName = getArabicMonthName(hijri.hMonth);
-    return '$day $monthName $year هـ';
+    final day = isArabic
+        ? convertToArabicNumbers(hijri.hDay.toString())
+        : hijri.hDay.toString();
+    final year = isArabic
+        ? convertToArabicNumbers(hijri.hYear.toString())
+        : hijri.hYear.toString();
+    final monthName = isArabic
+        ? getArabicMonthName(hijri.hMonth)
+        : getEnglishHijriMonthName(hijri.hMonth);
+    return '$day $monthName $year ${isArabic ? 'هـ' : 'Hijri'}';
   }
 }

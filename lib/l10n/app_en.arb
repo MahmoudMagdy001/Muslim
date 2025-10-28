@@ -1,129 +1,238 @@
 {
   "@@locale": "en",
 
-  "azkarCategoryList": "List of Azkar Categories",
-  "@azkarCategoryList": {
-    "description": "Title for Azkar category list screen",
+  "appName": "Musallem",
+  "@appName": {
+    "description": "The main application name displayed in the interface",
     "type": "text"
   },
 
+  "quranButton": "Quran",
+  "@quranButton": {
+    "description": "Button to navigate to the Holy Quran screen",
+    "type": "text"
+  },
+  "hadithButton": "Hadith",
+  "@hadithButton": {
+    "description": "Button to navigate to the Hadith screen",
+    "type": "text"
+  },
+  "azkarButton": "Azkar",
+  "@azkarButton": {
+    "description": "Button to navigate to the Azkar screen",
+    "type": "text"
+  },
+  "qiblahButton": "Qiblah",
+  "@qiblahButton": {
+    "description": "Button to navigate to the Qiblah direction screen",
+    "type": "text"
+  },
+  "settingsButton": "Settings",
+  "@settingsButton": {
+    "description": "Button to navigate to the app settings",
+    "type": "text"
+  },
+
+  "zakat": "My Zakat",
+  "@zakat": {
+    "description": "Title for the Zakat section in the app",
+    "type": "text"
+  },
+  "zakatDuaa": "The Prophet ﷺ said: Charity does not decrease wealth.",
+  "@zakatDuaa": {
+    "description": "Prophetic saying displayed on the Zakat screen",
+    "type": "text"
+  },
+  "zakatStart": "Start calculating your Zakat now and remember its great virtue.",
+  "@zakatStart": {
+    "description": "Motivational text encouraging users to start calculating their Zakat",
+    "type": "text"
+  },
+
+  "namesOfAllah": "Names of Allah",
+  "@namesOfAllah": {
+    "description": "Title for the Names of Allah screen",
+    "type": "text"
+  },
+
+  "sebha": "Sebha",
+  "@sebha": {
+    "description": "Title for the digital Sebha screen",
+    "type": "text"
+  },
+  "tasbih": "Tasbih",
+  "@tasbih": {
+    "description": "Title for the Tasbih section in the Sebha screen",
+    "type": "text"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button to reset the counter in the Sebha",
+    "type": "text"
+  },
+
+  "azkar": "Azkar",
+  "@azkar": {
+    "description": "Title for the general Azkar screen",
+    "type": "text"
+  },
+  "azkarCategoryList": "Azkar Categories",
+  "@azkarCategoryList": {
+    "description": "Title for the Azkar category list screen",
+    "type": "text"
+  },
   "azkarLoadingText": "Loading Azkar...",
   "@azkarLoadingText": {
-    "description": "Loading message for Azkar screen",
+    "description": "Text displayed while Azkar data is loading",
     "type": "text"
   },
-
   "azkarError": "No Azkar available at the moment",
   "@azkarError": {
     "description": "Error message when no Azkar are available",
     "type": "text"
   },
 
-  "azkar": "Azkar",
-  "@azkar": {
-    "description": "Title text for Azkar screen",
+  "hadithBooks": "Hadith Books",
+  "@hadithBooks": {
+    "description": "Title for the Hadith books list screen",
+    "type": "text"
+  },
+  "hadithBooksError": "Failed to fetch books",
+  "@hadithBooksError": {
+    "description": "Error message when fetching Hadith books fails",
+    "type": "text"
+  },
+  "hadithBooksSearch": "Search by book name...",
+  "@hadithBooksSearch": {
+    "description": "Search hint text in the Hadith books list",
+    "type": "text"
+  },
+  "hadithBooksEmpty": "No books available",
+  "@hadithBooksEmpty": {
+    "description": "Message when no Hadith books are available",
+    "type": "text"
+  },
+  "writer": "Author",
+  "@writer": {
+    "description": "Label for the book author field",
+    "type": "text"
+  },
+  "numberOfChapters": "Number of chapters:",
+  "@numberOfChapters": {
+    "description": "Text showing the number of chapters in a book",
+    "type": "text"
+  },
+  "numberOfHadiths": "Number of hadiths:",
+  "@numberOfHadiths": {
+    "description": "Text showing the number of hadiths in a book",
+    "type": "text"
+  },
+  "chapters": "Chapters",
+  "@chapters": {
+    "description": "Title for the list of chapters in a Hadith book",
+    "type": "text"
+  },
+  "chaptersEmpty": "No chapters available",
+  "@chaptersEmpty": {
+    "description": "Message when a Hadith book has no chapters",
+    "type": "text"
+  },
+  "chaptersSearch": "Search for a chapter...",
+  "@chaptersSearch": {
+    "description": "Search hint for the chapters list",
+    "type": "text"
+  },
+  "hadithError": "Failed to load hadiths",
+  "@hadithError": {
+    "description": "Error message when hadiths fail to load",
+    "type": "text"
+  },
+  "hadithsTitle": "Hadiths",
+  "@hadithsTitle": {
+    "description": "Title for the hadith list screen",
+    "type": "text"
+  },
+  "hadithStatus": "Status",
+  "@hadithStatus": {
+    "description": "Label for displaying the hadith's authenticity or grading",
     "type": "text"
   },
 
   "revision": "Reference",
   "@revision": {
-    "description": "Label for reference section",
+    "description": "Label for the reference section in hadiths or azkar",
     "type": "text"
   },
-
-  "tasbih": "Tasbih",
-  "@tasbih": {
-    "description": "Title for Tasbih section",
-    "type": "text"
-  },
-
-  "reset": "Reset",
-  "@reset": {
-    "description": "Label for reset button",
-    "type": "text"
-  },
-
-  "hadithBooks": "Hadith Books",
-  "@hadithBooks": {
-    "description": "Title for Hadith books list",
-    "type": "text"
-  },
-
-  "hadithBooksError": "Failed to fetch books",
-  "@hadithBooksError": {
-    "description": "Error message when Hadith books fail to load",
-    "type": "text"
-  },
-
-  "hadithBooksSearch": "Search by book name...",
-  "@hadithBooksSearch": {
-    "description": "Search hint for Hadith books list",
-    "type": "text"
-  },
-
-  "hadithBooksEmpty": "No books available",
-  "@hadithBooksEmpty": {
-    "description": "Message shown when no Hadith books are available",
-    "type": "text"
-  },
-
-  "writer": "Author",
-  "@writer": {
-    "description": "Label for book author",
-    "type": "text"
-  },
-
-  "numberOfChapters": "Number of Chapters:",
-  "@numberOfChapters": {
-    "description": "Label showing number of chapters in a book",
-    "type": "text"
-  },
-
-  "numberOfHadiths": "Number of Hadiths:",
-  "@numberOfHadiths": {
-    "description": "Label showing number of Hadiths in a book",
-    "type": "text"
-  },
-
-  "chapters": "Chapters",
-  "@chapters": {
-    "description": "Title for chapters list",
-    "type": "text"
-  },
-
   "errorMain": "An error occurred:",
   "@errorMain": {
-    "description": "Generic error prefix text",
+    "description": "General error prefix text used in messages",
     "type": "text"
   },
 
-  "chaptersEmpty": "No chapters available",
-  "@chaptersEmpty": {
-    "description": "Message shown when no chapters are available",
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button to retry after an error occurs",
+    "type": "text"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "General loading text",
+    "type": "text"
+  },
+  "noInternet": "No Internet connection",
+  "@noInternet": {
+    "description": "Message shown when there is no internet connection",
+    "type": "text"
+  },
+  "homeTitle": "Home",
+  "@homeTitle": {
+    "description": "Title for the main home screen",
+    "type": "text"
+  },
+  "updatePrayerTimes": "Update Prayer Times",
+  "@updatePrayerTimes": {
+    "description": "Button to refresh prayer times",
+    "type": "text"
+  },
+  "morePrayerTimesButton": "Tap to view more prayer times",
+  "@morePrayerTimesButton": {
+    "description": "Button hint to show full prayer schedule",
     "type": "text"
   },
 
-  "chaptersSearch": "Search for a chapter...",
-  "@chaptersSearch": {
-    "description": "Search placeholder for chapters list",
+  "prayerTimesText": "Prayer Times",
+  "@prayerTimesText": {
+    "description": "Label for prayer times section",
     "type": "text"
   },
-
-  "hadithError": "Failed to load Hadiths",
-  "@hadithError": {
-    "description": "Error message when Hadiths fail to load",
+  "quranText": "Holy Quran",
+  "@quranText": {
+    "description": "Label for Quran section",
     "type": "text"
   },
-
-  "hadithstitle": "Hadiths",
-  "@hadithstitle": {
-    "description": "Title for Hadiths list",
+  "surahsText": "Surahs",
+  "@surahsText": {
+    "description": "Label for Surah list screen",
     "type": "text"
   },
-
-  "hadithStatus": "Status",
-  "@hadithStatus": {
-    "description": "Label for Hadith status (authenticity)",
+  "bookmarksText": "Bookmarks",
+  "@bookmarksText": {
+    "description": "Label for the bookmarks section",
+    "type": "text"
+  },
+  "searchForSurahName": "Search by surah name...",
+  "@searchForSurahName": {
+    "description": "Hint text for searching surahs",
+    "type": "text"
+  },
+  "searchResult": "Search results:",
+  "@searchResult": {
+    "description": "Label for displaying search results",
+    "type": "text"
+  },
+  "emptyBookmarks": "No bookmarks yet",
+  "@emptyBookmarks": {
+    "description": "Message shown when no bookmarks are saved",
     "type": "text"
   }
 }

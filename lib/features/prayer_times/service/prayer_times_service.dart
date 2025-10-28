@@ -15,14 +15,14 @@ class PrayerTimesService {
   final DateFormat _timeFormatter = DateFormat.Hm();
 
   /// الحصول على مواقيت الصلاة + اسم المدينة
-  Future<LocalPrayerTimes> getPrayerTimes() async {
+  Future<LocalPrayerTimes> getPrayerTimes({required bool isArabic}) async {
     try {
       final coordinates = await _getCachedOrCurrentCoordinates();
       if (coordinates == null) return await _getDefaultPrayerTimes();
 
       String? cityName;
       try {
-        geo.setLocaleIdentifier('ar');
+        geo.setLocaleIdentifier(isArabic ? 'ar' : 'en');
         final placemarks = await geo.placemarkFromCoordinates(
           coordinates.latitude,
           coordinates.longitude,

@@ -8,15 +8,15 @@ import 'surahs_list_state.dart';
 class SurahListCubit extends Cubit<SurahsListState> {
   SurahListCubit({required this.surahRepository})
     : super(const SurahsListState()) {
-    _loadSurahs();
+    // _loadSurahs();
   }
   final SurahsListRepository surahRepository;
   Timer? _debounceTimer;
 
-  Future<void> _loadSurahs() async {
+  Future<void> loadSurahs({required bool isArabic}) async {
     try {
       emit(state.copyWith(status: SurahsListStatus.loading));
-      final allSurahs = await surahRepository.getAllSurahs();
+      final allSurahs = await surahRepository.getAllSurahs(isArabic: isArabic);
       emit(
         state.copyWith(
           status: SurahsListStatus.success,
@@ -48,7 +48,7 @@ class SurahListCubit extends Cubit<SurahsListState> {
       if (isClosed) return;
 
       final filtered = state.allSurahs
-          .where((surah) => surah.nameArabic.contains(query))
+          .where((surah) => surah.surahName.contains(query))
           .toList();
 
       emit(state.copyWith(filteredSurahs: filtered, searchText: query));

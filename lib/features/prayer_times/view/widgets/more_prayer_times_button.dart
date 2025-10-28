@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../viewmodel/prayer_times_cubit.dart';
 import 'all_prayer_times_modal.dart';
 
@@ -9,11 +10,13 @@ class MorePrayerTimesButton extends StatelessWidget {
   const MorePrayerTimesButton({
     required this.theme,
     required this.hijriDate,
+    required this.localizations,
     super.key,
   });
 
   final ThemeData theme;
   final String hijriDate;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -26,7 +29,7 @@ class MorePrayerTimesButton extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              'اضغط لعرض المزيد من اوقات الصلاه',
+              localizations.morePrayerTimesButton,
               style: theme.textTheme.bodySmall,
             ),
             const Spacer(),
@@ -51,12 +54,16 @@ class MorePrayerTimesButton extends StatelessWidget {
 
     showCustomModalBottomSheet(
       isScrollControlled: true,
+      minChildSize: 0.3,
+      maxChildSize: 0.9,
+      initialChildSize: 0.55,
       context: context,
       builder: (context) => AllPrayerTimesModal(
         timingsMap: timingsMap,
         theme: theme,
         nextPrayer: state.nextPrayer,
         hijriDate: hijriDate,
+        localizations: localizations,
       ),
     );
   }

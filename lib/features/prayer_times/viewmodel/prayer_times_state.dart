@@ -1,6 +1,13 @@
 import '../model/prayer_times_model.dart';
 
-enum PrayerTimesStatus { initial, loading, success, error }
+enum PrayerTimesStatus {
+  initial,
+  checkingPermissions,
+  loading,
+  success,
+  error,
+  permissionError,
+}
 
 class PrayerTimesState {
   const PrayerTimesState({

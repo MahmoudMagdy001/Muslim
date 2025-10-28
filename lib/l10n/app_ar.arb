@@ -1,129 +1,273 @@
 {
   "@@locale": "ar",
 
-  "azkarCategoryList": "قائمة أنواع الأذكار",
-  "@azkarCategoryList": {
-    "description": "Title for Azkar category list screen",
+  "appName": "مُسَلِّم",
+  "@appName": {
+    "description": "اسم التطبيق الرئيسي المعروض في الواجهة",
     "type": "text"
   },
 
-  "azkarLoadingText": "جاري تحميل الأذكار...",
-  "@azkarLoadingText": {
-    "description": "Loading message for Azkar screen",
+  "quranButton": "القرآن",
+  "@quranButton": {
+    "description": "زر الانتقال إلى شاشة القرآن الكريم",
     "type": "text"
   },
 
-  "azkarError": "لا توجد أذكار متاحة حاليًا",
-  "@azkarError": {
-    "description": "Error message when no Azkar available",
+  "hadithButton": "الحديث",
+  "@hadithButton": {
+    "description": "زر الانتقال إلى شاشة الأحاديث النبوية",
     "type": "text"
   },
 
-  "azkar": "الأذكار",
-  "@azkar": {
-    "description": "Title text for Azkar screen",
+  "azkarButton": "الأذكار",
+  "@azkarButton": {
+    "description": "زر الانتقال إلى شاشة الأذكار",
     "type": "text"
   },
 
-  "revision": "المرجع",
-  "@revision": {
-    "description": "Label for revision section",
+  "qiblahButton": "القبلة",
+  "@qiblahButton": {
+    "description": "زر الانتقال إلى شاشة تحديد اتجاه القبلة",
+    "type": "text"
+  },
+
+  "settingsButton": "الإعدادات",
+  "@settingsButton": {
+    "description": "زر الانتقال إلى إعدادات التطبيق",
+    "type": "text"
+  },
+
+  "zakat": "زكاتي",
+  "@zakat": {
+    "description": "عنوان قسم الزكاة في التطبيق",
+    "type": "text"
+  },
+
+  "zakatDuaa": "قال ﷺ: ما نقص مالٌ من صدقةٍ.",
+  "@zakatDuaa": {
+    "description": "حديث نبوي يُعرض في شاشة الزكاة",
+    "type": "text"
+  },
+
+  "zakatStart": "ابدأ الآن بحساب زكاتك وتذكّر فضلها العظيم",
+  "@zakatStart": {
+    "description": "نص تحفيزي لبدء حساب الزكاة",
+    "type": "text"
+  },
+
+  "namesOfAllah": "أسماء الله الحسنى",
+  "@namesOfAllah": {
+    "description": "عنوان شاشة أسماء الله الحسنى",
+    "type": "text"
+  },
+
+  "sebha": "السبحة",
+  "@sebha": {
+    "description": "عنوان شاشة السبحة الرقمية",
     "type": "text"
   },
 
   "tasbih": "التسبيح",
   "@tasbih": {
-    "description": "Title for Tasbih section",
+    "description": "عنوان قسم التسبيح في شاشة السبحة",
     "type": "text"
   },
 
   "reset": "إعادة",
   "@reset": {
-    "description": "Label for reset button",
+    "description": "زر إعادة العد في السبحة",
+    "type": "text"
+  },
+
+  "azkar": "الأذكار",
+  "@azkar": {
+    "description": "عنوان شاشة الأذكار العامة",
+    "type": "text"
+  },
+
+  "azkarCategoryList": "قائمة أنواع الأذكار",
+  "@azkarCategoryList": {
+    "description": "عنوان شاشة قائمة فئات الأذكار",
+    "type": "text"
+  },
+
+  "azkarLoadingText": "جاري تحميل الأذكار...",
+  "@azkarLoadingText": {
+    "description": "نص يظهر أثناء تحميل بيانات الأذكار",
+    "type": "text"
+  },
+
+  "azkarError": "لا توجد أذكار متاحة حاليًا",
+  "@azkarError": {
+    "description": "رسالة خطأ عند عدم توفر أذكار",
     "type": "text"
   },
 
   "hadithBooks": "كتب الحديث",
   "@hadithBooks": {
-    "description": "Title for Hadith books list",
+    "description": "عنوان شاشة قائمة كتب الحديث",
     "type": "text"
   },
 
   "hadithBooksError": "فشل في جلب الكتب",
   "@hadithBooksError": {
-    "description": "Error message when Hadith books fail to load",
+    "description": "رسالة خطأ عند فشل تحميل كتب الحديث",
     "type": "text"
   },
 
   "hadithBooksSearch": "ابحث باسم الكتاب...",
   "@hadithBooksSearch": {
-    "description": "Search hint for Hadith books list",
+    "description": "نص البحث في قائمة كتب الحديث",
     "type": "text"
   },
 
   "hadithBooksEmpty": "لا توجد كتب متاحة",
   "@hadithBooksEmpty": {
-    "description": "Message when no Hadith books found",
+    "description": "رسالة عند عدم توفر كتب حديث",
     "type": "text"
   },
 
   "writer": "المؤلف",
   "@writer": {
-    "description": "Label for book writer",
+    "description": "عنوان حقل اسم مؤلف الكتاب",
     "type": "text"
   },
 
   "numberOfChapters": "عدد الأبواب:",
   "@numberOfChapters": {
-    "description": "Label showing number of chapters in a book",
+    "description": "النص المعروض لعدد الأبواب في الكتاب",
     "type": "text"
   },
 
   "numberOfHadiths": "عدد الأحاديث:",
   "@numberOfHadiths": {
-    "description": "Label showing number of Hadiths in a book",
+    "description": "النص المعروض لعدد الأحاديث في الكتاب",
     "type": "text"
   },
 
   "chapters": "أبواب",
   "@chapters": {
-    "description": "Title for chapters list",
-    "type": "text"
-  },
-
-  "errorMain": "حدث خطأ:",
-  "@errorMain": {
-    "description": "Generic error prefix text",
+    "description": "عنوان شاشة عرض الأبواب داخل كتاب حديث",
     "type": "text"
   },
 
   "chaptersEmpty": "لا توجد أبواب",
   "@chaptersEmpty": {
-    "description": "Message when no chapters available",
+    "description": "رسالة عند عدم وجود أبواب في الكتاب",
     "type": "text"
   },
 
   "chaptersSearch": "ابحث عن باب...",
   "@chaptersSearch": {
-    "description": "Search placeholder for chapters list",
+    "description": "نص البحث في قائمة الأبواب",
     "type": "text"
   },
 
   "hadithError": "فشل في تحميل الأحاديث",
   "@hadithError": {
-    "description": "Error message when Hadiths fail to load",
+    "description": "رسالة خطأ عند فشل تحميل الأحاديث",
     "type": "text"
   },
 
-  "hadithstitle": "أحاديث",
-  "@hadithstitle": {
-    "description": "Title for Hadiths list",
+  "hadithsTitle": "أحاديث",
+  "@hadithsTitle": {
+    "description": "عنوان شاشة عرض قائمة الأحاديث",
     "type": "text"
   },
 
   "hadithStatus": "الحكم",
   "@hadithStatus": {
-    "description": "Label for Hadith status (authenticity)",
+    "description": "النص المستخدم لعرض حكم الحديث أو درجته",
+    "type": "text"
+  },
+
+  "revision": "المرجع",
+  "@revision": {
+    "description": "عنوان قسم المرجع المستخدم في الأحاديث أو الأذكار",
+    "type": "text"
+  },
+
+  "errorMain": "حدث خطأ:",
+  "@errorMain": {
+    "description": "نص خطأ عام يستخدم كبادئة لرسائل الخطأ",
+    "type": "text"
+  },
+
+  "retry": "إعادة المحاولة",
+  "@retry": {
+    "description": "زر لإعادة المحاولة بعد حدوث خطأ",
+    "type": "text"
+  },
+
+  "loading": "جاري التحميل...",
+  "@loading": {
+    "description": "نص عام لعرض حالة التحميل",
+    "type": "text"
+  },
+
+  "noInternet": "لا يوجد اتصال بالإنترنت",
+  "@noInternet": {
+    "description": "رسالة عند انقطاع الاتصال بالإنترنت",
+    "type": "text"
+  },
+
+  "homeTitle": "الصفحة الرئيسية",
+  "@homeTitle": {
+    "description": "عنوان الشاشة الرئيسية في التطبيق",
+    "type": "text"
+  },
+
+  "updatePrayerTimes": "تحديث مواقيت الصلاة",
+  "@updatePrayerTimes": {
+    "description": "زر لتحديث مواقيت الصلاة يدويًا",
+    "type": "text"
+  },
+
+  "morePrayerTimesButton": "اضغط لعرض المزيد من أوقات الصلاة",
+  "@morePrayerTimesButton": {
+    "description": "زر لعرض باقي مواقيت الصلاة في الشاشة",
+    "type": "text"
+  },
+
+  "prayerTimesText": "مواقيت الصلاة",
+  "@prayerTimesText": {
+    "description": "عنوان شاشة مواقيت الصلاة",
+    "type": "text"
+  },
+
+  "quranText": "القرآن الكريم",
+  "@quranText": {
+    "description": "عنوان شاشة عرض سور القرآن الكريم",
+    "type": "text"
+  },
+
+  "surahsText": "السور",
+  "@surahsText": {
+    "description": "عنوان قائمة السور في شاشة القرآن",
+    "type": "text"
+  },
+
+  "bookmarksText": "العلامات",
+  "@bookmarksText": {
+    "description": "عنوان شاشة العلامات المرجعية في القرآن",
+    "type": "text"
+  },
+
+  "searchForSurahName": "ابحث باسم السورة...",
+  "@searchForSurahName": {
+    "description": "نص حقل البحث عن سورة معينة",
+    "type": "text"
+  },
+
+  "searchResult": "نتائج البحث:",
+  "@searchResult": {
+    "description": "عنوان القسم الذي يعرض نتائج البحث",
+    "type": "text"
+  },
+
+  "emptyBookmarks": "لا توجد علامات بعد",
+  "@emptyBookmarks": {
+    "description": "نص يظهر عند عدم وجود علامات مرجعية محفوظة",
     "type": "text"
   }
 }
