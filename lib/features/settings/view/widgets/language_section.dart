@@ -4,22 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../view_model/language/language_cubit.dart';
 import '../../view_model/language/language_state.dart';
 
 class LanguageSection extends StatelessWidget {
-  const LanguageSection({super.key});
+  const LanguageSection({required this.localizations, super.key});
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<LanguageCubit, LanguageState>(
-        builder: (context, state) => _LanguageTile(currentLocale: state.locale),
+        builder: (context, state) => _LanguageTile(
+          currentLocale: state.locale,
+          localizations: localizations,
+        ),
       );
 }
 
 class _LanguageTile extends StatelessWidget {
-  const _LanguageTile({required this.currentLocale});
+  const _LanguageTile({
+    required this.currentLocale,
+    required this.localizations,
+  });
   final Locale currentLocale;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +36,24 @@ class _LanguageTile extends StatelessWidget {
 
     String title;
     if (currentLocale.languageCode == 'ar') {
-      title = 'العربية';
+      title = localizations.arabicLanguage;
     } else {
-      title = 'English';
+      title = localizations.englishLanguage;
     }
 
     return ListTile(
       leading: const Icon(Icons.language, size: 28),
-      title: Text('اختيار اللغة', style: theme.textTheme.titleMedium),
+      title: Text(
+        localizations.changeLanguage,
+        style: theme.textTheme.titleMedium,
+      ),
       trailing: Text(title, style: theme.textTheme.bodySmall),
-      onTap: () => _showLanguageBottomSheet(context, currentLocale, theme),
+      onTap: () => _showLanguageBottomSheet(
+        context,
+        currentLocale,
+        theme,
+        localizations,
+      ),
     );
   }
 
@@ -44,15 +61,22 @@ class _LanguageTile extends StatelessWidget {
     BuildContext context,
     Locale currentLocale,
     ThemeData theme,
+    AppLocalizations localizations,
   ) {
     showCustomModalBottomSheet(
       context: context,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('اختر اللغة', style: theme.textTheme.titleMedium),
+          Text(
+            localizations.selectLanguage,
+            style: theme.textTheme.titleMedium,
+          ),
           RadioListTile<Locale>(
-            title: Text('العربية', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.arabicLanguage,
+              style: theme.textTheme.titleMedium,
+            ),
             value: const Locale('ar'),
             groupValue: currentLocale,
             onChanged: (value) {
@@ -63,7 +87,10 @@ class _LanguageTile extends StatelessWidget {
             },
           ),
           RadioListTile<Locale>(
-            title: Text('English', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.englishLanguage,
+              style: theme.textTheme.titleMedium,
+            ),
             value: const Locale('en'),
             groupValue: currentLocale,
             onChanged: (value) {

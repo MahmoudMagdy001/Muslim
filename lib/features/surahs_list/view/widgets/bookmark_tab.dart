@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../quran/model/bookmark_model.dart';
 import 'package:quran/quran.dart' as quran;
@@ -13,10 +14,12 @@ class BookmarksTab extends StatelessWidget {
   const BookmarksTab({
     required this.reciter,
     required this.localizations,
+    required this.isArabic,
     super.key,
   });
   final String reciter;
   final AppLocalizations localizations;
+  final bool isArabic;
 
   Future<void> _openBookmark(BuildContext context, int surah, int ayah) async {
     await navigateWithTransition(
@@ -58,11 +61,20 @@ class BookmarksTab extends StatelessWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final bookMark = state.bookmarks[index];
-                  final surahName = quran.getSurahNameArabic(
-                    bookMark.surahNumber,
-                  );
+                  final surahName = isArabic
+                      ? quran.getSurahNameArabic(bookMark.surahNumber)
+                      : quran.getSurahName(bookMark.surahNumber);
                   final ayahNumber = bookMark.ayahNumber;
-                  final ayahText = bookMark.ayahText;
+                  final ayahText = isArabic
+                      ? quran.getVerse(
+                          bookMark.surahNumber,
+                          bookMark.ayahNumber,
+                          verseEndSymbol: true,
+                        )
+                      : quran.getVerseTranslation(
+                          bookMark.surahNumber,
+                          bookMark.ayahNumber,
+                        );
 
                   return Padding(
                     padding: const EdgeInsetsDirectional.only(
@@ -101,6 +113,7 @@ class BookmarksTab extends StatelessWidget {
                                     ayahNumber,
                                     cubit,
                                     bookMark,
+                                    localizations,
                                   ),
                                 ],
                               ),
@@ -108,7 +121,7 @@ class BookmarksTab extends StatelessWidget {
                               Text(
                                 ayahText,
                                 style: theme.textTheme.titleMedium!.copyWith(
-                                  height: 1.9,
+                                  height: isArabic ? 2.1 : 1.5,
                                   color: colorScheme.onSurfaceVariant,
                                 ),
                               ),
@@ -134,8 +147,9 @@ class BookmarksTab extends StatelessWidget {
     int ayahNumber,
     BookmarksCubit cubit,
     AyahBookmark bookMark,
+    AppLocalizations localizations,
   ) => IconButton(
-    tooltip: 'مسح العلامه',
+    tooltip: localizations.deleteBookmark,
     icon: const Icon(Icons.delete, color: Colors.red, size: 25),
     onPressed: () async {
       final result = await deleteDialog(context, theme, surahName, ayahNumber);
@@ -152,7 +166,7 @@ class BookmarksTab extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'تم مسح العلامة من سورة $surahName آية $ayahNumber',
+                '${localizations.deleteBookmarkSuccess} $surahName ${isArabic ? 'آية' : 'Verse'} $ayahNumber',
               ),
               duration: const Duration(seconds: 2),
             ),
@@ -170,20 +184,26 @@ class BookmarksTab extends StatelessWidget {
   ) => showDialog(
     context: context,
     builder: (BuildContext context) => AlertDialog(
-      title: Text('مسح العلامه', style: theme.textTheme.titleMedium),
+      title: Text(
+        localizations.deleteBookmark,
+        style: theme.textTheme.titleMedium,
+      ),
       content: Text(
-        'هل انت متاكد من انك تريد مسح العلامه من السوره $surahName الآية رقم $ayahNumber ؟',
+        '${localizations.deleteBookmarkQuestion} $surahName ${isArabic ? 'الآية رقم' : 'Verse Number'} ${isArabic ? convertToArabicNumbers(ayahNumber.toString()) : ayahNumber} ?',
         style: theme.textTheme.bodyMedium,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text('تجاهل', style: theme.textTheme.bodyMedium),
+          child: Text(
+            localizations.cancelButton,
+            style: theme.textTheme.bodyMedium,
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            'مسح',
+            localizations.deleteButton,
             style: theme.textTheme.bodyMedium!.copyWith(color: Colors.red),
           ),
         ),

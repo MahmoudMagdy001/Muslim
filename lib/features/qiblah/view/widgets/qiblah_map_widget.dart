@@ -5,17 +5,22 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'full_map_view.dart';
 
 class QiblahMapWidget extends StatelessWidget {
   const QiblahMapWidget({
     required this.isLoading,
+    required this.localizations,
+    required this.isArabic,
     this.userLocation,
     super.key,
   });
 
   final LatLng? userLocation;
   final bool isLoading;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   static const LatLng _kaabaLocation = LatLng(21.4225, 39.8262);
 
@@ -38,7 +43,11 @@ class QiblahMapWidget extends StatelessWidget {
                     navigateWithTransition(
                       type: TransitionType.fade,
                       context,
-                      FullMapView(userLocation: userLocation!),
+                      FullMapView(
+                        userLocation: userLocation!,
+                        localizations: localizations,
+                        isArabic: isArabic,
+                      ),
                     );
                   },
                   initialCenter: userLocation ?? _kaabaLocation,
@@ -58,7 +67,7 @@ class QiblahMapWidget extends StatelessWidget {
                       polylines: [
                         Polyline(
                           points: [userLocation!, _kaabaLocation],
-                          strokeWidth: 2,
+                          strokeWidth: 1.7,
                           color: theme.colorScheme.primary,
                         ),
                       ],
@@ -96,7 +105,11 @@ class QiblahMapWidget extends StatelessWidget {
             if (userLocation != null)
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: DistanceText(userLocation: userLocation!),
+                child: DistanceText(
+                  userLocation: userLocation!,
+                  localizations: localizations,
+                  isArabic: isArabic,
+                ),
               ),
           ],
         ),
@@ -106,9 +119,15 @@ class QiblahMapWidget extends StatelessWidget {
 }
 
 class DistanceText extends StatelessWidget {
-  const DistanceText({required this.userLocation, super.key});
-
+  const DistanceText({
+    required this.userLocation,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
+  final AppLocalizations localizations;
   final LatLng userLocation;
+  final bool isArabic;
   static const LatLng _kaabaLocation = LatLng(21.4225, 39.8262);
 
   @override
@@ -121,7 +140,7 @@ class DistanceText extends StatelessWidget {
     );
 
     return Text(
-      'المسافة إلى الكعبة: ${convertToArabicNumbers(km.toStringAsFixed(2))} كم',
+      '${localizations.distanceToKabaa} ${isArabic ? convertToArabicNumbers(km.toStringAsFixed(2)) : km.toStringAsFixed(2)} ${isArabic ? 'كم' : 'Km'}',
       style: Theme.of(context).textTheme.titleMedium,
     );
   }

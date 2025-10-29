@@ -10,6 +10,8 @@ import 'package:quran/quran.dart' as quran;
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/utils/format_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 
@@ -17,12 +19,14 @@ class SurahTextView extends StatefulWidget {
   const SurahTextView({
     required this.surahNumber,
     required this.isArabic,
+    required this.localizations,
     this.startAyah,
     super.key,
   });
 
   final int surahNumber;
   final int? startAyah;
+  final AppLocalizations localizations;
   final bool isArabic;
 
   @override
@@ -106,6 +110,7 @@ class _SurahTextViewState extends State<SurahTextView> {
       }
 
       final tafsir = data.first;
+
       // ignore: avoid_dynamic_calls
       final text = tafsir['text']?.toString().trim() ?? '';
       return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
@@ -116,14 +121,18 @@ class _SurahTextViewState extends State<SurahTextView> {
 
   /// 🕌 قائمة المفسرين المدعومين
   final List<Map<String, dynamic>> tafasirList = [
-    {'id': 1, 'name': 'التفسير الميسر'},
-    {'id': 2, 'name': 'تفسير الجلالين'},
-    {'id': 3, 'name': 'تفسير السعدي'},
-    {'id': 4, 'name': 'تفسير ابن كثير'},
-    {'id': 5, 'name': 'تفسير الوسيط لطنطاوي'},
-    {'id': 6, 'name': 'تفسير البغوي'},
-    {'id': 7, 'name': 'تفسير القرطبي'},
-    {'id': 8, 'name': 'تفسير الطبري'},
+    {'id': 1, 'name_ar': 'التفسير الميسر', 'name_en': 'Al-Muyassar Tafsir'},
+    {'id': 2, 'name_ar': 'تفسير الجلالين', 'name_en': 'Tafsir Al-Jalalayn'},
+    {'id': 3, 'name_ar': 'تفسير السعدي', 'name_en': 'Tafsir As-Saadi'},
+    {'id': 4, 'name_ar': 'تفسير ابن كثير', 'name_en': 'Tafsir Ibn Kathir'},
+    {
+      'id': 5,
+      'name_ar': 'تفسير الوسيط لطنطاوي',
+      'name_en': 'Tafsir Al-Waseet by Tantawi',
+    },
+    {'id': 6, 'name_ar': 'تفسير البغوي', 'name_en': 'Tafsir Al-Baghawi'},
+    {'id': 7, 'name_ar': 'تفسير القرطبي', 'name_en': 'Tafsir Al-Qurtubi'},
+    {'id': 8, 'name_ar': 'تفسير الطبري', 'name_en': 'Tafsir At-Tabari'},
   ];
 
   List<InlineSpan> _buildSpans(BuildContext context, bool isArabic) {
@@ -204,13 +213,19 @@ class _SurahTextViewState extends State<SurahTextView> {
         final selected = await showMenu<String>(
           context: context,
           position: menuPosition,
-          items: const [
-            PopupMenuItem(value: 'play', child: Text('تشغيل من هذه الآية')),
+          items: [
+            PopupMenuItem(
+              value: 'play',
+              child: Text(widget.localizations.playVerseSound),
+            ),
             PopupMenuItem(
               value: 'bookmark',
-              child: Text('حفظ علامة على هذه الآية'),
+              child: Text(widget.localizations.bookmarkVerse),
             ),
-            PopupMenuItem(value: 'tafseer', child: Text('تفسير')),
+            PopupMenuItem(
+              value: 'tafseer',
+              child: Text(widget.localizations.tafsirVerse),
+            ),
           ],
         );
 
@@ -232,7 +247,9 @@ class _SurahTextViewState extends State<SurahTextView> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('تم حفظ علامة على آية رقم $ayah'),
+                content: Text(
+                  '${widget.localizations.bookmarkVerseSuccess} ${widget.isArabic ? convertToArabicNumbers(ayah.toString()) : ayah}',
+                ),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -244,7 +261,10 @@ class _SurahTextViewState extends State<SurahTextView> {
             fullscreenDialog: true,
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('اختر التفسير', textAlign: TextAlign.center),
+              title: Text(
+                widget.localizations.selectTafsir,
+                textAlign: TextAlign.center,
+              ),
               content: SizedBox(
                 width: double.maxFinite,
                 child: GridView.builder(
@@ -258,12 +278,16 @@ class _SurahTextViewState extends State<SurahTextView> {
                   ),
                   itemBuilder: (context, index) {
                     final tafsir = tafasirList[index];
+                    final tafsirName = widget.isArabic
+                        ? tafsir['name_ar']
+                        : tafsir['name_en'];
+
                     return InkWell(
                       onTap: () => Navigator.pop(context, tafsir),
                       borderRadius: BorderRadius.circular(12),
                       child: Center(
                         child: Text(
-                          tafsir['name'],
+                          tafsirName,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
@@ -289,7 +313,12 @@ class _SurahTextViewState extends State<SurahTextView> {
             widget.surahNumber,
             ayah,
           );
-          final surahName = quran.getSurahNameArabic(widget.surahNumber);
+          final selectedTafsirName = widget.isArabic
+              ? selectedTafsir['name_ar']
+              : selectedTafsir['name_en'];
+          final surahName = widget.isArabic
+              ? quran.getSurahNameArabic(widget.surahNumber)
+              : quran.getSurahName(widget.surahNumber);
 
           if (mounted) Navigator.pop(context);
 
@@ -305,7 +334,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      '${selectedTafsir['name']} - للآية رقم $ayah - سورة $surahName',
+                      '$selectedTafsirName - ${widget.isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
@@ -329,7 +358,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        tafsirText ?? 'لا يوجد تفسير متاح حاليًا.',
+                        tafsirText ?? widget.localizations.emptyTafsir,
                         textAlign: TextAlign.justify,
                         style: Theme.of(
                           context,
@@ -349,23 +378,23 @@ class _SurahTextViewState extends State<SurahTextView> {
                               ShareParams(
                                 text:
                                     '''
-📖 ${selectedTafsir['name']}
-سورة $surahName - الآية رقم $ayah
+📖 $selectedTafsirName
+${widget.isArabic ? 'سورة $surahName - الآية رقم ${convertToArabicNumbers(ayah.toString())}' : 'Surah $surahName - Verse Number $ayah'}
 
-────────────────────────────
-${quran.getVerse(widget.surahNumber, ayah)}
-────────────────────────────
+────────────────────
+${widget.isArabic ? quran.getVerse(widget.surahNumber, ayah) : quran.getVerseTranslation(widget.surahNumber, ayah)}
+────────────────────
 
 💬 التفسير:
 $tafsirText
 
-────────────────────────────
-🔗 تم مشاركته من تطبيق مسلم 
+────────────────────
+🔗 ${widget.isArabic ? 'تم مشاركته من تطبيق مسلم ' : 'Shared from Muslim App'}
     ''',
                               ),
                             );
                           },
-                          child: const Text('مشاركة التفسير'),
+                          child: Text(widget.localizations.shareTafsir),
                         ),
                       ),
                     ),

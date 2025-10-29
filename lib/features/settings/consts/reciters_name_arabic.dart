@@ -1,41 +1,97 @@
 import 'package:flutter/material.dart';
 
 class Reciter {
-  const Reciter({required this.id, required this.name});
+  const Reciter({required this.id, required this.nameAr, required this.nameEn});
   final String id;
-  final String name;
+  final String nameAr;
+  final String nameEn;
 
-  Map<String, String> toMap() => {'id': id, 'name': name};
+  Map<String, String> toMap() => {'id': id, 'name': nameAr, 'nameEn': nameEn};
 }
 
-const List<Reciter> recitersArabic = [
-  Reciter(id: 'ar.minshawimujawwad', name: 'محمد صديق المنشاوي (المجود)'),
-  Reciter(id: 'ar.abdulbasitmurattal', name: 'عبد الباسط عبد الصمد (المرتل)'),
-  Reciter(id: 'ar.abdulsamad', name: 'عبدالباسط عبدالصمد'),
-  Reciter(id: 'ar.alafasy', name: 'مشاري العفاسي'),
-  Reciter(id: 'ar.husarymujawwad', name: 'محمود خليل الحصري (المجود)'),
-  Reciter(id: 'ar.abdullahbasfar', name: 'عبد الله بصفر'),
-  Reciter(id: 'ar.abdurrahmaansudais', name: 'عبدالرحمن السديس'),
-  Reciter(id: 'ar.shaatree', name: 'أبو بكر الشاطري'),
-  Reciter(id: 'ar.ahmedajamy', name: 'أحمد بن علي العجمي'),
-  Reciter(id: 'ar.hanirifai', name: 'هاني الرفاعي'),
-  Reciter(id: 'ar.husary', name: 'محمود خليل الحصري'),
-  Reciter(id: 'ar.hudhaify', name: 'علي بن عبدالرحمن الحذيفي'),
-  Reciter(id: 'ar.mahermuaiqly', name: 'ماهر المعيقلي'),
-  Reciter(id: 'ar.saoodshuraym', name: 'سعود الشريم'),
-  Reciter(id: 'ar.aymanswoaid', name: 'أيمن سويد'),
+const List<Reciter> recitersNames = [
+  Reciter(
+    id: 'ar.minshawimujawwad',
+    nameAr: 'محمد صديق المنشاوي (المجود)',
+    nameEn: 'Mohamed Siddiq Al-Minshawi (Mujawwad)',
+  ),
+  Reciter(
+    id: 'ar.abdulbasitmurattal',
+    nameAr: 'عبد الباسط عبد الصمد (المرتل)',
+    nameEn: 'Abdul Basit Abdus Samad (Murattal)',
+  ),
+  Reciter(
+    id: 'ar.abdulsamad',
+    nameAr: 'عبدالباسط عبدالصمد',
+    nameEn: 'Abdul Basit Abdus Samad',
+  ),
+  Reciter(id: 'ar.alafasy', nameAr: 'مشاري العفاسي', nameEn: 'Mishary Alafasy'),
+  Reciter(
+    id: 'ar.husarymujawwad',
+    nameAr: 'محمود خليل الحصري (المجود)',
+    nameEn: 'Mahmoud Khalil Al-Husary (Mujawwad)',
+  ),
+  Reciter(
+    id: 'ar.abdullahbasfar',
+    nameAr: 'عبد الله بصفر',
+    nameEn: 'Abdullah Basfar',
+  ),
+  Reciter(
+    id: 'ar.abdurrahmaansudais',
+    nameAr: 'عبدالرحمن السديس',
+    nameEn: 'Abdurrahman As-Sudais',
+  ),
+  Reciter(
+    id: 'ar.shaatree',
+    nameAr: 'أبو بكر الشاطري',
+    nameEn: 'Abu Bakr Ash-Shaatree',
+  ),
+  Reciter(
+    id: 'ar.ahmedajamy',
+    nameAr: 'أحمد بن علي العجمي',
+    nameEn: 'Ahmed Al-Ajmi',
+  ),
+  Reciter(id: 'ar.hanirifai', nameAr: 'هاني الرفاعي', nameEn: 'Hani Ar-Rifai'),
+  Reciter(
+    id: 'ar.husary',
+    nameAr: 'محمود خليل الحصري',
+    nameEn: 'Mahmoud Khalil Al-Husary',
+  ),
+  Reciter(
+    id: 'ar.hudhaify',
+    nameAr: 'علي بن عبدالرحمن الحذيفي',
+    nameEn: 'Ali Al-Hudhaify',
+  ),
+  Reciter(
+    id: 'ar.mahermuaiqly',
+    nameAr: 'ماهر المعيقلي',
+    nameEn: 'Maher Al-Muaiqly',
+  ),
+  Reciter(
+    id: 'ar.saoodshuraym',
+    nameAr: 'سعود الشريم',
+    nameEn: 'Saud Ash-Shuraim',
+  ),
+  Reciter(id: 'ar.aymanswoaid', nameAr: 'أيمن سويد', nameEn: 'Ayman Sowaid'),
 ];
 
-String getReciterName(String reciterId) {
+Map<String, String> getReciterName(String reciterId) {
   try {
-    final reciter = recitersArabic.firstWhere(
+    final reciter = recitersNames.firstWhere(
       (r) => r.id == reciterId,
-      orElse: () =>
-          const Reciter(id: 'default', name: 'المصحف المرتل للشيخ عبدالباسط'),
+      orElse: () => const Reciter(
+        id: 'ar.alafasy',
+        nameAr: 'مشاري العفاسي',
+        nameEn: 'Mishary Alafasy',
+      ),
     );
-    return reciter.name;
+
+    return {'ar': reciter.nameAr, 'en': reciter.nameEn};
   } catch (e) {
     debugPrint('Error getting reciter name: $e');
-    return 'المصحف المرتل للشيخ عبدالباسط';
+    return {
+      'ar': 'المصحف المرتل للشيخ عبدالباسط',
+      'en': 'Abdul Basit Abdus Samad (Murattal)',
+    };
   }
 }

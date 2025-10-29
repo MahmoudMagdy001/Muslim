@@ -4,22 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../view_model/font_size/font_size_cubit.dart';
 
 class FontSizeSection extends StatelessWidget {
-  const FontSizeSection({super.key});
+  const FontSizeSection({required this.localizations, super.key});
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<FontSizeCubit, FontSizeState>(
-        builder: (context, state) =>
-            _FontSizeSwitch(currentSize: state.fontSize),
+        builder: (context, state) => _FontSizeSwitch(
+          currentSize: state.fontSize,
+          localizations: localizations,
+        ),
       );
 }
 
 class _FontSizeSwitch extends StatelessWidget {
-  const _FontSizeSwitch({required this.currentSize});
+  const _FontSizeSwitch({
+    required this.currentSize,
+    required this.localizations,
+  });
   final double currentSize;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +35,16 @@ class _FontSizeSwitch extends StatelessWidget {
 
     return ListTile(
       leading: const Icon(Icons.text_fields, size: 28),
-      title: Text('تغيير حجم الخط', style: theme.textTheme.titleMedium),
+      title: Text(
+        localizations.changeFontSize,
+        style: theme.textTheme.titleMedium,
+      ),
       trailing: Text(
         _getLabelForFontSize(currentSize),
         style: theme.textTheme.bodySmall,
       ),
-      onTap: () => _showFontSizeModal(context, currentSize, theme),
+      onTap: () =>
+          _showFontSizeModal(context, currentSize, theme, localizations),
     );
   }
 
@@ -40,6 +52,7 @@ class _FontSizeSwitch extends StatelessWidget {
     BuildContext context,
     double currentSize,
     ThemeData theme,
+    AppLocalizations lcoalizations,
   ) {
     final fontSizeCubit = context.read<FontSizeCubit>();
     showCustomModalBottomSheet(
@@ -47,10 +60,16 @@ class _FontSizeSwitch extends StatelessWidget {
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('اختر حجم الخط', style: theme.textTheme.titleMedium),
+          Text(
+            localizations.selectFontSize,
+            style: theme.textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           RadioListTile<double>(
-            title: Text('صغير', style: theme.textTheme.titleMedium),
+            title: Text(
+              lcoalizations.smallFont,
+              style: theme.textTheme.titleMedium,
+            ),
             value: 14,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
@@ -59,7 +78,10 @@ class _FontSizeSwitch extends StatelessWidget {
             },
           ),
           RadioListTile<double>(
-            title: Text('افتراضي', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.defultFont,
+              style: theme.textTheme.titleMedium,
+            ),
             value: 18,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
@@ -68,7 +90,10 @@ class _FontSizeSwitch extends StatelessWidget {
             },
           ),
           RadioListTile<double>(
-            title: Text('كبير', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.bigFont,
+              style: theme.textTheme.titleMedium,
+            ),
             value: 22,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
@@ -82,9 +107,9 @@ class _FontSizeSwitch extends StatelessWidget {
   }
 
   String _getLabelForFontSize(double size) {
-    if (size.round() == 14) return 'صغير';
-    if (size.round() == 18) return 'افتراضي';
-    if (size.round() == 22) return 'كبير';
+    if (size.round() == 14) return localizations.smallFont;
+    if (size.round() == 18) return localizations.defultFont;
+    if (size.round() == 22) return localizations.bigFont;
     return '${size.round()}';
   }
 }

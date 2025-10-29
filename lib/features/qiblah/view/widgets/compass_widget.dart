@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'arrow_painter.dart';
 import 'compass_background_painter.dart';
 
@@ -9,6 +10,7 @@ class CompassWidget extends StatelessWidget {
     required this.qiblahAngle,
     required this.isAligned,
     required this.isLoading,
+    required this.localizations,
     super.key,
   });
 
@@ -16,6 +18,7 @@ class CompassWidget extends StatelessWidget {
   final double qiblahAngle;
   final bool isAligned;
   final bool isLoading;
+  final AppLocalizations localizations;
 
   static const _compassDiameterFactor = 0.8;
   static const _maxCompassDiameter = 300.0;
@@ -45,13 +48,16 @@ class CompassWidget extends StatelessWidget {
         children: [
           if (isLoading) ...[
             // Loading indicator with message
-            const Column(
+            Column(
               children: [
-                CircularProgressIndicator(strokeWidth: 4.0),
-                SizedBox(height: 16),
+                const CircularProgressIndicator(strokeWidth: 4.0),
+                const SizedBox(height: 16),
                 Text(
-                  'جاري تجهيز البوصلة...',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  localizations.compassLoading,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -153,7 +159,7 @@ class CompassWidget extends StatelessWidget {
         ),
       ),
       child: Text(
-        'مُحاذٍ للكعبة',
+        localizations.salahDirection,
         style: TextStyle(
           color: isDark ? Colors.white : theme.colorScheme.onPrimary,
           fontWeight: FontWeight.bold,

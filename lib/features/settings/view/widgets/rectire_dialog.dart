@@ -2,11 +2,19 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../consts/reciters_name_arabic.dart';
 
 class ReciterDialog extends StatefulWidget {
-  const ReciterDialog({required this.selectedReciterId, super.key});
+  const ReciterDialog({
+    required this.selectedReciterId,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
   final String selectedReciterId;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   State<ReciterDialog> createState() => _ReciterDialogState();
@@ -28,19 +36,23 @@ class _ReciterDialogState extends State<ReciterDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('اختر القارئ', style: theme.textTheme.titleMedium),
+        Text(
+          widget.localizations.selectReciter,
+          style: theme.textTheme.titleMedium,
+        ),
         Flexible(
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: recitersArabic.length,
+            itemCount: recitersNames.length,
             itemBuilder: (context, index) => _ReciterRadioItem(
-              reciter: recitersArabic[index],
+              reciter: recitersNames[index],
               selectedReciterId: _selectedReciterId,
               onChanged: (value) {
                 if (value != null) {
                   setState(() => _selectedReciterId = value);
                 }
               },
+              isArabic: widget.isArabic,
             ),
           ),
         ),
@@ -53,7 +65,7 @@ class _ReciterDialogState extends State<ReciterDialog> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'إلغاء',
+                  widget.localizations.cancelButton,
                   style: TextStyle(
                     color: theme.colorScheme.onSurface.withAlpha(153),
                   ),
@@ -62,7 +74,7 @@ class _ReciterDialogState extends State<ReciterDialog> {
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, _selectedReciterId),
-                child: const Text('حفظ'),
+                child: Text(widget.localizations.save),
               ),
             ],
           ),
@@ -78,10 +90,12 @@ class _ReciterRadioItem extends StatelessWidget {
     required this.reciter,
     required this.selectedReciterId,
     required this.onChanged,
+    required this.isArabic,
   });
   final dynamic reciter;
   final String selectedReciterId;
   final ValueChanged<String?> onChanged;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +104,7 @@ class _ReciterRadioItem extends StatelessWidget {
 
     return RadioListTile<String>(
       title: Text(
-        reciter.name,
+        isArabic ? reciter.nameAr : reciter.nameEn,
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           color: isSelected ? theme.primaryColor : null,

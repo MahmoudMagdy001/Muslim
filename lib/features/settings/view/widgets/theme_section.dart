@@ -4,20 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../view_model/theme/theme_cubit.dart';
 
 class ThemeSection extends StatelessWidget {
-  const ThemeSection({super.key});
+  const ThemeSection({required this.localizations, super.key});
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
-    builder: (context, state) => _ThemeTile(currentMode: state.themeMode),
+    builder: (context, state) =>
+        _ThemeTile(currentMode: state.themeMode, localizations: localizations),
   );
 }
 
 class _ThemeTile extends StatelessWidget {
-  const _ThemeTile({required this.currentMode});
+  const _ThemeTile({required this.currentMode, required this.localizations});
   final ThemeMode currentMode;
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +29,22 @@ class _ThemeTile extends StatelessWidget {
 
     String title;
     if (currentMode == ThemeMode.dark) {
-      title = 'الوضع الليلي';
+      title = localizations.darkMode;
     } else if (currentMode == ThemeMode.light) {
-      title = 'الوضع النهاري';
+      title = localizations.lightMode;
     } else {
-      title = 'حسب النظام';
+      title = localizations.systemMode;
     }
 
     return ListTile(
       leading: const Icon(Icons.brightness_6, size: 28),
-      title: Text('اختيار المظهر', style: theme.textTheme.titleMedium),
+      title: Text(
+        localizations.changeTheme,
+        style: theme.textTheme.titleMedium,
+      ),
       trailing: Text(title, style: theme.textTheme.bodySmall),
-      onTap: () => _showThemeBottomSheet(context, currentMode, theme),
+      onTap: () =>
+          _showThemeBottomSheet(context, currentMode, theme, localizations),
     );
   }
 
@@ -44,16 +52,20 @@ class _ThemeTile extends StatelessWidget {
     BuildContext context,
     ThemeMode currentMode,
     ThemeData theme,
+    AppLocalizations localizations,
   ) {
     showCustomModalBottomSheet(
       context: context,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('اختر المظهر', style: theme.textTheme.titleMedium),
+          Text(localizations.selectTheme, style: theme.textTheme.titleMedium),
 
           RadioListTile<ThemeMode>(
-            title: Text('الوضع النهاري', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.lightMode,
+              style: theme.textTheme.titleMedium,
+            ),
             value: ThemeMode.light,
             groupValue: currentMode,
             onChanged: (value) {
@@ -64,7 +76,10 @@ class _ThemeTile extends StatelessWidget {
             },
           ),
           RadioListTile<ThemeMode>(
-            title: Text('الوضع الليلي', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.darkMode,
+              style: theme.textTheme.titleMedium,
+            ),
             value: ThemeMode.dark,
             groupValue: currentMode,
             onChanged: (value) {
@@ -75,7 +90,10 @@ class _ThemeTile extends StatelessWidget {
             },
           ),
           RadioListTile<ThemeMode>(
-            title: Text('حسب النظام', style: theme.textTheme.titleMedium),
+            title: Text(
+              localizations.systemMode,
+              style: theme.textTheme.titleMedium,
+            ),
             value: ThemeMode.system,
             groupValue: currentMode,
             onChanged: (value) {
