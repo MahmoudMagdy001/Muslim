@@ -5,11 +5,19 @@ import 'package:latlong2/latlong.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 
 import '../../../../core/utils/format_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class FullMapView extends StatefulWidget {
-  const FullMapView({required this.userLocation, super.key});
+  const FullMapView({
+    required this.userLocation,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
 
   final LatLng userLocation;
+  final AppLocalizations localizations;
+  final bool isArabic;
   static const LatLng _kaabaLocation = LatLng(21.4225, 39.8262);
 
   @override
@@ -95,7 +103,7 @@ class _FullMapViewState extends State<FullMapView>
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(title: const Text('خريطة القبلة')),
+      appBar: AppBar(title: Text(widget.localizations.fullMapQiblah)),
       body: SafeArea(
         child: Stack(
           children: [
@@ -157,21 +165,28 @@ class _FullMapViewState extends State<FullMapView>
             // بطاقة المسافة أسفل الشاشة
             Positioned(
               bottom: 15,
-              left: 20,
-              right: 20,
+              left: 10,
+              right: 10,
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.place, color: Colors.green),
-                      Text(
-                        'المسافة إلى الكعبة: ${convertToArabicNumbers(distanceKm.toStringAsFixed(2))} كم',
-                        style: theme.textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: Text(
+                          '${widget.localizations.distanceToKabaa} '
+                          '${widget.isArabic ? convertToArabicNumbers(distanceKm.toStringAsFixed(2)) : distanceKm.toStringAsFixed(2)} '
+                          '${widget.isArabic ? 'كم' : 'Km'}',
+                          style: theme.textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
                         ),
                       ),
+
                       IconButton(
                         tooltip: 'عرض المسار بالكامل',
                         icon: const Icon(Icons.center_focus_strong),

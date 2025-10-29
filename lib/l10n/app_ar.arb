@@ -39,7 +39,7 @@
 
   "zakat": "زكاتي",
   "@zakat": {
-    "description": "عنوان قسم الزكاة في التطبيق",
+    "description": "عنوان شاشة الزكاة في التطبيق",
     "type": "text"
   },
 
@@ -145,7 +145,7 @@
     "type": "text"
   },
 
-  "chapters": "أبواب",
+  "chapters": "الأبواب",
   "@chapters": {
     "description": "عنوان شاشة عرض الأبواب داخل كتاب حديث",
     "type": "text"
@@ -169,7 +169,7 @@
     "type": "text"
   },
 
-  "hadithsTitle": "أحاديث",
+  "hadithsTitle": "الأحاديث",
   "@hadithsTitle": {
     "description": "عنوان شاشة عرض قائمة الأحاديث",
     "type": "text"
@@ -268,6 +268,221 @@
   "emptyBookmarks": "لا توجد علامات بعد",
   "@emptyBookmarks": {
     "description": "نص يظهر عند عدم وجود علامات مرجعية محفوظة",
+    "type": "text"
+  },
+
+  "deleteBookmark": "حذف العلامة",
+  "@deleteBookmark": {
+    "description": "زر لحذف العلامة المرجعية من السورة",
+    "type": "text"
+  },
+
+  "deleteBookmarkSuccess": "تم حذف العلامة من سورة",
+  "@deleteBookmarkSuccess": {
+    "description": "رسالة تأكيد بعد حذف العلامة المرجعية",
+    "type": "text"
+  },
+
+  "deleteBookmarkQuestion": "هل أنت متأكد أنك تريد حذف العلامة من سورة",
+  "@deleteBookmarkQuestion": {
+    "description": "رسالة تأكيد قبل حذف العلامة المرجعية",
+    "type": "text"
+  },
+
+  "deleteButton": "حذف",
+  "@deleteButton": {
+    "description": "زر الحذف العام",
+    "type": "text"
+  },
+
+  "cancelButton": "إلغاء",
+  "@cancelButton": {
+    "description": "زر الإلغاء العام",
+    "type": "text"
+  },
+
+  "okButton": "حسنًا",
+  "@okButton": {
+    "description": "زر التأكيد العام في الرسائل والتنبيهات",
+    "type": "text"
+  },
+
+  "playVerseSound": "تشغيل من هذه الآية",
+  "@playVerseSound": {
+    "description": "زر لتشغيل التلاوة بدءًا من هذه الآية",
+    "type": "text"
+  },
+
+  "bookmarkVerse": "حفظ علامة على هذه الآية",
+  "@bookmarkVerse": {
+    "description": "زر لإضافة علامة على هذه الآية",
+    "type": "text"
+  },
+
+  "tafsirVerse": "تفسير الآية",
+  "@tafsirVerse": {
+    "description": "زر لعرض تفسير الآية المحددة",
+    "type": "text"
+  },
+
+  "bookmarkVerseSuccess": "تم حفظ علامة على آية رقم ",
+  "@bookmarkVerseSuccess": {
+    "description": "رسالة تأكيد عند حفظ علامة على آية",
+    "type": "text"
+  },
+
+  "selectTafsir": "اختر التفسير",
+  "@selectTafsir": {
+    "description": "نص يُعرض للمستخدم لاختيار نوع التفسير",
+    "type": "text"
+  },
+
+  "emptyTafsir": "لا يوجد تفسير متاح حاليًا",
+  "@emptyTafsir": {
+    "description": "رسالة عند عدم توفر تفسير",
+    "type": "text"
+  },
+
+  "shareTafsir": "مشاركة التفسير",
+  "@shareTafsir": {
+    "description": "زر لمشاركة نص التفسير",
+    "type": "text"
+  },
+
+  "qiblahDirection": "اتجاه القبلة",
+  "@qiblahDirection": {
+    "description": "عنوان شاشة عرض اتجاه القبلة",
+    "type": "text"
+  },
+
+  "distanceToKabaa": "المسافة إلى الكعبة:",
+  "@distanceToKabaa": {
+    "description": "النص المعروض لمسافة المستخدم من الكعبة المشرفة",
+    "type": "text"
+  },
+
+  "fullMapQiblah": "خريطة القبلة",
+  "@fullMapQiblah": {
+    "description": "زر لعرض خريطة توضح اتجاه القبلة الكامل",
+    "type": "text"
+  },
+
+  "compassLoading": "جاري تجهيز البوصلة...",
+  "@compassLoading": {
+    "description": "نص يظهر أثناء تحميل أو معايرة البوصلة",
+    "type": "text"
+  },
+
+  "salahDirection": "مُحاذٍ للكعبة",
+  "@salahDirection": {
+    "description": "نص يُعرض عند تطابق اتجاه الجهاز مع اتجاه القبلة",
+    "type": "text"
+  },
+
+  "bismillah": "بسم الله الرحمن الرحيم",
+  "@bismillah": {
+    "description": "نص يُعرض في بداية بعض الشاشات أو التلاوات",
+    "type": "text"
+  } , 
+  "changeFontSize" : "تغيير حجم الخط",
+  "@changeFontSize" : {
+    "description": "",
+    "type": "text"
+  },
+  "changeTheme":"تغيير المظهر",
+  "@changeTheme" : {
+    "description": "",
+    "type": "text"
+  },
+  "changeLanguage":"تغيير اللغه",
+  "@changeLanguage" : {
+    "description": "",
+    "type": "text"
+  },
+
+  "selectFontSize":"اختر حجم الخط",
+  "@selectFontSize" : {
+    "description": "",
+    "type": "text"
+  },
+  "smallFont":"صغير",
+  "@smallFont" : {
+    "description": "",
+    "type": "text"
+  },
+  "defultFont":"افتراضي",
+  "@defultFont" : {
+    "description": "",
+    "type": "text"
+  },
+  "bigFont":"كبير",
+  "@bigFont" : {
+    "description": "",
+    "type": "text"
+  },
+  "lightMode":"الوضع النهاري",
+  "@lightMode" : {
+    "description": "",
+    "type": "text"
+  },
+  "darkMode":"الوضع الليلي",
+  "@darkMode" : {
+    "description": "",
+    "type": "text"
+  },
+  "systemMode" :"حسب النظام",
+  "@systemMode" : {
+    "description": "",
+    "type": "text"
+  },
+  "selectTheme":"اختيار المظهر",
+  "@selectTheme" : {
+    "description": "",
+    "type": "text"
+  },
+  "changeReciterSuccess":"تم تغيير القارئ إلى ",
+  "@changeReciterSuccess" : {
+    "description": "",
+    "type": "text"
+  },
+  "selectReciter":"اختر القارئ",
+  "@selectReciter" : {
+    "description": "",
+    "type": "text"
+  },
+  "save":"حفظ ",
+  "@save" : {
+    "description": "",
+    "type": "text"
+  },
+  "arabicLanguage":"العربية",
+  "@arabicLanguage" : {
+    "description": "",
+    "type": "text"
+  },
+    "englishLanguage":"الانجليزية",
+  "@englishLanguage" : {
+    "description": "",
+    "type": "text"
+  },
+  "selectLanguage":"اختر اللغة",
+  "@selectLanguage" : {
+    "description": "",
+    "type": "text"
+  },
+  "appVersion" :"إصدار التطبيق",
+  "@appVersion" : {
+    "description": "",
+    "type": "text"
+  },
+  "version" :"الإصدار",
+  "@version" : {
+    "description": "",
+    "type": "text"
+  },
+  "privacy":"سياسة الخصوصية",
+  "@privacy" : {
+    "description": "",
     "type": "text"
   }
 }

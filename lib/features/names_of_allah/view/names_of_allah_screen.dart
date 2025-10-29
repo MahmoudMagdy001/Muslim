@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart'; // 👈 استيراد الباكدج
+import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/format_helper.dart';
+import '../../../l10n/app_localizations.dart';
 import '../model/names_of_allah_model.dart';
 
 class NamesOfAllahScreen extends StatefulWidget {
@@ -45,38 +46,27 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('أسماء الله الحسنى')),
+      appBar: AppBar(title: Text(localizations.namesOfAllah)),
       body: FutureBuilder<NamesOfAllahModel>(
         future: _namesOfAllahFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final allData = snapshot.data!.items;
-            // فلترة حسب البحث
-            final filteredData = allData.where((item) {
-              final name = item.name;
-              final text = item.text;
-              return name.contains(searchQuery) || text.contains(searchQuery);
-            }).toList();
 
             return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: 'ابحث عن اسم...',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: filteredData.length,
+                    itemCount: allData.length,
                     itemBuilder: (context, index) {
-                      final data = filteredData[index];
+                      final data = allData[index];
+                      final name = isArabic ? data.name : data.nameTranslation;
+                      final text = isArabic ? data.text : data.textTranslation;
+
                       return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -94,7 +84,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                convertToArabicNumbers(data.id.toString()),
+                                isArabic
+                                    ? convertToArabicNumbers(
+                                        (index + 1).toString(),
+                                      )
+                                    : (index + 1).toString(), // 👈 بدل data.id
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: theme.colorScheme.primary,
                                   fontWeight: FontWeight.bold,
@@ -111,7 +105,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      data.name,
+                                      name,
                                       style: theme.textTheme.titleLarge,
                                     ),
                                     const Spacer(),
@@ -136,7 +130,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
-                                  'المعني : ${data.text}',
+                                  '${isArabic ? 'المعني' : 'Meaning'} : $text',
                                   style: theme.textTheme.bodyMedium,
                                 ),
                               ],

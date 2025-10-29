@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 
 class AppInfoSection extends StatelessWidget {
-  const AppInfoSection({super.key});
+  const AppInfoSection({required this.localizations, super.key});
+  final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const _AppInfoTile(
+      _AppInfoTile(
         icon: Icons.info_outline,
-        title: 'إصدار التطبيق',
-        subtitle: 'الإصدار 1.0.0',
+        title: localizations.appVersion,
+        subtitle: '${localizations.version} 1.0.0',
       ),
       const Divider(),
       _AppInfoTile(
         icon: Icons.privacy_tip_outlined,
-        title: 'سياسة الخصوصية',
+        title: localizations.privacy,
         onTap: () {},
       ),
     ],

@@ -54,9 +54,6 @@ class MorePrayerTimesButton extends StatelessWidget {
 
     showCustomModalBottomSheet(
       isScrollControlled: true,
-      minChildSize: 0.3,
-      maxChildSize: 0.9,
-      initialChildSize: 0.55,
       context: context,
       builder: (context) => AllPrayerTimesModal(
         timingsMap: timingsMap,

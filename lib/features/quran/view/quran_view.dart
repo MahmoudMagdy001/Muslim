@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
+import '../../../l10n/app_localizations.dart';
 import '../repository/quran_repository_impl.dart';
 
 import '../viewmodel/quran_player_cubit/quran_player_cubit.dart';
@@ -77,6 +78,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
   Widget build(BuildContext context) {
     final lcoale = Localizations.localeOf(context);
     final isArabic = lcoale.languageCode == 'ar';
+    final localizations = AppLocalizations.of(context);
 
     final surahName = isArabic
         ? quran.getSurahNameArabic(widget.surahNumber)
@@ -99,6 +101,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
                       surahNumber: actualSurahNumber,
                       startAyah: widget.startAyah,
                       isArabic: isArabic,
+                      localizations: localizations,
                     ),
                   ),
                   const PlayerControlsWidget(),
@@ -116,6 +119,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
                       surahNumber: actualSurahNumber,
                       startAyah: widget.startAyah,
                       isArabic: isArabic,
+                      localizations: localizations,
                     ),
                   ),
                   const PlayerControlsWidget(),

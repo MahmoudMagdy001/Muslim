@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../l10n/app_localizations.dart';
 import '../viewmodel/qiblah_cubit.dart';
 import '../viewmodel/qiblah_state.dart';
 import 'widgets/compass_widget.dart';
@@ -11,51 +12,59 @@ class QiblahView extends StatelessWidget {
   const QiblahView({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('اتجاه القبلة')),
-    body: SafeArea(
-      child: BlocBuilder<QiblahCubit, QiblahState>(
-        buildWhen: (previous, current) =>
-            previous.status != current.status ||
-            previous.qiblahAngle != current.qiblahAngle ||
-            previous.routePoints != current.routePoints,
-        builder: (context, state) {
-          if (state.status == QiblahStatus.error) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text('حدث خطأ: ${state.message}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<QiblahCubit>().init();
-                    },
-                    child: const Text('إعادة المحاولة'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return QiblahSuccessWidget(
-              headingAngle: state.headingAngle,
-              qiblahAngle: state.qiblahAngle,
-              isAligned: state.isAligned,
-              userLocation: state.userLocation != null
-                  ? LatLng(
-                      state.userLocation!.latitude,
-                      state.userLocation!.longitude,
-                    )
-                  : null,
-              isLoading: state.status == QiblahStatus.loading,
-            );
-          }
-        },
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
+
+    return Scaffold(
+      appBar: AppBar(title: Text(localizations.qiblahDirection)),
+      body: SafeArea(
+        child: BlocBuilder<QiblahCubit, QiblahState>(
+          buildWhen: (previous, current) =>
+              previous.status != current.status ||
+              previous.qiblahAngle != current.qiblahAngle ||
+              previous.routePoints != current.routePoints,
+          builder: (context, state) {
+            if (state.status == QiblahStatus.error) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, size: 64, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text('${localizations.errorMain} ${state.message}'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<QiblahCubit>().init();
+                      },
+                      child: Text(localizations.retry),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return QiblahSuccessWidget(
+                headingAngle: state.headingAngle,
+                qiblahAngle: state.qiblahAngle,
+                isAligned: state.isAligned,
+                userLocation: state.userLocation != null
+                    ? LatLng(
+                        state.userLocation!.latitude,
+                        state.userLocation!.longitude,
+                      )
+                    : null,
+                isLoading: state.status == QiblahStatus.loading,
+                localizations: localizations,
+                isArabic: isArabic,
+              );
+            }
+          },
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class QiblahSuccessWidget extends StatelessWidget {
@@ -64,6 +73,8 @@ class QiblahSuccessWidget extends StatelessWidget {
     required this.qiblahAngle,
     required this.isAligned,
     required this.isLoading,
+    required this.localizations,
+    required this.isArabic,
     this.userLocation,
     super.key,
   });
@@ -73,6 +84,8 @@ class QiblahSuccessWidget extends StatelessWidget {
   final bool isAligned;
   final LatLng? userLocation;
   final bool isLoading;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +102,8 @@ class QiblahSuccessWidget extends StatelessWidget {
                     ? LatLng(userLocation!.latitude, userLocation!.longitude)
                     : null,
                 isLoading: isLoading,
+                localizations: localizations,
+                isArabic: isArabic,
               ),
               const SizedBox(height: 15),
               Expanded(
@@ -97,6 +112,7 @@ class QiblahSuccessWidget extends StatelessWidget {
                   qiblahAngle: qiblahAngle,
                   isAligned: isAligned,
                   isLoading: isLoading,
+                  localizations: localizations,
                 ),
               ),
             ],

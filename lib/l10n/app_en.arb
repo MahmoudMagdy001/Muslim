@@ -1,92 +1,103 @@
 {
   "@@locale": "en",
 
-  "appName": "Musallem",
+  "appName": "Musallim",
   "@appName": {
-    "description": "The main application name displayed in the interface",
+    "description": "Main app name displayed in the interface",
     "type": "text"
   },
 
-  "quranButton": "Quran",
+  "quranButton": "Qur'an",
   "@quranButton": {
-    "description": "Button to navigate to the Holy Quran screen",
+    "description": "Button to navigate to the Qur'an screen",
     "type": "text"
   },
+
   "hadithButton": "Hadith",
   "@hadithButton": {
     "description": "Button to navigate to the Hadith screen",
     "type": "text"
   },
+
   "azkarButton": "Azkar",
   "@azkarButton": {
     "description": "Button to navigate to the Azkar screen",
     "type": "text"
   },
+
   "qiblahButton": "Qiblah",
   "@qiblahButton": {
     "description": "Button to navigate to the Qiblah direction screen",
     "type": "text"
   },
+
   "settingsButton": "Settings",
   "@settingsButton": {
-    "description": "Button to navigate to the app settings",
+    "description": "Button to navigate to app settings",
     "type": "text"
   },
 
   "zakat": "My Zakat",
   "@zakat": {
-    "description": "Title for the Zakat section in the app",
+    "description": "Title of the Zakat screen",
     "type": "text"
   },
-  "zakatDuaa": "The Prophet ﷺ said: Charity does not decrease wealth.",
+
+  "zakatDuaa": "The Prophet ﷺ said: 'Charity does not decrease wealth.'",
   "@zakatDuaa": {
-    "description": "Prophetic saying displayed on the Zakat screen",
+    "description": "Hadith displayed in the Zakat screen",
     "type": "text"
   },
-  "zakatStart": "Start calculating your Zakat now and remember its great virtue.",
+
+  "zakatStart": "Start calculating your Zakat and remember its great reward",
   "@zakatStart": {
-    "description": "Motivational text encouraging users to start calculating their Zakat",
+    "description": "Motivational text to start Zakat calculation",
     "type": "text"
   },
 
   "namesOfAllah": "Names of Allah",
   "@namesOfAllah": {
-    "description": "Title for the Names of Allah screen",
+    "description": "Title of the Names of Allah screen",
     "type": "text"
   },
 
-  "sebha": "Sebha",
+  "sebha": "Digital Tasbeeh",
   "@sebha": {
-    "description": "Title for the digital Sebha screen",
+    "description": "Title of the digital rosary screen",
     "type": "text"
   },
-  "tasbih": "Tasbih",
+
+  "tasbih": "Tasbeeh",
   "@tasbih": {
-    "description": "Title for the Tasbih section in the Sebha screen",
+    "description": "Section title for Tasbeeh on the rosary screen",
     "type": "text"
   },
+
   "reset": "Reset",
   "@reset": {
-    "description": "Button to reset the counter in the Sebha",
+    "description": "Button to reset the Tasbeeh counter",
     "type": "text"
   },
 
   "azkar": "Azkar",
   "@azkar": {
-    "description": "Title for the general Azkar screen",
+    "description": "Title of the general Azkar screen",
     "type": "text"
   },
+
   "azkarCategoryList": "Azkar Categories",
   "@azkarCategoryList": {
-    "description": "Title for the Azkar category list screen",
+    "description": "Title of the Azkar categories list screen",
     "type": "text"
   },
+
   "azkarLoadingText": "Loading Azkar...",
   "@azkarLoadingText": {
-    "description": "Text displayed while Azkar data is loading",
+    "description": "Text shown while Azkar are loading",
     "type": "text"
   },
-  "azkarError": "No Azkar available at the moment",
+
+  "azkarError": "No Azkar available right now",
   "@azkarError": {
     "description": "Error message when no Azkar are available",
     "type": "text"
@@ -94,145 +105,401 @@
 
   "hadithBooks": "Hadith Books",
   "@hadithBooks": {
-    "description": "Title for the Hadith books list screen",
+    "description": "Title of the Hadith books list screen",
     "type": "text"
   },
-  "hadithBooksError": "Failed to fetch books",
+
+  "hadithBooksError": "Failed to load books",
   "@hadithBooksError": {
-    "description": "Error message when fetching Hadith books fails",
+    "description": "Error message when Hadith books fail to load",
     "type": "text"
   },
+
   "hadithBooksSearch": "Search by book name...",
   "@hadithBooksSearch": {
-    "description": "Search hint text in the Hadith books list",
+    "description": "Search placeholder in Hadith books list",
     "type": "text"
   },
+
   "hadithBooksEmpty": "No books available",
   "@hadithBooksEmpty": {
     "description": "Message when no Hadith books are available",
     "type": "text"
   },
+
   "writer": "Author",
   "@writer": {
-    "description": "Label for the book author field",
+    "description": "Field title for the author's name",
     "type": "text"
   },
-  "numberOfChapters": "Number of chapters:",
+
+  "numberOfChapters": "Chapters:",
   "@numberOfChapters": {
-    "description": "Text showing the number of chapters in a book",
+    "description": "Label for the number of chapters in a book",
     "type": "text"
   },
-  "numberOfHadiths": "Number of hadiths:",
+
+  "numberOfHadiths": "Hadiths:",
   "@numberOfHadiths": {
-    "description": "Text showing the number of hadiths in a book",
+    "description": "Label for the number of hadiths in a book",
     "type": "text"
   },
+
   "chapters": "Chapters",
   "@chapters": {
-    "description": "Title for the list of chapters in a Hadith book",
+    "description": "Title for the chapters screen within a Hadith book",
     "type": "text"
   },
+
   "chaptersEmpty": "No chapters available",
   "@chaptersEmpty": {
-    "description": "Message when a Hadith book has no chapters",
+    "description": "Message when there are no chapters",
     "type": "text"
   },
+
   "chaptersSearch": "Search for a chapter...",
   "@chaptersSearch": {
-    "description": "Search hint for the chapters list",
+    "description": "Search text for chapters list",
     "type": "text"
   },
+
   "hadithError": "Failed to load hadiths",
   "@hadithError": {
     "description": "Error message when hadiths fail to load",
     "type": "text"
   },
+
   "hadithsTitle": "Hadiths",
   "@hadithsTitle": {
-    "description": "Title for the hadith list screen",
+    "description": "Title of the hadith list screen",
     "type": "text"
   },
+
   "hadithStatus": "Status",
   "@hadithStatus": {
-    "description": "Label for displaying the hadith's authenticity or grading",
+    "description": "Label for the hadith grade or status",
     "type": "text"
   },
 
   "revision": "Reference",
   "@revision": {
-    "description": "Label for the reference section in hadiths or azkar",
+    "description": "Section title for the reference in hadiths or azkar",
     "type": "text"
   },
-  "errorMain": "An error occurred:",
+
+  "errorMain": "Error:",
   "@errorMain": {
-    "description": "General error prefix text used in messages",
+    "description": "General prefix for error messages",
     "type": "text"
   },
 
   "retry": "Retry",
   "@retry": {
-    "description": "Button to retry after an error occurs",
+    "description": "Button to retry after an error",
     "type": "text"
   },
+
   "loading": "Loading...",
   "@loading": {
     "description": "General loading text",
     "type": "text"
   },
-  "noInternet": "No Internet connection",
+
+  "noInternet": "No internet connection",
   "@noInternet": {
-    "description": "Message shown when there is no internet connection",
+    "description": "Message when there is no internet connection",
     "type": "text"
   },
+
   "homeTitle": "Home",
   "@homeTitle": {
-    "description": "Title for the main home screen",
+    "description": "Title of the home screen",
     "type": "text"
   },
+
   "updatePrayerTimes": "Update Prayer Times",
   "@updatePrayerTimes": {
-    "description": "Button to refresh prayer times",
+    "description": "Button to manually update prayer times",
     "type": "text"
   },
+
   "morePrayerTimesButton": "Tap to view more prayer times",
   "@morePrayerTimesButton": {
-    "description": "Button hint to show full prayer schedule",
+    "description": "Button to view additional prayer times",
     "type": "text"
   },
 
   "prayerTimesText": "Prayer Times",
   "@prayerTimesText": {
-    "description": "Label for prayer times section",
+    "description": "Title of the prayer times screen",
     "type": "text"
   },
-  "quranText": "Holy Quran",
+
+  "quranText": "The Holy Qur'an",
   "@quranText": {
-    "description": "Label for Quran section",
+    "description": "Title of the Qur'an screen",
     "type": "text"
   },
+
   "surahsText": "Surahs",
   "@surahsText": {
-    "description": "Label for Surah list screen",
+    "description": "Title for the list of Surahs",
     "type": "text"
   },
+
   "bookmarksText": "Bookmarks",
   "@bookmarksText": {
-    "description": "Label for the bookmarks section",
+    "description": "Title of the bookmarks screen",
     "type": "text"
   },
-  "searchForSurahName": "Search by surah name...",
+
+  "searchForSurahName": "Search by Surah name...",
   "@searchForSurahName": {
-    "description": "Hint text for searching surahs",
+    "description": "Placeholder text for Surah search",
     "type": "text"
   },
-  "searchResult": "Search results:",
+
+  "searchResult": "Search Results:",
   "@searchResult": {
-    "description": "Label for displaying search results",
+    "description": "Title of the search results section",
     "type": "text"
   },
+
   "emptyBookmarks": "No bookmarks yet",
   "@emptyBookmarks": {
-    "description": "Message shown when no bookmarks are saved",
+    "description": "Message when there are no saved bookmarks",
+    "type": "text"
+  },
+
+  "deleteBookmark": "Delete bookmark",
+  "@deleteBookmark": {
+    "description": "Button to delete a saved bookmark",
+    "type": "text"
+  },
+
+  "deleteBookmarkSuccess": "Bookmark deleted from Surah",
+  "@deleteBookmarkSuccess": {
+    "description": "Confirmation after deleting a bookmark",
+    "type": "text"
+  },
+
+  "deleteBookmarkQuestion": "Are you sure you want to delete the bookmark from Surah",
+  "@deleteBookmarkQuestion": {
+    "description": "Confirmation message before deleting a bookmark",
+    "type": "text"
+  },
+
+  "deleteButton": "Delete",
+  "@deleteButton": {
+    "description": "General delete button text",
+    "type": "text"
+  },
+
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "General cancel button text",
+    "type": "text"
+  },
+
+  "okButton": "OK",
+  "@okButton": {
+    "description": "General confirmation button text",
+    "type": "text"
+  },
+
+  "playVerseSound": "Play from this verse",
+  "@playVerseSound": {
+    "description": "Button to play recitation starting from a specific verse",
+    "type": "text"
+  },
+
+  "bookmarkVerse": "Bookmark this verse",
+  "@bookmarkVerse": {
+    "description": "Button to bookmark a verse",
+    "type": "text"
+  },
+
+  "tafsirVerse": "Verse Interpretation",
+  "@tafsirVerse": {
+    "description": "Button to view the verse tafsir",
+    "type": "text"
+  },
+
+  "bookmarkVerseSuccess": "Bookmark saved for verse number ",
+  "@bookmarkVerseSuccess": {
+    "description": "Confirmation when bookmarking a verse",
+    "type": "text"
+  },
+
+  "selectTafsir": "Select Tafsir",
+  "@selectTafsir": {
+    "description": "Prompt text for selecting tafsir type",
+    "type": "text"
+  },
+
+  "emptyTafsir": "No tafsir available right now",
+  "@emptyTafsir": {
+    "description": "Message when no tafsir is available",
+    "type": "text"
+  },
+
+  "shareTafsir": "Share Tafsir",
+  "@shareTafsir": {
+    "description": "Button to share tafsir text",
+    "type": "text"
+  },
+
+  "qiblahDirection": "Qiblah Direction",
+  "@qiblahDirection": {
+    "description": "Title for the Qiblah direction screen",
+    "type": "text"
+  },
+
+  "distanceToKabaa": "Distance to Kaaba:",
+  "@distanceToKabaa": {
+    "description": "Label showing distance to the Kaaba",
+    "type": "text"
+  },
+
+  "fullMapQiblah": "Qiblah Map",
+  "@fullMapQiblah": {
+    "description": "Button to view full Qiblah map",
+    "type": "text"
+  },
+
+  "compassLoading": "Preparing compass...",
+  "@compassLoading": {
+    "description": "Text shown while compass is calibrating",
+    "type": "text"
+  },
+
+  "salahDirection": "Aligned with Kaaba",
+  "@salahDirection": {
+    "description": "Text shown when the device is aligned with Qiblah",
+    "type": "text"
+  },
+
+  "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
+  "@bismillah": {
+    "description": "Text displayed at the beginning of some screens or recitations",
+    "type": "text"
+  },
+
+  "changeFontSize": "Change Font Size",
+  "@changeFontSize": {
+    "description": "",
+    "type": "text"
+  },
+  "changeTheme":"Change Theme",
+  "@changeTheme" : {
+    "description": "",
+    "type": "text"
+  },
+  "changeLanguage":"Change Language",
+  "@changeLanguage" : {
+    "description": "",
+    "type": "text"
+  },
+
+  "selectFontSize": "Select Font Size",
+  "@selectFontSize": {
+    "description": "",
+    "type": "text"
+  },
+
+  "smallFont": "Small",
+  "@smallFont": {
+    "description": "",
+    "type": "text"
+  },
+
+  "defultFont": "Default",
+  "@defultFont": {
+    "description": "",
+    "type": "text"
+  },
+
+  "bigFont": "Large",
+  "@bigFont": {
+    "description": "",
+    "type": "text"
+  },
+
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "",
+    "type": "text"
+  },
+
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "",
+    "type": "text"
+  },
+
+  "systemMode": "System Mode",
+  "@systemMode": {
+    "description": "",
+    "type": "text"
+  },
+
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "",
+    "type": "text"
+  },
+
+  "changeReciterSuccess": "Reciter changed to ",
+  "@changeReciterSuccess": {
+    "description": "",
+    "type": "text"
+  },
+
+  "selectReciter": "Select Reciter",
+  "@selectReciter": {
+    "description": "",
+    "type": "text"
+  },
+
+  "save": "Save",
+  "@save": {
+    "description": "",
+    "type": "text"
+  },
+
+  "arabicLanguage": "Arabic",
+  "@arabicLanguage": {
+    "description": "",
+    "type": "text"
+  },
+
+  "englishLanguage": "English",
+  "@englishLanguage": {
+    "description": "",
+    "type": "text"
+  },
+
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "",
+    "type": "text"
+  },
+
+  "appVersion": "App Version",
+  "@appVersion": {
+    "description": "",
+    "type": "text"
+  },
+
+  "version": "Version",
+  "@version": {
+    "description": "",
+    "type": "text"
+  },
+
+  "privacy": "Privacy Policy",
+  "@privacy": {
+    "description": "",
     "type": "text"
   }
 }

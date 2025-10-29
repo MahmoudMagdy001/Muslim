@@ -81,7 +81,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get numberOfHadiths => 'عدد الأحاديث:';
 
   @override
-  String get chapters => 'أبواب';
+  String get chapters => 'الأبواب';
 
   @override
   String get chaptersEmpty => 'لا توجد أبواب';
@@ -93,7 +93,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hadithError => 'فشل في تحميل الأحاديث';
 
   @override
-  String get hadithsTitle => 'أحاديث';
+  String get hadithsTitle => 'الأحاديث';
 
   @override
   String get hadithStatus => 'الحكم';
@@ -142,4 +142,122 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get emptyBookmarks => 'لا توجد علامات بعد';
+
+  @override
+  String get deleteBookmark => 'حذف العلامة';
+
+  @override
+  String get deleteBookmarkSuccess => 'تم حذف العلامة من سورة';
+
+  @override
+  String get deleteBookmarkQuestion =>
+      'هل أنت متأكد أنك تريد حذف العلامة من سورة';
+
+  @override
+  String get deleteButton => 'حذف';
+
+  @override
+  String get cancelButton => 'إلغاء';
+
+  @override
+  String get okButton => 'حسنًا';
+
+  @override
+  String get playVerseSound => 'تشغيل من هذه الآية';
+
+  @override
+  String get bookmarkVerse => 'حفظ علامة على هذه الآية';
+
+  @override
+  String get tafsirVerse => 'تفسير الآية';
+
+  @override
+  String get bookmarkVerseSuccess => 'تم حفظ علامة على آية رقم ';
+
+  @override
+  String get selectTafsir => 'اختر التفسير';
+
+  @override
+  String get emptyTafsir => 'لا يوجد تفسير متاح حاليًا';
+
+  @override
+  String get shareTafsir => 'مشاركة التفسير';
+
+  @override
+  String get qiblahDirection => 'اتجاه القبلة';
+
+  @override
+  String get distanceToKabaa => 'المسافة إلى الكعبة:';
+
+  @override
+  String get fullMapQiblah => 'خريطة القبلة';
+
+  @override
+  String get compassLoading => 'جاري تجهيز البوصلة...';
+
+  @override
+  String get salahDirection => 'مُحاذٍ للكعبة';
+
+  @override
+  String get bismillah => 'بسم الله الرحمن الرحيم';
+
+  @override
+  String get changeFontSize => 'تغيير حجم الخط';
+
+  @override
+  String get changeTheme => 'تغيير المظهر';
+
+  @override
+  String get changeLanguage => 'تغيير اللغه';
+
+  @override
+  String get selectFontSize => 'اختر حجم الخط';
+
+  @override
+  String get smallFont => 'صغير';
+
+  @override
+  String get defultFont => 'افتراضي';
+
+  @override
+  String get bigFont => 'كبير';
+
+  @override
+  String get lightMode => 'الوضع النهاري';
+
+  @override
+  String get darkMode => 'الوضع الليلي';
+
+  @override
+  String get systemMode => 'حسب النظام';
+
+  @override
+  String get selectTheme => 'اختيار المظهر';
+
+  @override
+  String get changeReciterSuccess => 'تم تغيير القارئ إلى ';
+
+  @override
+  String get selectReciter => 'اختر القارئ';
+
+  @override
+  String get save => 'حفظ ';
+
+  @override
+  String get arabicLanguage => 'العربية';
+
+  @override
+  String get englishLanguage => 'الانجليزية';
+
+  @override
+  String get selectLanguage => 'اختر اللغة';
+
+  @override
+  String get appVersion => 'إصدار التطبيق';
+
+  @override
+  String get version => 'الإصدار';
+
+  @override
+  String get privacy => 'سياسة الخصوصية';
 }

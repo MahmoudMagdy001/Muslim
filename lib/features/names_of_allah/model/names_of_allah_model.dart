@@ -1,16 +1,32 @@
 class DataItem {
-  const DataItem({required this.id, required this.name, required this.text});
+  const DataItem({
+    required this.id,
+    required this.name,
+    required this.text,
+    required this.nameTranslation,
+    required this.textTranslation,
+  });
 
   factory DataItem.fromJson(Map<String, dynamic> json) => DataItem(
     id: json['id'] as int,
     name: json['name'] as String? ?? '',
+    nameTranslation: json['name_translation'] as String? ?? '',
     text: json['text'] as String? ?? '',
+    textTranslation: json['text_translation'] as String? ?? '',
   );
   final int id;
   final String name;
+  final String nameTranslation;
   final String text;
+  final String textTranslation;
 
-  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'text': text};
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'text': text,
+    'nameTranslation': nameTranslation,
+    'textTranslation': textTranslation,
+  };
 }
 
 class NamesOfAllahModel {

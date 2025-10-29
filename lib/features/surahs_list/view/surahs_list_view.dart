@@ -49,6 +49,7 @@ class SurahsListView extends StatelessWidget {
                 BookmarksTab(
                   reciter: selectedReciter,
                   localizations: localizations,
+                  isArabic: isArabic,
                 ),
               ],
             ),
