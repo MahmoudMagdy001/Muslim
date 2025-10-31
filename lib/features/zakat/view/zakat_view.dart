@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/utils/format_helper.dart';
 import '../../../core/utils/navigation_helper.dart';
+import '../../../l10n/app_localizations.dart';
 import '../widgets/zakat_calculator.dart';
 
 class ZakatView extends StatelessWidget {
@@ -11,9 +12,11 @@ class ZakatView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('زكاتي')),
+      appBar: AppBar(title: Text(localizations.my_zakat)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -22,19 +25,19 @@ class ZakatView extends StatelessWidget {
             _buildSectionCard(
               theme,
               icon: Icons.people_alt_rounded,
-              title: 'لمن الزكاة؟',
+              title: localizations.zakat_for_whom,
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'قال الله تعالى:',
+                    localizations.quran_verse,
                     style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '"إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ" (التوبة: ${convertToArabicNumbers('60')})',
+                    '${localizations.quran_text} (${isArabic ? 'التوبة' : 'At-Tawbah'}: ${isArabic ? convertToArabicNumbers('60') : '60'})',
                     textAlign: TextAlign.justify,
                     style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
@@ -43,50 +46,50 @@ class ZakatView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'مصارف الزكاة الثمانية:',
+                    localizations.beneficiaries,
                     style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 12),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('1')}. الفقراء',
-                    'من لا يملك قوت يومه.',
+                    '${isArabic ? convertToArabicNumbers('1') : '1'}. ${localizations.poor}',
+                    localizations.poor_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('2')}. المساكين',
-                    'من يملك بعض حاجته ولكن لا يكفيه.',
+                    '${isArabic ? convertToArabicNumbers('2') : '2'}. ${localizations.needy}',
+                    localizations.needy_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('3')}. العاملين عليها',
-                    'من يجمعون الزكاة ويوزعونها.',
+                    '${isArabic ? convertToArabicNumbers('3') : '3'}. ${localizations.collectors}',
+                    localizations.collectors_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('4')}. المؤلفة قلوبهم',
-                    'من يُراد تأليف قلوبهم على الإسلام.',
+                    '${isArabic ? convertToArabicNumbers('4') : '4'}. ${localizations.new_muslims}',
+                    localizations.new_muslims_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('5')}. في الرقاب',
-                    'لتحرير الأسرى أو المديونين ظلمًا.',
+                    '${isArabic ? convertToArabicNumbers('5') : '5'}. ${localizations.slaves}',
+                    localizations.slaves_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('6')}. الغارمين',
-                    'من أثقلهم الدين.',
+                    '${isArabic ? convertToArabicNumbers('6') : '6'}. ${localizations.debtors}',
+                    localizations.debtors_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('7')}. في سبيل الله',
-                    'لدعم الدعوة والخير.',
+                    '${isArabic ? convertToArabicNumbers('7') : '7'}. ${localizations.cause_of_allah}',
+                    localizations.cause_of_allah_desc,
                     textTheme: textTheme,
                   ),
                   BuildBeneficiaryItem(
-                    '${convertToArabicNumbers('8')}. ابن السبيل',
-                    'المسافر المنقطع عن بلده.',
+                    '${isArabic ? convertToArabicNumbers('8') : '8'}. ${localizations.traveler}',
+                    localizations.traveler_desc,
                     textTheme: textTheme,
                   ),
                 ],
@@ -97,31 +100,31 @@ class ZakatView extends StatelessWidget {
             _buildSectionCard(
               theme,
               icon: Icons.access_time_filled_rounded,
-              title: 'متى تجب الزكاة؟',
+              title: localizations.when_zakat_due,
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'تجب الزكاة عند توافر هذه الشروط:',
+                    localizations.conditions,
                     style: textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 12),
                   BuildConditionItem(
-                    'أن يكون المسلم حرًّا مالكًا للنصاب.',
+                    localizations.condition_1,
                     textTheme: textTheme,
                   ),
                   BuildConditionItem(
-                    'أن يبلغ المال النصاب (ما يعادل ${convertToArabicNumbers('85')} جرام ذهب تقريبًا).',
+                    localizations.condition_2,
                     textTheme: textTheme,
                   ),
                   BuildConditionItem(
-                    'أن يمر على المال حول كامل (سنة هجرية).',
+                    localizations.condition_3,
                     textTheme: textTheme,
                   ),
                   BuildConditionItem(
-                    'أن يكون المال ناميًا أو قابلًا للنماء.',
+                    localizations.condition_4,
                     textTheme: textTheme,
                   ),
                   const SizedBox(height: 16),
@@ -132,7 +135,7 @@ class ZakatView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'قال النبي ﷺ: "لا زكاة في مال حتى يحول عليه الحول."',
+                      localizations.hadith,
                       style: textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.w500,
@@ -148,13 +151,13 @@ class ZakatView extends StatelessWidget {
             _buildSectionCard(
               theme,
               icon: Icons.calculate_rounded,
-              title: 'حاسبة الزكاة',
+              title: localizations.zakat_calculator,
               content: Column(
                 children: [
                   Column(
                     children: [
                       Text(
-                        'احسب زكاتك بسهولة ودقة',
+                        localizations.calculate_easily,
                         style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -162,7 +165,7 @@ class ZakatView extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'أدخل قيمة أموالك وسنحسب لك مقدار الزكاة الواجبة',
+                        localizations.enter_amount,
                         textAlign: TextAlign.center,
                         style: textTheme.bodyMedium?.copyWith(
                           color: Colors.grey,
@@ -186,7 +189,7 @@ class ZakatView extends StatelessWidget {
                           const Icon(Icons.calculate_rounded, size: 24),
                           const SizedBox(width: 8),
                           Text(
-                            'ابدأ حساب الزكاة',
+                            localizations.start_calculation,
                             style: textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.onPrimary,
@@ -204,7 +207,7 @@ class ZakatView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'ملاحظة: الزكاة واجبة على المال المدخر الذي بلغ النصاب ومر عليه الحول.',
+                      localizations.note,
                       style: textTheme.bodySmall?.copyWith(color: Colors.grey),
                       textAlign: TextAlign.center,
                     ),
@@ -305,6 +308,7 @@ class BuildConditionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -315,7 +319,7 @@ class BuildConditionItem extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              convertToArabicNumbers(text), 
+              isArabic ? convertToArabicNumbers(text) : text,
               style: textTheme.bodyMedium,
             ),
           ),

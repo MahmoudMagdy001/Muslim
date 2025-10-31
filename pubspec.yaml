@@ -12,29 +12,29 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   quran: ^1.4.1
-  just_audio: ^0.10.4
+  just_audio: ^0.10.5
   intl: ^0.20.2
   http: ^1.5.0
   shared_preferences: ^2.5.3
-  google_fonts: ^6.3.1
+  google_fonts: ^6.3.2
   awesome_notifications: ^0.10.1
   just_audio_background: ^0.0.1-beta.17
   permission_handler: ^12.0.1
   flutter_qiblah: ^3.1.0+1
   flutter_bloc: ^9.1.1
   shimmer: ^3.0.0
-  geolocator: ^13.0.4
+  geolocator: ^13.0.2
   adhan: ^2.0.0+1
   hijri: ^3.0.0
   geocoding: ^4.0.0
   disable_battery_optimization: ^1.1.2
-  share_plus: ^12.0.0
+  share_plus: ^12.0.1
   skeletonizer: ^2.1.0+1
   latlong2: ^0.9.1
   flutter_map: ^8.2.2
   workmanager: ^0.9.0+3
   flutter_map_animations: ^0.9.0
-  syncfusion_flutter_sliders: ^31.2.3
+  syncfusion_flutter_sliders: ^31.2.4
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/format_helper.dart';
+import '../../../l10n/app_localizations.dart';
 
 class ZakatCard extends StatefulWidget {
   const ZakatCard({
@@ -8,7 +9,8 @@ class ZakatCard extends StatefulWidget {
     required this.description,
     required this.hintText,
     required this.calculate,
-    this.unit = 'جنيه',
+    required this.localizations,
+
     this.showNisabInfo = true,
     super.key,
   });
@@ -17,7 +19,8 @@ class ZakatCard extends StatefulWidget {
   final String description;
   final String hintText;
   final double Function(String input) calculate;
-  final String unit;
+  final AppLocalizations localizations;
+
   final bool showNisabInfo;
 
   @override
@@ -66,6 +69,7 @@ class _ZakatCardState extends State<ZakatCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -116,7 +120,9 @@ class _ZakatCardState extends State<ZakatCard> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: widget.hintText,
-                      errorText: _hasError ? 'الرجاء إدخال قيمة صحيحة' : null,
+                      errorText: _hasError
+                          ? widget.localizations.invalid_input_error
+                          : null,
                       suffixIcon: _controller.text.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear),
@@ -140,7 +146,7 @@ class _ZakatCardState extends State<ZakatCard> {
                       onPressed: _compute,
                       icon: const Icon(Icons.calculate),
                       label: Text(
-                        'احسب الزكاة',
+                        widget.localizations.calculate_zakat,
                         style: textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                         ),
@@ -163,14 +169,14 @@ class _ZakatCardState extends State<ZakatCard> {
                     Row(
                       children: [
                         Text(
-                          'الزكاة المستحقة:',
+                          '${widget.localizations.due_zakat}:',
                           style: textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: theme.colorScheme.primary,
                           ),
                         ),
                         Text(
-                          ' ${convertToArabicNumbers(_result!.toStringAsFixed(2))} ${widget.unit}',
+                          ' ${isArabic ? convertToArabicNumbers(_result!.toStringAsFixed(2)) : _result!.toStringAsFixed(2)} ${isArabic ? 'جنيه' : 'EGP'}',
                           style: textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: theme.colorScheme.primary,
@@ -192,7 +198,7 @@ class _ZakatCardState extends State<ZakatCard> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'تذكر: الزكاة واجبة فقط إذا بلغ المال النصاب ومر عليه الحول',
+                                widget.localizations.zakat_reminder,
                                 style: textTheme.bodySmall?.copyWith(
                                   color: Colors.amber[700],
                                 ),
@@ -207,8 +213,6 @@ class _ZakatCardState extends State<ZakatCard> {
               ),
             ),
           ],
-
-          // Nisab Info
         ],
       ),
     );

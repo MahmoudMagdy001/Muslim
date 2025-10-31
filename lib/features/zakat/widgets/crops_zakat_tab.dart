@@ -3,9 +3,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/format_helper.dart';
+import '../../../l10n/app_localizations.dart';
 
 class CropsZakatTab extends StatefulWidget {
-  const CropsZakatTab({super.key});
+  const CropsZakatTab({required this.localizations, super.key});
+
+  final AppLocalizations localizations;
 
   @override
   State<CropsZakatTab> createState() => _CropsZakatTabState();
@@ -55,6 +58,7 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -72,7 +76,7 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                       children: [
                         Expanded(
                           child: Text(
-                            '🌾 زكاة الزروع والثمار',
+                            widget.localizations.crops_zakat_title,
                             style: textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.primary,
@@ -83,9 +87,12 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'تجب الزكاة إذا بلغ المحصول ${convertToArabicNumbers('653')} كجم تقريبًا.\n\n'
-                      '${convertToArabicNumbers('10')}% إن كانت تُسقى بماء المطر أو الأنهار\n'
-                      '${convertToArabicNumbers('5')} % إن كانت بالآلات (مكلفة السقي)',
+                      widget.localizations.crops_zakat_description(
+                        isArabic ? convertToArabicNumbers('10') : '10',
+                        isArabic ? convertToArabicNumbers('5') : '5',
+                        isArabic ? convertToArabicNumbers('653') : '653',
+                      ),
+
                       style: textTheme.bodyMedium?.copyWith(height: 1.5),
                       textAlign: TextAlign.start,
                     ),
@@ -105,8 +112,10 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                       controller: _controller,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: 'أدخل كمية المحصول بالكيلوجرام',
-                        errorText: _hasError ? 'الرجاء إدخال قيمة صحيحة' : null,
+                        labelText: widget.localizations.crops_zakat_hint,
+                        errorText: _hasError
+                            ? widget.localizations.invalid_input_error
+                            : null,
                         suffixIcon: _controller.text.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear),
@@ -127,15 +136,21 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                       children: [
                         _buildIrrigationOption(
                           'natural',
-                          '💧 مطر أو أنهار (${convertToArabicNumbers('10')}%)',
-                          'السقي الطبيعي بدون تكاليف',
+                          widget.localizations.natural_irrigation_title(
+                            isArabic ? convertToArabicNumbers('10') : '10',
+                          ),
+
+                          widget.localizations.natural_irrigation_subtitle,
                           theme,
                         ),
                         const SizedBox(height: 8),
                         _buildIrrigationOption(
                           'machine',
-                          '⚙️ آلة أو مكلف (${convertToArabicNumbers('5')}%)',
-                          'السقي بالآلات أو بتكاليف',
+                          widget.localizations.machine_irrigation_title(
+                            isArabic ? convertToArabicNumbers('5') : '5',
+                          ),
+
+                          widget.localizations.machine_irrigation_subtitle,
                           theme,
                         ),
                       ],
@@ -150,7 +165,7 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                         onPressed: _calculate,
                         icon: const Icon(Icons.calculate),
                         label: Text(
-                          'احسب الزكاة',
+                          widget.localizations.calculate_zakat,
                           style: textTheme.titleMedium?.copyWith(
                             color: Colors.white,
                           ),
@@ -172,14 +187,14 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                       Row(
                         children: [
                           Text(
-                            'الزكاة المستحقة:',
+                            '${widget.localizations.due_zakat}:',
                             style: textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.primary,
                             ),
                           ),
                           Text(
-                            ' ${convertToArabicNumbers(_result!.toStringAsFixed(2))} كجم',
+                            ' ${isArabic ? convertToArabicNumbers(_result!.toStringAsFixed(2)) : _result!.toStringAsFixed(2)} ${widget.localizations.unit_kg}',
                             style: textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.primary,

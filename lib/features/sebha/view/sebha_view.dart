@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/sebha_button.dart'; // ✅ عشان الهزاز
+import '../../../l10n/app_localizations.dart';
+import 'widgets/sebha_button.dart';
 
 class SebhaView extends StatefulWidget {
-  const SebhaView({super.key});
+  const SebhaView({
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   State<SebhaView> createState() => _SebhaViewState();
@@ -15,10 +22,10 @@ class _SebhaViewState extends State<SebhaView>
   int? customGoal;
 
   final List<Map<String, dynamic>> azkar = [
-    {'text': 'سبحان الله', 'count': 33},
-    {'text': 'الحمد لله', 'count': 33},
-    {'text': 'الله أكبر', 'count': 34},
-    {'text': 'لا إله إلا الله', 'count': 100},
+    {'textAr': 'سبحان الله', 'textEn': 'Subhan Allah', 'count': 33},
+    {'textAr': 'الحمد لله', 'textEn': 'Alhamdulillah', 'count': 33},
+    {'textAr': 'الله أكبر', 'textEn': 'Allahu Akbar', 'count': 34},
+    {'textAr': 'لا إله إلا الله', 'textEn': 'La ilaha illallah', 'count': 100},
   ];
 
   int currentIndex = 0;
@@ -61,9 +68,9 @@ class _SebhaViewState extends State<SebhaView>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تهانينا 🎉'),
+        title: Text('${widget.localizations.congrates} 🎉'),
         content: Text(
-          'لقد أكملت $maxCount تسبيحة.\nهل تريد إعادة العد من البداية أم تكمل؟',
+          '${widget.localizations.completeTasbeh} $maxCount\n ${widget.localizations.tasbehQuestion}',
         ),
         actions: [
           TextButton(
@@ -71,13 +78,13 @@ class _SebhaViewState extends State<SebhaView>
               Navigator.pop(context);
               reset();
             },
-            child: const Text('إعادة من البداية'),
+            child: Text(widget.localizations.resetTasbeh),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('أكمل'),
+            child: Text(widget.localizations.continueTasbeh),
           ),
         ],
       ),
@@ -90,11 +97,13 @@ class _SebhaViewState extends State<SebhaView>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تحديد الهدف'),
+        title: Text(widget.localizations.chooseGoal),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(labelText: 'ضع هدفك (مثلاً 50)'),
+          decoration: InputDecoration(
+            labelText: widget.localizations.goalExample,
+          ),
         ),
         actions: [
           TextButton(
@@ -104,7 +113,7 @@ class _SebhaViewState extends State<SebhaView>
                 customGoal = null;
               });
             },
-            child: const Text('إزالة الهدف'),
+            child: Text(widget.localizations.clear),
           ),
           TextButton(
             onPressed: () {
@@ -118,11 +127,11 @@ class _SebhaViewState extends State<SebhaView>
               }
               Navigator.pop(context);
             },
-            child: const Text('حفظ الهدف'),
+            child: Text(widget.localizations.save),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: Text(widget.localizations.cancelButton),
           ),
         ],
       ),
@@ -133,7 +142,7 @@ class _SebhaViewState extends State<SebhaView>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('السبحة الإلكترونية')),
+      appBar: AppBar(title: Text(widget.localizations.sebhaTitle)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -145,6 +154,10 @@ class _SebhaViewState extends State<SebhaView>
                 scrollDirection: Axis.horizontal,
                 itemCount: azkar.length,
                 itemBuilder: (context, index) {
+                  final text = widget.isArabic
+                      ? azkar[index]['textAr']
+                      : azkar[index]['textEn'];
+
                   final isSelected = currentIndex == index;
                   return GestureDetector(
                     onTap: () => selectZikr(index),
@@ -165,7 +178,7 @@ class _SebhaViewState extends State<SebhaView>
                         ),
                         child: Center(
                           child: Text(
-                            azkar[index]['text'],
+                            text,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: isSelected ? theme.primaryColor : null,
                             ),
@@ -178,17 +191,19 @@ class _SebhaViewState extends State<SebhaView>
               ),
             ),
             const SizedBox(height: 40),
-    
+
             // ✅ اسم الذكر الحالي
             Text(
-              azkar[currentIndex]['text'],
+              widget.isArabic
+                  ? azkar[currentIndex]['textAr']
+                  : azkar[currentIndex]['textEn'],
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.primaryColor,
               ),
             ),
             const SizedBox(height: 25),
-    
+
             // ✅ زرار التسبيح مع Pulse animation
             SebhaButton(
               onPressed: () {
@@ -196,10 +211,11 @@ class _SebhaViewState extends State<SebhaView>
               },
               counter: counter,
               goal: customGoal,
+              localizations: widget.localizations,
             ),
-    
+
             const SizedBox(height: 30),
-    
+
             // ✅ كارت الخيارات
             Card(
               child: Padding(
@@ -213,12 +229,12 @@ class _SebhaViewState extends State<SebhaView>
                     TextButton.icon(
                       onPressed: reset,
                       icon: const Icon(Icons.restart_alt),
-                      label: const Text('إعادة التعيين'),
+                      label: Text(widget.localizations.resetTasbeh),
                     ),
                     TextButton.icon(
                       onPressed: _showGoalDialog,
                       icon: const Icon(Icons.flag),
-                      label: const Text('الهدف'),
+                      label: Text(widget.localizations.goal),
                     ),
                   ],
                 ),

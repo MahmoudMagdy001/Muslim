@@ -1,488 +1,778 @@
 {
   "@@locale": "ar",
-
   "appName": "مُسَلِّم",
   "@appName": {
     "description": "اسم التطبيق الرئيسي المعروض في الواجهة",
     "type": "text"
   },
-
-  "quranButton": "القرآن",
-  "@quranButton": {
-    "description": "زر الانتقال إلى شاشة القرآن الكريم",
+  "appVersion": "إصدار التطبيق",
+  "@appVersion": {
+    "description": "",
     "type": "text"
   },
-
-  "hadithButton": "الحديث",
-  "@hadithButton": {
-    "description": "زر الانتقال إلى شاشة الأحاديث النبوية",
+  "arabicLanguage": "العربية",
+  "@arabicLanguage": {
+    "description": "",
     "type": "text"
   },
-
-  "azkarButton": "الأذكار",
-  "@azkarButton": {
-    "description": "زر الانتقال إلى شاشة الأذكار",
-    "type": "text"
-  },
-
-  "qiblahButton": "القبلة",
-  "@qiblahButton": {
-    "description": "زر الانتقال إلى شاشة تحديد اتجاه القبلة",
-    "type": "text"
-  },
-
-  "settingsButton": "الإعدادات",
-  "@settingsButton": {
-    "description": "زر الانتقال إلى إعدادات التطبيق",
-    "type": "text"
-  },
-
-  "zakat": "زكاتي",
-  "@zakat": {
-    "description": "عنوان شاشة الزكاة في التطبيق",
-    "type": "text"
-  },
-
-  "zakatDuaa": "قال ﷺ: ما نقص مالٌ من صدقةٍ.",
-  "@zakatDuaa": {
-    "description": "حديث نبوي يُعرض في شاشة الزكاة",
-    "type": "text"
-  },
-
-  "zakatStart": "ابدأ الآن بحساب زكاتك وتذكّر فضلها العظيم",
-  "@zakatStart": {
-    "description": "نص تحفيزي لبدء حساب الزكاة",
-    "type": "text"
-  },
-
-  "namesOfAllah": "أسماء الله الحسنى",
-  "@namesOfAllah": {
-    "description": "عنوان شاشة أسماء الله الحسنى",
-    "type": "text"
-  },
-
-  "sebha": "السبحة",
-  "@sebha": {
-    "description": "عنوان شاشة السبحة الرقمية",
-    "type": "text"
-  },
-
-  "tasbih": "التسبيح",
-  "@tasbih": {
-    "description": "عنوان قسم التسبيح في شاشة السبحة",
-    "type": "text"
-  },
-
-  "reset": "إعادة",
-  "@reset": {
-    "description": "زر إعادة العد في السبحة",
-    "type": "text"
-  },
-
   "azkar": "الأذكار",
   "@azkar": {
     "description": "عنوان شاشة الأذكار العامة",
     "type": "text"
   },
-
+  "azkarButton": "الأذكار",
+  "@azkarButton": {
+    "description": "زر الانتقال إلى شاشة الأذكار",
+    "type": "text"
+  },
   "azkarCategoryList": "قائمة أنواع الأذكار",
   "@azkarCategoryList": {
     "description": "عنوان شاشة قائمة فئات الأذكار",
     "type": "text"
   },
-
-  "azkarLoadingText": "جاري تحميل الأذكار...",
-  "@azkarLoadingText": {
-    "description": "نص يظهر أثناء تحميل بيانات الأذكار",
-    "type": "text"
-  },
-
   "azkarError": "لا توجد أذكار متاحة حاليًا",
   "@azkarError": {
     "description": "رسالة خطأ عند عدم توفر أذكار",
     "type": "text"
   },
-
-  "hadithBooks": "كتب الحديث",
-  "@hadithBooks": {
-    "description": "عنوان شاشة قائمة كتب الحديث",
+  "azkarLoadingText": "جاري تحميل الأذكار...",
+  "@azkarLoadingText": {
+    "description": "نص يظهر أثناء تحميل بيانات الأذكار",
     "type": "text"
   },
-
-  "hadithBooksError": "فشل في جلب الكتب",
-  "@hadithBooksError": {
-    "description": "رسالة خطأ عند فشل تحميل كتب الحديث",
+  "beneficiaries": "مصارف الزكاة الثمانية:",
+  "@beneficiaries": {
+    "description": "",
     "type": "text"
   },
-
-  "hadithBooksSearch": "ابحث باسم الكتاب...",
-  "@hadithBooksSearch": {
-    "description": "نص البحث في قائمة كتب الحديث",
+  "bigFont": "كبير",
+  "@bigFont": {
+    "description": "",
     "type": "text"
   },
-
-  "hadithBooksEmpty": "لا توجد كتب متاحة",
-  "@hadithBooksEmpty": {
-    "description": "رسالة عند عدم توفر كتب حديث",
+  "bismillah": "بسم الله الرحمن الرحيم",
+  "@bismillah": {
+    "description": "نص يُعرض في بداية بعض الشاشات أو التلاوات",
     "type": "text"
   },
-
-  "writer": "المؤلف",
-  "@writer": {
-    "description": "عنوان حقل اسم مؤلف الكتاب",
-    "type": "text"
-  },
-
-  "numberOfChapters": "عدد الأبواب:",
-  "@numberOfChapters": {
-    "description": "النص المعروض لعدد الأبواب في الكتاب",
-    "type": "text"
-  },
-
-  "numberOfHadiths": "عدد الأحاديث:",
-  "@numberOfHadiths": {
-    "description": "النص المعروض لعدد الأحاديث في الكتاب",
-    "type": "text"
-  },
-
-  "chapters": "الأبواب",
-  "@chapters": {
-    "description": "عنوان شاشة عرض الأبواب داخل كتاب حديث",
-    "type": "text"
-  },
-
-  "chaptersEmpty": "لا توجد أبواب",
-  "@chaptersEmpty": {
-    "description": "رسالة عند عدم وجود أبواب في الكتاب",
-    "type": "text"
-  },
-
-  "chaptersSearch": "ابحث عن باب...",
-  "@chaptersSearch": {
-    "description": "نص البحث في قائمة الأبواب",
-    "type": "text"
-  },
-
-  "hadithError": "فشل في تحميل الأحاديث",
-  "@hadithError": {
-    "description": "رسالة خطأ عند فشل تحميل الأحاديث",
-    "type": "text"
-  },
-
-  "hadithsTitle": "الأحاديث",
-  "@hadithsTitle": {
-    "description": "عنوان شاشة عرض قائمة الأحاديث",
-    "type": "text"
-  },
-
-  "hadithStatus": "الحكم",
-  "@hadithStatus": {
-    "description": "النص المستخدم لعرض حكم الحديث أو درجته",
-    "type": "text"
-  },
-
-  "revision": "المرجع",
-  "@revision": {
-    "description": "عنوان قسم المرجع المستخدم في الأحاديث أو الأذكار",
-    "type": "text"
-  },
-
-  "errorMain": "حدث خطأ:",
-  "@errorMain": {
-    "description": "نص خطأ عام يستخدم كبادئة لرسائل الخطأ",
-    "type": "text"
-  },
-
-  "retry": "إعادة المحاولة",
-  "@retry": {
-    "description": "زر لإعادة المحاولة بعد حدوث خطأ",
-    "type": "text"
-  },
-
-  "loading": "جاري التحميل...",
-  "@loading": {
-    "description": "نص عام لعرض حالة التحميل",
-    "type": "text"
-  },
-
-  "noInternet": "لا يوجد اتصال بالإنترنت",
-  "@noInternet": {
-    "description": "رسالة عند انقطاع الاتصال بالإنترنت",
-    "type": "text"
-  },
-
-  "homeTitle": "الصفحة الرئيسية",
-  "@homeTitle": {
-    "description": "عنوان الشاشة الرئيسية في التطبيق",
-    "type": "text"
-  },
-
-  "updatePrayerTimes": "تحديث مواقيت الصلاة",
-  "@updatePrayerTimes": {
-    "description": "زر لتحديث مواقيت الصلاة يدويًا",
-    "type": "text"
-  },
-
-  "morePrayerTimesButton": "اضغط لعرض المزيد من أوقات الصلاة",
-  "@morePrayerTimesButton": {
-    "description": "زر لعرض باقي مواقيت الصلاة في الشاشة",
-    "type": "text"
-  },
-
-  "prayerTimesText": "مواقيت الصلاة",
-  "@prayerTimesText": {
-    "description": "عنوان شاشة مواقيت الصلاة",
-    "type": "text"
-  },
-
-  "quranText": "القرآن الكريم",
-  "@quranText": {
-    "description": "عنوان شاشة عرض سور القرآن الكريم",
-    "type": "text"
-  },
-
-  "surahsText": "السور",
-  "@surahsText": {
-    "description": "عنوان قائمة السور في شاشة القرآن",
-    "type": "text"
-  },
-
   "bookmarksText": "العلامات",
   "@bookmarksText": {
     "description": "عنوان شاشة العلامات المرجعية في القرآن",
     "type": "text"
   },
-
-  "searchForSurahName": "ابحث باسم السورة...",
-  "@searchForSurahName": {
-    "description": "نص حقل البحث عن سورة معينة",
-    "type": "text"
-  },
-
-  "searchResult": "نتائج البحث:",
-  "@searchResult": {
-    "description": "عنوان القسم الذي يعرض نتائج البحث",
-    "type": "text"
-  },
-
-  "emptyBookmarks": "لا توجد علامات بعد",
-  "@emptyBookmarks": {
-    "description": "نص يظهر عند عدم وجود علامات مرجعية محفوظة",
-    "type": "text"
-  },
-
-  "deleteBookmark": "حذف العلامة",
-  "@deleteBookmark": {
-    "description": "زر لحذف العلامة المرجعية من السورة",
-    "type": "text"
-  },
-
-  "deleteBookmarkSuccess": "تم حذف العلامة من سورة",
-  "@deleteBookmarkSuccess": {
-    "description": "رسالة تأكيد بعد حذف العلامة المرجعية",
-    "type": "text"
-  },
-
-  "deleteBookmarkQuestion": "هل أنت متأكد أنك تريد حذف العلامة من سورة",
-  "@deleteBookmarkQuestion": {
-    "description": "رسالة تأكيد قبل حذف العلامة المرجعية",
-    "type": "text"
-  },
-
-  "deleteButton": "حذف",
-  "@deleteButton": {
-    "description": "زر الحذف العام",
-    "type": "text"
-  },
-
-  "cancelButton": "إلغاء",
-  "@cancelButton": {
-    "description": "زر الإلغاء العام",
-    "type": "text"
-  },
-
-  "okButton": "حسنًا",
-  "@okButton": {
-    "description": "زر التأكيد العام في الرسائل والتنبيهات",
-    "type": "text"
-  },
-
-  "playVerseSound": "تشغيل من هذه الآية",
-  "@playVerseSound": {
-    "description": "زر لتشغيل التلاوة بدءًا من هذه الآية",
-    "type": "text"
-  },
-
   "bookmarkVerse": "حفظ علامة على هذه الآية",
   "@bookmarkVerse": {
     "description": "زر لإضافة علامة على هذه الآية",
     "type": "text"
   },
-
-  "tafsirVerse": "تفسير الآية",
-  "@tafsirVerse": {
-    "description": "زر لعرض تفسير الآية المحددة",
-    "type": "text"
-  },
-
   "bookmarkVerseSuccess": "تم حفظ علامة على آية رقم ",
   "@bookmarkVerseSuccess": {
     "description": "رسالة تأكيد عند حفظ علامة على آية",
     "type": "text"
   },
-
-  "selectTafsir": "اختر التفسير",
-  "@selectTafsir": {
-    "description": "نص يُعرض للمستخدم لاختيار نوع التفسير",
+  "calculate_easily": "احسب زكاتك بسهولة ودقة",
+  "@calculate_easily": {
+    "description": "",
     "type": "text"
   },
-
-  "emptyTafsir": "لا يوجد تفسير متاح حاليًا",
-  "@emptyTafsir": {
-    "description": "رسالة عند عدم توفر تفسير",
+  "calculate_zakat": "احسب الزكاة",
+  "@calculate_zakat": {
+    "description": "",
     "type": "text"
   },
-
-  "shareTafsir": "مشاركة التفسير",
-  "@shareTafsir": {
-    "description": "زر لمشاركة نص التفسير",
+  "cancelButton": "إلغاء",
+  "@cancelButton": {
+    "description": "زر الإلغاء العام",
     "type": "text"
   },
-
-  "qiblahDirection": "اتجاه القبلة",
-  "@qiblahDirection": {
-    "description": "عنوان شاشة عرض اتجاه القبلة",
+  "cause_of_allah": "في سبيل الله",
+  "@cause_of_allah": {
+    "description": "",
     "type": "text"
   },
-
-  "distanceToKabaa": "المسافة إلى الكعبة:",
-  "@distanceToKabaa": {
-    "description": "النص المعروض لمسافة المستخدم من الكعبة المشرفة",
+  "cause_of_allah_desc": "لدعم الدعوة والخير.",
+  "@cause_of_allah_desc": {
+    "description": "",
     "type": "text"
   },
-
-  "fullMapQiblah": "خريطة القبلة",
-  "@fullMapQiblah": {
-    "description": "زر لعرض خريطة توضح اتجاه القبلة الكامل",
+  "changeFontSize": "تغيير حجم الخط",
+  "@changeFontSize": {
+    "description": "",
     "type": "text"
   },
-
+  "changeLanguage": "تغيير اللغه",
+  "@changeLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "changeReciterSuccess": "تم تغيير القارئ إلى ",
+  "@changeReciterSuccess": {
+    "description": "",
+    "type": "text"
+  },
+  "changeTheme": "تغيير المظهر",
+  "@changeTheme": {
+    "description": "",
+    "type": "text"
+  },
+  "chapters": "الأبواب",
+  "@chapters": {
+    "description": "عنوان شاشة عرض الأبواب داخل كتاب حديث",
+    "type": "text"
+  },
+  "chaptersEmpty": "لا توجد أبواب",
+  "@chaptersEmpty": {
+    "description": "رسالة عند عدم وجود أبواب في الكتاب",
+    "type": "text"
+  },
+  "chaptersSearch": "ابحث عن باب...",
+  "@chaptersSearch": {
+    "description": "نص البحث في قائمة الأبواب",
+    "type": "text"
+  },
+  "chooseGoal": "تحديد الهدف",
+  "@chooseGoal": {
+    "description": "",
+    "type": "text"
+  },
+  "clear": "إزالة الهدف",
+  "@clear": {
+    "description": "",
+    "type": "text"
+  },
+  "collectors": "العاملين عليها",
+  "@collectors": {
+    "description": "",
+    "type": "text"
+  },
+  "collectors_desc": "من يجمعون الزكاة ويوزعونها.",
+  "@collectors_desc": {
+    "description": "",
+    "type": "text"
+  },
   "compassLoading": "جاري تجهيز البوصلة...",
   "@compassLoading": {
     "description": "نص يظهر أثناء تحميل أو معايرة البوصلة",
     "type": "text"
   },
-
+  "completeTasbeh": "لقد أكملت",
+  "@completeTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_1": "أن يكون المسلم حرًّا مالكًا للنصاب.",
+  "@condition_1": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_2": "أن يبلغ المال النصاب (ما يعادل 85 جرام ذهب تقريبًا).",
+  "@condition_2": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_3": "أن يمر على المال حول كامل (سنة هجرية).",
+  "@condition_3": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_4": "أن يكون المال ناميًا أو قابلًا للنماء.",
+  "@condition_4": {
+    "description": "",
+    "type": "text"
+  },
+  "conditions": "تجب الزكاة عند توافر هذه الشروط:",
+  "@conditions": {
+    "description": "",
+    "type": "text"
+  },
+  "congrates": "تهانينا ",
+  "@congrates": {
+    "description": "",
+    "type": "text"
+  },
+  "continueTasbeh": "أكمل",
+  "@continueTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "crops": "الزروع",
+  "@crops": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_description": "تجب الزكاة إذا بلغ المحصول {nisab_kg} كجم تقريبًا.\n\n{natural_rate}% إن كانت تُسقى بماء المطر أو الأنهار\n{machine_rate}% إن كانت بالآلات (مكلفة السقي)",
+  "@crops_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_hint": "أدخل كمية المحصول بالكيلوجرام",
+  "@crops_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_title": "🌾 زكاة الزروع والثمار",
+  "@crops_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "darkMode": "الوضع الليلي",
+  "@darkMode": {
+    "description": "",
+    "type": "text"
+  },
+  "debtors": "الغارمين",
+  "@debtors": {
+    "description": "",
+    "type": "text"
+  },
+  "debtors_desc": "من أثقلهم الدين.",
+  "@debtors_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "defultFont": "افتراضي",
+  "@defultFont": {
+    "description": "",
+    "type": "text"
+  },
+  "deleteBookmark": "حذف العلامة",
+  "@deleteBookmark": {
+    "description": "زر لحذف العلامة المرجعية من السورة",
+    "type": "text"
+  },
+  "deleteBookmarkQuestion": "هل أنت متأكد أنك تريد حذف العلامة من سورة",
+  "@deleteBookmarkQuestion": {
+    "description": "رسالة تأكيد قبل حذف العلامة المرجعية",
+    "type": "text"
+  },
+  "deleteBookmarkSuccess": "تم حذف العلامة من سورة",
+  "@deleteBookmarkSuccess": {
+    "description": "رسالة تأكيد بعد حذف العلامة المرجعية",
+    "type": "text"
+  },
+  "deleteButton": "حذف",
+  "@deleteButton": {
+    "description": "زر الحذف العام",
+    "type": "text"
+  },
+  "distanceToKabaa": "المسافة إلى الكعبة:",
+  "@distanceToKabaa": {
+    "description": "النص المعروض لمسافة المستخدم من الكعبة المشرفة",
+    "type": "text"
+  },
+  "due_zakat": "الزكاة المستحقة",
+  "@due_zakat": {
+    "description": "",
+    "type": "text"
+  },
+  "emptyBookmarks": "لا توجد علامات بعد",
+  "@emptyBookmarks": {
+    "description": "نص يظهر عند عدم وجود علامات مرجعية محفوظة",
+    "type": "text"
+  },
+  "emptyTafsir": "لا يوجد تفسير متاح حاليًا",
+  "@emptyTafsir": {
+    "description": "رسالة عند عدم توفر تفسير",
+    "type": "text"
+  },
+  "englishLanguage": "الانجليزية",
+  "@englishLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "enter_amount": "أدخل قيمة أموالك وسنحسب لك مقدار الزكاة الواجبة",
+  "@enter_amount": {
+    "description": "",
+    "type": "text"
+  },
+  "errorMain": "حدث خطأ:",
+  "@errorMain": {
+    "description": "نص خطأ عام يستخدم كبادئة لرسائل الخطأ",
+    "type": "text"
+  },
+  "fullMapQiblah": "خريطة القبلة",
+  "@fullMapQiblah": {
+    "description": "زر لعرض خريطة توضح اتجاه القبلة الكامل",
+    "type": "text"
+  },
+  "goal": "الهدف",
+  "@goal": {
+    "description": "",
+    "type": "text"
+  },
+  "goalExample": "ضع هدفك (مثلاً 50)",
+  "@goalExample": {
+    "description": "",
+    "type": "text"
+  },
+  "gold": "الذهب",
+  "@gold": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_price_error": "تعذر تحميل سعر الذهب",
+  "@gold_price_error": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_description": "النصاب في الذهب هو {nisab_grams} جرام.\nالنسبة: {percentage}% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: {current_price} جنيه",
+  "@gold_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_hint": "أدخل وزن الذهب بالجرام",
+  "@gold_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_title": "🪙 زكاة الذهب",
+  "@gold_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "hadith": "قال النبي ﷺ: \"لا زكاة في مال حتى يحول عليه الحول.\"",
+  "@hadith": {
+    "description": "",
+    "type": "text"
+  },
+  "hadithBooks": "كتب الحديث",
+  "@hadithBooks": {
+    "description": "عنوان شاشة قائمة كتب الحديث",
+    "type": "text"
+  },
+  "hadithBooksEmpty": "لا توجد كتب متاحة",
+  "@hadithBooksEmpty": {
+    "description": "رسالة عند عدم توفر كتب حديث",
+    "type": "text"
+  },
+  "hadithBooksError": "فشل في جلب الكتب",
+  "@hadithBooksError": {
+    "description": "رسالة خطأ عند فشل تحميل كتب الحديث",
+    "type": "text"
+  },
+  "hadithBooksSearch": "ابحث باسم الكتاب...",
+  "@hadithBooksSearch": {
+    "description": "نص البحث في قائمة كتب الحديث",
+    "type": "text"
+  },
+  "hadithButton": "الحديث",
+  "@hadithButton": {
+    "description": "زر الانتقال إلى شاشة الأحاديث النبوية",
+    "type": "text"
+  },
+  "hadithError": "فشل في تحميل الأحاديث",
+  "@hadithError": {
+    "description": "رسالة خطأ عند فشل تحميل الأحاديث",
+    "type": "text"
+  },
+  "hadithStatus": "الحكم",
+  "@hadithStatus": {
+    "description": "النص المستخدم لعرض حكم الحديث أو درجته",
+    "type": "text"
+  },
+  "hadithsTitle": "الأحاديث",
+  "@hadithsTitle": {
+    "description": "عنوان شاشة عرض قائمة الأحاديث",
+    "type": "text"
+  },
+  "homeTitle": "الصفحة الرئيسية",
+  "@homeTitle": {
+    "description": "عنوان الشاشة الرئيسية في التطبيق",
+    "type": "text"
+  },
+  "invalid_input_error": "الرجاء إدخال قيمة صحيحة",
+  "@invalid_input_error": {
+    "description": "",
+    "type": "text"
+  },
+  "lightMode": "الوضع النهاري",
+  "@lightMode": {
+    "description": "",
+    "type": "text"
+  },
+  "loading": "جاري التحميل...",
+  "@loading": {
+    "description": "نص عام لعرض حالة التحميل",
+    "type": "text"
+  },
+  "loading_gold_price": "جاري تحميل سعر الذهب...",
+  "@loading_gold_price": {
+    "description": "",
+    "type": "text"
+  },
+  "machine_irrigation_subtitle": "السقي بالآلات أو بتكاليف",
+  "@machine_irrigation_subtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "machine_irrigation_title": "⚙️ آلة أو مكلف ({rate}%)",
+  "@machine_irrigation_title": {
+    "description": "",
+    "type": "text"
+  },
+  "money": "المال",
+  "@money": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_description": "تجب الزكاة في المال إذا بلغ النصاب ({nisab} جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: {percentage}% من إجمالي المال المدخر",
+  "@money_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_hint": "أدخل إجمالي المال المدخر بالجنيه",
+  "@money_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_title": "💰 زكاة المال",
+  "@money_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "morePrayerTimesButton": "اضغط لعرض المزيد من أوقات الصلاة",
+  "@morePrayerTimesButton": {
+    "description": "زر لعرض باقي مواقيت الصلاة في الشاشة",
+    "type": "text"
+  },
+  "my_zakat": "زكاتي",
+  "@my_zakat": {
+    "description": "",
+    "type": "text"
+  },
+  "namesOfAllah": "أسماء الله الحسنى",
+  "@namesOfAllah": {
+    "description": "عنوان شاشة أسماء الله الحسنى",
+    "type": "text"
+  },
+  "natural_irrigation_subtitle": "السقي الطبيعي بدون تكاليف",
+  "@natural_irrigation_subtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "natural_irrigation_title": "💧 مطر أو أنهار ({rate}%)",
+  "@natural_irrigation_title": {
+    "description": "",
+    "type": "text"
+  },
+  "needy": "المساكين",
+  "@needy": {
+    "description": "",
+    "type": "text"
+  },
+  "needy_desc": "من يملك بعض حاجته ولكن لا يكفيه.",
+  "@needy_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "new_muslims": "المؤلفة قلوبهم",
+  "@new_muslims": {
+    "description": "",
+    "type": "text"
+  },
+  "new_muslims_desc": "من يُراد تأليف قلوبهم على الإسلام.",
+  "@new_muslims_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "noInternet": "لا يوجد اتصال بالإنترنت",
+  "@noInternet": {
+    "description": "رسالة عند انقطاع الاتصال بالإنترنت",
+    "type": "text"
+  },
+  "note": "ملاحظة: الزكاة واجبة على المال المدخر الذي بلغ النصاب ومر عليه الحول.",
+  "@note": {
+    "description": "",
+    "type": "text"
+  },
+  "numberOfChapters": "عدد الأبواب:",
+  "@numberOfChapters": {
+    "description": "النص المعروض لعدد الأبواب في الكتاب",
+    "type": "text"
+  },
+  "numberOfHadiths": "عدد الأحاديث:",
+  "@numberOfHadiths": {
+    "description": "النص المعروض لعدد الأحاديث في الكتاب",
+    "type": "text"
+  },
+  "okButton": "حسنًا",
+  "@okButton": {
+    "description": "زر التأكيد العام في الرسائل والتنبيهات",
+    "type": "text"
+  },
+  "playVerseSound": "تشغيل من هذه الآية",
+  "@playVerseSound": {
+    "description": "زر لتشغيل التلاوة بدءًا من هذه الآية",
+    "type": "text"
+  },
+  "poor": "الفقراء",
+  "@poor": {
+    "description": "",
+    "type": "text"
+  },
+  "poor_desc": "من لا يملك قوت يومه.",
+  "@poor_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "prayerTimesText": "مواقيت الصلاة",
+  "@prayerTimesText": {
+    "description": "عنوان شاشة مواقيت الصلاة",
+    "type": "text"
+  },
+  "privacy": "سياسة الخصوصية",
+  "@privacy": {
+    "description": "",
+    "type": "text"
+  },
+  "qiblahButton": "القبلة",
+  "@qiblahButton": {
+    "description": "زر الانتقال إلى شاشة تحديد اتجاه القبلة",
+    "type": "text"
+  },
+  "qiblahDirection": "اتجاه القبلة",
+  "@qiblahDirection": {
+    "description": "عنوان شاشة عرض اتجاه القبلة",
+    "type": "text"
+  },
+  "quran_text": "إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ",
+  "@quran_text": {
+    "description": "",
+    "type": "text"
+  },
+  "quran_verse": "قال الله تعالى:",
+  "@quran_verse": {
+    "description": "",
+    "type": "text"
+  },
+  "quranButton": "القرآن",
+  "@quranButton": {
+    "description": "زر الانتقال إلى شاشة القرآن الكريم",
+    "type": "text"
+  },
+  "quranText": "القرآن الكريم",
+  "@quranText": {
+    "description": "عنوان شاشة عرض سور القرآن الكريم",
+    "type": "text"
+  },
+  "refresh_gold_price": "تحديث سعر الذهب",
+  "@refresh_gold_price": {
+    "description": "",
+    "type": "text"
+  },
+  "reset": "إعادة",
+  "@reset": {
+    "description": "زر إعادة العد في السبحة",
+    "type": "text"
+  },
+  "resetTasbeh": "إعادة من البداية",
+  "@resetTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "retry": "إعادة المحاولة",
+  "@retry": {
+    "description": "زر لإعادة المحاولة بعد حدوث خطأ",
+    "type": "text"
+  },
+  "revision": "المرجع",
+  "@revision": {
+    "description": "عنوان قسم المرجع المستخدم في الأحاديث أو الأذكار",
+    "type": "text"
+  },
   "salahDirection": "مُحاذٍ للكعبة",
   "@salahDirection": {
     "description": "نص يُعرض عند تطابق اتجاه الجهاز مع اتجاه القبلة",
     "type": "text"
   },
-
-  "bismillah": "بسم الله الرحمن الرحيم",
-  "@bismillah": {
-    "description": "نص يُعرض في بداية بعض الشاشات أو التلاوات",
-    "type": "text"
-  } , 
-  "changeFontSize" : "تغيير حجم الخط",
-  "@changeFontSize" : {
+  "save": "حفظ ",
+  "@save": {
     "description": "",
     "type": "text"
   },
-  "changeTheme":"تغيير المظهر",
-  "@changeTheme" : {
+  "searchForSurahName": "ابحث باسم السورة...",
+  "@searchForSurahName": {
+    "description": "نص حقل البحث عن سورة معينة",
+    "type": "text"
+  },
+  "searchResult": "نتائج البحث:",
+  "@searchResult": {
+    "description": "عنوان القسم الذي يعرض نتائج البحث",
+    "type": "text"
+  },
+  "sebha": "السبحة",
+  "@sebha": {
+    "description": "عنوان شاشة السبحة الرقمية",
+    "type": "text"
+  },
+  "sebhaTitle": "السبحة الإلكترونية",
+  "@sebhaTitle": {
     "description": "",
     "type": "text"
   },
-  "changeLanguage":"تغيير اللغه",
-  "@changeLanguage" : {
+  "selectFontSize": "اختر حجم الخط",
+  "@selectFontSize": {
     "description": "",
     "type": "text"
   },
-
-  "selectFontSize":"اختر حجم الخط",
-  "@selectFontSize" : {
+  "selectLanguage": "اختر اللغة",
+  "@selectLanguage": {
     "description": "",
     "type": "text"
   },
-  "smallFont":"صغير",
-  "@smallFont" : {
+  "selectReciter": "اختر القارئ",
+  "@selectReciter": {
     "description": "",
     "type": "text"
   },
-  "defultFont":"افتراضي",
-  "@defultFont" : {
+  "selectTafsir": "اختر التفسير",
+  "@selectTafsir": {
+    "description": "نص يُعرض للمستخدم لاختيار نوع التفسير",
+    "type": "text"
+  },
+  "selectTheme": "اختيار المظهر",
+  "@selectTheme": {
     "description": "",
     "type": "text"
   },
-  "bigFont":"كبير",
-  "@bigFont" : {
+  "settingsButton": "الإعدادات",
+  "@settingsButton": {
+    "description": "زر الانتقال إلى إعدادات التطبيق",
+    "type": "text"
+  },
+  "shareTafsir": "مشاركة التفسير",
+  "@shareTafsir": {
+    "description": "زر لمشاركة نص التفسير",
+    "type": "text"
+  },
+  "slaves": "في الرقاب",
+  "@slaves": {
     "description": "",
     "type": "text"
   },
-  "lightMode":"الوضع النهاري",
-  "@lightMode" : {
+  "slaves_desc": "لتحرير الأسرى أو المديونين ظلمًا.",
+  "@slaves_desc": {
     "description": "",
     "type": "text"
   },
-  "darkMode":"الوضع الليلي",
-  "@darkMode" : {
+  "smallFont": "صغير",
+  "@smallFont": {
     "description": "",
     "type": "text"
   },
-  "systemMode" :"حسب النظام",
-  "@systemMode" : {
+  "start_calculation": "ابدأ حساب الزكاة",
+  "@start_calculation": {
     "description": "",
     "type": "text"
   },
-  "selectTheme":"اختيار المظهر",
-  "@selectTheme" : {
+  "surahsText": "السور",
+  "@surahsText": {
+    "description": "عنوان قائمة السور في شاشة القرآن",
+    "type": "text"
+  },
+  "systemMode": "حسب النظام",
+  "@systemMode": {
     "description": "",
     "type": "text"
   },
-  "changeReciterSuccess":"تم تغيير القارئ إلى ",
-  "@changeReciterSuccess" : {
+  "tafsirVerse": "تفسير الآية",
+  "@tafsirVerse": {
+    "description": "زر لعرض تفسير الآية المحددة",
+    "type": "text"
+  },
+  "tasbehQuestion": "هل تريد إعادة العد من البداية أم تكمل",
+  "@tasbehQuestion": {
     "description": "",
     "type": "text"
   },
-  "selectReciter":"اختر القارئ",
-  "@selectReciter" : {
+  "tasbih": "التسبيح",
+  "@tasbih": {
+    "description": "عنوان قسم التسبيح في شاشة السبحة",
+    "type": "text"
+  },
+  "trade": "التجارة",
+  "@trade": {
     "description": "",
     "type": "text"
   },
-  "save":"حفظ ",
-  "@save" : {
+  "trade_zakat_description": "تحسب الزكاة على: (قيمة البضائع + النقد - الديون) × {percentage}%\n\nتجب بعد مرور الحول.\nالنصاب: {nisab} جنيه",
+  "@trade_zakat_description": {
     "description": "",
     "type": "text"
   },
-  "arabicLanguage":"العربية",
-  "@arabicLanguage" : {
+  "trade_zakat_hint": "أدخل صافي أصول التجارة بالجنيه",
+  "@trade_zakat_hint": {
     "description": "",
     "type": "text"
   },
-    "englishLanguage":"الانجليزية",
-  "@englishLanguage" : {
+  "trade_zakat_title": "🛍️ زكاة التجارة",
+  "@trade_zakat_title": {
     "description": "",
     "type": "text"
   },
-  "selectLanguage":"اختر اللغة",
-  "@selectLanguage" : {
+  "traveler": "ابن السبيل",
+  "@traveler": {
     "description": "",
     "type": "text"
   },
-  "appVersion" :"إصدار التطبيق",
-  "@appVersion" : {
+  "traveler_desc": "المسافر المنقطع عن بلده.",
+  "@traveler_desc": {
     "description": "",
     "type": "text"
   },
-  "version" :"الإصدار",
-  "@version" : {
+  "unit_kg": "كجم",
+  "@unit_kg": {
     "description": "",
     "type": "text"
   },
-  "privacy":"سياسة الخصوصية",
-  "@privacy" : {
+  "updatePrayerTimes": "تحديث مواقيت الصلاة",
+  "@updatePrayerTimes": {
+    "description": "زر لتحديث مواقيت الصلاة يدويًا",
+    "type": "text"
+  },
+  "version": "الإصدار",
+  "@version": {
     "description": "",
+    "type": "text"
+  },
+  "when_zakat_due": "متى تجب الزكاة؟",
+  "@when_zakat_due": {
+    "description": "",
+    "type": "text"
+  },
+  "writer": "المؤلف",
+  "@writer": {
+    "description": "عنوان حقل اسم مؤلف الكتاب",
+    "type": "text"
+  },
+  "zakat": "زكاتي",
+  "@zakat": {
+    "description": "عنوان شاشة الزكاة في التطبيق",
+    "type": "text"
+  },
+  "zakat_calculator": "حاسبة الزكاة",
+  "@zakat_calculator": {
+    "description": "",
+    "type": "text"
+  },
+  "zakat_for_whom": "لمن الزكاة؟",
+  "@zakat_for_whom": {
+    "description": "",
+    "type": "text"
+  },
+  "zakat_reminder": "تذكر: الزكاة واجبة فقط إذا بلغ المال النصاب ومر عليه الحول",
+  "@zakat_reminder": {
+    "description": "",
+    "type": "text"
+  },
+  "zakatDuaa": "قال ﷺ: ما نقص مالٌ من صدقةٍ.",
+  "@zakatDuaa": {
+    "description": "حديث نبوي يُعرض في شاشة الزكاة",
+    "type": "text"
+  },
+  "zakatStart": "ابدأ الآن بحساب زكاتك وتذكّر فضلها العظيم",
+  "@zakatStart": {
+    "description": "نص تحفيزي لبدء حساب الزكاة",
     "type": "text"
   }
 }
