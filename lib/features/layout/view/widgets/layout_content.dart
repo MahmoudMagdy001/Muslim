@@ -14,12 +14,14 @@ class LayoutContent extends StatelessWidget {
     this.scaffoldContext,
     this.theme, {
     required this.localizations,
+    required this.isArabic,
     super.key,
   });
 
   final BuildContext scaffoldContext;
   final ThemeData theme;
   final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => CustomScrollView(
@@ -50,7 +52,10 @@ class LayoutContent extends StatelessWidget {
               FeatureCard(
                 label: localizations.sebha,
                 image: 'assets/images/seb7a.png',
-                onTap: () => navigateWithTransition(context, const SebhaView()),
+                onTap: () => navigateWithTransition(
+                  context,
+                  SebhaView(localizations: localizations, isArabic: isArabic),
+                ),
                 theme: theme,
               ),
             ],

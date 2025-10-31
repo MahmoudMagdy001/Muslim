@@ -1,505 +1,778 @@
 {
   "@@locale": "en",
-
-  "appName": "Musallim",
+  "appName": "Muslim",
   "@appName": {
     "description": "Main app name displayed in the interface",
     "type": "text"
   },
-
-  "quranButton": "Qur'an",
-  "@quranButton": {
-    "description": "Button to navigate to the Qur'an screen",
-    "type": "text"
-  },
-
-  "hadithButton": "Hadith",
-  "@hadithButton": {
-    "description": "Button to navigate to the Hadith screen",
-    "type": "text"
-  },
-
-  "azkarButton": "Azkar",
-  "@azkarButton": {
-    "description": "Button to navigate to the Azkar screen",
-    "type": "text"
-  },
-
-  "qiblahButton": "Qiblah",
-  "@qiblahButton": {
-    "description": "Button to navigate to the Qiblah direction screen",
-    "type": "text"
-  },
-
-  "settingsButton": "Settings",
-  "@settingsButton": {
-    "description": "Button to navigate to app settings",
-    "type": "text"
-  },
-
-  "zakat": "My Zakat",
-  "@zakat": {
-    "description": "Title of the Zakat screen",
-    "type": "text"
-  },
-
-  "zakatDuaa": "The Prophet ﷺ said: 'Charity does not decrease wealth.'",
-  "@zakatDuaa": {
-    "description": "Hadith displayed in the Zakat screen",
-    "type": "text"
-  },
-
-  "zakatStart": "Start calculating your Zakat and remember its great reward",
-  "@zakatStart": {
-    "description": "Motivational text to start Zakat calculation",
-    "type": "text"
-  },
-
-  "namesOfAllah": "Names of Allah",
-  "@namesOfAllah": {
-    "description": "Title of the Names of Allah screen",
-    "type": "text"
-  },
-
-  "sebha": "Digital Tasbeeh",
-  "@sebha": {
-    "description": "Title of the digital rosary screen",
-    "type": "text"
-  },
-
-  "tasbih": "Tasbeeh",
-  "@tasbih": {
-    "description": "Section title for Tasbeeh on the rosary screen",
-    "type": "text"
-  },
-
-  "reset": "Reset",
-  "@reset": {
-    "description": "Button to reset the Tasbeeh counter",
-    "type": "text"
-  },
-
-  "azkar": "Azkar",
-  "@azkar": {
-    "description": "Title of the general Azkar screen",
-    "type": "text"
-  },
-
-  "azkarCategoryList": "Azkar Categories",
-  "@azkarCategoryList": {
-    "description": "Title of the Azkar categories list screen",
-    "type": "text"
-  },
-
-  "azkarLoadingText": "Loading Azkar...",
-  "@azkarLoadingText": {
-    "description": "Text shown while Azkar are loading",
-    "type": "text"
-  },
-
-  "azkarError": "No Azkar available right now",
-  "@azkarError": {
-    "description": "Error message when no Azkar are available",
-    "type": "text"
-  },
-
-  "hadithBooks": "Hadith Books",
-  "@hadithBooks": {
-    "description": "Title of the Hadith books list screen",
-    "type": "text"
-  },
-
-  "hadithBooksError": "Failed to load books",
-  "@hadithBooksError": {
-    "description": "Error message when Hadith books fail to load",
-    "type": "text"
-  },
-
-  "hadithBooksSearch": "Search by book name...",
-  "@hadithBooksSearch": {
-    "description": "Search placeholder in Hadith books list",
-    "type": "text"
-  },
-
-  "hadithBooksEmpty": "No books available",
-  "@hadithBooksEmpty": {
-    "description": "Message when no Hadith books are available",
-    "type": "text"
-  },
-
-  "writer": "Author",
-  "@writer": {
-    "description": "Field title for the author's name",
-    "type": "text"
-  },
-
-  "numberOfChapters": "Chapters:",
-  "@numberOfChapters": {
-    "description": "Label for the number of chapters in a book",
-    "type": "text"
-  },
-
-  "numberOfHadiths": "Hadiths:",
-  "@numberOfHadiths": {
-    "description": "Label for the number of hadiths in a book",
-    "type": "text"
-  },
-
-  "chapters": "Chapters",
-  "@chapters": {
-    "description": "Title for the chapters screen within a Hadith book",
-    "type": "text"
-  },
-
-  "chaptersEmpty": "No chapters available",
-  "@chaptersEmpty": {
-    "description": "Message when there are no chapters",
-    "type": "text"
-  },
-
-  "chaptersSearch": "Search for a chapter...",
-  "@chaptersSearch": {
-    "description": "Search text for chapters list",
-    "type": "text"
-  },
-
-  "hadithError": "Failed to load hadiths",
-  "@hadithError": {
-    "description": "Error message when hadiths fail to load",
-    "type": "text"
-  },
-
-  "hadithsTitle": "Hadiths",
-  "@hadithsTitle": {
-    "description": "Title of the hadith list screen",
-    "type": "text"
-  },
-
-  "hadithStatus": "Status",
-  "@hadithStatus": {
-    "description": "Label for the hadith grade or status",
-    "type": "text"
-  },
-
-  "revision": "Reference",
-  "@revision": {
-    "description": "Section title for the reference in hadiths or azkar",
-    "type": "text"
-  },
-
-  "errorMain": "Error:",
-  "@errorMain": {
-    "description": "General prefix for error messages",
-    "type": "text"
-  },
-
-  "retry": "Retry",
-  "@retry": {
-    "description": "Button to retry after an error",
-    "type": "text"
-  },
-
-  "loading": "Loading...",
-  "@loading": {
-    "description": "General loading text",
-    "type": "text"
-  },
-
-  "noInternet": "No internet connection",
-  "@noInternet": {
-    "description": "Message when there is no internet connection",
-    "type": "text"
-  },
-
-  "homeTitle": "Home",
-  "@homeTitle": {
-    "description": "Title of the home screen",
-    "type": "text"
-  },
-
-  "updatePrayerTimes": "Update Prayer Times",
-  "@updatePrayerTimes": {
-    "description": "Button to manually update prayer times",
-    "type": "text"
-  },
-
-  "morePrayerTimesButton": "Tap to view more prayer times",
-  "@morePrayerTimesButton": {
-    "description": "Button to view additional prayer times",
-    "type": "text"
-  },
-
-  "prayerTimesText": "Prayer Times",
-  "@prayerTimesText": {
-    "description": "Title of the prayer times screen",
-    "type": "text"
-  },
-
-  "quranText": "The Holy Qur'an",
-  "@quranText": {
-    "description": "Title of the Qur'an screen",
-    "type": "text"
-  },
-
-  "surahsText": "Surahs",
-  "@surahsText": {
-    "description": "Title for the list of Surahs",
-    "type": "text"
-  },
-
-  "bookmarksText": "Bookmarks",
-  "@bookmarksText": {
-    "description": "Title of the bookmarks screen",
-    "type": "text"
-  },
-
-  "searchForSurahName": "Search by Surah name...",
-  "@searchForSurahName": {
-    "description": "Placeholder text for Surah search",
-    "type": "text"
-  },
-
-  "searchResult": "Search Results:",
-  "@searchResult": {
-    "description": "Title of the search results section",
-    "type": "text"
-  },
-
-  "emptyBookmarks": "No bookmarks yet",
-  "@emptyBookmarks": {
-    "description": "Message when there are no saved bookmarks",
-    "type": "text"
-  },
-
-  "deleteBookmark": "Delete bookmark",
-  "@deleteBookmark": {
-    "description": "Button to delete a saved bookmark",
-    "type": "text"
-  },
-
-  "deleteBookmarkSuccess": "Bookmark deleted from Surah",
-  "@deleteBookmarkSuccess": {
-    "description": "Confirmation after deleting a bookmark",
-    "type": "text"
-  },
-
-  "deleteBookmarkQuestion": "Are you sure you want to delete the bookmark from Surah",
-  "@deleteBookmarkQuestion": {
-    "description": "Confirmation message before deleting a bookmark",
-    "type": "text"
-  },
-
-  "deleteButton": "Delete",
-  "@deleteButton": {
-    "description": "General delete button text",
-    "type": "text"
-  },
-
-  "cancelButton": "Cancel",
-  "@cancelButton": {
-    "description": "General cancel button text",
-    "type": "text"
-  },
-
-  "okButton": "OK",
-  "@okButton": {
-    "description": "General confirmation button text",
-    "type": "text"
-  },
-
-  "playVerseSound": "Play from this verse",
-  "@playVerseSound": {
-    "description": "Button to play recitation starting from a specific verse",
-    "type": "text"
-  },
-
-  "bookmarkVerse": "Bookmark this verse",
-  "@bookmarkVerse": {
-    "description": "Button to bookmark a verse",
-    "type": "text"
-  },
-
-  "tafsirVerse": "Verse Interpretation",
-  "@tafsirVerse": {
-    "description": "Button to view the verse tafsir",
-    "type": "text"
-  },
-
-  "bookmarkVerseSuccess": "Bookmark saved for verse number ",
-  "@bookmarkVerseSuccess": {
-    "description": "Confirmation when bookmarking a verse",
-    "type": "text"
-  },
-
-  "selectTafsir": "Select Tafsir",
-  "@selectTafsir": {
-    "description": "Prompt text for selecting tafsir type",
-    "type": "text"
-  },
-
-  "emptyTafsir": "No tafsir available right now",
-  "@emptyTafsir": {
-    "description": "Message when no tafsir is available",
-    "type": "text"
-  },
-
-  "shareTafsir": "Share Tafsir",
-  "@shareTafsir": {
-    "description": "Button to share tafsir text",
-    "type": "text"
-  },
-
-  "qiblahDirection": "Qiblah Direction",
-  "@qiblahDirection": {
-    "description": "Title for the Qiblah direction screen",
-    "type": "text"
-  },
-
-  "distanceToKabaa": "Distance to Kaaba:",
-  "@distanceToKabaa": {
-    "description": "Label showing distance to the Kaaba",
-    "type": "text"
-  },
-
-  "fullMapQiblah": "Qiblah Map",
-  "@fullMapQiblah": {
-    "description": "Button to view full Qiblah map",
-    "type": "text"
-  },
-
-  "compassLoading": "Preparing compass...",
-  "@compassLoading": {
-    "description": "Text shown while compass is calibrating",
-    "type": "text"
-  },
-
-  "salahDirection": "Aligned with Kaaba",
-  "@salahDirection": {
-    "description": "Text shown when the device is aligned with Qiblah",
-    "type": "text"
-  },
-
-  "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
-  "@bismillah": {
-    "description": "Text displayed at the beginning of some screens or recitations",
-    "type": "text"
-  },
-
-  "changeFontSize": "Change Font Size",
-  "@changeFontSize": {
-    "description": "",
-    "type": "text"
-  },
-  "changeTheme":"Change Theme",
-  "@changeTheme" : {
-    "description": "",
-    "type": "text"
-  },
-  "changeLanguage":"Change Language",
-  "@changeLanguage" : {
-    "description": "",
-    "type": "text"
-  },
-
-  "selectFontSize": "Select Font Size",
-  "@selectFontSize": {
-    "description": "",
-    "type": "text"
-  },
-
-  "smallFont": "Small",
-  "@smallFont": {
-    "description": "",
-    "type": "text"
-  },
-
-  "defultFont": "Default",
-  "@defultFont": {
-    "description": "",
-    "type": "text"
-  },
-
-  "bigFont": "Large",
-  "@bigFont": {
-    "description": "",
-    "type": "text"
-  },
-
-  "lightMode": "Light Mode",
-  "@lightMode": {
-    "description": "",
-    "type": "text"
-  },
-
-  "darkMode": "Dark Mode",
-  "@darkMode": {
-    "description": "",
-    "type": "text"
-  },
-
-  "systemMode": "System Mode",
-  "@systemMode": {
-    "description": "",
-    "type": "text"
-  },
-
-  "selectTheme": "Select Theme",
-  "@selectTheme": {
-    "description": "",
-    "type": "text"
-  },
-
-  "changeReciterSuccess": "Reciter changed to ",
-  "@changeReciterSuccess": {
-    "description": "",
-    "type": "text"
-  },
-
-  "selectReciter": "Select Reciter",
-  "@selectReciter": {
-    "description": "",
-    "type": "text"
-  },
-
-  "save": "Save",
-  "@save": {
-    "description": "",
-    "type": "text"
-  },
-
-  "arabicLanguage": "Arabic",
-  "@arabicLanguage": {
-    "description": "",
-    "type": "text"
-  },
-
-  "englishLanguage": "English",
-  "@englishLanguage": {
-    "description": "",
-    "type": "text"
-  },
-
-  "selectLanguage": "Select Language",
-  "@selectLanguage": {
-    "description": "",
-    "type": "text"
-  },
-
   "appVersion": "App Version",
   "@appVersion": {
     "description": "",
     "type": "text"
   },
-
+  "arabicLanguage": "Arabic",
+  "@arabicLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "azkar": "Azkar",
+  "@azkar": {
+    "description": "Title of the general Azkar screen",
+    "type": "text"
+  },
+  "azkarButton": "Azkar",
+  "@azkarButton": {
+    "description": "Button to navigate to the Azkar screen",
+    "type": "text"
+  },
+  "azkarCategoryList": "Azkar Categories",
+  "@azkarCategoryList": {
+    "description": "Title of the Azkar categories list screen",
+    "type": "text"
+  },
+  "azkarError": "No Azkar available right now",
+  "@azkarError": {
+    "description": "Error message when no Azkar are available",
+    "type": "text"
+  },
+  "azkarLoadingText": "Loading Azkar...",
+  "@azkarLoadingText": {
+    "description": "Text shown while Azkar are loading",
+    "type": "text"
+  },
+  "beneficiaries": "The eight categories of Zakat recipients:",
+  "@beneficiaries": {
+    "description": "",
+    "type": "text"
+  },
+  "bigFont": "Large",
+  "@bigFont": {
+    "description": "",
+    "type": "text"
+  },
+  "bismillah": "In the name of Allah, the Most Gracious, the Most Merciful",
+  "@bismillah": {
+    "description": "Text displayed at the beginning of some screens or recitations",
+    "type": "text"
+  },
+  "bookmarksText": "Bookmarks",
+  "@bookmarksText": {
+    "description": "Title of the bookmarks screen",
+    "type": "text"
+  },
+  "bookmarkVerse": "Bookmark this verse",
+  "@bookmarkVerse": {
+    "description": "Button to bookmark a verse",
+    "type": "text"
+  },
+  "bookmarkVerseSuccess": "Bookmark saved for verse number ",
+  "@bookmarkVerseSuccess": {
+    "description": "Confirmation when bookmarking a verse",
+    "type": "text"
+  },
+  "calculate_easily": "Calculate your Zakat easily and accurately",
+  "@calculate_easily": {
+    "description": "",
+    "type": "text"
+  },
+  "calculate_zakat": "Calculate Zakat",
+  "@calculate_zakat": {
+    "description": "",
+    "type": "text"
+  },
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "General cancel button text",
+    "type": "text"
+  },
+  "cause_of_allah": "In the cause of Allah",
+  "@cause_of_allah": {
+    "description": "",
+    "type": "text"
+  },
+  "cause_of_allah_desc": "To support Islamic work and charity.",
+  "@cause_of_allah_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "changeFontSize": "Change Font Size",
+  "@changeFontSize": {
+    "description": "",
+    "type": "text"
+  },
+  "changeLanguage": "Change Language",
+  "@changeLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "changeReciterSuccess": "Reciter changed to ",
+  "@changeReciterSuccess": {
+    "description": "",
+    "type": "text"
+  },
+  "changeTheme": "Change Theme",
+  "@changeTheme": {
+    "description": "",
+    "type": "text"
+  },
+  "chapters": "Chapters",
+  "@chapters": {
+    "description": "Title for the chapters screen within a Hadith book",
+    "type": "text"
+  },
+  "chaptersEmpty": "No chapters available",
+  "@chaptersEmpty": {
+    "description": "Message when there are no chapters",
+    "type": "text"
+  },
+  "chaptersSearch": "Search for a chapter...",
+  "@chaptersSearch": {
+    "description": "Search text for chapters list",
+    "type": "text"
+  },
+  "chooseGoal": "Set goal",
+  "@chooseGoal": {
+    "description": "",
+    "type": "text"
+  },
+  "clear": "Clear goal",
+  "@clear": {
+    "description": "",
+    "type": "text"
+  },
+  "collectors": "Those employed to collect Zakat",
+  "@collectors": {
+    "description": "",
+    "type": "text"
+  },
+  "collectors_desc": "Those who collect and distribute Zakat.",
+  "@collectors_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "compassLoading": "Preparing compass...",
+  "@compassLoading": {
+    "description": "Text shown while compass is calibrating",
+    "type": "text"
+  },
+  "completeTasbeh": "You have completed it",
+  "@completeTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_1": "The Muslim must be free and own the nisab.",
+  "@condition_1": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_2": "Wealth must reach the nisab (approximately 85 grams of gold).",
+  "@condition_2": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_3": "A full lunar year must pass on the wealth.",
+  "@condition_3": {
+    "description": "",
+    "type": "text"
+  },
+  "condition_4": "The wealth must be growing or capable of growth.",
+  "@condition_4": {
+    "description": "",
+    "type": "text"
+  },
+  "conditions": "Zakat becomes obligatory when these conditions are met:",
+  "@conditions": {
+    "description": "",
+    "type": "text"
+  },
+  "congrates": "Congratulations",
+  "@congrates": {
+    "description": "",
+    "type": "text"
+  },
+  "continueTasbeh": "Continue",
+  "@continueTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "crops": "Crops",
+  "@crops": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_description": "Zakat is due if the crop reaches approximately {nisab_kg} kg.\n\n{natural_rate}% if irrigated by rain or rivers\n{machine_rate}% if irrigated by machines (costly irrigation)",
+  "@crops_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_hint": "Enter crop quantity in kilograms",
+  "@crops_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "crops_zakat_title": "🌾 Crops Zakat",
+  "@crops_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "",
+    "type": "text"
+  },
+  "debtors": "Those in debt",
+  "@debtors": {
+    "description": "",
+    "type": "text"
+  },
+  "debtors_desc": "Those burdened by debt.",
+  "@debtors_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "defultFont": "Default",
+  "@defultFont": {
+    "description": "",
+    "type": "text"
+  },
+  "deleteBookmark": "Delete bookmark",
+  "@deleteBookmark": {
+    "description": "Button to delete a saved bookmark",
+    "type": "text"
+  },
+  "deleteBookmarkQuestion": "Are you sure you want to delete the bookmark from Surah",
+  "@deleteBookmarkQuestion": {
+    "description": "Confirmation message before deleting a bookmark",
+    "type": "text"
+  },
+  "deleteBookmarkSuccess": "Bookmark deleted from Surah",
+  "@deleteBookmarkSuccess": {
+    "description": "Confirmation after deleting a bookmark",
+    "type": "text"
+  },
+  "deleteButton": "Delete",
+  "@deleteButton": {
+    "description": "General delete button text",
+    "type": "text"
+  },
+  "distanceToKabaa": "Distance to Kaaba:",
+  "@distanceToKabaa": {
+    "description": "Label showing distance to the Kaaba",
+    "type": "text"
+  },
+  "due_zakat": "Due Zakat",
+  "@due_zakat": {
+    "description": "",
+    "type": "text"
+  },
+  "emptyBookmarks": "No bookmarks yet",
+  "@emptyBookmarks": {
+    "description": "Message when there are no saved bookmarks",
+    "type": "text"
+  },
+  "emptyTafsir": "No tafsir available right now",
+  "@emptyTafsir": {
+    "description": "Message when no tafsir is available",
+    "type": "text"
+  },
+  "englishLanguage": "English",
+  "@englishLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "enter_amount": "Enter your wealth amount and we will calculate your due Zakat",
+  "@enter_amount": {
+    "description": "",
+    "type": "text"
+  },
+  "errorMain": "Error:",
+  "@errorMain": {
+    "description": "General prefix for error messages",
+    "type": "text"
+  },
+  "fullMapQiblah": "Qiblah Map",
+  "@fullMapQiblah": {
+    "description": "Button to view full Qiblah map",
+    "type": "text"
+  },
+  "goal": "Goal",
+  "@goal": {
+    "description": "",
+    "type": "text"
+  },
+  "goalExample": "Enter your goal (e.g. 50)",
+  "@goalExample": {
+    "description": "",
+    "type": "text"
+  },
+  "gold": "Gold",
+  "@gold": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_price_error": "Failed to load gold price",
+  "@gold_price_error": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_description": "The nisab for gold is {nisab_grams} grams.\nRate: {percentage}% of the market value of gold.\n\nCurrent price per gram: {current_price} EGP",
+  "@gold_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_hint": "Enter gold weight in grams",
+  "@gold_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "gold_zakat_title": "🪙 Gold Zakat",
+  "@gold_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "hadith": "The Prophet ﷺ said: \"There is no Zakat on property until a year passes on it.\"",
+  "@hadith": {
+    "description": "",
+    "type": "text"
+  },
+  "hadithBooks": "Hadith Books",
+  "@hadithBooks": {
+    "description": "Title of the Hadith books list screen",
+    "type": "text"
+  },
+  "hadithBooksEmpty": "No books available",
+  "@hadithBooksEmpty": {
+    "description": "Message when no Hadith books are available",
+    "type": "text"
+  },
+  "hadithBooksError": "Failed to load books",
+  "@hadithBooksError": {
+    "description": "Error message when Hadith books fail to load",
+    "type": "text"
+  },
+  "hadithBooksSearch": "Search by book name...",
+  "@hadithBooksSearch": {
+    "description": "Search placeholder in Hadith books list",
+    "type": "text"
+  },
+  "hadithButton": "Hadith",
+  "@hadithButton": {
+    "description": "Button to navigate to the Hadith screen",
+    "type": "text"
+  },
+  "hadithError": "Failed to load hadiths",
+  "@hadithError": {
+    "description": "Error message when hadiths fail to load",
+    "type": "text"
+  },
+  "hadithStatus": "Status",
+  "@hadithStatus": {
+    "description": "Label for the hadith grade or status",
+    "type": "text"
+  },
+  "hadithsTitle": "Hadiths",
+  "@hadithsTitle": {
+    "description": "Title of the hadith list screen",
+    "type": "text"
+  },
+  "homeTitle": "Home",
+  "@homeTitle": {
+    "description": "Title of the home screen",
+    "type": "text"
+  },
+  "invalid_input_error": "Please enter a valid value",
+  "@invalid_input_error": {
+    "description": "",
+    "type": "text"
+  },
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "",
+    "type": "text"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "General loading text",
+    "type": "text"
+  },
+  "loading_gold_price": "Loading gold price...",
+  "@loading_gold_price": {
+    "description": "",
+    "type": "text"
+  },
+  "machine_irrigation_subtitle": "Irrigation by machines or with costs",
+  "@machine_irrigation_subtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "machine_irrigation_title": "⚙️ Machine or costly ({rate}%)",
+  "@machine_irrigation_title": {
+    "description": "",
+    "type": "text"
+  },
+  "money": "Money",
+  "@money": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_description": "Zakat is due on money if it reaches the nisab ({nisab} EGP approximately) and a full lunar year has passed.\n\nRate: {percentage}% of total saved money",
+  "@money_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_hint": "Enter total saved money in EGP",
+  "@money_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "money_zakat_title": "💰 Money Zakat",
+  "@money_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "morePrayerTimesButton": "Tap to view more prayer times",
+  "@morePrayerTimesButton": {
+    "description": "Button to view additional prayer times",
+    "type": "text"
+  },
+  "my_zakat": "My Zakat",
+  "@my_zakat": {
+    "description": "",
+    "type": "text"
+  },
+  "namesOfAllah": "Names of Allah",
+  "@namesOfAllah": {
+    "description": "Title of the Names of Allah screen",
+    "type": "text"
+  },
+  "natural_irrigation_subtitle": "Natural irrigation without costs",
+  "@natural_irrigation_subtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "natural_irrigation_title": "💧 Rain or rivers ({rate}%)",
+  "@natural_irrigation_title": {
+    "description": "",
+    "type": "text"
+  },
+  "needy": "The needy",
+  "@needy": {
+    "description": "",
+    "type": "text"
+  },
+  "needy_desc": "Those who have some of their needs but not enough.",
+  "@needy_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "new_muslims": "Those whose hearts are to be reconciled",
+  "@new_muslims": {
+    "description": "",
+    "type": "text"
+  },
+  "new_muslims_desc": "Those who are to be inclined towards Islam.",
+  "@new_muslims_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "noInternet": "No internet connection",
+  "@noInternet": {
+    "description": "Message when there is no internet connection",
+    "type": "text"
+  },
+  "note": "Note: Zakat is obligatory on saved wealth that reaches the nisab and a year has passed on it.",
+  "@note": {
+    "description": "",
+    "type": "text"
+  },
+  "numberOfChapters": "Chapters:",
+  "@numberOfChapters": {
+    "description": "Label for the number of chapters in a book",
+    "type": "text"
+  },
+  "numberOfHadiths": "Hadiths:",
+  "@numberOfHadiths": {
+    "description": "Label for the number of hadiths in a book",
+    "type": "text"
+  },
+  "okButton": "OK",
+  "@okButton": {
+    "description": "General confirmation button text",
+    "type": "text"
+  },
+  "playVerseSound": "Play from this verse",
+  "@playVerseSound": {
+    "description": "Button to play recitation starting from a specific verse",
+    "type": "text"
+  },
+  "poor": "The poor",
+  "@poor": {
+    "description": "",
+    "type": "text"
+  },
+  "poor_desc": "Those who do not have enough for their daily needs.",
+  "@poor_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "prayerTimesText": "Prayer Times",
+  "@prayerTimesText": {
+    "description": "Title of the prayer times screen",
+    "type": "text"
+  },
+  "privacy": "Privacy Policy",
+  "@privacy": {
+    "description": "",
+    "type": "text"
+  },
+  "qiblahButton": "Qiblah",
+  "@qiblahButton": {
+    "description": "Button to navigate to the Qiblah direction screen",
+    "type": "text"
+  },
+  "qiblahDirection": "Qiblah Direction",
+  "@qiblahDirection": {
+    "description": "Title for the Qiblah direction screen",
+    "type": "text"
+  },
+  "quran_text": "Zakat is for the poor and the needy and those employed to collect it and for bringing hearts together and for freeing captives and for those in debt and for the cause of Allah and for the traveler",
+  "@quran_text": {
+    "description": "",
+    "type": "text"
+  },
+  "quran_verse": "Allah says:",
+  "@quran_verse": {
+    "description": "",
+    "type": "text"
+  },
+  "quranButton": "Qur'an",
+  "@quranButton": {
+    "description": "Button to navigate to the Qur'an screen",
+    "type": "text"
+  },
+  "quranText": "The Holy Qur'an",
+  "@quranText": {
+    "description": "Title of the Qur'an screen",
+    "type": "text"
+  },
+  "refresh_gold_price": "Refresh gold price",
+  "@refresh_gold_price": {
+    "description": "",
+    "type": "text"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button to reset the Tasbeeh counter",
+    "type": "text"
+  },
+  "resetTasbeh": "Restart",
+  "@resetTasbeh": {
+    "description": "",
+    "type": "text"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button to retry after an error",
+    "type": "text"
+  },
+  "revision": "Reference",
+  "@revision": {
+    "description": "Section title for the reference in hadiths or azkar",
+    "type": "text"
+  },
+  "salahDirection": "Aligned with Kaaba",
+  "@salahDirection": {
+    "description": "Text shown when the device is aligned with Qiblah",
+    "type": "text"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "",
+    "type": "text"
+  },
+  "searchForSurahName": "Search by Surah name...",
+  "@searchForSurahName": {
+    "description": "Placeholder text for Surah search",
+    "type": "text"
+  },
+  "searchResult": "Search Results:",
+  "@searchResult": {
+    "description": "Title of the search results section",
+    "type": "text"
+  },
+  "sebha": "Digital Tasbeeh",
+  "@sebha": {
+    "description": "Title of the digital rosary screen",
+    "type": "text"
+  },
+  "sebhaTitle": "Digital Tasbeeh",
+  "@sebhaTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "selectFontSize": "Select Font Size",
+  "@selectFontSize": {
+    "description": "",
+    "type": "text"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "",
+    "type": "text"
+  },
+  "selectReciter": "Select Reciter",
+  "@selectReciter": {
+    "description": "",
+    "type": "text"
+  },
+  "selectTafsir": "Select Tafsir",
+  "@selectTafsir": {
+    "description": "Prompt text for selecting tafsir type",
+    "type": "text"
+  },
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "",
+    "type": "text"
+  },
+  "settingsButton": "Settings",
+  "@settingsButton": {
+    "description": "Button to navigate to app settings",
+    "type": "text"
+  },
+  "shareTafsir": "Share Tafsir",
+  "@shareTafsir": {
+    "description": "Button to share tafsir text",
+    "type": "text"
+  },
+  "slaves": "For freeing slaves",
+  "@slaves": {
+    "description": "",
+    "type": "text"
+  },
+  "slaves_desc": "To free captives or those oppressed by debt.",
+  "@slaves_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "smallFont": "Small",
+  "@smallFont": {
+    "description": "",
+    "type": "text"
+  },
+  "start_calculation": "Start Zakat Calculation",
+  "@start_calculation": {
+    "description": "",
+    "type": "text"
+  },
+  "surahsText": "Surahs",
+  "@surahsText": {
+    "description": "Title for the list of Surahs",
+    "type": "text"
+  },
+  "systemMode": "System Mode",
+  "@systemMode": {
+    "description": "",
+    "type": "text"
+  },
+  "tafsirVerse": "Verse Interpretation",
+  "@tafsirVerse": {
+    "description": "Button to view the verse tafsir",
+    "type": "text"
+  },
+  "tasbehQuestion": "Do you want to restart the count or continue?",
+  "@tasbehQuestion": {
+    "description": "",
+    "type": "text"
+  },
+  "tasbih": "Tasbeeh",
+  "@tasbih": {
+    "description": "Section title for Tasbeeh on the rosary screen",
+    "type": "text"
+  },
+  "trade": "Trade",
+  "@trade": {
+    "description": "",
+    "type": "text"
+  },
+  "trade_zakat_description": "Zakat is calculated on: (Goods value + Cash - Debts) × {percentage}%\n\nDue after a full year.\nNisab: {nisab} EGP",
+  "@trade_zakat_description": {
+    "description": "",
+    "type": "text"
+  },
+  "trade_zakat_hint": "Enter net trade assets in EGP",
+  "@trade_zakat_hint": {
+    "description": "",
+    "type": "text"
+  },
+  "trade_zakat_title": "🛍️ Trade Zakat",
+  "@trade_zakat_title": {
+    "description": "",
+    "type": "text"
+  },
+  "traveler": "The wayfarer",
+  "@traveler": {
+    "description": "",
+    "type": "text"
+  },
+  "traveler_desc": "A traveler who is cut off from his resources.",
+  "@traveler_desc": {
+    "description": "",
+    "type": "text"
+  },
+  "unit_kg": "kg",
+  "@unit_kg": {
+    "description": "",
+    "type": "text"
+  },
+  "updatePrayerTimes": "Update Prayer Times",
+  "@updatePrayerTimes": {
+    "description": "Button to manually update prayer times",
+    "type": "text"
+  },
   "version": "Version",
   "@version": {
     "description": "",
     "type": "text"
   },
-
-  "privacy": "Privacy Policy",
-  "@privacy": {
+  "when_zakat_due": "When is Zakat due?",
+  "@when_zakat_due": {
     "description": "",
+    "type": "text"
+  },
+  "writer": "Author",
+  "@writer": {
+    "description": "Field title for the author's name",
+    "type": "text"
+  },
+  "zakat": "My Zakat",
+  "@zakat": {
+    "description": "Title of the Zakat screen",
+    "type": "text"
+  },
+  "zakat_calculator": "Zakat Calculator",
+  "@zakat_calculator": {
+    "description": "",
+    "type": "text"
+  },
+  "zakat_for_whom": "Who is Zakat for?",
+  "@zakat_for_whom": {
+    "description": "",
+    "type": "text"
+  },
+  "zakat_reminder": "Remember: Zakat is only obligatory if wealth reaches nisab and a year has passed",
+  "@zakat_reminder": {
+    "description": "",
+    "type": "text"
+  },
+  "zakatDuaa": "The Prophet ﷺ said: 'Charity does not decrease wealth.'",
+  "@zakatDuaa": {
+    "description": "Hadith displayed in the Zakat screen",
+    "type": "text"
+  },
+  "zakatStart": "Start calculating your Zakat and remember its great reward",
+  "@zakatStart": {
+    "description": "Motivational text to start Zakat calculation",
     "type": "text"
   }
 }

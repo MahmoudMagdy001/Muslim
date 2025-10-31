@@ -42,10 +42,6 @@ class AppInitializer {
       updatePrayerTimesTask,
       frequency: const Duration(hours: 12),
       initialDelay: const Duration(minutes: 15),
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-        requiresBatteryNotLow: false,
-      ),
     );
   }
 

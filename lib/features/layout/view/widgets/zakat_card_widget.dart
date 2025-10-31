@@ -19,11 +19,7 @@ class ZakatCardWidget extends StatelessWidget {
     padding: const EdgeInsetsDirectional.only(start: 8, end: 8),
     child: Card(
       child: InkWell(
-        onTap: () => navigateWithTransition(
-          type: TransitionType.fade,
-          context,
-          const ZakatView(),
-        ),
+        onTap: () => navigateWithTransition(context, const ZakatView()),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16),

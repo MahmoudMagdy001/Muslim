@@ -21,6 +21,8 @@ class _LayoutViewState extends State<LayoutView>
     super.build(context);
     final theme = Theme.of(context);
     final localization = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
 
     return Scaffold(
       appBar: AppBar(title: Text(localization.appName)),
@@ -30,6 +32,7 @@ class _LayoutViewState extends State<LayoutView>
             scaffoldContext,
             theme,
             localizations: localization,
+            isArabic: isArabic,
           ),
         ),
       ),

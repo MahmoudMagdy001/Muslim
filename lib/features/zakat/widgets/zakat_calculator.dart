@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../core/utils/format_helper.dart';
+import '../../../l10n/app_localizations.dart';
 import 'crops_zakat_tab.dart';
 import 'zakat_card.dart';
 
@@ -90,10 +91,12 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     if (isLoading) {
       return Scaffold(
-        appBar: _buildAppBar(textTheme, theme),
+        appBar: _buildAppBar(textTheme, theme, localizations),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +107,10 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
                 ),
               ),
               const SizedBox(height: 16),
-              Text('جاري تحميل سعر الذهب...', style: textTheme.bodyLarge),
+              Text(
+                localizations.loading_gold_price,
+                style: textTheme.bodyLarge,
+              ),
             ],
           ),
         ),
@@ -115,7 +121,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         goldPricePerGram == null ||
         goldPricePerGram == 0) {
       return Scaffold(
-        appBar: _buildAppBar(textTheme, theme),
+        appBar: _buildAppBar(textTheme, theme, localizations),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -129,7 +135,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  errorMessage ?? 'تعذر تحميل سعر الذهب',
+                  errorMessage ?? localizations.gold_price_error,
                   style: textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.error,
                   ),
@@ -139,7 +145,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
                 ElevatedButton.icon(
                   onPressed: fetchGoldPrice,
                   icon: const Icon(Icons.refresh),
-                  label: const Text('إعادة المحاولة'),
+                  label: Text(localizations.retry),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
@@ -158,36 +164,51 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
     final nisabMoney = nisabGoldGrams * goldPricePerGram!;
 
     return Scaffold(
-      appBar: _buildAppBar(textTheme, theme),
+      appBar: _buildAppBar(textTheme, theme, localizations),
       body: TabBarView(
         controller: _tabController,
         children: [
-          MoneyZakatTab(nisabMoney: nisabMoney),
-          GoldZakatTab(goldPricePerGram: goldPricePerGram!),
-          TradeZakatTab(nisabMoney: nisabMoney),
-          const CropsZakatTab(),
+          MoneyZakatTab(
+            nisabMoney: nisabMoney,
+            localizations: localizations,
+            isArabic: isArabic,
+          ),
+          GoldZakatTab(
+            goldPricePerGram: goldPricePerGram!,
+            localizations: localizations,
+            isArabic: isArabic,
+          ),
+          TradeZakatTab(
+            nisabMoney: nisabMoney,
+            localizations: localizations,
+            isArabic: isArabic,
+          ),
+          CropsZakatTab(localizations: localizations),
         ],
       ),
     );
   }
 
-  AppBar _buildAppBar(TextTheme textTheme, ThemeData theme) => AppBar(
-    title: const Text('حاسبة الزكاة'),
-
+  AppBar _buildAppBar(
+    TextTheme textTheme,
+    ThemeData theme,
+    AppLocalizations localizations,
+  ) => AppBar(
+    title: Text(localizations.zakat_calculator),
     actions: [
       IconButton(
         onPressed: fetchGoldPrice,
         icon: const Icon(Icons.refresh),
-        tooltip: 'تحديث سعر الذهب',
+        tooltip: localizations.refresh_gold_price,
       ),
     ],
     bottom: TabBar(
       controller: _tabController,
-      tabs: const [
-        Tab(text: 'المال'),
-        Tab(text: 'الذهب'),
-        Tab(text: 'التجارة'),
-        Tab(text: 'الزروع'),
+      tabs: [
+        Tab(text: localizations.money),
+        Tab(text: localizations.gold),
+        Tab(text: localizations.trade),
+        Tab(text: localizations.crops),
       ],
     ),
   );
@@ -195,46 +216,87 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
 
 // ==================== Tabs Implementations ====================
 class MoneyZakatTab extends StatelessWidget {
-  const MoneyZakatTab({required this.nisabMoney, super.key});
+  const MoneyZakatTab({
+    required this.nisabMoney,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
   final double nisabMoney;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => ZakatCard(
-    title: '💰 زكاة المال',
-    description:
-        'تجب الزكاة في المال إذا بلغ النصاب (${convertToArabicNumbers(nisabMoney.toStringAsFixed(0))} جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: ${convertToArabicNumbers('2.5')}% من إجمالي المال المدخر',
-    hintText: 'أدخل إجمالي المال المدخر بالجنيه',
+    title: localizations.money_zakat_title,
+    description: localizations.money_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+          : nisabMoney.toStringAsFixed(0),
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    ),
+    hintText: localizations.money_zakat_hint,
     calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+    localizations: localizations,
   );
 }
 
 class GoldZakatTab extends StatelessWidget {
-  const GoldZakatTab({required this.goldPricePerGram, super.key});
+  const GoldZakatTab({
+    required this.goldPricePerGram,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
   final double goldPricePerGram;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
-  Widget build(BuildContext context) => ZakatCard(
-    title: '🪙 زكاة الذهب',
-    description:
-        'النصاب في الذهب هو ${convertToArabicNumbers('85')} جرام.\nالنسبة: ${convertToArabicNumbers('2.5')}% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: ${convertToArabicNumbers(goldPricePerGram.toStringAsFixed(2))} جنيه',
-    hintText: 'أدخل وزن الذهب بالجرام',
-    calculate: (input) {
-      final grams = double.tryParse(input) ?? 0;
-      return grams * goldPricePerGram * 0.025;
-    },
-  );
+  Widget build(BuildContext context) {
+    final descriptionText = localizations.gold_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(goldPricePerGram.toStringAsFixed(2))
+          : goldPricePerGram.toStringAsFixed(2),
+      isArabic ? convertToArabicNumbers('85') : '85',
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    );
+
+    return ZakatCard(
+      title: localizations.gold_zakat_title,
+      description: descriptionText,
+      hintText: localizations.gold_zakat_hint,
+      calculate: (input) {
+        final grams = double.tryParse(input) ?? 0;
+        return grams * goldPricePerGram * 0.025;
+      },
+      localizations: localizations,
+    );
+  }
 }
 
 class TradeZakatTab extends StatelessWidget {
-  const TradeZakatTab({required this.nisabMoney, super.key});
+  const TradeZakatTab({
+    required this.nisabMoney,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
   final double nisabMoney;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => ZakatCard(
-    title: '🛍️ زكاة التجارة',
-    description:
-        'تحسب الزكاة على: (قيمة البضائع + النقد - الديون) × ${convertToArabicNumbers('2.5')}%\n\nتجب بعد مرور الحول.\nالنصاب: ${convertToArabicNumbers(nisabMoney.toStringAsFixed(0))} جنيه',
-    hintText: 'أدخل صافي أصول التجارة بالجنيه',
+    title: localizations.trade_zakat_title,
+    description: localizations.trade_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+          : nisabMoney.toStringAsFixed(0),
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    ),
+    hintText: localizations.trade_zakat_hint,
     calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+    localizations: localizations,
   );
 }

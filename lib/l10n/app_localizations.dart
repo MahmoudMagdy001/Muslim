@@ -101,80 +101,20 @@ abstract class AppLocalizations {
   /// Main app name displayed in the interface
   ///
   /// In en, this message translates to:
-  /// **'Musallim'**
+  /// **'Muslim'**
   String get appName;
 
-  /// Button to navigate to the Qur'an screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Qur\'an'**
-  String get quranButton;
+  /// **'App Version'**
+  String get appVersion;
 
-  /// Button to navigate to the Hadith screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Hadith'**
-  String get hadithButton;
-
-  /// Button to navigate to the Azkar screen
-  ///
-  /// In en, this message translates to:
-  /// **'Azkar'**
-  String get azkarButton;
-
-  /// Button to navigate to the Qiblah direction screen
-  ///
-  /// In en, this message translates to:
-  /// **'Qiblah'**
-  String get qiblahButton;
-
-  /// Button to navigate to app settings
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settingsButton;
-
-  /// Title of the Zakat screen
-  ///
-  /// In en, this message translates to:
-  /// **'My Zakat'**
-  String get zakat;
-
-  /// Hadith displayed in the Zakat screen
-  ///
-  /// In en, this message translates to:
-  /// **'The Prophet ﷺ said: \'Charity does not decrease wealth.\''**
-  String get zakatDuaa;
-
-  /// Motivational text to start Zakat calculation
-  ///
-  /// In en, this message translates to:
-  /// **'Start calculating your Zakat and remember its great reward'**
-  String get zakatStart;
-
-  /// Title of the Names of Allah screen
-  ///
-  /// In en, this message translates to:
-  /// **'Names of Allah'**
-  String get namesOfAllah;
-
-  /// Title of the digital rosary screen
-  ///
-  /// In en, this message translates to:
-  /// **'Digital Tasbeeh'**
-  String get sebha;
-
-  /// Section title for Tasbeeh on the rosary screen
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbeeh'**
-  String get tasbih;
-
-  /// Button to reset the Tasbeeh counter
-  ///
-  /// In en, this message translates to:
-  /// **'Reset'**
-  String get reset;
+  /// **'Arabic'**
+  String get arabicLanguage;
 
   /// Title of the general Azkar screen
   ///
@@ -182,17 +122,17 @@ abstract class AppLocalizations {
   /// **'Azkar'**
   String get azkar;
 
+  /// Button to navigate to the Azkar screen
+  ///
+  /// In en, this message translates to:
+  /// **'Azkar'**
+  String get azkarButton;
+
   /// Title of the Azkar categories list screen
   ///
   /// In en, this message translates to:
   /// **'Azkar Categories'**
   String get azkarCategoryList;
-
-  /// Text shown while Azkar are loading
-  ///
-  /// In en, this message translates to:
-  /// **'Loading Azkar...'**
-  String get azkarLoadingText;
 
   /// Error message when no Azkar are available
   ///
@@ -200,47 +140,101 @@ abstract class AppLocalizations {
   /// **'No Azkar available right now'**
   String get azkarError;
 
-  /// Title of the Hadith books list screen
+  /// Text shown while Azkar are loading
   ///
   /// In en, this message translates to:
-  /// **'Hadith Books'**
-  String get hadithBooks;
+  /// **'Loading Azkar...'**
+  String get azkarLoadingText;
 
-  /// Error message when Hadith books fail to load
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Failed to load books'**
-  String get hadithBooksError;
+  /// **'The eight categories of Zakat recipients:'**
+  String get beneficiaries;
 
-  /// Search placeholder in Hadith books list
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Search by book name...'**
-  String get hadithBooksSearch;
+  /// **'Large'**
+  String get bigFont;
 
-  /// Message when no Hadith books are available
+  /// Text displayed at the beginning of some screens or recitations
   ///
   /// In en, this message translates to:
-  /// **'No books available'**
-  String get hadithBooksEmpty;
+  /// **'In the name of Allah, the Most Gracious, the Most Merciful'**
+  String get bismillah;
 
-  /// Field title for the author's name
+  /// Title of the bookmarks screen
   ///
   /// In en, this message translates to:
-  /// **'Author'**
-  String get writer;
+  /// **'Bookmarks'**
+  String get bookmarksText;
 
-  /// Label for the number of chapters in a book
+  /// Button to bookmark a verse
   ///
   /// In en, this message translates to:
-  /// **'Chapters:'**
-  String get numberOfChapters;
+  /// **'Bookmark this verse'**
+  String get bookmarkVerse;
 
-  /// Label for the number of hadiths in a book
+  /// Confirmation when bookmarking a verse
   ///
   /// In en, this message translates to:
-  /// **'Hadiths:'**
-  String get numberOfHadiths;
+  /// **'Bookmark saved for verse number '**
+  String get bookmarkVerseSuccess;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate your Zakat easily and accurately'**
+  String get calculate_easily;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate Zakat'**
+  String get calculate_zakat;
+
+  /// General cancel button text
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelButton;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'In the cause of Allah'**
+  String get cause_of_allah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'To support Islamic work and charity.'**
+  String get cause_of_allah_desc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Change Font Size'**
+  String get changeFontSize;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Change Language'**
+  String get changeLanguage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Reciter changed to '**
+  String get changeReciterSuccess;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Change Theme'**
+  String get changeTheme;
 
   /// Title for the chapters screen within a Hadith book
   ///
@@ -260,113 +254,135 @@ abstract class AppLocalizations {
   /// **'Search for a chapter...'**
   String get chaptersSearch;
 
-  /// Error message when hadiths fail to load
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Failed to load hadiths'**
-  String get hadithError;
+  /// **'Set goal'**
+  String get chooseGoal;
 
-  /// Title of the hadith list screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Hadiths'**
-  String get hadithsTitle;
+  /// **'Clear goal'**
+  String get clear;
 
-  /// Label for the hadith grade or status
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Status'**
-  String get hadithStatus;
+  /// **'Those employed to collect Zakat'**
+  String get collectors;
 
-  /// Section title for the reference in hadiths or azkar
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Reference'**
-  String get revision;
+  /// **'Those who collect and distribute Zakat.'**
+  String get collectors_desc;
 
-  /// General prefix for error messages
+  /// Text shown while compass is calibrating
   ///
   /// In en, this message translates to:
-  /// **'Error:'**
-  String get errorMain;
+  /// **'Preparing compass...'**
+  String get compassLoading;
 
-  /// Button to retry after an error
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Retry'**
-  String get retry;
+  /// **'You have completed it'**
+  String get completeTasbeh;
 
-  /// General loading text
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Loading...'**
-  String get loading;
+  /// **'The Muslim must be free and own the nisab.'**
+  String get condition_1;
 
-  /// Message when there is no internet connection
+  ///
   ///
   /// In en, this message translates to:
-  /// **'No internet connection'**
-  String get noInternet;
+  /// **'Wealth must reach the nisab (approximately 85 grams of gold).'**
+  String get condition_2;
 
-  /// Title of the home screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Home'**
-  String get homeTitle;
+  /// **'A full lunar year must pass on the wealth.'**
+  String get condition_3;
 
-  /// Button to manually update prayer times
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Update Prayer Times'**
-  String get updatePrayerTimes;
+  /// **'The wealth must be growing or capable of growth.'**
+  String get condition_4;
 
-  /// Button to view additional prayer times
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Tap to view more prayer times'**
-  String get morePrayerTimesButton;
+  /// **'Zakat becomes obligatory when these conditions are met:'**
+  String get conditions;
 
-  /// Title of the prayer times screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Prayer Times'**
-  String get prayerTimesText;
+  /// **'Congratulations'**
+  String get congrates;
 
-  /// Title of the Qur'an screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'The Holy Qur\'an'**
-  String get quranText;
+  /// **'Continue'**
+  String get continueTasbeh;
 
-  /// Title for the list of Surahs
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Surahs'**
-  String get surahsText;
+  /// **'Crops'**
+  String get crops;
 
-  /// Title of the bookmarks screen
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Bookmarks'**
-  String get bookmarksText;
+  /// **'Zakat is due if the crop reaches approximately {nisab_kg} kg.\n\n{natural_rate}% if irrigated by rain or rivers\n{machine_rate}% if irrigated by machines (costly irrigation)'**
+  String crops_zakat_description(
+    Object machine_rate,
+    Object natural_rate,
+    Object nisab_kg,
+  );
 
-  /// Placeholder text for Surah search
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Search by Surah name...'**
-  String get searchForSurahName;
+  /// **'Enter crop quantity in kilograms'**
+  String get crops_zakat_hint;
 
-  /// Title of the search results section
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Search Results:'**
-  String get searchResult;
+  /// **'🌾 Crops Zakat'**
+  String get crops_zakat_title;
 
-  /// Message when there are no saved bookmarks
+  ///
   ///
   /// In en, this message translates to:
-  /// **'No bookmarks yet'**
-  String get emptyBookmarks;
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Those in debt'**
+  String get debtors;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Those burdened by debt.'**
+  String get debtors_desc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defultFont;
 
   /// Button to delete a saved bookmark
   ///
@@ -374,17 +390,17 @@ abstract class AppLocalizations {
   /// **'Delete bookmark'**
   String get deleteBookmark;
 
-  /// Confirmation after deleting a bookmark
-  ///
-  /// In en, this message translates to:
-  /// **'Bookmark deleted from Surah'**
-  String get deleteBookmarkSuccess;
-
   /// Confirmation message before deleting a bookmark
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete the bookmark from Surah'**
   String get deleteBookmarkQuestion;
+
+  /// Confirmation after deleting a bookmark
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark deleted from Surah'**
+  String get deleteBookmarkSuccess;
 
   /// General delete button text
   ///
@@ -392,11 +408,297 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get deleteButton;
 
-  /// General cancel button text
+  /// Label showing distance to the Kaaba
   ///
   /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancelButton;
+  /// **'Distance to Kaaba:'**
+  String get distanceToKabaa;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Due Zakat'**
+  String get due_zakat;
+
+  /// Message when there are no saved bookmarks
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get emptyBookmarks;
+
+  /// Message when no tafsir is available
+  ///
+  /// In en, this message translates to:
+  /// **'No tafsir available right now'**
+  String get emptyTafsir;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get englishLanguage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your wealth amount and we will calculate your due Zakat'**
+  String get enter_amount;
+
+  /// General prefix for error messages
+  ///
+  /// In en, this message translates to:
+  /// **'Error:'**
+  String get errorMain;
+
+  /// Button to view full Qiblah map
+  ///
+  /// In en, this message translates to:
+  /// **'Qiblah Map'**
+  String get fullMapQiblah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get goal;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your goal (e.g. 50)'**
+  String get goalExample;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get gold;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load gold price'**
+  String get gold_price_error;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The nisab for gold is {nisab_grams} grams.\nRate: {percentage}% of the market value of gold.\n\nCurrent price per gram: {current_price} EGP'**
+  String gold_zakat_description(
+    Object current_price,
+    Object nisab_grams,
+    Object percentage,
+  );
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter gold weight in grams'**
+  String get gold_zakat_hint;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'🪙 Gold Zakat'**
+  String get gold_zakat_title;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The Prophet ﷺ said: \"There is no Zakat on property until a year passes on it.\"'**
+  String get hadith;
+
+  /// Title of the Hadith books list screen
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith Books'**
+  String get hadithBooks;
+
+  /// Message when no Hadith books are available
+  ///
+  /// In en, this message translates to:
+  /// **'No books available'**
+  String get hadithBooksEmpty;
+
+  /// Error message when Hadith books fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load books'**
+  String get hadithBooksError;
+
+  /// Search placeholder in Hadith books list
+  ///
+  /// In en, this message translates to:
+  /// **'Search by book name...'**
+  String get hadithBooksSearch;
+
+  /// Button to navigate to the Hadith screen
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith'**
+  String get hadithButton;
+
+  /// Error message when hadiths fail to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load hadiths'**
+  String get hadithError;
+
+  /// Label for the hadith grade or status
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get hadithStatus;
+
+  /// Title of the hadith list screen
+  ///
+  /// In en, this message translates to:
+  /// **'Hadiths'**
+  String get hadithsTitle;
+
+  /// Title of the home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid value'**
+  String get invalid_input_error;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get lightMode;
+
+  /// General loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Loading gold price...'**
+  String get loading_gold_price;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Irrigation by machines or with costs'**
+  String get machine_irrigation_subtitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'⚙️ Machine or costly ({rate}%)'**
+  String machine_irrigation_title(Object rate);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get money;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Zakat is due on money if it reaches the nisab ({nisab} EGP approximately) and a full lunar year has passed.\n\nRate: {percentage}% of total saved money'**
+  String money_zakat_description(Object nisab, Object percentage);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter total saved money in EGP'**
+  String get money_zakat_hint;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'💰 Money Zakat'**
+  String get money_zakat_title;
+
+  /// Button to view additional prayer times
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view more prayer times'**
+  String get morePrayerTimesButton;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'My Zakat'**
+  String get my_zakat;
+
+  /// Title of the Names of Allah screen
+  ///
+  /// In en, this message translates to:
+  /// **'Names of Allah'**
+  String get namesOfAllah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Natural irrigation without costs'**
+  String get natural_irrigation_subtitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'💧 Rain or rivers ({rate}%)'**
+  String natural_irrigation_title(Object rate);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The needy'**
+  String get needy;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Those who have some of their needs but not enough.'**
+  String get needy_desc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Those whose hearts are to be reconciled'**
+  String get new_muslims;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Those who are to be inclined towards Islam.'**
+  String get new_muslims_desc;
+
+  /// Message when there is no internet connection
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get noInternet;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Zakat is obligatory on saved wealth that reaches the nisab and a year has passed on it.'**
+  String get note;
+
+  /// Label for the number of chapters in a book
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters:'**
+  String get numberOfChapters;
+
+  /// Label for the number of hadiths in a book
+  ///
+  /// In en, this message translates to:
+  /// **'Hadiths:'**
+  String get numberOfHadiths;
 
   /// General confirmation button text
   ///
@@ -410,41 +712,35 @@ abstract class AppLocalizations {
   /// **'Play from this verse'**
   String get playVerseSound;
 
-  /// Button to bookmark a verse
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Bookmark this verse'**
-  String get bookmarkVerse;
+  /// **'The poor'**
+  String get poor;
 
-  /// Button to view the verse tafsir
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Verse Interpretation'**
-  String get tafsirVerse;
+  /// **'Those who do not have enough for their daily needs.'**
+  String get poor_desc;
 
-  /// Confirmation when bookmarking a verse
+  /// Title of the prayer times screen
   ///
   /// In en, this message translates to:
-  /// **'Bookmark saved for verse number '**
-  String get bookmarkVerseSuccess;
+  /// **'Prayer Times'**
+  String get prayerTimesText;
 
-  /// Prompt text for selecting tafsir type
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Select Tafsir'**
-  String get selectTafsir;
+  /// **'Privacy Policy'**
+  String get privacy;
 
-  /// Message when no tafsir is available
+  /// Button to navigate to the Qiblah direction screen
   ///
   /// In en, this message translates to:
-  /// **'No tafsir available right now'**
-  String get emptyTafsir;
-
-  /// Button to share tafsir text
-  ///
-  /// In en, this message translates to:
-  /// **'Share Tafsir'**
-  String get shareTafsir;
+  /// **'Qiblah'**
+  String get qiblahButton;
 
   /// Title for the Qiblah direction screen
   ///
@@ -452,23 +748,59 @@ abstract class AppLocalizations {
   /// **'Qiblah Direction'**
   String get qiblahDirection;
 
-  /// Label showing distance to the Kaaba
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Distance to Kaaba:'**
-  String get distanceToKabaa;
+  /// **'Zakat is for the poor and the needy and those employed to collect it and for bringing hearts together and for freeing captives and for those in debt and for the cause of Allah and for the traveler'**
+  String get quran_text;
 
-  /// Button to view full Qiblah map
+  ///
   ///
   /// In en, this message translates to:
-  /// **'Qiblah Map'**
-  String get fullMapQiblah;
+  /// **'Allah says:'**
+  String get quran_verse;
 
-  /// Text shown while compass is calibrating
+  /// Button to navigate to the Qur'an screen
   ///
   /// In en, this message translates to:
-  /// **'Preparing compass...'**
-  String get compassLoading;
+  /// **'Qur\'an'**
+  String get quranButton;
+
+  /// Title of the Qur'an screen
+  ///
+  /// In en, this message translates to:
+  /// **'The Holy Qur\'an'**
+  String get quranText;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh gold price'**
+  String get refresh_gold_price;
+
+  /// Button to reset the Tasbeeh counter
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get resetTasbeh;
+
+  /// Button to retry after an error
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Section title for the reference in hadiths or azkar
+  ///
+  /// In en, this message translates to:
+  /// **'Reference'**
+  String get revision;
 
   /// Text shown when the device is aligned with Qiblah
   ///
@@ -476,29 +808,35 @@ abstract class AppLocalizations {
   /// **'Aligned with Kaaba'**
   String get salahDirection;
 
-  /// Text displayed at the beginning of some screens or recitations
+  ///
   ///
   /// In en, this message translates to:
-  /// **'In the name of Allah, the Most Gracious, the Most Merciful'**
-  String get bismillah;
+  /// **'Save'**
+  String get save;
+
+  /// Placeholder text for Surah search
+  ///
+  /// In en, this message translates to:
+  /// **'Search by Surah name...'**
+  String get searchForSurahName;
+
+  /// Title of the search results section
+  ///
+  /// In en, this message translates to:
+  /// **'Search Results:'**
+  String get searchResult;
+
+  /// Title of the digital rosary screen
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Tasbeeh'**
+  String get sebha;
 
   ///
   ///
   /// In en, this message translates to:
-  /// **'Change Font Size'**
-  String get changeFontSize;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Change Theme'**
-  String get changeTheme;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Change Language'**
-  String get changeLanguage;
+  /// **'Digital Tasbeeh'**
+  String get sebhaTitle;
 
   ///
   ///
@@ -509,50 +847,8 @@ abstract class AppLocalizations {
   ///
   ///
   /// In en, this message translates to:
-  /// **'Small'**
-  String get smallFont;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Default'**
-  String get defultFont;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Large'**
-  String get bigFont;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Light Mode'**
-  String get lightMode;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Dark Mode'**
-  String get darkMode;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'System Mode'**
-  String get systemMode;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Select Theme'**
-  String get selectTheme;
-
-  ///
-  ///
-  /// In en, this message translates to:
-  /// **'Reciter changed to '**
-  String get changeReciterSuccess;
+  /// **'Select Language'**
+  String get selectLanguage;
 
   ///
   ///
@@ -560,35 +856,131 @@ abstract class AppLocalizations {
   /// **'Select Reciter'**
   String get selectReciter;
 
-  ///
+  /// Prompt text for selecting tafsir type
   ///
   /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
+  /// **'Select Tafsir'**
+  String get selectTafsir;
 
   ///
   ///
   /// In en, this message translates to:
-  /// **'Arabic'**
-  String get arabicLanguage;
+  /// **'Select Theme'**
+  String get selectTheme;
+
+  /// Button to navigate to app settings
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsButton;
+
+  /// Button to share tafsir text
+  ///
+  /// In en, this message translates to:
+  /// **'Share Tafsir'**
+  String get shareTafsir;
 
   ///
   ///
   /// In en, this message translates to:
-  /// **'English'**
-  String get englishLanguage;
+  /// **'For freeing slaves'**
+  String get slaves;
 
   ///
   ///
   /// In en, this message translates to:
-  /// **'Select Language'**
-  String get selectLanguage;
+  /// **'To free captives or those oppressed by debt.'**
+  String get slaves_desc;
 
   ///
   ///
   /// In en, this message translates to:
-  /// **'App Version'**
-  String get appVersion;
+  /// **'Small'**
+  String get smallFont;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Start Zakat Calculation'**
+  String get start_calculation;
+
+  /// Title for the list of Surahs
+  ///
+  /// In en, this message translates to:
+  /// **'Surahs'**
+  String get surahsText;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'System Mode'**
+  String get systemMode;
+
+  /// Button to view the verse tafsir
+  ///
+  /// In en, this message translates to:
+  /// **'Verse Interpretation'**
+  String get tafsirVerse;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to restart the count or continue?'**
+  String get tasbehQuestion;
+
+  /// Section title for Tasbeeh on the rosary screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbeeh'**
+  String get tasbih;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Trade'**
+  String get trade;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Zakat is calculated on: (Goods value + Cash - Debts) × {percentage}%\n\nDue after a full year.\nNisab: {nisab} EGP'**
+  String trade_zakat_description(Object nisab, Object percentage);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter net trade assets in EGP'**
+  String get trade_zakat_hint;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'🛍️ Trade Zakat'**
+  String get trade_zakat_title;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The wayfarer'**
+  String get traveler;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'A traveler who is cut off from his resources.'**
+  String get traveler_desc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get unit_kg;
+
+  /// Button to manually update prayer times
+  ///
+  /// In en, this message translates to:
+  /// **'Update Prayer Times'**
+  String get updatePrayerTimes;
 
   ///
   ///
@@ -599,8 +991,50 @@ abstract class AppLocalizations {
   ///
   ///
   /// In en, this message translates to:
-  /// **'Privacy Policy'**
-  String get privacy;
+  /// **'When is Zakat due?'**
+  String get when_zakat_due;
+
+  /// Field title for the author's name
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get writer;
+
+  /// Title of the Zakat screen
+  ///
+  /// In en, this message translates to:
+  /// **'My Zakat'**
+  String get zakat;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Zakat Calculator'**
+  String get zakat_calculator;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Who is Zakat for?'**
+  String get zakat_for_whom;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Remember: Zakat is only obligatory if wealth reaches nisab and a year has passed'**
+  String get zakat_reminder;
+
+  /// Hadith displayed in the Zakat screen
+  ///
+  /// In en, this message translates to:
+  /// **'The Prophet ﷺ said: \'Charity does not decrease wealth.\''**
+  String get zakatDuaa;
+
+  /// Motivational text to start Zakat calculation
+  ///
+  /// In en, this message translates to:
+  /// **'Start calculating your Zakat and remember its great reward'**
+  String get zakatStart;
 }
 
 class _AppLocalizationsDelegate

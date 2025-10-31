@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class SebhaButton extends StatefulWidget {
   const SebhaButton({
     required this.onPressed,
     required this.counter,
+    required this.localizations,
     super.key,
     this.goal,
   });
   final VoidCallback onPressed;
   final int counter;
   final int? goal;
+  final AppLocalizations localizations;
 
   @override
   State<SebhaButton> createState() => _SebhaButtonState();
@@ -77,7 +81,7 @@ class _SebhaButtonState extends State<SebhaButton>
             if (widget.goal != null) ...[
               const SizedBox(height: 12),
               Text(
-                'الهدف: ${widget.goal}',
+                '${widget.localizations.goal}: ${widget.goal}',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
