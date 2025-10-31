@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/navigation_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helper/prayer_consts.dart';
+import 'month_prayer_times_widget.dart';
 
 class AllPrayerTimesModal extends StatelessWidget {
   const AllPrayerTimesModal({
@@ -11,6 +13,7 @@ class AllPrayerTimesModal extends StatelessWidget {
     required this.nextPrayer,
     required this.hijriDate,
     required this.localizations,
+    required this.isArabic,
     super.key,
   });
 
@@ -19,6 +22,7 @@ class AllPrayerTimesModal extends StatelessWidget {
   final String? nextPrayer;
   final String hijriDate;
   final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -31,30 +35,51 @@ class AllPrayerTimesModal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.mosque_rounded, size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  localizations.prayerTimesText,
-                  style: theme.textTheme.headlineSmall,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.mosque_rounded, size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          localizations.prayerTimesText,
+                          style: theme.textTheme.headlineSmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.calendar_month_outlined,
+                          size: 16,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          hijriDate,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.calendar_month_outlined,
-                  size: 16,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  hijriDate,
-                  style: theme.textTheme.bodyMedium!.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w600,
+                SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () => navigateWithTransition(
+                      type: TransitionType.fade,
+                      context,
+                      MonthPrayerTimesWidget(isArabic: isArabic),
+                    ),
+                    child: const Text('عرض لمدة شهر'),
                   ),
                 ),
               ],

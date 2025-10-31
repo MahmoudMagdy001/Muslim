@@ -11,12 +11,14 @@ class MorePrayerTimesButton extends StatelessWidget {
     required this.theme,
     required this.hijriDate,
     required this.localizations,
+    required this.isArabic,
     super.key,
   });
 
   final ThemeData theme;
   final String hijriDate;
   final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -61,6 +63,7 @@ class MorePrayerTimesButton extends StatelessWidget {
         nextPrayer: state.nextPrayer,
         hijriDate: hijriDate,
         localizations: localizations,
+        isArabic: isArabic,
       ),
     );
   }

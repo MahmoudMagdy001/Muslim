@@ -73,6 +73,7 @@ class CurrentPrayerCard extends StatelessWidget {
             theme: theme,
             hijriDate: hijriDate,
             localizations: localizations,
+            isArabic: isArabic,
           ),
         ],
       ),
