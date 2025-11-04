@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../core/utils/format_helper.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../../core/utils/format_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class CropsZakatTab extends StatefulWidget {
   const CropsZakatTab({required this.localizations, super.key});

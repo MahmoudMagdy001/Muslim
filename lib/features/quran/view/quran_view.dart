@@ -4,7 +4,6 @@ import 'package:quran/quran.dart' as quran;
 
 import '../../../l10n/app_localizations.dart';
 import '../repository/quran_repository_impl.dart';
-
 import '../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../viewmodel/quran_surah_cubit/quran_surah_cubit.dart';
 import '../viewmodel/quran_surah_cubit/quran_surah_state.dart';
@@ -64,8 +63,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
   bool _sought = false;
 
   void _maybeSeekToStartAyah(BuildContext context) {
-    if (_sought) return;
-    if (widget.startAyah <= 1) return;
+    if (_sought || widget.startAyah <= 1) return;
     _sought = true;
     context.read<QuranPlayerCubit>().seek(
       Duration.zero,
@@ -76,8 +74,8 @@ class _QuranViewContentState extends State<QuranViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    final lcoale = Localizations.localeOf(context);
-    final isArabic = lcoale.languageCode == 'ar';
+    final locale = Localizations.localeOf(context);
+    final isArabic = locale.languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
 
     final surahName = isArabic
@@ -89,43 +87,25 @@ class _QuranViewContentState extends State<QuranViewContent> {
       body: SafeArea(
         child: BlocBuilder<QuranSurahCubit, QuranSurahState>(
           builder: (context, state) {
-            if (state.status == QuranSurahStatus.loaded) {
-              final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _maybeSeekToStartAyah(context);
-              });
-              return Column(
-                children: [
-                  Expanded(
-                    child: SurahTextView(
-                      surahNumber: actualSurahNumber,
-                      startAyah: widget.startAyah,
-                      isArabic: isArabic,
-                      localizations: localizations,
-                    ),
+            final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _maybeSeekToStartAyah(context);
+            });
+
+            // ✅ الواجهة الموحدة بدون تكرار
+            return Column(
+              children: [
+                Expanded(
+                  child: SurahTextView(
+                    surahNumber: actualSurahNumber,
+                    startAyah: widget.startAyah,
+                    isArabic: isArabic,
+                    localizations: localizations,
                   ),
-                  const PlayerControlsWidget(),
-                ],
-              );
-            } else {
-              final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _maybeSeekToStartAyah(context);
-              });
-              return Column(
-                children: [
-                  Expanded(
-                    child: SurahTextView(
-                      surahNumber: actualSurahNumber,
-                      startAyah: widget.startAyah,
-                      isArabic: isArabic,
-                      localizations: localizations,
-                    ),
-                  ),
-                  const PlayerControlsWidget(),
-                ],
-              );
-            }
+                ),
+                const PlayerControlsWidget(),
+              ],
+            );
           },
         ),
       ),

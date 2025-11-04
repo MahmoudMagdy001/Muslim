@@ -31,7 +31,6 @@ dependencies:
   share_plus: ^12.0.1
   skeletonizer: ^2.1.0+1
   latlong2: ^0.9.1
-  flutter_map: ^8.2.2
   workmanager: ^0.9.0+3
   flutter_map_animations: ^0.9.0
   syncfusion_flutter_sliders: ^31.2.4

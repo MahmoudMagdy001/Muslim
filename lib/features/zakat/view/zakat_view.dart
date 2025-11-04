@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/utils/format_helper.dart';
 import '../../../core/utils/navigation_helper.dart';
 import '../../../l10n/app_localizations.dart';
-import '../widgets/zakat_calculator.dart';
+import 'widgets/zakat_calculator.dart';
 
 class ZakatView extends StatelessWidget {
   const ZakatView({super.key});

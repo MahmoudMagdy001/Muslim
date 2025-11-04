@@ -26,8 +26,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   /// التهيئة وجلب مواقيت الصلاة
   Future<void> init({required bool isArabic}) async {
-    await checkAllPermissions();
-    await fetchPrayerTimes(isArabic: isArabic);
+    Future.wait([checkAllPermissions(), fetchPrayerTimes(isArabic: isArabic)]);
   }
 
   Future<void> checkAllPermissions() async {

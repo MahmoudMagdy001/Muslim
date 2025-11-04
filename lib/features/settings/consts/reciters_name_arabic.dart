@@ -75,7 +75,7 @@ const List<Reciter> recitersNames = [
   Reciter(id: 'ar.aymanswoaid', nameAr: 'أيمن سويد', nameEn: 'Ayman Sowaid'),
 ];
 
-Map<String, String> getReciterName(String reciterId) {
+String getReciterName(String reciterId, {bool isArabic = true}) {
   try {
     final reciter = recitersNames.firstWhere(
       (r) => r.id == reciterId,
@@ -86,12 +86,12 @@ Map<String, String> getReciterName(String reciterId) {
       ),
     );
 
-    return {'ar': reciter.nameAr, 'en': reciter.nameEn};
+    return isArabic ? reciter.nameAr : reciter.nameEn;
   } catch (e) {
     debugPrint('Error getting reciter name: $e');
-    return {
-      'ar': 'المصحف المرتل للشيخ عبدالباسط',
-      'en': 'Abdul Basit Abdus Samad (Murattal)',
-    };
+    return isArabic
+        ? 'المصحف المرتل للشيخ عبدالباسط'
+        : 'Abdul Basit Abdus Samad (Murattal)';
   }
 }
+
