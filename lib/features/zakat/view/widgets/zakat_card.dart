@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/utils/format_helper.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../../core/utils/format_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ZakatCard extends StatefulWidget {
   const ZakatCard({

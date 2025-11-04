@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../core/utils/format_helper.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../../core/utils/format_helper.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'crops_zakat_tab.dart';
 import 'zakat_card.dart';
 

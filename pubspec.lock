@@ -252,7 +252,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_map:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_map
       sha256: "391e7dc95cc3f5190748210a69d4cfeb5d8f84dcdfa9c3235d0a9d7742ccb3f8"

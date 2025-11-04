@@ -13,11 +13,13 @@ class AppInitializer {
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
-    await workManagerNotify();
-    await _initializeAudioBackground();
-    await _initializeNotifications();
-    await requestAllPermissions();
-    await _scheduleHourlyReminder();
+    Future.wait([
+      workManagerNotify(),
+      _initializeAudioBackground(),
+      _initializeNotifications(),
+      requestAllPermissions(),
+      _scheduleHourlyReminder(),
+    ]);
   }
 
   double getInitialFontSize() => prefs.getDouble('fontSize') ?? 18.0;

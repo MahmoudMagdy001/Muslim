@@ -19,7 +19,10 @@ class ReciterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocBuilder<ReciterCubit, ReciterState>(
     builder: (context, state) {
-      final reciterName = getReciterName(state.selectedReciter);
+      final reciterName = getReciterName(
+        state.selectedReciter,
+        isArabic: isArabic,
+      );
       return _ReciterTile(
         reciterName: reciterName,
         localizations: localizations,
@@ -35,17 +38,14 @@ class _ReciterTile extends StatelessWidget {
     required this.localizations,
     required this.isArabic,
   });
-  final Map<String, String> reciterName;
+  final String reciterName;
   final AppLocalizations localizations;
   final bool isArabic;
 
   @override
   Widget build(BuildContext context) => ListTile(
     leading: const Icon(Icons.headphones, size: 20),
-    title: Text(
-      isArabic ? reciterName['ar']! : reciterName['en']!,
-      style: Theme.of(context).textTheme.titleMedium,
-    ),
+    title: Text(reciterName, style: Theme.of(context).textTheme.titleMedium),
     trailing: const Icon(Icons.arrow_drop_down_rounded, size: 26),
     onTap: () => _showReciterBottomSheet(context),
   );
@@ -74,7 +74,7 @@ class _ReciterTile extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${localizations.changeReciterSuccess}${isArabic ? changedReciterName['ar'] : changedReciterName['en']}',
+              '${localizations.changeReciterSuccess}$changedReciterName ',
             ),
             duration: const Duration(seconds: 2),
           ),

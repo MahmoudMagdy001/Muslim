@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:latlong2/latlong.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/qiblah_cubit.dart';
 import '../viewmodel/qiblah_state.dart';
 import 'widgets/compass_widget.dart';
-import 'widgets/qiblah_map_widget.dart';
 
 class QiblahView extends StatelessWidget {
   const QiblahView({super.key});
@@ -23,8 +21,7 @@ class QiblahView extends StatelessWidget {
         child: BlocBuilder<QiblahCubit, QiblahState>(
           buildWhen: (previous, current) =>
               previous.status != current.status ||
-              previous.qiblahAngle != current.qiblahAngle ||
-              previous.routePoints != current.routePoints,
+              previous.qiblahAngle != current.qiblahAngle,
           builder: (context, state) {
             if (state.status == QiblahStatus.error) {
               return Center(
@@ -49,12 +46,7 @@ class QiblahView extends StatelessWidget {
                 headingAngle: state.headingAngle,
                 qiblahAngle: state.qiblahAngle,
                 isAligned: state.isAligned,
-                userLocation: state.userLocation != null
-                    ? LatLng(
-                        state.userLocation!.latitude,
-                        state.userLocation!.longitude,
-                      )
-                    : null,
+
                 isLoading: state.status == QiblahStatus.loading,
                 localizations: localizations,
                 isArabic: isArabic,
@@ -75,14 +67,12 @@ class QiblahSuccessWidget extends StatelessWidget {
     required this.isLoading,
     required this.localizations,
     required this.isArabic,
-    this.userLocation,
     super.key,
   });
 
   final double headingAngle;
   final double qiblahAngle;
   final bool isAligned;
-  final LatLng? userLocation;
   final bool isLoading;
   final AppLocalizations localizations;
   final bool isArabic;
@@ -97,15 +87,6 @@ class QiblahSuccessWidget extends StatelessWidget {
         SafeArea(
           child: Column(
             children: [
-              QiblahMapWidget(
-                userLocation: userLocation != null
-                    ? LatLng(userLocation!.latitude, userLocation!.longitude)
-                    : null,
-                isLoading: isLoading,
-                localizations: localizations,
-                isArabic: isArabic,
-              ),
-              const SizedBox(height: 15),
               Expanded(
                 child: CompassWidget(
                   headingAngle: headingAngle,

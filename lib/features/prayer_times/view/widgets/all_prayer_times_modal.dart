@@ -79,7 +79,7 @@ class AllPrayerTimesModal extends StatelessWidget {
                       context,
                       MonthPrayerTimesWidget(isArabic: isArabic),
                     ),
-                    child: const Text('عرض لمدة شهر'),
+                    child: const Text('عرض الشهر'),
                   ),
                 ),
               ],
