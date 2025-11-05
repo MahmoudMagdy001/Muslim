@@ -13,11 +13,11 @@ class AppInitializer {
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
+    await requestAllPermissions();
     Future.wait([
       workManagerNotify(),
       _initializeAudioBackground(),
       _initializeNotifications(),
-      requestAllPermissions(),
       _scheduleHourlyReminder(),
     ]);
   }
@@ -58,6 +58,7 @@ class AppInitializer {
       androidNotificationChannelName: 'تشغيل التلاوة',
       androidNotificationOngoing: true,
       androidNotificationIcon: 'drawable/ic_muslim_logo',
+      androidShowNotificationBadge: true,
     );
   }
 

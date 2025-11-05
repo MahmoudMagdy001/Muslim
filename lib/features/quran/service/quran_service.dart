@@ -1,11 +1,18 @@
+import 'dart:async';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../settings/consts/reciters_name_arabic.dart';
 
 class QuranService {
   static final AudioPlayer _audioPlayer = AudioPlayer();
+
+  // StreamController لتحديثات آخر آية تم الاستماع إليها
+  final StreamController<Map<String, dynamic>?> _lastPlayedController =
+      StreamController<Map<String, dynamic>?>.broadcast();
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
@@ -26,6 +33,8 @@ class QuranService {
       'https://cdn.islamic.network/quran/audio/$bitrate/$reciter/$verseNumber.mp3';
 
   /// تحضير قائمة تشغيل للسورة المختارة
+  StreamSubscription<int?>? _indexSubscription;
+
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
@@ -37,12 +46,28 @@ class QuranService {
 
     final playlist = _buildPlaylist(surahNumber, reciter);
 
-    try {
-      await _audioPlayer.stop();
-      await _audioPlayer.setAudioSources(playlist);
-    } catch (e) {
-      rethrow;
-    }
+    await _audioPlayer.stop();
+    await _audioPlayer.setAudioSources(playlist);
+
+    _indexSubscription?.cancel(); // إلغاء القديم
+    _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
+      if (index != null) {
+        print('Index changed: $index'); // 🔹
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('lastSurah', surahNumber);
+        await prefs.setInt('lastVerse', index + 1);
+        await prefs.setString('lastReciter', reciter);
+
+        // إرسال البيانات عبر الـ Stream
+        _lastPlayedController.add({
+          'surah': surahNumber,
+          'verse': index + 1,
+          'reciter': reciter,
+        });
+        print('LastPlayed emitted: ${index + 1}'); // 🔹
+      }
+    });
   }
 
   /// تشغيل الصوت
@@ -61,11 +86,18 @@ class QuranService {
   /// الانتقال إلى الآية السابقة
   Future<void> seekToPrevious() => _audioPlayer.seekToPrevious();
 
+  /// الحصول على Stream لتحديثات آخر استماع
+  Stream<Map<String, dynamic>?> get lastPlayedStream =>
+      _lastPlayedController.stream;
+
   /// تنظيف الموارد
   void dispose() {
+    _audioPlayer.stop();
+    _indexSubscription?.cancel();
     _currentSurah = null;
     _currentReciter = null;
     _audioPlayer.dispose();
+    _lastPlayedController.close(); // إغلاق الـ StreamController
   }
 
   // ------------------ Internal Helpers ------------------ //
@@ -104,5 +136,15 @@ class QuranService {
         artist: 'القارئ: ${getReciterName(reciter)}',
       ),
     );
+  }
+
+  Future<Map<String, dynamic>?> getLastPlayed() async {
+    final prefs = await SharedPreferences.getInstance();
+    final surah = prefs.getInt('lastSurah');
+    final verse = prefs.getInt('lastVerse');
+    final reciter = prefs.getString('lastReciter');
+    if (surah == null || verse == null || reciter == null) return null;
+
+    return {'surah': surah, 'verse': verse, 'reciter': reciter};
   }
 }

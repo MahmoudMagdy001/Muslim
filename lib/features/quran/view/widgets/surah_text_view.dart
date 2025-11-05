@@ -115,6 +115,7 @@ class _SurahTextViewState extends State<SurahTextView> {
       final text = tafsir['text']?.toString().trim() ?? '';
       return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
     } catch (e) {
+      debugPrint('===========> $e');
       return 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.';
     }
   }

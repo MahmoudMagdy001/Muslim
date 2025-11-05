@@ -6,7 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/main/main_content/app_content.dart';
 import 'core/main/main_content/app_initializer.dart';
 import 'features/quran/service/bookmarks_service.dart';
+import 'features/quran/service/quran_service.dart';
 import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import 'features/quran/viewmodel/last_played_cubit/last_played.dart';
 import 'features/settings/view_model/font_size/font_size_cubit.dart';
 import 'features/settings/view_model/language/language_cubit.dart';
 import 'features/settings/view_model/rectire/rectire_cubit.dart';
@@ -29,6 +31,7 @@ Future<void> main() async {
     final initialLocale = initializer.getInitialLanguage();
     final initialMode = initializer.getInitialThemeMode();
     final initialFontSize = initializer.getInitialFontSize();
+    final quranService = QuranService();
 
     runApp(
       MultiBlocProvider(

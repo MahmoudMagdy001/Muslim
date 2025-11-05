@@ -9,7 +9,7 @@ import 'dashboard_list.dart';
 import 'feature_card.dart';
 import 'zakat_card_widget.dart';
 
-class LayoutContent extends StatelessWidget {
+class LayoutContent extends StatefulWidget {
   const LayoutContent(
     this.scaffoldContext,
     this.theme, {
@@ -24,48 +24,62 @@ class LayoutContent extends StatelessWidget {
   final bool isArabic;
 
   @override
+  State<LayoutContent> createState() => _LayoutContentState();
+}
+
+class _LayoutContentState extends State<LayoutContent> {
+  @override
   Widget build(BuildContext context) => CustomScrollView(
     slivers: [
       // عرض أوقات الصلاة
       PrayerTimesView(
-        scaffoldContext: scaffoldContext,
-        theme: theme,
-        localizations: localizations,
+        scaffoldContext: widget.scaffoldContext,
+        theme: widget.theme,
+        localizations: widget.localizations,
       ),
 
       // محتوى الداشبورد
-      DashboardGrid(theme: theme, localizations: localizations),
+      DashboardGrid(theme: widget.theme, localizations: widget.localizations),
 
-      // الأقسام الإضافية (أسماء الله – السبحة )
+      // أقسام إضافية
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: Row(
-            children: <Widget>[
+            children: [
               FeatureCard(
-                label: localizations.namesOfAllah,
+                label: widget.localizations.namesOfAllah,
                 image: 'assets/images/allah.png',
                 onTap: () =>
                     navigateWithTransition(context, const NamesOfAllahScreen()),
-                theme: theme,
+                theme: widget.theme,
               ),
               FeatureCard(
-                label: localizations.sebha,
+                label: widget.localizations.sebha,
                 image: 'assets/images/seb7a.png',
                 onTap: () => navigateWithTransition(
                   context,
-                  SebhaView(localizations: localizations, isArabic: isArabic),
+                  SebhaView(
+                    localizations: widget.localizations,
+                    isArabic: widget.isArabic,
+                  ),
                 ),
-                theme: theme,
+                theme: widget.theme,
               ),
             ],
           ),
         ),
       ),
 
+      // بطاقة الزكاة
       SliverToBoxAdapter(
-        child: ZakatCardWidget(theme: theme, localizations: localizations),
+        child: ZakatCardWidget(
+          theme: widget.theme,
+          localizations: widget.localizations,
+        ),
       ),
+
+      // آخر استماع - استخدم BlocSelector فقط هنا
     ],
   );
 }
