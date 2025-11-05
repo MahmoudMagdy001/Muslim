@@ -25,7 +25,6 @@
     <!-- 🔄 إعادة تشغيل الجهاز -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:label="muslim"
         android:name="${applicationName}"
@@ -94,10 +93,35 @@
             android:value="2" />
     </application>
 
+    <!-- 🔍 Queries required for API level 30+ to check intent availability -->
     <queries>
+        <!-- For text processing (existing) -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
+        </intent>
+
+        <!-- For launching email (mailto:) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="mailto" />
+        </intent>
+
+        <!-- For SMS support -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="sms" />
+        </intent>
+
+        <!-- For phone calls -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tel" />
+        </intent>
+
+        <!-- For Custom Tabs (in-app browser) -->
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
         </intent>
     </queries>
 </manifest>

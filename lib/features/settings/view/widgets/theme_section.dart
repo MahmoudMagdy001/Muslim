@@ -8,104 +8,73 @@ import '../../../../l10n/app_localizations.dart';
 import '../../view_model/theme/theme_cubit.dart';
 
 class ThemeSection extends StatelessWidget {
-  const ThemeSection({required this.localizations, super.key});
+  const ThemeSection({
+    required this.localizations,
+    required this.theme,
+    super.key,
+  });
   final AppLocalizations localizations;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
-    builder: (context, state) =>
-        _ThemeTile(currentMode: state.themeMode, localizations: localizations),
+    builder: (context, state) {
+      final currentMode = state.themeMode;
+
+      String title;
+      if (currentMode == ThemeMode.dark) {
+        title = localizations.darkMode;
+      } else if (currentMode == ThemeMode.light) {
+        title = localizations.lightMode;
+      } else {
+        title = localizations.systemMode;
+      }
+
+      return ListTile(
+        leading: const Icon(Icons.brightness_6),
+        title: Text(
+          localizations.changeTheme,
+          style: theme.textTheme.titleMedium,
+        ),
+        trailing: Text(title, style: theme.textTheme.bodySmall),
+        onTap: () {
+          final cubit = context.read<ThemeCubit>();
+
+          showCustomModalBottomSheet(
+            context: context,
+            builder: (context) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  localizations.selectTheme,
+                  style: theme.textTheme.titleMedium,
+                ),
+                ...[ThemeMode.light, ThemeMode.dark, ThemeMode.system].map(
+                  (mode) => RadioListTile<ThemeMode>(
+                    title: Text(
+                      mode == ThemeMode.light
+                          ? localizations.lightMode
+                          : mode == ThemeMode.dark
+                          ? localizations.darkMode
+                          : localizations.systemMode,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    value: mode,
+                    groupValue: currentMode,
+                    onChanged: (value) {
+                      if (value != null) {
+                        cubit.setThemeMode(value);
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          );
+        },
+      );
+    },
   );
-}
-
-class _ThemeTile extends StatelessWidget {
-  const _ThemeTile({required this.currentMode, required this.localizations});
-  final ThemeMode currentMode;
-  final AppLocalizations localizations;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    String title;
-    if (currentMode == ThemeMode.dark) {
-      title = localizations.darkMode;
-    } else if (currentMode == ThemeMode.light) {
-      title = localizations.lightMode;
-    } else {
-      title = localizations.systemMode;
-    }
-
-    return ListTile(
-      leading: const Icon(Icons.brightness_6, size: 28),
-      title: Text(
-        localizations.changeTheme,
-        style: theme.textTheme.titleMedium,
-      ),
-      trailing: Text(title, style: theme.textTheme.bodySmall),
-      onTap: () =>
-          _showThemeBottomSheet(context, currentMode, theme, localizations),
-    );
-  }
-
-  void _showThemeBottomSheet(
-    BuildContext context,
-    ThemeMode currentMode,
-    ThemeData theme,
-    AppLocalizations localizations,
-  ) {
-    showCustomModalBottomSheet(
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(localizations.selectTheme, style: theme.textTheme.titleMedium),
-
-          RadioListTile<ThemeMode>(
-            title: Text(
-              localizations.lightMode,
-              style: theme.textTheme.titleMedium,
-            ),
-            value: ThemeMode.light,
-            groupValue: currentMode,
-            onChanged: (value) {
-              if (value != null) {
-                context.read<ThemeCubit>().setThemeMode(value);
-                Navigator.pop(context);
-              }
-            },
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(
-              localizations.darkMode,
-              style: theme.textTheme.titleMedium,
-            ),
-            value: ThemeMode.dark,
-            groupValue: currentMode,
-            onChanged: (value) {
-              if (value != null) {
-                context.read<ThemeCubit>().setThemeMode(value);
-                Navigator.pop(context);
-              }
-            },
-          ),
-          RadioListTile<ThemeMode>(
-            title: Text(
-              localizations.systemMode,
-              style: theme.textTheme.titleMedium,
-            ),
-            value: ThemeMode.system,
-            groupValue: currentMode,
-            onChanged: (value) {
-              if (value != null) {
-                context.read<ThemeCubit>().setThemeMode(value);
-                Navigator.pop(context);
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-        ],
-      ),
-    );
-  }
 }

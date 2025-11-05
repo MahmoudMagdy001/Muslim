@@ -26,14 +26,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   /// التهيئة وجلب مواقيت الصلاة
   Future<void> init({required bool isArabic}) async {
-    Future.wait([checkAllPermissions(), fetchPrayerTimes(isArabic: isArabic)]);
+    await fetchPrayerTimes(isArabic: isArabic);
   }
 
   Future<void> checkAllPermissions() async {
     emit(state.copyWith(status: PrayerTimesStatus.checkingPermissions));
-
+    await requestAllPermissions();
     try {
-      requestAllPermissions();
       debugPrint('✅ تم التحقق من جميع الصلاحيات بنجاح');
     } catch (error) {
       debugPrint('❌ خطأ في التحقق من الصلاحيات: $error');
@@ -125,7 +124,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// تحديث يدوي لمواقيت الصلاة
   Future<void> refreshPrayerTimes({required bool isArabic}) async {
     debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
-    await init(isArabic: isArabic);
+    await checkAllPermissions();
+    init(isArabic: isArabic);
   }
 
   @override

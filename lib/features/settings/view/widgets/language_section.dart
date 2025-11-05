@@ -9,60 +9,40 @@ import '../../view_model/language/language_cubit.dart';
 import '../../view_model/language/language_state.dart';
 
 class LanguageSection extends StatelessWidget {
-  const LanguageSection({required this.localizations, super.key});
+  const LanguageSection({
+    required this.localizations,
+    required this.theme,
+    super.key,
+  });
   final AppLocalizations localizations;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<LanguageCubit, LanguageState>(
-        builder: (context, state) => _LanguageTile(
-          currentLocale: state.locale,
-          localizations: localizations,
-        ),
+        builder: (context, state) {
+          final currentLocale = state.locale;
+
+          final String title = currentLocale.languageCode == 'ar'
+              ? localizations.arabicLanguage
+              : localizations.englishLanguage;
+
+          return ListTile(
+            leading: const Icon(Icons.language),
+            title: Text(
+              localizations.changeLanguage,
+              style: theme.textTheme.titleMedium,
+            ),
+            trailing: Text(title, style: theme.textTheme.bodySmall),
+            onTap: () => _showLanguageBottomSheet(context, currentLocale),
+          );
+        },
       );
-}
 
-class _LanguageTile extends StatelessWidget {
-  const _LanguageTile({
-    required this.currentLocale,
-    required this.localizations,
-  });
-  final Locale currentLocale;
-  final AppLocalizations localizations;
-
-  @override
-  Widget build(BuildContext context) {
+  void _showLanguageBottomSheet(BuildContext context, Locale currentLocale) {
     final theme = Theme.of(context);
+    final cubit = context.read<LanguageCubit>();
 
-    String title;
-    if (currentLocale.languageCode == 'ar') {
-      title = localizations.arabicLanguage;
-    } else {
-      title = localizations.englishLanguage;
-    }
-
-    return ListTile(
-      leading: const Icon(Icons.language, size: 28),
-      title: Text(
-        localizations.changeLanguage,
-        style: theme.textTheme.titleMedium,
-      ),
-      trailing: Text(title, style: theme.textTheme.bodySmall),
-      onTap: () => _showLanguageBottomSheet(
-        context,
-        currentLocale,
-        theme,
-        localizations,
-      ),
-    );
-  }
-
-  void _showLanguageBottomSheet(
-    BuildContext context,
-    Locale currentLocale,
-    ThemeData theme,
-    AppLocalizations localizations,
-  ) {
     showCustomModalBottomSheet(
       context: context,
       builder: (context) => Column(
@@ -81,7 +61,7 @@ class _LanguageTile extends StatelessWidget {
             groupValue: currentLocale,
             onChanged: (value) {
               if (value != null) {
-                context.read<LanguageCubit>().changeLanguage(value);
+                cubit.changeLanguage(value);
                 Navigator.pop(context);
               }
             },
@@ -95,7 +75,7 @@ class _LanguageTile extends StatelessWidget {
             groupValue: currentLocale,
             onChanged: (value) {
               if (value != null) {
-                context.read<LanguageCubit>().changeLanguage(value);
+                cubit.changeLanguage(value);
                 Navigator.pop(context);
               }
             },

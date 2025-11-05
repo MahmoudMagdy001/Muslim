@@ -22,7 +22,6 @@ dependencies:
   permission_handler: ^12.0.1
   flutter_qiblah: ^3.1.0+1
   flutter_bloc: ^9.1.1
-  shimmer: ^3.0.0
   geolocator: ^13.0.2
   adhan: ^2.0.0+1
   hijri: ^3.0.0
@@ -33,6 +32,7 @@ dependencies:
   latlong2: ^0.9.1
   workmanager: ^0.9.0+3
   syncfusion_flutter_sliders: ^31.2.4
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

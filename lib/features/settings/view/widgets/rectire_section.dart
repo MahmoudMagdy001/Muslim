@@ -11,10 +11,13 @@ class ReciterSection extends StatelessWidget {
   const ReciterSection({
     required this.localizations,
     required this.isArabic,
+    required this.theme,
     super.key,
   });
+
   final AppLocalizations localizations;
   final bool isArabic;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ReciterCubit, ReciterState>(
@@ -23,63 +26,47 @@ class ReciterSection extends StatelessWidget {
         state.selectedReciter,
         isArabic: isArabic,
       );
-      return _ReciterTile(
-        reciterName: reciterName,
-        localizations: localizations,
-        isArabic: isArabic,
+      final cubit = context.read<ReciterCubit>();
+
+      return ListTile(
+        leading: const Icon(Icons.headphones),
+        title: Text(reciterName, style: theme.textTheme.titleMedium),
+        trailing: const Icon(Icons.arrow_drop_down_rounded),
+        onTap: () async {
+          final currentReciter = cubit.state.selectedReciter;
+
+          final result = await showCustomModalBottomSheet<String>(
+            context: context,
+            minChildSize: 0.3,
+            initialChildSize: 0.6,
+            isScrollControlled: true,
+            builder: (context) => ReciterDialog(
+              selectedReciterId: currentReciter,
+              localizations: localizations,
+              isArabic: isArabic,
+            ),
+          );
+
+          if (result != null && result != currentReciter) {
+            await cubit.saveReciter(result);
+            final changedReciterName = getReciterName(
+              result,
+              isArabic: isArabic,
+            );
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${localizations.changeReciterSuccess}$changedReciterName',
+                  ),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            }
+          }
+        },
       );
     },
   );
-}
-
-class _ReciterTile extends StatelessWidget {
-  const _ReciterTile({
-    required this.reciterName,
-    required this.localizations,
-    required this.isArabic,
-  });
-  final String reciterName;
-  final AppLocalizations localizations;
-  final bool isArabic;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.headphones, size: 20),
-    title: Text(reciterName, style: Theme.of(context).textTheme.titleMedium),
-    trailing: const Icon(Icons.arrow_drop_down_rounded, size: 26),
-    onTap: () => _showReciterBottomSheet(context),
-  );
-
-  Future<void> _showReciterBottomSheet(BuildContext context) async {
-    final cubit = context.read<ReciterCubit>();
-    final currentReciter = cubit.state.selectedReciter;
-
-    final result = await showCustomModalBottomSheet<String>(
-      context: context,
-      minChildSize: 0.3,
-      initialChildSize: 0.6,
-      isScrollControlled: true,
-      builder: (context) => ReciterDialog(
-        selectedReciterId: currentReciter,
-        localizations: localizations,
-        isArabic: isArabic,
-      ),
-    );
-
-    if (result != null && result != currentReciter) {
-      await cubit.saveReciter(result);
-      final changedReciterName = getReciterName(result);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${localizations.changeReciterSuccess}$changedReciterName ',
-            ),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    }
-  }
 }

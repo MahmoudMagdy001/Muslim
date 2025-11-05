@@ -52,8 +52,6 @@ class QuranService {
     _indexSubscription?.cancel(); // إلغاء القديم
     _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
       if (index != null) {
-        print('Index changed: $index'); // 🔹
-
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt('lastSurah', surahNumber);
         await prefs.setInt('lastVerse', index + 1);
@@ -65,7 +63,6 @@ class QuranService {
           'verse': index + 1,
           'reciter': reciter,
         });
-        print('LastPlayed emitted: ${index + 1}'); // 🔹
       }
     });
   }

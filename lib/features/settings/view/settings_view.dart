@@ -11,10 +11,15 @@ class SettingsView extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(localizations.settingsButton)),
-      body: SettingsContent(localizations: localizations , isArabic: isArabic),
+      body: SettingsContent(
+        localizations: localizations,
+        isArabic: isArabic,
+        theme: theme,
+      ),
     );
   }
 }

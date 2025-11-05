@@ -2,14 +2,26 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
+import '../../settings/service/settings_service.dart';
 import '../helper/prayer_consts.dart';
 import '../model/prayer_times_model.dart';
 
 class PrayerNotificationService {
+  final SettingsService _settingsService = SettingsService();
+
   final DateFormat _timeFormat = DateFormat('HH:mm');
 
   /// جدولة إشعارات الصلاة
   Future<void> schedulePrayerNotifications(LocalPrayerTimes times) async {
+    final enabled = await _settingsService.getPrayerNotificationsEnabled();
+    if (!enabled) {
+      debugPrint('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
+      await AwesomeNotifications().cancelSchedulesByChannelKey(
+        'prayer_reminder',
+      );
+      return;
+    }
+
     final now = DateTime.now();
     final areAllPrayersFinished = _areAllPrayersFinished(times, now);
 
@@ -187,5 +199,16 @@ class PrayerNotificationService {
       parsed.hour,
       parsed.minute,
     );
+  }
+
+  Future<void> cancelAllNotifications() async {
+    try {
+      await AwesomeNotifications().cancelSchedulesByChannelKey(
+        'prayer_reminder',
+      );
+      debugPrint('❌ تم إلغاء جميع إشعارات الصلاة');
+    } catch (e) {
+      debugPrint('⚠️ حدث خطأ أثناء إلغاء الإشعارات: $e');
+    }
   }
 }

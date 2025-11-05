@@ -4,6 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'app_info_section.dart';
 import 'font_size_section.dart';
 import 'language_section.dart';
+import 'notification_switch.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
 
@@ -11,28 +12,38 @@ class SettingsContent extends StatelessWidget {
   const SettingsContent({
     required this.localizations,
     required this.isArabic,
+    required this.theme,
     super.key,
   });
+
   final AppLocalizations localizations;
   final bool isArabic;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
     const divider = Divider(thickness: 0.05);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FontSizeSection(localizations: localizations),
+          FontSizeSection(localizations: localizations, theme: theme),
           divider,
-          ThemeSection(localizations: localizations),
+          ThemeSection(localizations: localizations, theme: theme),
           divider,
-          ReciterSection(localizations: localizations, isArabic: isArabic),
+          ReciterSection(
+            localizations: localizations,
+            isArabic: isArabic,
+            theme: theme,
+          ),
           divider,
-          LanguageSection(localizations: localizations),
+          LanguageSection(localizations: localizations, theme: theme),
           divider,
-          AppInfoSection(localizations: localizations),
+          PrayerNotificationSwitch(isArabic: isArabic, theme: theme),
+          divider,
+          AppInfoSection(localizations: localizations, theme: theme),
         ],
       ),
     );

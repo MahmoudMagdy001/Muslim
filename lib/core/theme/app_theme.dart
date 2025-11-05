@@ -168,11 +168,13 @@ class AppThemeFactory {
       const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         elevation: 4,
+        showCloseIcon: true,
       );
   SnackBarThemeData _darkSnackBarTheme(AppTextStyles styles) =>
       const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         elevation: 4,
+        showCloseIcon: true,
       );
 
   ElevatedButtonThemeData _darkElevatedButtonTheme(AppTextStyles styles) =>
