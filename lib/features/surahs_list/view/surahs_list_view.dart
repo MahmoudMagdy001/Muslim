@@ -15,6 +15,7 @@ class SurahsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
+    final theme = Theme.of(context);
 
     final localizations = AppLocalizations.of(context);
 
@@ -45,6 +46,7 @@ class SurahsListView extends StatelessWidget {
                   selectedReciter: selectedReciter,
                   isArabic: isArabic,
                   localizations: localizations,
+                  theme: theme,
                 ),
                 BookmarksTab(
                   reciter: selectedReciter,
