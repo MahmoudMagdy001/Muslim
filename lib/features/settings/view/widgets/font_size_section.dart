@@ -8,53 +8,40 @@ import '../../../../l10n/app_localizations.dart';
 import '../../view_model/font_size/font_size_cubit.dart';
 
 class FontSizeSection extends StatelessWidget {
-  const FontSizeSection({required this.localizations, super.key});
-  final AppLocalizations localizations;
-
-  @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<FontSizeCubit, FontSizeState>(
-        builder: (context, state) => _FontSizeSwitch(
-          currentSize: state.fontSize,
-          localizations: localizations,
-        ),
-      );
-}
-
-class _FontSizeSwitch extends StatelessWidget {
-  const _FontSizeSwitch({
-    required this.currentSize,
+  const FontSizeSection({
     required this.localizations,
+    required this.theme,
+    super.key,
   });
-  final double currentSize;
+
   final AppLocalizations localizations;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final fontSizeCubit = context.read<FontSizeCubit>();
 
-    return ListTile(
-      leading: const Icon(Icons.text_fields, size: 28),
-      title: Text(
-        localizations.changeFontSize,
-        style: theme.textTheme.titleMedium,
+    return BlocBuilder<FontSizeCubit, FontSizeState>(
+      builder: (context, state) => ListTile(
+        leading: const Icon(Icons.text_fields),
+        title: Text(
+          localizations.changeFontSize,
+          style: theme.textTheme.titleMedium,
+        ),
+        trailing: Text(
+          _getLabelForFontSize(state.fontSize),
+          style: theme.textTheme.bodySmall,
+        ),
+        onTap: () => _showFontSizeModal(context, state.fontSize, fontSizeCubit),
       ),
-      trailing: Text(
-        _getLabelForFontSize(currentSize),
-        style: theme.textTheme.bodySmall,
-      ),
-      onTap: () =>
-          _showFontSizeModal(context, currentSize, theme, localizations),
     );
   }
 
   void _showFontSizeModal(
     BuildContext context,
     double currentSize,
-    ThemeData theme,
-    AppLocalizations lcoalizations,
+    FontSizeCubit cubit,
   ) {
-    final fontSizeCubit = context.read<FontSizeCubit>();
     showCustomModalBottomSheet(
       context: context,
       builder: (context) => Column(
@@ -67,13 +54,13 @@ class _FontSizeSwitch extends StatelessWidget {
           const SizedBox(height: 8),
           RadioListTile<double>(
             title: Text(
-              lcoalizations.smallFont,
+              localizations.smallFont,
               style: theme.textTheme.titleMedium,
             ),
             value: 14,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
-              fontSizeCubit.setFontSize(value!);
+              cubit.setFontSize(value!);
               Navigator.pop(context);
             },
           ),
@@ -85,7 +72,7 @@ class _FontSizeSwitch extends StatelessWidget {
             value: 18,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
-              fontSizeCubit.setFontSize(value!);
+              cubit.setFontSize(value!);
               Navigator.pop(context);
             },
           ),
@@ -97,7 +84,7 @@ class _FontSizeSwitch extends StatelessWidget {
             value: 22,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) {
-              fontSizeCubit.setFontSize(value!);
+              cubit.setFontSize(value!);
               Navigator.pop(context);
             },
           ),

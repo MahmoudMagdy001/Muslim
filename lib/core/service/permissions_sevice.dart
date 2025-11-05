@@ -4,9 +4,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 Future<void> requestAllPermissions() async {
   try {
-    await checkLocationPermission();
-    await checkNotificationPermission();
-    await checkBatteryOptimization();
+    Future.wait([
+      checkLocationPermission(),
+      checkNotificationPermission(),
+      checkBatteryOptimization(),
+    ]);
   } catch (e) {
     debugPrint('Permission request error: $e');
   }

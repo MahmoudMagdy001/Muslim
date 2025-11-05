@@ -26,36 +26,32 @@ class PrayerTimesView extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
 
-    return BlocProvider(
-      create: (_) => PrayerTimesCubit()..init(isArabic: isArabic),
-      child:
-          BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
-            selector: (state) => state.status,
-            builder: (context, status) {
-              if (status == PrayerTimesStatus.error ||
-                  status == PrayerTimesStatus.permissionError) {
-                final message = context.select(
-                  (PrayerTimesCubit cubit) =>
-                      cubit.state.message ?? localizations.errorMain,
-                );
-                return _PrayerErrorSliver(
-                  message: message,
-                  localizations: localizations,
-                  isArabic: isArabic,
-                );
-              }
+    return BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
+      selector: (state) => state.status,
+      builder: (context, status) {
+        if (status == PrayerTimesStatus.error ||
+            status == PrayerTimesStatus.permissionError) {
+          final message = context.select(
+            (PrayerTimesCubit cubit) =>
+                cubit.state.message ?? localizations.errorMain,
+          );
+          return _PrayerErrorSliver(
+            message: message,
+            localizations: localizations,
+            isArabic: isArabic,
+          );
+        }
 
-              return SliverToBoxAdapter(
-                child: Skeletonizer(
-                  enabled: status == PrayerTimesStatus.loading,
-                  child: _PrayerSuccessSliver(
-                    localizations: localizations,
-                    isArabic: isArabic,
-                  ),
-                ),
-              );
-            },
+        return SliverToBoxAdapter(
+          child: Skeletonizer(
+            enabled: status == PrayerTimesStatus.loading,
+            child: _PrayerSuccessSliver(
+              localizations: localizations,
+              isArabic: isArabic,
+            ),
           ),
+        );
+      },
     );
   }
 }
