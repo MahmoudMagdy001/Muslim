@@ -21,6 +21,7 @@ class SurahListTab extends StatefulWidget {
     required this.theme,
     super.key,
   });
+
   final String selectedReciter;
   final bool isArabic;
   final AppLocalizations localizations;
@@ -124,14 +125,16 @@ class _SurahListTabState extends State<SurahListTab> {
                         if (lastPlayed == null) return const SizedBox.shrink();
 
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
+                          padding: const EdgeInsetsDirectional.only(
+                            start: 6,
+                            end: 18,
+                            top: 6,
                           ),
                           child: Card(
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12),
                               onTap: () => navigateWithTransition(
+                                type: TransitionType.fade,
                                 context,
                                 QuranView(
                                   surahNumber: lastPlayed['surah'],
@@ -139,21 +142,44 @@ class _SurahListTabState extends State<SurahListTab> {
                                   currentAyah: lastPlayed['verse'],
                                 ),
                               ),
-                              child: ListTile(
-                                trailing: const Icon(Icons.arrow_back_ios),
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'آخر سوره استمعت لها: سورة ${quran.getSurahNameArabic(lastPlayed['surah'])}',
-                                      style: widget.theme.textTheme.titleMedium,
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      'آية رقم: ${convertToArabicNumbers(lastPlayed['verse'].toString())}',
-                                      style: widget.theme.textTheme.bodyLarge,
-                                    ),
-                                  ],
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                ),
+                                child: ListTile(
+                                  trailing: const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                  ),
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'آخر سوره استمعت لها: سورة ${quran.getSurahNameArabic(lastPlayed['surah'])}',
+                                        style:
+                                            widget.theme.textTheme.titleMedium,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'سوره رقم: ${convertToArabicNumbers(lastPlayed['surah'].toString())}',
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Text('-'),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'آية رقم: ${convertToArabicNumbers(lastPlayed['verse'].toString())}',
+                                            style: widget
+                                                .theme
+                                                .textTheme
+                                                .bodyLarge,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -166,7 +192,7 @@ class _SurahListTabState extends State<SurahListTab> {
               // ليست السور
               SliverPadding(
                 padding: const EdgeInsetsDirectional.only(
-                  top: 15,
+                  top: 8,
                   bottom: 15,
                   start: 6,
                   end: 18,

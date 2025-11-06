@@ -26,12 +26,13 @@ class SettingsContent extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-
       child: Column(
         children: [
           FontSizeSection(localizations: localizations, theme: theme),
           divider,
           ThemeSection(localizations: localizations, theme: theme),
+          divider,
+          NotificationSection(isArabic: isArabic, theme: theme),
           divider,
           ReciterSection(
             localizations: localizations,
@@ -40,8 +41,6 @@ class SettingsContent extends StatelessWidget {
           ),
           divider,
           LanguageSection(localizations: localizations, theme: theme),
-          divider,
-          PrayerNotificationSwitch(isArabic: isArabic, theme: theme),
           divider,
           AppInfoSection(localizations: localizations, theme: theme),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../core/utils/format_helper.dart';
@@ -110,11 +111,15 @@ class _PrayerSuccessSliver extends StatelessWidget {
     final theme = Theme.of(context);
 
     final hijriDate = _getHijriDate(isArabic);
+    final String dayName = DateFormat.EEEE(
+      isArabic ? 'ar' : 'en',
+    ).format(DateTime.now());
 
     return CurrentPrayerCard(
       hijriDate: hijriDate,
       theme: theme,
       localizations: localizations,
+      dayName: dayName,
     );
   }
 

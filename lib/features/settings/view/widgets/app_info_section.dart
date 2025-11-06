@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'about_us.dart';
 import 'privacy_policy_view.dart';
 
 class AppInfoSection extends StatelessWidget {
@@ -34,6 +35,17 @@ class AppInfoSection extends StatelessWidget {
           );
         },
         theme: theme,
+      ),
+      const Divider(thickness: 0.05),
+      _AppInfoTile(
+        icon: Icons.person_rounded,
+        title: 'من نحن',
+        theme: theme,
+        onTap: () => navigateWithTransition(
+          context,
+          AboutUsView(theme: theme),
+          type: TransitionType.fade,
+        ),
       ),
     ],
   );
