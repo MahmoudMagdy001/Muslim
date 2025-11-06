@@ -1,48 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/format_helper.dart';
+
 class PrivacyPolicyView extends StatelessWidget {
   const PrivacyPolicyView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('سياسة الخصوصية')),
-    body: SafeArea(
+    body: const SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Section
-            _buildHeaderSection(context),
-            const SizedBox(height: 24),
+            _HeaderSection(),
+            SizedBox(height: 24),
 
             // Privacy Principles
-            _buildPrivacyPrinciples(context),
-            const SizedBox(height: 24),
+            _PrivacyPrinciples(),
+            SizedBox(height: 24),
 
             // Local Storage
-            _buildLocalStorageInfo(context),
-            const SizedBox(height: 24),
+            _LocalStorageInfo(),
+            SizedBox(height: 24),
 
             // Data Collection Info
-            _buildDataCollectionInfo(context),
-            const SizedBox(height: 24),
+            _DataCollectionInfo(),
+            SizedBox(height: 24),
 
             // Contact Section
-            _buildContactSection(context),
-            const SizedBox(height: 20),
+            _ContactSection(),
+            SizedBox(height: 20),
 
             // Last Update
-            _buildLastUpdate(context),
-            const SizedBox(height: 10),
+            _LastUpdate(),
+            SizedBox(height: 10),
           ],
         ),
       ),
     ),
   );
+}
 
-  Widget _buildHeaderSection(BuildContext context) {
+class _HeaderSection extends StatelessWidget {
+  const _HeaderSection();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -82,8 +89,13 @@ class PrivacyPolicyView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildPrivacyPrinciples(BuildContext context) {
+class _PrivacyPrinciples extends StatelessWidget {
+  const _PrivacyPrinciples();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -95,20 +107,17 @@ class PrivacyPolicyView extends StatelessWidget {
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        _buildPrincipleItem(
-          context: context,
+        const _PrincipleItem(
           icon: Icons.no_accounts,
           title: 'لا يوجد حسابات',
           description: 'التطبيق لا يتطلب إنشاء حساب أو تسجيل دخول',
         ),
-        _buildPrincipleItem(
-          context: context,
+        const _PrincipleItem(
           icon: Icons.cloud_off,
           title: 'لا تتبع',
           description: 'لا نتابع أو نراقب استخدامك للتطبيق',
         ),
-        _buildPrincipleItem(
-          context: context,
+        const _PrincipleItem(
           icon: Icons.money_off,
           title: 'لا مشتريات',
           description: 'لا توجد عمليات شراء داخل التطبيق',
@@ -116,13 +125,21 @@ class PrivacyPolicyView extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildPrincipleItem({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required String description,
-  }) {
+class _PrincipleItem extends StatelessWidget {
+  const _PrincipleItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -162,8 +179,13 @@ class PrivacyPolicyView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildDataCollectionInfo(BuildContext context) {
+class _DataCollectionInfo extends StatelessWidget {
+  const _DataCollectionInfo();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -201,8 +223,13 @@ class PrivacyPolicyView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildLocalStorageInfo(BuildContext context) {
+class _LocalStorageInfo extends StatelessWidget {
+  const _LocalStorageInfo();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -214,16 +241,23 @@ class PrivacyPolicyView extends StatelessWidget {
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        _buildStorageItem(context, 'إعدادات أوقات الصلاة'),
-        _buildStorageItem(context, 'تفضيلات التلاوة'),
-        _buildStorageItem(context, 'الأذكار المفضلة'),
-        _buildStorageItem(context, 'التسبيحات المحفوظة'),
-        _buildStorageItem(context, 'موقعك الجغرافي (محلي فقط)'),
+        const _StorageItem('إعدادات أوقات الصلاة'),
+        const _StorageItem('تفضيلات التلاوة'),
+        const _StorageItem('الأذكار المفضلة'),
+        const _StorageItem('التسبيحات المحفوظة'),
+        const _StorageItem('موقعك الجغرافي (محلي فقط)'),
       ],
     );
   }
+}
 
-  Widget _buildStorageItem(BuildContext context, String text) {
+class _StorageItem extends StatelessWidget {
+  const _StorageItem(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -243,8 +277,13 @@ class PrivacyPolicyView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildContactSection(BuildContext context) {
+class _ContactSection extends StatelessWidget {
+  const _ContactSection();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -298,13 +337,38 @@ class PrivacyPolicyView extends StatelessWidget {
     );
   }
 
-  Widget _buildLastUpdate(BuildContext context) {
+  Future<void> _launchEmail(BuildContext context) async {
+    final String subject = Uri.encodeComponent(
+      'استفسار عن سياسة الخصوصية - تطبيق مُسَلِّم',
+    );
+
+    final Uri emailLaunchUri = Uri.parse(
+      'mailto:mahmodmansour2001@gmail.com?subject=$subject',
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا يمكن فتح تطبيق البريد الإلكتروني')),
+        );
+      }
+    }
+  }
+}
+
+class _LastUpdate extends StatelessWidget {
+  const _LastUpdate();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
     return Center(
       child: Text(
-        'آخر تحديث: ${_getCurrentDate()}',
+        'آخر تحديث: ${convertToArabicNumbers(_getCurrentDate())}',
         textAlign: TextAlign.center,
         style: textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
@@ -317,23 +381,5 @@ class PrivacyPolicyView extends StatelessWidget {
   String _getCurrentDate() {
     final now = DateTime.now();
     return '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
-  }
-
-  Future<void> _launchEmail(BuildContext context) async {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'mahmodmansour2001@gmail.com',
-      queryParameters: {'subject': 'استفسار عن سياسة الخصوصية - تطبيق المسلم'},
-    );
-
-    if (await canLaunchUrl(emailLaunchUri)) {
-      await launchUrl(emailLaunchUri);
-    } else {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('لا يمكن فتح تطبيق البريد الإلكتروني')),
-        );
-      }
-    }
   }
 }

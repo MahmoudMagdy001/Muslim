@@ -15,12 +15,14 @@ class CurrentPrayerCard extends StatelessWidget {
     required this.hijriDate,
     required this.theme,
     required this.localizations,
+    required this.dayName,
     super.key,
   });
 
   final String hijriDate;
   final ThemeData theme;
   final AppLocalizations localizations;
+  final String dayName;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class CurrentPrayerCard extends StatelessWidget {
         children: [
           // 🏙️ المدينة
           _CityText(theme),
-          // 🕌 التاريخ الهجري + زر التحديث
+          // 🕌 التاريخ الهجري و اسم اليوم + زر التحديث
           Padding(
             padding: const EdgeInsetsDirectional.only(
               top: 5,
@@ -45,7 +47,10 @@ class CurrentPrayerCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(hijriDate, style: theme.textTheme.bodyMedium),
+                Text(
+                  '$dayName - $hijriDate',
+                  style: theme.textTheme.bodyMedium,
+                ),
                 _RefreshButton(localizations, isArabic),
               ],
             ),

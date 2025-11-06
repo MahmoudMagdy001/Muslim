@@ -5,13 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../features/layout/view/layout_view.dart';
 import '../../../features/settings/view_model/theme/theme_cubit.dart';
 import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
+import '../../service/in_app_update.dart';
 import '../../theme/app_theme.dart';
-
-/// App content that depends on cubits
 import '../../../features/settings/view_model/language/language_cubit.dart';
 import '../../../features/settings/view_model/language/language_state.dart';
 
-class AppContent extends StatelessWidget {
+class AppContent extends StatefulWidget {
   const AppContent({
     required this.localizationsDelegates,
     required this.supportedLocales,
@@ -20,6 +19,19 @@ class AppContent extends StatelessWidget {
 
   final Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
   final Iterable<Locale> supportedLocales;
+
+  @override
+  State<AppContent> createState() => _AppContentState();
+}
+
+class _AppContentState extends State<AppContent> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AppUpdateService.checkForUpdate(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
@@ -43,7 +55,6 @@ class AppContent extends StatelessWidget {
                     systemNavigationBarIconBrightness: isDark
                         ? Brightness.light
                         : Brightness.dark,
-
                     statusBarColor: Colors.transparent,
                     statusBarIconBrightness: isDark
                         ? Brightness.light
@@ -51,7 +62,6 @@ class AppContent extends StatelessWidget {
                     statusBarBrightness: isDark
                         ? Brightness.dark
                         : Brightness.light,
-
                     systemNavigationBarContrastEnforced: false,
                     systemStatusBarContrastEnforced: false,
                   ),
@@ -65,14 +75,13 @@ class AppContent extends StatelessWidget {
                   reverseCurve: Curves.easeOut,
                   reverseDuration: Duration(milliseconds: 500),
                 ),
-
                 debugShowCheckedModeBanner: false,
                 themeMode: themeState.themeMode,
                 theme: lightTheme,
                 darkTheme: darkTheme,
                 locale: languageState.locale,
-                localizationsDelegates: localizationsDelegates,
-                supportedLocales: supportedLocales,
+                localizationsDelegates: widget.localizationsDelegates,
+                supportedLocales: widget.supportedLocales,
                 home: const LayoutView(),
               );
             },
