@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:quran/quran.dart' as quran;
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import 'create_share_tafsir.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({
@@ -122,16 +122,16 @@ class _SurahTextViewState extends State<SurahTextView> {
 
   /// 🕌 قائمة المفسرين المدعومين
   final List<Map<String, dynamic>> tafasirList = [
-    {'id': 1, 'name_ar': 'التفسير الميسر', 'name_en': 'Al-Muyassar Tafsir'},
-    {'id': 2, 'name_ar': 'تفسير الجلالين', 'name_en': 'Tafsir Al-Jalalayn'},
-    {'id': 3, 'name_ar': 'تفسير السعدي', 'name_en': 'Tafsir As-Saadi'},
+    // {'id': 1, 'name_ar': 'التفسير الميسر', 'name_en': 'Al-Muyassar Tafsir'},
+    // {'id': 2, 'name_ar': 'تفسير الجلالين', 'name_en': 'Tafsir Al-Jalalayn'},
+    // {'id': 3, 'name_ar': 'تفسير السعدي', 'name_en': 'Tafsir As-Saadi'},
     {'id': 4, 'name_ar': 'تفسير ابن كثير', 'name_en': 'Tafsir Ibn Kathir'},
-    {
-      'id': 5,
-      'name_ar': 'تفسير الوسيط لطنطاوي',
-      'name_en': 'Tafsir Al-Waseet by Tantawi',
-    },
-    {'id': 6, 'name_ar': 'تفسير البغوي', 'name_en': 'Tafsir Al-Baghawi'},
+    // {
+    //   'id': 5,
+    //   'name_ar': 'تفسير الوسيط لطنطاوي',
+    //   'name_en': 'Tafsir Al-Waseet by Tantawi',
+    // },
+    // {'id': 6, 'name_ar': 'تفسير البغوي', 'name_en': 'Tafsir Al-Baghawi'},
     {'id': 7, 'name_ar': 'تفسير القرطبي', 'name_en': 'Tafsir Al-Qurtubi'},
     {'id': 8, 'name_ar': 'تفسير الطبري', 'name_en': 'Tafsir At-Tabari'},
   ];
@@ -374,25 +374,15 @@ class _SurahTextViewState extends State<SurahTextView> {
                       child: SizedBox(
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: () {
-                            SharePlus.instance.share(
-                              ShareParams(
-                                text:
-                                    '''
-📖 $selectedTafsirName
-${widget.isArabic ? 'سورة $surahName - الآية رقم ${convertToArabicNumbers(ayah.toString())}' : 'Surah $surahName - Verse Number $ayah'}
-
-────────────────────
-${widget.isArabic ? quran.getVerse(widget.surahNumber, ayah) : quran.getVerseTranslation(widget.surahNumber, ayah)}
-────────────────────
-
-💬 التفسير:
-$tafsirText
-
-────────────────────
-🔗 ${widget.isArabic ? 'تم مشاركته من تطبيق مسلم ' : 'Shared from Muslim App'}
-    ''',
-                              ),
+                          onPressed: () async {
+                            await createAndShareTafsirImage(
+                              surahName: surahName,
+                              ayahNumber: ayah,
+                              ayahText: text,
+                              tafsirTitle: selectedTafsirName,
+                              tafsirText: tafsirText ?? '',
+                              isArabic: widget.isArabic,
+                              context: context,
                             );
                           },
                           child: Text(widget.localizations.shareTafsir),

@@ -234,6 +234,18 @@ class QuranNotificationService {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
 
+      // احذف أي إشعارات قديمة قبل جدولة الجديدة
+      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
+
+      final DateTime now = DateTime.now();
+
+      final DateTime firstNotification = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        now.hour + 1,
+      );
+
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
@@ -241,9 +253,9 @@ class QuranNotificationService {
           title: '📖 تذكير بقراءة القرآن',
           body: 'لا تنس وردك من القرآن الكريم 🌿',
         ),
-        schedule: NotificationInterval(
-          interval: const Duration(hours: 3),
-          repeats: true,
+        schedule: NotificationAndroidCrontab.hourly(
+          referenceDateTime: firstNotification,
+          allowWhileIdle: true,
         ),
       );
     } catch (e) {

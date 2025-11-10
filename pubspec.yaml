@@ -35,6 +35,8 @@ dependencies:
   url_launcher: ^6.3.2
   in_app_update: ^4.2.5
   package_info_plus: ^9.0.0
+  path_provider: ^2.1.5
+  screenshot: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +54,7 @@ flutter:
     - assets/images/seb7a.png
     - assets/images/zakat.png
     - assets/images/muslim_logo.png
+    - assets/images/basmalah.png
     - assets/json/azkar.json
     - assets/json/azkar_en.json
     - assets/json/names_of_allah.json
