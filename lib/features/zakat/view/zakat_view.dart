@@ -18,11 +18,9 @@ class ZakatView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(localizations.my_zakat)),
       body: SafeArea(
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 1,
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          itemBuilder: (context, index) => Column(
+          child: Column(
             children: [
               // 💰 لمن الزكاة
               _buildSectionCard(

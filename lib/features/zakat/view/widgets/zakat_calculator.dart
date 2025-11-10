@@ -37,7 +37,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
   Future<void> fetchGoldPrice() async {
     const goldApiUrl = 'https://api.gold-api.com/price/XAU';
     const exchangeApiUrl =
-        'https://api.exchangerate.host/latest?base=USD&symbols=EGP';
+        'https://v6.exchangerate-api.com/v6/1ee47c1bb5322848794692ee/latest/USD';
 
     try {
       setState(() {
@@ -68,12 +68,16 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
 
       final exchangeData = json.decode(exchangeResponse.body);
       final usdToEgp =
-          (exchangeData['rates']?['EGP'] as num?)?.toDouble() ?? 50.0;
+          (exchangeData['conversion_rates']?['EGP'] as num?)?.toDouble() ?? 0.0;
+
+      print('USD → EGP = $usdToEgp');
 
       // --- 3️⃣ تحويل السعر من أونصة إلى جرام ---
       const ounceToGram = 31.1035;
       final pricePerGramUSD = pricePerOunceUSD / ounceToGram;
       final pricePerGramEGP = pricePerGramUSD * usdToEgp;
+
+      print('Gold price per gram in EGP: $pricePerGramEGP');
 
       setState(() {
         goldPricePerGram = pricePerGramEGP;
@@ -84,6 +88,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         isLoading = false;
         errorMessage = 'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
       });
+      print('Error: $e');
     }
   }
 
