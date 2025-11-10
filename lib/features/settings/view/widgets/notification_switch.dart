@@ -220,7 +220,6 @@ class NotificationSettingsManager {
 // Service for Quran notifications
 class QuranNotificationService {
   static const String _channelKey = 'quran_channel';
-  static const int _notificationId = 1;
 
   Future<void> cancelAllNotifications() async {
     try {
@@ -233,26 +232,22 @@ class QuranNotificationService {
 
   Future<void> scheduleDailyReminder() async {
     try {
-      final timeZone = await AwesomeNotifications()
-          .getLocalTimeZoneIdentifier();
+      await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
 
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
-          id: _notificationId,
-          channelKey: _channelKey,
+          id: 1,
+          channelKey: 'quran_channel',
           title: '📖 تذكير بقراءة القرآن',
-          body: 'لا تنس وردك من القرآن الكريم الآن',
-          icon: 'resource://drawable/ic_muslim_logo',
+          body: 'لا تنس وردك من القرآن الكريم 🌿',
         ),
-        schedule: NotificationCalendar(
-          minute: 0,
-          second: 0,
+        schedule: NotificationInterval(
+          interval: const Duration(hours: 3),
           repeats: true,
-          timeZone: timeZone,
         ),
       );
     } catch (e) {
-      debugPrint('Error scheduling Quran notification: $e');
+      debugPrint('❌ خطأ أثناء جدولة إشعار القرآن: $e');
     }
   }
 }

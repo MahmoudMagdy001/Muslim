@@ -9,10 +9,13 @@ class AppInfoSection extends StatelessWidget {
   const AppInfoSection({
     required this.localizations,
     required this.theme,
+    required this.appVersion,
     super.key,
   });
+
   final AppLocalizations localizations;
   final ThemeData theme;
+  final String appVersion;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -20,7 +23,7 @@ class AppInfoSection extends StatelessWidget {
       _AppInfoTile(
         icon: Icons.info_outline,
         title: localizations.appVersion,
-        subtitle: '${localizations.version} 1.0.0',
+        subtitle: '${localizations.version} $appVersion',
         theme: theme,
       ),
       const Divider(),
@@ -43,7 +46,7 @@ class AppInfoSection extends StatelessWidget {
         theme: theme,
         onTap: () => navigateWithTransition(
           context,
-          AboutUsView(theme: theme),
+          AboutUsView(theme: theme, appVersion: appVersion),
           type: TransitionType.fade,
         ),
       ),
@@ -59,6 +62,7 @@ class _AppInfoTile extends StatelessWidget {
     this.subtitle,
     this.onTap,
   });
+
   final IconData icon;
   final String title;
   final String? subtitle;

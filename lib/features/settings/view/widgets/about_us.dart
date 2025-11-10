@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsView extends StatelessWidget {
-  const AboutUsView({required this.theme, super.key});
+  const AboutUsView({required this.theme, required this.appVersion, super.key});
   final ThemeData theme;
+  final String appVersion;
 
   Future<void> _launchEmail() async {
     final String subject = Uri.encodeComponent(
-      'تواصل بخصوص تطبيق - تطبيق مُسَلِّم',
+      'تواصل بخصوص التطبيق - مُسَلِّم',
     );
     final Uri emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
@@ -87,7 +88,7 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'الإصدار 1.0.0',
+              'الإصدار $appVersion',
               style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
             ),
           ],
