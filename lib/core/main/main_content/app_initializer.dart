@@ -5,21 +5,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../../features/prayer_times/service/work_manager_service.dart';
+import '../../../features/settings/service/settings_service.dart';
 import '../../service/permissions_sevice.dart';
 
 class AppInitializer {
   AppInitializer(this.prefs);
 
+  final SettingsService _settingsService = SettingsService();
+
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
     await requestAllPermissions();
-    Future.wait([
-      workManagerNotify(),
-      _initializeAudioBackground(),
-      _initializeNotifications(),
-      _scheduleHourlyReminder(),
-    ]);
+    await _initializeNotifications();
+    await workManagerNotify();
+    await _initializeAudioBackground();
+    await _scheduleQuranReminders();
   }
 
   double getInitialFontSize() => prefs.getDouble('fontSize') ?? 18.0;
@@ -40,10 +41,11 @@ class AppInitializer {
 
     await Workmanager().initialize(callbackDispatcher);
     await Workmanager().registerPeriodicTask(
-      '001',
+      'updatePrayerTimes',
       updatePrayerTimesTask,
       frequency: const Duration(hours: 12),
       initialDelay: const Duration(minutes: 15),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
   }
 
@@ -92,28 +94,33 @@ class AppInitializer {
         ]);
   }
 
-  Future<void> _scheduleHourlyReminder() async {
-    try {
-      final timeZone = await AwesomeNotifications()
-          .getLocalTimeZoneIdentifier();
+  Future<void> _scheduleQuranReminders() async {
+    final enabled = await _settingsService.getQuranNotificationsEnabled();
+    if (!enabled) {
+      debugPrint('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
+      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
+      return;
+    }
 
+    try {
+      // احذف أي إشعارات قديمة قبل جدولة الجديدة
+      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
+
+      // تذكير أول عند الساعة 9 صباحًا
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
           channelKey: 'quran_channel',
           title: '📖 تذكير بقراءة القرآن',
-          body: 'لا تنس وردك من القرآن الكريم الآن',
-          icon: 'resource://drawable/ic_muslim_logo',
+          body: 'لا تنس وردك من القرآن الكريم 🌿',
         ),
-        schedule: NotificationCalendar(
-          minute: 0,
-          second: 0,
+        schedule: NotificationInterval(
+          interval: const Duration(hours: 3),
           repeats: true,
-          timeZone: timeZone,
         ),
       );
     } catch (e) {
-      debugPrint('Error scheduling notification: $e');
+      debugPrint('❌ خطأ أثناء جدولة الإشعارات: $e');
     }
   }
 }

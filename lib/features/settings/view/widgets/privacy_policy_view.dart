@@ -339,7 +339,7 @@ class _ContactSection extends StatelessWidget {
 
   Future<void> _launchEmail(BuildContext context) async {
     final String subject = Uri.encodeComponent(
-      'استفسار عن سياسة الخصوصية - تطبيق مُسَلِّم',
+      'استفسار عن سياسة الخصوصية - مُسَلِّم',
     );
 
     final Uri emailLaunchUri = Uri.parse(

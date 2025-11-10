@@ -47,7 +47,8 @@ class AppUpdateService {
                 await InAppUpdate.performImmediateUpdate();
               } catch (_) {
                 const url =
-                    'https://play.google.com/store/apps/details?id=com.your.app';
+                    'https://play.google.com/store/apps/details?id=com.muslim.app';
+
                 if (await canLaunchUrl(Uri.parse(url))) {
                   await launchUrl(
                     Uri.parse(url),
