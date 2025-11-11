@@ -43,13 +43,11 @@ class PrayerTimesView extends StatelessWidget {
           );
         }
 
-        return SliverToBoxAdapter(
-          child: Skeletonizer(
-            enabled: status == PrayerTimesStatus.loading,
-            child: _PrayerSuccessSliver(
-              localizations: localizations,
-              isArabic: isArabic,
-            ),
+        return Skeletonizer(
+          enabled: status == PrayerTimesStatus.loading,
+          child: _PrayerSuccessSliver(
+            localizations: localizations,
+            isArabic: isArabic,
           ),
         );
       },
@@ -69,30 +67,28 @@ class _PrayerErrorSliver extends StatelessWidget {
   final bool isArabic;
 
   @override
-  Widget build(BuildContext context) => SliverToBoxAdapter(
-    child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red, fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await context.read<PrayerTimesCubit>().refreshPrayerTimes(
-                  isArabic: isArabic,
-                );
-              },
-              icon: const Icon(Icons.refresh),
-              label: Text(localizations.retry),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red, fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () async {
+              await context.read<PrayerTimesCubit>().refreshPrayerTimes(
+                isArabic: isArabic,
+              );
+            },
+            icon: const Icon(Icons.refresh),
+            label: Text(localizations.retry),
+          ),
+        ],
       ),
     ),
   );
