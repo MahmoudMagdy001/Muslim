@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../features/layout/view/layout_view.dart';
 import '../../../features/settings/view_model/theme/theme_cubit.dart';
 import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
+import '../../service/in_app_rate.dart';
 import '../../service/in_app_update.dart';
 import '../../theme/app_theme.dart';
 import '../../../features/settings/view_model/language/language_cubit.dart';
@@ -30,6 +31,7 @@ class _AppContentState extends State<AppContent> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AppUpdateService.checkForUpdate(context);
+      RateAppHelper.handleAppLaunch(context);
     });
   }
 

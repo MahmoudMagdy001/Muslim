@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
+import '../../../../core/service/in_app_rate.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_info_section.dart';
 import 'font_size_section.dart';
-import 'language_section.dart';
 import 'notification_switch.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
@@ -73,16 +72,33 @@ class _SettingsContentState extends State<SettingsContent> {
             theme: widget.theme,
           ),
           divider,
-          LanguageSection(
-            localizations: widget.localizations,
-            theme: widget.theme,
-          ),
-          divider,
           AppInfoSection(
             localizations: widget.localizations,
             theme: widget.theme,
             appVersion: appVersion ?? '...',
           ),
+          const SizedBox(height: 20),
+
+          // 🔹 زر التقييم اليدوي في آخر الصفحة
+          ElevatedButton.icon(
+            onPressed: () => RateAppHelper.rateNow(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: widget.theme.colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 12.0,
+              ),
+            ),
+            icon: const Icon(Icons.star_rate_rounded, color: Colors.white),
+            label: Text(
+              widget.isArabic ? 'قيّم التطبيق' : 'Rate App',
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+          const SizedBox(height: 30),
         ],
       ),
     );

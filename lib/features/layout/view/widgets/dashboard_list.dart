@@ -30,7 +30,6 @@ class DashboardGrid extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final List<DashboardItemModel> items = [
       DashboardItemModel(
-        
         icon: Icons.auto_stories_rounded,
         label: localizations.quranButton,
         color: Colors.blue,
@@ -70,24 +69,22 @@ class DashboardGrid extends StatelessWidget {
       ),
     ];
 
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: SizedBox(
-          height: height * 0.07,
-          child: ListView.builder(
-            cacheExtent: 75,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return SizedBox(
-                width: 75,
-                child: DashboardButton(item: item, theme: theme),
-              );
-            },
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: SizedBox(
+        height: height * 0.07,
+        child: ListView.builder(
+          cacheExtent: 75,
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return SizedBox(
+              width: 75,
+              child: DashboardButton(item: item, theme: theme),
+            );
+          },
         ),
       ),
     );
