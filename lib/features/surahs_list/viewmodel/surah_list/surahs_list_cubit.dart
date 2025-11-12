@@ -3,14 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repository/surahs_list_repository.dart';
+import '../../service/search_service.dart';
 import 'surahs_list_state.dart';
 
 class SurahListCubit extends Cubit<SurahsListState> {
-  SurahListCubit({required this.surahRepository})
+  SurahListCubit({required this.surahRepository, required this.searchService})
     : super(const SurahsListState()) {
     // _loadSurahs();
   }
   final SurahsListRepository surahRepository;
+  final QuranSearchService searchService;
+
   Timer? _debounceTimer;
 
   Future<void> loadSurahs({required bool isArabic}) async {
@@ -34,25 +37,9 @@ class SurahListCubit extends Cubit<SurahsListState> {
     }
   }
 
-  void filterSurahs(String query) {
-    _debounceTimer?.cancel();
-
-    if (state.status != SurahsListStatus.success) return;
-
-    if (query.isEmpty) {
-      emit(state.copyWith(filteredSurahs: state.allSurahs, searchText: query));
-      return;
-    }
-
-    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      if (isClosed) return;
-
-      final filtered = state.allSurahs
-          .where((surah) => surah.surahName.contains(query))
-          .toList();
-
-      emit(state.copyWith(filteredSurahs: filtered, searchText: query));
-    });
+  void searchInQuran(String keyword, {required bool partial}) {
+    final results = searchService.search(keyword, partial: partial);
+    emit(state.copyWith(searchText: keyword, searchResults: results));
   }
 
   Future<void> saveLastSurah(int surah, {int lastAyah = 1}) async {

@@ -70,14 +70,14 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
       final usdToEgp =
           (exchangeData['conversion_rates']?['EGP'] as num?)?.toDouble() ?? 0.0;
 
-      print('USD → EGP = $usdToEgp');
+      debugPrint('USD → EGP = $usdToEgp');
 
       // --- 3️⃣ تحويل السعر من أونصة إلى جرام ---
       const ounceToGram = 31.1035;
       final pricePerGramUSD = pricePerOunceUSD / ounceToGram;
       final pricePerGramEGP = pricePerGramUSD * usdToEgp;
 
-      print('Gold price per gram in EGP: $pricePerGramEGP');
+      debugPrint('Gold price per gram in EGP: $pricePerGramEGP');
 
       setState(() {
         goldPricePerGram = pricePerGramEGP;
@@ -88,7 +88,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         isLoading = false;
         errorMessage = 'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
       });
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
   }
 

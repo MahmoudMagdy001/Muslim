@@ -20,7 +20,7 @@ class RateAppHelper {
     await prefs.setInt(_launchCountKey, launchCount);
 
     // بعد 5 مرات تشغيل، نطلب التقييم مرة واحدة فقط
-    if (launchCount >= 5 && !hasRated) {
+    if (launchCount >= 5 && !hasRated && context.mounted) {
       await _requestReview(context, prefs);
     }
   }
