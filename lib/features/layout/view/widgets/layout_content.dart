@@ -140,7 +140,7 @@ class _LayoutContentState extends State<LayoutContent>
     slivers: [
       SliverToBoxAdapter(
         child: SlideTransition(
-          position: _slideAnimation1, 
+          position: _slideAnimation1,
           child: FadeTransition(
             opacity: _opacityAnimation1,
             child: PrayerTimesView(
@@ -169,7 +169,7 @@ class _LayoutContentState extends State<LayoutContent>
           child: FadeTransition(
             opacity: _opacityAnimation3,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
                   FeatureCard(

@@ -9,6 +9,17 @@ final Map<String, String> booksArabic = {
   'Musnad Ahmad': 'مسند أحمد',
   'Al-Silsila Sahiha': 'السلسلة الصحيحة',
 };
+final Map<String, String> bookSlugArabic = {
+  'sahih-bukhari': 'صحيح البخاري',
+  'sahih-muslim': 'صحيح مسلم',
+  'al-tirmidhi': 'جامع الترمذي',
+  'abu-dawood': 'سنن أبي داود',
+  'ibn-e-majah': 'سنن ابن ماجه',
+  'sunan-nasai': 'سنن النسائي',
+  'mishkat': 'مشكاة المصابيح',
+  'musnad-ahmad': 'مسند أحمد',
+  'al-silsila-sahiha': 'السلسلة الصحيحة',
+};
 
 final Map<String, String> writersArabic = {
   'Imam Bukhari': 'الإمام البخاري',
