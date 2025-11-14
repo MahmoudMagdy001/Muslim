@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import 'widgets/chapter_of_book.dart';
 import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
+import 'widgets/saved_hadith_screen.dart';
 
 class HadithBooksView extends StatefulWidget {
   const HadithBooksView({super.key});
@@ -80,7 +81,17 @@ class _HadithBooksViewState extends State<HadithBooksView> {
     final localization = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(localization.hadithBooks)),
+      appBar: AppBar(
+        title: Text(localization.hadithBooks),
+        actions: [
+          IconButton(
+            onPressed: () {
+              navigateWithTransition(context, const SavedHadithScreen());
+            },
+            icon: const Icon(Icons.save_alt_outlined),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -148,6 +159,7 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                       itemCount: books.length,
                       itemBuilder: (context, index) {
                         final book = books[index];
+                        print(book.bookSlug);
 
                         final id = !isArabic
                             ? book.id
