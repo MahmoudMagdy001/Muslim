@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/navigation_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helper/hadith_helper.dart';
-import 'hadith_screen.dart';
+import 'hadith_view/hadith_view.dart';
 
 class SavedHadithScreen extends StatefulWidget {
   const SavedHadithScreen({super.key});
@@ -51,16 +52,15 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
     final hadithId = int.tryParse(hadith['id'].toString());
     if (hadithId == null) return;
 
-    Navigator.push(
+    navigateWithTransition(
+      type: TransitionType.fade,
       context,
-      MaterialPageRoute(
-        builder: (_) => HadithsScreen(
-          bookSlug: hadith['bookSlug'],
-          chapterNumber: hadith['chapterNumber'],
-          chapterName: hadith['chapterName'],
-          localizations: AppLocalizations.of(context),
-          scrollToHadithId: hadithId,
-        ),
+      HadithView(
+        bookSlug: hadith['bookSlug'],
+        chapterNumber: hadith['chapterNumber'],
+        chapterName: hadith['chapterName'],
+        localizations: AppLocalizations.of(context),
+        scrollToHadithId: hadithId,
       ),
     ).then(
       (value) => setState(() {
@@ -86,6 +86,28 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
       default:
         return Colors.grey;
     }
+  }
+
+  // Refactored show more function
+  void _toggleHadithExpansion(int index) {
+    setState(() {
+      _expandedMap[index] = !(_expandedMap[index] ?? false);
+    });
+  }
+
+  // Helper method to check if text exceeds 4 lines
+  bool _needsExpandButton(String text, BuildContext context) {
+    final textSpan = TextSpan(
+      text: text,
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(height: 2.1),
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      maxLines: 4,
+      textDirection: TextDirection.rtl,
+    )..layout(maxWidth: MediaQuery.of(context).size.width - 32);
+    return textPainter.didExceedMaxLines;
   }
 
   @override
@@ -116,7 +138,8 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
             )
           : SafeArea(
               child: ListView.builder(
-                // padding: const EdgeInsets.all(16),
+                cacheExtent: MediaQuery.of(context).size.height * 0.9,
+                shrinkWrap: true,
                 itemCount: _savedHadiths.length,
                 itemBuilder: (context, index) {
                   final hadith = _savedHadiths[index];
@@ -126,11 +149,10 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
                   );
                   final chapterId = convertToArabicNumbers(hadith['id']);
                   final isExpanded = _expandedMap[index] ?? false;
-
-                  String displayedText = hadith['text'];
-                  if (!isExpanded && displayedText.length > 200) {
-                    displayedText = '${displayedText.substring(0, 200)}...';
-                  }
+                  final needsExpandButton = _needsExpandButton(
+                    hadith['text'],
+                    context,
+                  );
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 2),
@@ -139,7 +161,7 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
                         onTap: () => _navigateToHadith(hadith),
                         borderRadius: BorderRadius.circular(12),
                         child: Padding(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -155,29 +177,29 @@ class _SavedHadithScreenState extends State<SavedHadithScreen> {
                                 'الفصل: $chapterName - رقم : $chapterNumber',
                               ),
                               Text('رقم الحديث: $chapterId'),
-                              const SizedBox(height: 8),
-                              SelectableText(
-                                displayedText,
+                              const SizedBox(height: 12),
+                              Text(
+                                hadith['text'],
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   height: 2.1,
                                 ),
+                                maxLines: isExpanded ? null : 4,
+                                overflow: isExpanded
+                                    ? null
+                                    : TextOverflow.ellipsis,
                               ),
-                              // ignore: avoid_dynamic_calls
-                              if (hadith['text'].length > 200)
+                              if (needsExpandButton)
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _expandedMap[index] =
-                                            !(_expandedMap[index] ?? false);
-                                      });
-                                    },
+                                    onPressed: () =>
+                                        _toggleHadithExpansion(index),
                                     child: Text(
                                       isExpanded ? 'عرض أقل' : 'عرض المزيد',
                                     ),
                                   ),
                                 ),
+                              const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

@@ -86,7 +86,11 @@ class _HadithBooksViewState extends State<HadithBooksView> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateWithTransition(context, const SavedHadithScreen());
+              navigateWithTransition(
+                context,
+                const SavedHadithScreen(),
+                type: TransitionType.fade,
+              );
             },
             icon: const Icon(Icons.save_alt_outlined),
           ),
@@ -159,7 +163,6 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                       itemCount: books.length,
                       itemBuilder: (context, index) {
                         final book = books[index];
-                        print(book.bookSlug);
 
                         final id = !isArabic
                             ? book.id

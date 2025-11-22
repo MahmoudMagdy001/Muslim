@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
+import '../../../core/utils/custom_loading_indicator.dart';
 import '../../../core/utils/format_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/names_of_allah_model.dart';
@@ -343,7 +344,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingIndicator(text: ''));
           },
         ),
       ),
