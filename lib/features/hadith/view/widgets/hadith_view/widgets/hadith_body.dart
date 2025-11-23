@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../../../l10n/app_localizations.dart';
@@ -10,7 +11,8 @@ import 'hadith_list.dart';
 
 class HadithsBody extends StatelessWidget {
   const HadithsBody({
-    required this.scrollController,
+    required this.itemScrollController,
+    required this.itemPositionsListener,
     required this.localizations,
     required this.isArabic,
     required this.scrollToHadithId,
@@ -19,7 +21,8 @@ class HadithsBody extends StatelessWidget {
     super.key,
   });
 
-  final ScrollController scrollController;
+  final ItemScrollController itemScrollController;
+  final ItemPositionsListener itemPositionsListener;
   final AppLocalizations localizations;
   final bool isArabic;
   final int? scrollToHadithId;
@@ -36,7 +39,8 @@ class HadithsBody extends StatelessWidget {
       } else if (state is HadithLoaded) {
         onScrollToHadith(cubit);
         return HadithsList(
-          scrollController: scrollController,
+          itemScrollController: itemScrollController,
+          itemPositionsListener: itemPositionsListener,
           hadiths: state.hadiths,
           isArabic: isArabic,
           localizations: localizations,

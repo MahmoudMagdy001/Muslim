@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/hadith_model.dart';
@@ -27,7 +28,8 @@ class HadithService {
         throw Exception('Failed to load hadiths: ${firstResponse.statusCode}');
       }
 
-      final firstData = json.decode(firstResponse.body);
+      // Use compute for JSON decoding
+      final firstData = await compute(_decodeJson, firstResponse.body);
       final totalPages = firstData['hadiths']['last_page'] ?? 1;
       final List firstHadiths = firstData['hadiths']['data'] ?? [];
 
@@ -82,7 +84,8 @@ class HadithService {
 
       for (final response in responses) {
         if (response.statusCode == 200) {
-          final data = json.decode(response.body);
+          // Use compute for JSON decoding
+          final data = await compute(_decodeJson, response.body);
           final List hadithsJson = data['hadiths']['data'] ?? [];
           allHadiths.addAll(
             hadithsJson
@@ -105,3 +108,7 @@ class HadithService {
     'https://hadithapi.com/api/hadiths/?apiKey=$apiKey&book=$bookSlug&chapter=$chapterNumber&page=$page',
   );
 }
+
+// Top-level function for compute
+Map<String, dynamic> _decodeJson(String body) =>
+    json.decode(body) as Map<String, dynamic>;

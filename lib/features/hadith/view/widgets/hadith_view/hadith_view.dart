@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../view_model/hadith/hadith_cubit.dart';
@@ -29,12 +30,13 @@ class HadithView extends StatefulWidget {
 }
 
 class _HadithViewState extends State<HadithView> {
-  final ScrollController _scrollController = ScrollController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
   bool _initialScrollAttempted = false;
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -66,25 +68,29 @@ class _HadithViewState extends State<HadithView> {
   void _scrollToInitialHadith(HadithCubit cubit) {
     if (!_initialScrollAttempted && widget.scrollToHadithId != null) {
       _initialScrollAttempted = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToHadith(widget.scrollToHadithId!, cubit);
+      // Delay slightly to ensure the list is built
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          _scrollToHadith(widget.scrollToHadithId!, cubit);
+        }
       });
     }
   }
 
   void _scrollToHadith(int hadithId, HadithCubit cubit) {
-    final key = cubit.hadithKeys[hadithId];
-
-    if (key != null && key.currentContext != null) {
-      Scrollable.ensureVisible(
-        key.currentContext!,
-        duration: const Duration(milliseconds: 1000),
-        curve: Curves.easeInOut,
+    final state = cubit.state;
+    if (state is HadithLoaded) {
+      final index = state.hadiths.indexWhere(
+        (h) => int.parse(h.id) == hadithId,
       );
-    } else {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) _scrollToHadith(hadithId, cubit);
-      });
+
+      if (index != -1) {
+        _itemScrollController.scrollTo(
+          index: index,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -108,7 +114,8 @@ class _HadithViewState extends State<HadithView> {
             ),
           ),
           body: HadithsBody(
-            scrollController: _scrollController,
+            itemScrollController: _itemScrollController,
+            itemPositionsListener: _itemPositionsListener,
             localizations: widget.localizations,
             isArabic: isArabic,
             scrollToHadithId: widget.scrollToHadithId,
