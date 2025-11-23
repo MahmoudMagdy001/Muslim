@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/azkar_model/azkar_model.dart';
@@ -62,15 +63,8 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
           future: _groupedAzkarFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    Text(localization.azkarLoadingText),
-                  ],
-                ),
+              return CustomLoadingIndicator(
+                text: localization.azkarLoadingText,
               );
             } else if (snapshot.hasError) {
               return Center(

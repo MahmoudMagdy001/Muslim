@@ -62,6 +62,14 @@ class QuranViewContent extends StatefulWidget {
 class _QuranViewContentState extends State<QuranViewContent> {
   bool _sought = false;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeSeekToStartAyah(context);
+    });
+  }
+
   void _maybeSeekToStartAyah(BuildContext context) {
     if (_sought || widget.startAyah <= 1) return;
     _sought = true;
@@ -85,28 +93,24 @@ class _QuranViewContentState extends State<QuranViewContent> {
     return Scaffold(
       appBar: AppBar(title: Text(surahName)),
       body: SafeArea(
-        child: BlocBuilder<QuranSurahCubit, QuranSurahState>(
-          builder: (context, state) {
-            final actualSurahNumber = state.surahNumber ?? widget.surahNumber;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _maybeSeekToStartAyah(context);
-            });
-
-            // ✅ الواجهة الموحدة بدون تكرار
-            return Column(
-              children: [
-                Expanded(
-                  child: SurahTextView(
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocSelector<QuranSurahCubit, QuranSurahState, int?>(
+                selector: (state) => state.surahNumber,
+                builder: (context, surahNumber) {
+                  final actualSurahNumber = surahNumber ?? widget.surahNumber;
+                  return SurahTextView(
                     surahNumber: actualSurahNumber,
                     startAyah: widget.startAyah,
                     isArabic: isArabic,
                     localizations: localizations,
-                  ),
-                ),
-                const PlayerControlsWidget(),
-              ],
-            );
-          },
+                  );
+                },
+              ),
+            ),
+            const PlayerControlsWidget(),
+          ],
         ),
       ),
     );

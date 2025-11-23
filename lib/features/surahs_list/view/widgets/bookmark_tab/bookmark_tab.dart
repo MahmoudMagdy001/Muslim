@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
+import '../../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -48,7 +49,7 @@ class BookmarksTab extends StatelessWidget {
           previous.status != current.status,
       builder: (context, state) {
         if (state.status == BookmarksStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingIndicator(text: 'text'));
         }
 
         if (state.bookmarks.isEmpty) {

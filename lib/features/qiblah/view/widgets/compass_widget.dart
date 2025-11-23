@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'arrow_painter.dart';
 import 'compass_background_painter.dart';
@@ -48,19 +49,7 @@ class CompassWidget extends StatelessWidget {
         children: [
           if (isLoading) ...[
             // Loading indicator with message
-            Column(
-              children: [
-                const CircularProgressIndicator(strokeWidth: 4.0),
-                const SizedBox(height: 16),
-                Text(
-                  localizations.compassLoading,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+            CustomLoadingIndicator(text: localizations.compassLoading),
           ] else ...[
             Stack(
               alignment: Alignment.center,

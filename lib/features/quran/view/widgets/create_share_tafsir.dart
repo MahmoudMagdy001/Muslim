@@ -8,9 +8,11 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
-// مدير الكاش للصور
+// مدير الكاش للصور مع حد أقصى للذاكرة
 class ImageCacheManager {
   static final Map<String, Uint8List> _cache = {};
+  static const int maxCacheSize = 10 * 1024 * 1024; // 10 MB
+  static int _currentCacheSize = 0;
 
   static Future<Uint8List> getImage(String path) async {
     if (_cache.containsKey(path)) {
@@ -19,17 +21,39 @@ class ImageCacheManager {
 
     final data = await rootBundle.load(path);
     final bytes = data.buffer.asUint8List();
+
+    // التحقق من حجم الكاش
+    if (_currentCacheSize + bytes.length > maxCacheSize) {
+      clearCache();
+    }
+
     _cache[path] = bytes;
+    _currentCacheSize += bytes.length;
     return bytes;
   }
 
   static void clearCache() {
     _cache.clear();
+    _currentCacheSize = 0;
   }
+
+  static int getCacheSize() => _currentCacheSize;
 }
 
-// الدالة الرئيسية مع جميع التحسينات
-Future<void> createAndShareTafsirImage({
+// نتيجة العملية
+class ShareResult {
+  ShareResult({
+    required this.success,
+    this.errorMessage,
+    this.imagesCreated = 0,
+  });
+  final bool success;
+  final String? errorMessage;
+  final int imagesCreated;
+}
+
+// الدالة الرئيسية المحسنة
+Future<ShareResult> createAndShareTafsirImage({
   required String surahName,
   required int ayahNumber,
   required String ayahText,
@@ -38,58 +62,91 @@ Future<void> createAndShareTafsirImage({
   required bool isArabic,
   required BuildContext context,
 }) async {
+  // التحقق من صحة المدخلات
+  if (tafsirText.trim().isEmpty) {
+    return ShareResult(
+      success: false,
+      errorMessage: isArabic ? 'نص التفسير فارغ' : 'Tafsir text is empty',
+    );
+  }
+
   // إظهار مؤشر التحميل
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      content: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(width: 20),
-          Text(
-            isArabic ? 'جاري إنشاء الصور...' : 'Creating images...',
-            style: const TextStyle(fontSize: 16),
+  if (context.mounted) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Flexible(
+                child: Text(
+                  isArabic ? 'جاري إنشاء الصور...' : 'Creating images...',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   try {
     final screenshotController = ScreenshotController();
 
-    // تحميل البسملة مع الكاش
-    final basmalaBytes = await ImageCacheManager.getImage(
-      'assets/images/basmalah.png',
-    );
-
-    // تقسيم النص أولاً
+    // تقسيم النص مع حد أقصى أقل
     final List<String> tafsirParts = _splitTafsirText(tafsirText);
-    final List<File> imageFiles = [];
 
-    // إنشاء جميع الـ widgets مسبقاً
-    final widgets = List.generate(
-      tafsirParts.length,
-      (i) => _buildTafsirWidget(
+    // Debug: طباعة معلومات التقسيم
+    debugPrint('📝 Text splitting info:');
+    debugPrint('Original text length: ${tafsirText.length}');
+    debugPrint('Number of parts: ${tafsirParts.length}');
+    for (int i = 0; i < tafsirParts.length; i++) {
+      debugPrint('Part ${i + 1}: ${tafsirParts[i].length} chars');
+      debugPrint(
+        'Preview: ${tafsirParts[i].substring(0, tafsirParts[i].length > 50 ? 50 : tafsirParts[i].length)}...',
+      );
+    }
+
+    if (tafsirParts.isEmpty) {
+      throw Exception(
+        isArabic ? 'فشل تقسيم نص التفسير' : 'Failed to split tafsir text',
+      );
+    }
+
+    // إنشاء الـ widgets
+    final widgets = <Widget>[
+      _buildFirstPageWidget(
         surahName: surahName,
         ayahNumber: ayahNumber,
         ayahText: ayahText,
         tafsirTitle: tafsirTitle,
-        tafsirPart: tafsirParts[i],
-        partIndex: i,
-        totalParts: tafsirParts.length,
-        basmalaBytes: basmalaBytes,
         isArabic: isArabic,
-        context: context,
       ),
-    );
+    ];
 
-    // التقاط الصور بشكل متوازي مع إعدادات محسنة
-    final captures = await Future.wait(
-      widgets.map(
-        (widget) => screenshotController.captureFromWidget(
+    // إضافة صفحات التفسير
+    for (int i = 0; i < tafsirParts.length; i++) {
+      widgets.add(
+        _buildTafsirWidget(
+          tafsirPart: tafsirParts[i],
+          partIndex: i,
+          totalParts: tafsirParts.length,
+          isArabic: isArabic,
+        ),
+      );
+    }
+
+    // التقاط الصور
+    final List<Uint8List> captures = [];
+    for (final widget in widgets) {
+      try {
+        final capture = await screenshotController.captureFromWidget(
           MediaQuery(
             data: const MediaQueryData(),
             child: MaterialApp(
@@ -97,29 +154,43 @@ Future<void> createAndShareTafsirImage({
               home: Scaffold(backgroundColor: Colors.white, body: widget),
             ),
           ),
-          delay: const Duration(milliseconds: 50), // تقليل وقت الانتظار
-          pixelRatio: 1.5, // تقليل دقة الصورة لتسريع العملية
-        ),
-      ),
-    );
-
-    // حفظ الصور بشكل متوازي
-    final dir = await getTemporaryDirectory();
-    final saveOperations = <Future<File>>[];
-
-    for (int i = 0; i < captures.length; i++) {
-      final operation = _saveImageFile(
-        dir: dir,
-        imageData: captures[i],
-        surahName: surahName,
-        ayahNumber: ayahNumber,
-        index: i,
-      );
-      saveOperations.add(operation);
+          delay: const Duration(milliseconds: 100),
+          pixelRatio: 1.2,
+        );
+        captures.add(capture);
+      } catch (e) {
+        debugPrint('Error capturing widget $e');
+        throw Exception(
+          isArabic ? 'فشل التقاط الصورة' : 'Failed to capture image',
+        );
+      }
     }
 
-    final savedFiles = await Future.wait(saveOperations);
-    imageFiles.addAll(savedFiles);
+    // حفظ الصور
+    final dir = await getTemporaryDirectory();
+    final imageFiles = <File>[];
+
+    final safeSurahName = surahName;
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    for (int i = 0; i < captures.length; i++) {
+      try {
+        final file = File(
+          '${dir.path}/tafsir_${safeSurahName}_${ayahNumber}_${i + 1}_$timestamp.png',
+        );
+        await file.writeAsBytes(captures[i]);
+        imageFiles.add(file);
+      } catch (e) {
+        debugPrint('Error saving image: $e');
+        // حذف الملفات المحفوظة مسبقاً
+        for (final savedFile in imageFiles) {
+          try {
+            await savedFile.delete();
+          } catch (_) {}
+        }
+        throw Exception(isArabic ? 'فشل حفظ الصورة' : 'Failed to save image');
+      }
+    }
 
     // إغلاق مؤشر التحميل
     if (context.mounted) {
@@ -127,23 +198,33 @@ Future<void> createAndShareTafsirImage({
     }
 
     // المشاركة
+    final totalImages = imageFiles.length;
     final shareTextMessage = isArabic
-        ? '📖 تفسير سورة $surahName - الآية ${_convertToArabicNumbers(ayahNumber)} (${tafsirParts.length} ${tafsirParts.length == 1 ? 'صورة' : 'صور'})'
-        : '📖 Tafsir $surahName - Verse $ayahNumber (${tafsirParts.length} ${tafsirParts.length == 1 ? 'image' : 'images'})';
+        ? '📖 تفسير سورة $surahName - الآية ${_convertToArabicNumbers(ayahNumber)}\n'
+              '${totalImages > 1 ? '(${_convertToArabicNumbers(totalImages)} ${totalImages == 2 ? 'صورتان' : 'صور'})' : ''}'
+        : '📖 Tafsir $surahName - Verse $ayahNumber\n'
+              '${totalImages > 1 ? '($totalImages images)' : ''}';
 
     final List<XFile> xFiles = imageFiles
         .map((file) => XFile(file.path))
         .toList();
 
-    await SharePlus.instance.share(
-      ShareParams(
-        files: xFiles,
+    try {
+      await Share.shareXFiles(
+        xFiles,
         text: shareTextMessage,
-        subject: isArabic ? 'تفسير القرآن' : 'Quran Tafsir',
-      ),
-    );
+        subject: 'تفسير القرآن الكريم',
+      );
+      clearTemporaryTafsirImages();
+
+      return ShareResult(success: true, imagesCreated: imageFiles.length);
+    } catch (e) {
+      throw Exception(
+        isArabic ? 'فشل مشاركة الصور: $e' : 'Failed to share images: $e',
+      );
+    }
   } catch (error) {
-    // إغلاق مؤشر التحميل في حالة الخطأ
+    // إغلاق مؤشر التحميل
     if (context.mounted) {
       Navigator.of(context).pop();
 
@@ -151,12 +232,11 @@ Future<void> createAndShareTafsirImage({
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(isArabic ? 'خطأ' : 'Error'),
-          content: Text(
-            isArabic
-                ? 'حدث خطأ أثناء إنشاء الصور: $error'
-                : 'An error occurred while creating images: $error',
+          title: Text(
+            isArabic ? '⚠️ خطأ' : '⚠️ Error',
+            style: const TextStyle(color: Colors.red),
           ),
+          content: Text(error.toString().replaceAll('Exception: ', '')),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -166,145 +246,143 @@ Future<void> createAndShareTafsirImage({
         ),
       );
     }
+
+    return ShareResult(success: false, errorMessage: error.toString());
   }
 }
 
-// دالة مساعدة لحفظ الصور
-Future<File> _saveImageFile({
-  required Directory dir,
-  required Uint8List imageData,
-  required String surahName,
-  required int ayahNumber,
-  required int index,
-}) async {
-  final file = File(
-    '${dir.path}/tafsir_${surahName}_$ayahNumber${index + 1}.png',
-  );
-  await file.writeAsBytes(imageData);
-  return file;
-}
-
-// دالة منفصلة لبناء الـ widget
-Widget _buildTafsirWidget({
+// دالة لبناء الصفحة الأولى (البسملة والآية) - حجم أصغر وتصميم أجمل
+Widget _buildFirstPageWidget({
   required String surahName,
   required int ayahNumber,
   required String ayahText,
   required String tafsirTitle,
-  required String tafsirPart,
-  required int partIndex,
-  required int totalParts,
-  required Uint8List basmalaBytes,
   required bool isArabic,
-  required BuildContext context,
 }) => Directionality(
-  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+  textDirection: TextDirection.rtl,
   child: Container(
-    width: 1000,
-    height: 1300,
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    width: 1080,
+    height: 1400,
+    padding: const EdgeInsets.all(32),
     decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8),
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFF8F9FA), Color(0xFFE9ECEF)],
+      ),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 20,
+          offset: const Offset(0, 10),
+        ),
+      ],
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // العنوان الرئيسي
-        if (partIndex == 0) ...[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  isArabic
-                      ? 'سورة $surahName - الآية رقم ${_convertToArabicNumbers(ayahNumber)}'
-                      : 'Surah $surahName - Verse $ayahNumber',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue[800],
-                  ),
-                ),
-              ),
-
-              Text(
-                tafsirTitle,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue[800],
-                ),
+        // اسم السورة ورقم الآية
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+            ),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF4A90E2).withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-        ],
-        const SizedBox(height: 10),
-
-        // البسملة (في الصورة الأولى فقط)
-        if (partIndex == 0) ...[
-          Center(
-            child: Image.memory(
-              basmalaBytes,
-              width: 250,
-              height: 40,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(height: 10),
-        ],
-
-        // نص الآية (في الصورة الأولى فقط)
-        if (partIndex == 0) ...[
-          Text(
-            ayahText,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontSize: 20,
-              height: 2.1,
-              color: Colors.black87,
-            ),
-
-            textAlign: isArabic ? TextAlign.right : TextAlign.left,
-          ),
-          const SizedBox(height: 10),
-        ],
-
-        // نص التفسير
-        Flexible(
-          child: SingleChildScrollView(
-            child: Text(
-              tafsirPart,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-                height: 1.4,
-              ),
-              textAlign: TextAlign.start,
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-        // الخط الفاصل والمعلومات
-        const Divider(color: Colors.grey, height: 1),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            isArabic
-                ? '${totalParts > 1 ? 'الصفحة ${_convertToArabicNumbers(partIndex + 1)} من ${_convertToArabicNumbers(totalParts)} - ' : ''}تمت المشاركة من تطبيق مُسَلِّم'
-                : '${totalParts > 1 ? 'Page ${partIndex + 1} of $totalParts - ' : ''}Shared from Muslim App',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+            'سورة $surahName - الآية ${_convertToArabicNumbers(ayahNumber)}',
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 0.5,
             ),
             textAlign: TextAlign.center,
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // اسم التفسير
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF27AE60), Color(0xFF229954)],
+            ),
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF27AE60).withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Text(
+            tafsirTitle,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        const SizedBox(height: 32),
+
+        // البسملة والآية في نفس الـ container مع تعديل المسافة
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // البسملة كنص بتصميم جميل
+              const Text(
+                'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF27AE60),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  ayahText,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2C3E50),
+                    height: 1.8,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -312,82 +390,195 @@ Widget _buildTafsirWidget({
   ),
 );
 
-// تحسين دالة تقسيم النص
-List<String> _splitTafsirText(String text, {int maxCharsPerPart = 1500}) {
+// دالة لبناء صفحات التفسير
+Widget _buildTafsirWidget({
+  required String tafsirPart,
+  required int partIndex,
+  required int totalParts,
+  required bool isArabic,
+}) => Directionality(
+  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+  child: Container(
+    width: 1080,
+    height: 1400,
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.grey.shade200, width: 2),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // المحتوى الرئيسي
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: SingleChildScrollView(
+              child: Text(
+                tafsirPart,
+                style: const TextStyle(
+                  fontSize: 17,
+                  color: Colors.black87,
+                  height: 1.5,
+                  letterSpacing: 0.2,
+                ),
+                textAlign: isArabic ? TextAlign.justify : TextAlign.left,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // الفوتر
+        Column(
+          children: [
+            Divider(color: Colors.grey[400], height: 1, thickness: 1),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    isArabic
+                        ? 'صفحة ${_convertToArabicNumbers(partIndex + 1)} من ${_convertToArabicNumbers(totalParts)}'
+                        : 'Page ${partIndex + 1} of $totalParts',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.blue[800],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Text(
+                  isArabic ? 'تطبيق مُسَلِّم' : 'Muslim App',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+);
+
+// تحسين دالة تقسيم النص - بناءً على عدد الأسطر المتاحة
+List<String> _splitTafsirText(String text, {int maxCharsPerPart = 1320}) {
   if (text.isEmpty) return [''];
+
+  text = text.trim().replaceAll(RegExp(r'\s+'), ' ');
 
   if (text.length <= maxCharsPerPart) return [text];
 
   final List<String> parts = [];
-  // تقسيم النص على الجمل أو الفواصل الكبيرة
-  final sentences = text.split(RegExp(r'(?<=[.؟،])'));
+  int startIndex = 0;
 
-  String currentPart = '';
+  while (startIndex < text.length) {
+    // حساب نهاية الجزء الحالي
+    final int endIndex = startIndex + maxCharsPerPart;
 
-  for (final sentence in sentences) {
-    final trimmed = sentence.trim();
-    if (trimmed.isEmpty) continue;
-
-    // إذا الجملة أطول من الحد الأقصى، نقسمها
-    if (trimmed.length > maxCharsPerPart) {
-      if (currentPart.isNotEmpty) {
-        parts.add(currentPart.trim());
-        currentPart = '';
+    // إذا وصلنا لنهاية النص
+    if (endIndex >= text.length) {
+      final remaining = text.substring(startIndex).trim();
+      if (remaining.isNotEmpty) {
+        parts.add(remaining);
       }
-      parts.addAll(_splitLongSentence(trimmed, maxCharsPerPart));
-    }
-    // إذا يمكن إضافتها للجزء الحالي
-    else if (('$currentPart $trimmed').trim().length <= maxCharsPerPart) {
-      currentPart = ('$currentPart $trimmed').trim();
-    }
-    // إنشاء جزء جديد
-    else {
-      if (currentPart.isNotEmpty) parts.add(currentPart.trim());
-      currentPart = trimmed;
-    }
-  }
-
-  if (currentPart.isNotEmpty) parts.add(currentPart.trim());
-
-  return parts;
-}
-
-List<String> _splitLongSentence(String sentence, int maxChars) {
-  if (sentence.length <= maxChars) return [sentence];
-
-  final List<String> parts = [];
-  int start = 0;
-
-  while (start < sentence.length) {
-    final int end = start + maxChars;
-    if (end >= sentence.length) {
-      parts.add(sentence.substring(start).trim());
       break;
     }
 
-    // نبحث عن آخر فاصل طبيعي قبل الحد الأقصى
-    int breakIndex = sentence.lastIndexOf(RegExp(r'[ ,،.؟]'), end);
-    if (breakIndex <= start) breakIndex = end;
+    // البحث عن أفضل مكان للقطع (جملة كاملة)
+    int bestCutIndex = endIndex;
 
-    parts.add(sentence.substring(start, breakIndex).trim());
-    start = breakIndex;
+    // أولاً: البحث عن نهاية جملة (. أو ؟ أو !)
+    final sentenceEndIndex = text.lastIndexOf(RegExp(r'[.؟!]'), endIndex);
+    if (sentenceEndIndex > startIndex && (endIndex - sentenceEndIndex) < 100) {
+      bestCutIndex = sentenceEndIndex + 1;
+    }
+    // ثانياً: البحث عن فاصلة أو فاصلة عربية
+    else {
+      final commaIndex = text.lastIndexOf(RegExp(r'[،,;]'), endIndex);
+      if (commaIndex > startIndex && (endIndex - commaIndex) < 100) {
+        bestCutIndex = commaIndex + 1;
+      }
+      // ثالثاً: البحث عن مسافة
+      else {
+        final spaceIndex = text.lastIndexOf(' ', endIndex);
+        if (spaceIndex > startIndex && spaceIndex > startIndex + 100) {
+          bestCutIndex = spaceIndex + 1;
+        }
+      }
+    }
+
+    // إضافة الجزء
+    final part = text.substring(startIndex, bestCutIndex).trim();
+    if (part.isNotEmpty) {
+      parts.add(part);
+    }
+
+    // الانتقال للجزء التالي
+    startIndex = bestCutIndex;
+
+    // تخطي المسافات في البداية
+    while (startIndex < text.length && text[startIndex] == ' ') {
+      startIndex++;
+    }
   }
 
-  return parts;
+  // التحقق من عدم فقدان النص
+  debugPrint('📊 Split results:');
+  debugPrint('Original length: ${text.length}');
+  final int totalReconstructed = parts.fold<int>(
+    0,
+    (sum, part) => sum + part.length,
+  );
+  debugPrint('Total in parts: $totalReconstructed');
+  debugPrint('Number of parts: ${parts.length}');
+
+  // طباعة أول وآخر 50 حرف من كل جزء
+  for (int i = 0; i < parts.length; i++) {
+    final part = parts[i];
+    final preview = part.length > 50 ? part.substring(0, 50) : part;
+    final ending = part.length > 50 ? part.substring(part.length - 50) : '';
+    debugPrint('Part ${i + 1} (${part.length} chars):');
+    debugPrint('  Start: $preview...');
+    if (ending.isNotEmpty) {
+      debugPrint('  End: ...$ending');
+    }
+  }
+
+  return parts.isEmpty ? [text] : parts;
 }
 
-// دالة تحويل الأرقام للعربية
+// تحويل الأرقام للعربية
 String _convertToArabicNumbers(int number) {
-  const english = '0123456789';
-  const arabic = '٠١٢٣٤٥٦٧٨٩';
-  final s = number.toString();
-  return s.split('').map((c) {
-    final idx = english.indexOf(c);
-    return idx >= 0 ? arabic[idx] : c;
+  const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+  return number.toString().split('').map((char) {
+    final index = english.indexOf(char);
+    return index >= 0 ? arabic[index] : char;
   }).join();
 }
 
-// دالة لتنظيف الملفات المؤقتة (اختيارية)
+// تنظيف الملفات المؤقتة
 Future<void> clearTemporaryTafsirImages() async {
   try {
     final dir = await getTemporaryDirectory();
@@ -395,9 +586,16 @@ Future<void> clearTemporaryTafsirImages() async {
 
     for (final file in files) {
       if (file is File && file.path.contains('tafsir_')) {
-        await file.delete();
+        try {
+          await file.delete();
+        } catch (e) {
+          debugPrint('Failed to delete file: ${file.path}');
+        }
       }
     }
+
+    // تنظيف الكاش أيضاً
+    ImageCacheManager.clearCache();
   } catch (e) {
     debugPrint('Error clearing temporary files: $e');
   }

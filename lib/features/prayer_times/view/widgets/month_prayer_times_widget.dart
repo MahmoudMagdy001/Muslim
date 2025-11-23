@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:hijri/hijri_calendar.dart';
+import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../service/prayer_times_service.dart';
 
@@ -127,16 +128,8 @@ class _MonthPrayerTimesWidgetState extends State<MonthPrayerTimesWidget> {
     );
   }
 
-  Widget _buildLoadingWidget() => const Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
-        Text('جاري تحميل مواقيت الصلاة...'),
-      ],
-    ),
-  );
+  Widget _buildLoadingWidget() =>
+      const CustomLoadingIndicator(text: 'جاري تحميل مواقيت الصلاه');
 
   Widget _buildErrorWidget() => Center(
     child: Column(

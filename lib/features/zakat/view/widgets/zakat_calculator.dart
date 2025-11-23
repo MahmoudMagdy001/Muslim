@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'crops_zakat_tab.dart';
@@ -102,23 +103,7 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
     if (isLoading) {
       return Scaffold(
         appBar: _buildAppBar(textTheme, theme, localizations),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  theme.colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                localizations.loading_gold_price,
-                style: textTheme.bodyLarge,
-              ),
-            ],
-          ),
-        ),
+        body: CustomLoadingIndicator(text: localizations.loading_gold_price),
       );
     }
 

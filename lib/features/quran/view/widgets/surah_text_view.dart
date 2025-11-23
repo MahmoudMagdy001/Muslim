@@ -1,19 +1,19 @@
 // widgets/surah_text_view_horizontal.dart
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:quran/quran.dart' as quran;
 
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../repository/tafsir_repository.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'create_share_tafsir.dart';
+import 'verse_options_menu.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({
@@ -35,6 +35,7 @@ class SurahTextView extends StatefulWidget {
 
 class _SurahTextViewState extends State<SurahTextView> {
   final ScrollController _controller = ScrollController();
+  final TafsirRepository _tafsirRepository = TafsirRepository();
   GlobalKey? _currentKey;
   int? _currentAyah;
   StreamSubscription? _playerSub;
@@ -43,7 +44,28 @@ class _SurahTextViewState extends State<SurahTextView> {
   int? _cachedSurahNumber;
   int? _cachedCurrentAyah;
 
-  String? tafsir;
+  @override
+  void initState() {
+    super.initState();
+    _generateKeys();
+  }
+
+  @override
+  void didUpdateWidget(SurahTextView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.surahNumber != widget.surahNumber) {
+      _generateKeys();
+      _cachedSpans = null;
+    }
+  }
+
+  void _generateKeys() {
+    _ayahKeys.clear();
+    final ayahCount = quran.getVerseCount(widget.surahNumber);
+    for (int i = 1; i <= ayahCount; i++) {
+      _ayahKeys[i] = GlobalKey();
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -90,52 +112,6 @@ class _SurahTextViewState extends State<SurahTextView> {
     super.dispose();
   }
 
-  /// ✅ جلب التفسير من API
-  Future<String?> fetchTafsirById(int tafsirId, int surah, int ayah) async {
-    try {
-      final url = Uri.parse(
-        'http://api.quran-tafseer.com/tafseer/$tafsirId/$surah/$ayah/$ayah',
-      );
-
-      final response = await http.get(url);
-
-      if (response.statusCode != 200) {
-        return 'حدث خطأ أثناء تحميل التفسير (${response.statusCode}).';
-      }
-
-      final List<dynamic> data = jsonDecode(response.body);
-
-      if (data.isEmpty) {
-        return 'لم يتم العثور على تفسير لهذه الآية.';
-      }
-
-      final tafsir = data.first;
-
-      // ignore: avoid_dynamic_calls
-      final text = tafsir['text']?.toString().trim() ?? '';
-      return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
-    } catch (e) {
-      debugPrint('===========> $e');
-      return 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.';
-    }
-  }
-
-  /// 🕌 قائمة المفسرين المدعومين
-  final List<Map<String, dynamic>> tafasirList = [
-    // {'id': 1, 'name_ar': 'التفسير الميسر', 'name_en': 'Al-Muyassar Tafsir'},
-    // {'id': 2, 'name_ar': 'تفسير الجلالين', 'name_en': 'Tafsir Al-Jalalayn'},
-    // {'id': 3, 'name_ar': 'تفسير السعدي', 'name_en': 'Tafsir As-Saadi'},
-    {'id': 4, 'name_ar': 'تفسير ابن كثير', 'name_en': 'Tafsir Ibn Kathir'},
-    // {
-    //   'id': 5,
-    //   'name_ar': 'تفسير الوسيط لطنطاوي',
-    //   'name_en': 'Tafsir Al-Waseet by Tantawi',
-    // },
-    // {'id': 6, 'name_ar': 'تفسير البغوي', 'name_en': 'Tafsir Al-Baghawi'},
-    {'id': 7, 'name_ar': 'تفسير القرطبي', 'name_en': 'Tafsir Al-Qurtubi'},
-    {'id': 8, 'name_ar': 'تفسير الطبري', 'name_en': 'Tafsir At-Tabari'},
-  ];
-
   List<InlineSpan> _buildSpans(BuildContext context, bool isArabic) {
     final adjustedAyah = _currentAyah;
 
@@ -147,7 +123,7 @@ class _SurahTextViewState extends State<SurahTextView> {
 
     final ayahCount = quran.getVerseCount(widget.surahNumber);
     final spans = <InlineSpan>[];
-    _currentKey = null;
+    _currentKey = adjustedAyah != null ? _ayahKeys[adjustedAyah] : null;
 
     for (int ayah = 1; ayah <= ayahCount; ayah++) {
       final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
@@ -156,10 +132,7 @@ class _SurahTextViewState extends State<SurahTextView> {
           : quran.getVerseTranslation(widget.surahNumber, ayah);
 
       final isCurrent = ayah == adjustedAyah;
-      final keyForThisAyah = isCurrent
-          ? (_currentKey = GlobalKey())
-          : GlobalKey();
-      _ayahKeys[ayah] = keyForThisAyah;
+      final keyForThisAyah = _ayahKeys[ayah];
 
       spans.add(
         TextSpan(
@@ -201,203 +174,190 @@ class _SurahTextViewState extends State<SurahTextView> {
         tapPosition = details.globalPosition;
       }
       ..onTap = () async {
-        final overlay =
-            Overlay.of(context).context.findRenderObject() as RenderBox;
         final position = tapPosition ?? Offset.zero;
-        final menuPosition = RelativeRect.fromLTRB(
-          position.dx,
-          position.dy,
-          overlay.size.width - position.dx,
-          overlay.size.height - position.dy,
-        );
 
-        final selected = await showMenu<String>(
-          context: context,
-          position: menuPosition,
-          items: [
-            PopupMenuItem(
-              value: 'play',
-              child: Text(widget.localizations.playVerseSound),
-            ),
-            PopupMenuItem(
-              value: 'bookmark',
-              child: Text(widget.localizations.bookmarkVerse),
-            ),
-            PopupMenuItem(
-              value: 'tafseer',
-              child: Text(widget.localizations.tafsirVerse),
-            ),
-          ],
+        final selected = await VerseOptionsMenu.show(
+          context,
+          position: position,
+          localizations: widget.localizations,
         );
 
         if (selected == 'play') {
-          if (mounted) {
-            context.read<QuranPlayerCubit>().seek(
-              Duration.zero,
-              index: ayah - 1,
-            );
-            context.read<QuranPlayerCubit>().play();
-          }
+          _handlePlay(ayah);
         } else if (selected == 'bookmark') {
-          if (mounted) {
-            context.read<BookmarksCubit>().addBookmark(
-              surah: widget.surahNumber,
-              ayah: ayah,
-              ayahText: text,
-            );
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '${widget.localizations.bookmarkVerseSuccess} ${widget.isArabic ? convertToArabicNumbers(ayah.toString()) : ayah}',
-                ),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          }
+          _handleBookmark(ayah, text);
         } else if (selected == 'tafseer') {
-          if (!mounted) return;
-
-          final selectedTafsir = await showDialog<Map<String, dynamic>>(
-            fullscreenDialog: true,
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(
-                widget.localizations.selectTafsir,
-                textAlign: TextAlign.center,
-              ),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: tafasirList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                    childAspectRatio: 1.9,
-                  ),
-                  itemBuilder: (context, index) {
-                    final tafsir = tafasirList[index];
-                    final tafsirName = widget.isArabic
-                        ? tafsir['name_ar']
-                        : tafsir['name_en'];
-
-                    return InkWell(
-                      onTap: () => Navigator.pop(context, tafsir),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Center(
-                        child: Text(
-                          tafsirName,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-
-          if (selectedTafsir == null) return;
-
-          if (mounted) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => const Center(child: CircularProgressIndicator()),
-            );
-          }
-          final tafsirText = await fetchTafsirById(
-            selectedTafsir['id'],
-            widget.surahNumber,
-            ayah,
-          );
-          final selectedTafsirName = widget.isArabic
-              ? selectedTafsir['name_ar']
-              : selectedTafsir['name_en'];
-          final surahName = widget.isArabic
-              ? quran.getSurahNameArabic(widget.surahNumber)
-              : quran.getSurahName(widget.surahNumber);
-
-          if (mounted) Navigator.pop(context);
-
-          if (mounted) {
-            showCustomModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              minChildSize: 0.3,
-              initialChildSize: 0.7,
-              maxChildSize: 0.9,
-              builder: (context) => SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      '$selectedTafsirName - ${widget.isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        tafsirText ?? widget.localizations.emptyTafsir,
-                        textAlign: TextAlign.justify,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(height: 1.7),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 25.0,
-                        vertical: 15,
-                      ),
-                      child: SizedBox(
-                        height: 52,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await createAndShareTafsirImage(
-                              surahName: surahName,
-                              ayahNumber: ayah,
-                              ayahText: text,
-                              tafsirTitle: selectedTafsirName,
-                              tafsirText: tafsirText ?? '',
-                              isArabic: widget.isArabic,
-                              context: context,
-                            );
-                          },
-                          child: Text(widget.localizations.shareTafsir),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
+          await _handleTafsir(ayah, text);
         }
       };
 
     return tapRecognizer;
+  }
+
+  void _handlePlay(int ayah) {
+    if (mounted) {
+      context.read<QuranPlayerCubit>().seek(Duration.zero, index: ayah - 1);
+      context.read<QuranPlayerCubit>().play();
+    }
+  }
+
+  void _handleBookmark(int ayah, String text) {
+    if (mounted) {
+      context.read<BookmarksCubit>().addBookmark(
+        surah: widget.surahNumber,
+        ayah: ayah,
+        ayahText: text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${widget.localizations.bookmarkVerseSuccess} ${widget.isArabic ? convertToArabicNumbers(ayah.toString()) : ayah}',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleTafsir(int ayah, String text) async {
+    if (!mounted) return;
+
+    final selectedTafsir = await showDialog<Map<String, dynamic>>(
+      fullscreenDialog: true,
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          widget.localizations.selectTafsir,
+          textAlign: TextAlign.center,
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: GridView.builder(
+            shrinkWrap: true,
+            itemCount: TafsirRepository.tafasirList.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 6,
+              childAspectRatio: 1.9,
+            ),
+            itemBuilder: (context, index) {
+              final tafsir = TafsirRepository.tafasirList[index];
+              final tafsirName = widget.isArabic
+                  ? tafsir['name_ar']
+                  : tafsir['name_en'];
+
+              return InkWell(
+                onTap: () => Navigator.pop(context, tafsir),
+                borderRadius: BorderRadius.circular(12),
+                child: Center(
+                  child: Text(
+                    tafsirName,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    if (selectedTafsir == null) return;
+
+    if (mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+    }
+    final tafsirText = await _tafsirRepository.fetchTafsirById(
+      selectedTafsir['id'],
+      widget.surahNumber,
+      ayah,
+    );
+    final selectedTafsirName = widget.isArabic
+        ? selectedTafsir['name_ar']
+        : selectedTafsir['name_en'];
+    final surahName = widget.isArabic
+        ? quran.getSurahNameArabic(widget.surahNumber)
+        : quran.getSurahName(widget.surahNumber);
+
+    if (mounted) Navigator.pop(context);
+
+    if (mounted) {
+      showCustomModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        minChildSize: 0.3,
+        initialChildSize: 0.7,
+        maxChildSize: 0.9,
+        builder: (context) => SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '$selectedTafsirName - ${widget.isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  tafsirText ?? widget.localizations.emptyTafsir,
+                  textAlign: TextAlign.justify,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(height: 1.7),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25.0,
+                  vertical: 15,
+                ),
+                child: SizedBox(
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await createAndShareTafsirImage(
+                        surahName: surahName,
+                        ayahNumber: ayah,
+                        ayahText: text,
+                        tafsirTitle: selectedTafsirName,
+                        tafsirText: tafsirText ?? '',
+                        isArabic: widget.isArabic,
+                        context: context,
+                      );
+                    },
+                    child: Text(widget.localizations.shareTafsir),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   void _scrollToCurrentAyah() {

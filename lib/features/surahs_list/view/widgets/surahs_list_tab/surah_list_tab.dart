@@ -75,49 +75,77 @@ class _SurahListTabState extends State<SurahListTab> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<SurahListCubit, SurahsListState>(
-        builder: (context, state) => Scrollbar(
-          controller: _scrollController,
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SearchSection(
-                controller: _searchController,
-                exactSearch: _exactSearch,
-                onSearchChanged: _onSearchChanged,
-                toggleExactSearch: _toggleExactSearch,
-                clearSearch: _clearSearch,
-              ),
-              if (state.searchText.isNotEmpty)
-                ResultsCount(
-                  searchText: state.searchText,
-                  resultsCount: state.searchResults.length,
-                  theme: widget.theme,
-                ),
-              if (state.searchText.isEmpty)
-                LastPlayedSection(
-                  theme: widget.theme,
-                  navigateToSurah: _navigateTo,
-                ),
-              if (state.searchText.isNotEmpty)
-                SearchResultsList(
-                  searchResults: state.searchResults,
-                  theme: widget.theme,
-                  navigateToResult: _navigateTo,
-                ),
-              if (state.searchText.isEmpty)
-                SurahList(
-                  surahs: state.filteredSurahs,
-                  isArabic: widget.isArabic,
-                  navigateToSurah: _navigateTo,
-                ),
-            ],
-          ),
+  Widget build(BuildContext context) => Scrollbar(
+    controller: _scrollController,
+    child: CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SearchSection(
+          controller: _searchController,
+          exactSearch: _exactSearch,
+          onSearchChanged: _onSearchChanged,
+          toggleExactSearch: _toggleExactSearch,
+          clearSearch: _clearSearch,
         ),
-      );
+        BlocBuilder<SurahListCubit, SurahsListState>(
+          buildWhen: (previous, current) =>
+              previous.searchText != current.searchText ||
+              previous.searchResults.length != current.searchResults.length,
+          builder: (context, state) {
+            if (state.searchText.isNotEmpty) {
+              return ResultsCount(
+                searchText: state.searchText,
+                resultsCount: state.searchResults.length,
+                theme: widget.theme,
+              );
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
+        ),
+        BlocBuilder<SurahListCubit, SurahsListState>(
+          buildWhen: (previous, current) =>
+              previous.searchText != current.searchText,
+          builder: (context, state) {
+            if (state.searchText.isEmpty) {
+              return LastPlayedSection(
+                theme: widget.theme,
+                navigateToSurah: _navigateTo,
+              );
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
+        ),
+        BlocBuilder<SurahListCubit, SurahsListState>(
+          buildWhen: (previous, current) =>
+              previous.searchText != current.searchText ||
+              previous.searchResults != current.searchResults,
+          builder: (context, state) {
+            if (state.searchText.isNotEmpty) {
+              return SearchResultsList(
+                searchResults: state.searchResults,
+                theme: widget.theme,
+                navigateToResult: _navigateTo,
+              );
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
+        ),
+        BlocBuilder<SurahListCubit, SurahsListState>(
+          buildWhen: (previous, current) =>
+              previous.searchText != current.searchText ||
+              previous.filteredSurahs != current.filteredSurahs,
+          builder: (context, state) {
+            if (state.searchText.isEmpty) {
+              return SurahList(
+                surahs: state.filteredSurahs,
+                isArabic: widget.isArabic,
+                navigateToSurah: _navigateTo,
+              );
+            }
+            return const SliverToBoxAdapter(child: SizedBox.shrink());
+          },
+        ),
+      ],
+    ),
+  );
 }
-
-// ========================
-// Private Widgets
-// ========================
