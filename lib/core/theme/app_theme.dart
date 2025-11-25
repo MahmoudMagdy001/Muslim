@@ -60,7 +60,7 @@ class AppThemeFactory {
         centerTitle: true,
         titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
       ),
-      tabBarTheme: _darkTabBarTheme(textStyles), // إضافة tab bar theme
+      tabBarTheme: _darkTabBarTheme(textStyles),
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         secondary: AppColors.white,
@@ -75,7 +75,7 @@ class AppThemeFactory {
       switchTheme: _switchTheme,
       cardTheme: _cardTheme.copyWith(color: AppColors.darkCard),
       inputDecorationTheme: _darkInputDecorationTheme(textStyles),
-      scrollbarTheme: _darkScrollbarTheme, // إضافة scrollbar theme
+      scrollbarTheme: _darkScrollbarTheme,
       snackBarTheme: _darkSnackBarTheme(textStyles),
     );
   }

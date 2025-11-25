@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/utils/custom_loading_indicator.dart';
-import '../../../core/utils/format_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import '../model/names_of_allah_model.dart';
+import 'widgets/name_of_allah_card.dart';
+import 'widgets/shareable_name_of_allah_card.dart';
 
 class NamesOfAllahScreen extends StatefulWidget {
   const NamesOfAllahScreen({super.key});
@@ -58,119 +59,21 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
     try {
       final imageBytes = await _screenshotController.captureFromWidget(
-        Container(
-          width: 800,
-          height: 600,
-          padding: const EdgeInsets.all(40),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha((0.1 * 255).toInt()),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'أسماء الله الحسني',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              // الرأس - رقم الاسم
-              const SizedBox(height: 20),
-
-              // اسم الله
-              Text(
-                data.name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-
-              // الترجمة الإنجليزية
-              if (!isArabic) ...[
-                Text(
-                  data.nameTranslation,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-              ],
-
-              // المعنى
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      isArabic ? 'المعنى' : 'Meaning',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      isArabic ? data.text : data.textTranslation,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.6,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // التذييل
-              Text(
-                isArabic
-                    ? 'تمت المشاركة من تطبيق مُسَلِّم'
-                    : 'Shared from Muslim App',
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
+        ShareableNameOfAllahCard(data: data, isArabic: isArabic),
+        delay: const Duration(milliseconds: 10),
       );
 
-      // حفظ الصورة
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/أسماء الله الحسني_${index + 1}.png');
+      final file = File('${dir.path}/names_of_allah_${index + 1}.png');
       await file.writeAsBytes(imageBytes);
 
-      // المشاركة
-      // مشاركة صورة واحدة
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path)],
-          text: 'أسماء الله الحسني - مشاركه من تطبيق مُسَلِّم',
-          subject: 'أسماء الله الحسني',
+          text: isArabic
+              ? 'أسماء الله الحسني - مشاركه من تطبيق مُسَلِّم'
+              : 'Names of Allah - Shared from Muslim App',
+          subject: isArabic ? 'أسماء الله الحسني' : 'Names of Allah',
         ),
       );
     } catch (e) {
@@ -196,157 +99,79 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
 
-    return Screenshot(
-      controller: _screenshotController,
-      child: Scaffold(
-        appBar: AppBar(title: Text(localizations.namesOfAllah)),
-        body: FutureBuilder<NamesOfAllahModel>(
-          future: _namesOfAllahFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final allData = snapshot.data!.items;
+    return Scaffold(
+      appBar: AppBar(title: Text(localizations.namesOfAllah)),
+      body: FutureBuilder<NamesOfAllahModel>(
+        future: _namesOfAllahFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final allData = snapshot.data!.items;
 
-              return Column(
-                children: [
-                  // حقل البحث (اختياري)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: isArabic
-                            ? 'ابحث عن اسم الله...'
-                            : 'Search for Allah\'s name...',
-                        prefixIcon: const Icon(Icons.search),
+            // Filter data based on search query
+            final filteredData = allData.where((data) {
+              if (searchQuery.isEmpty) return true;
+              final searchLower = searchQuery.toLowerCase();
+              final name = isArabic ? data.name : data.nameTranslation;
+              final text = isArabic ? data.text : data.textTranslation;
+              return name.toLowerCase().contains(searchLower) ||
+                  text.toLowerCase().contains(searchLower);
+            }).toList();
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: isArabic
+                          ? 'ابحث عن اسم الله...'
+                          : 'Search for Allah\'s name...',
+                      prefixIcon: const Icon(Icons.search),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: allData.length,
-                      itemBuilder: (context, index) {
-                        final data = allData[index];
-                        final name = isArabic
-                            ? data.name
-                            : data.nameTranslation;
-                        final text = isArabic
-                            ? data.text
-                            : data.textTranslation;
-
-                        // فلترة البحث
-                        if (searchQuery.isNotEmpty) {
-                          final searchLower = searchQuery.toLowerCase();
-                          final nameMatches = name.toLowerCase().contains(
-                            searchLower,
-                          );
-                          final textMatches = text.toLowerCase().contains(
-                            searchLower,
-                          );
-                          if (!nameMatches && !textMatches) {
-                            return const SizedBox.shrink();
-                          }
-                        }
-
-                        return Card(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                ),
+                Expanded(
+                  child: filteredData.isEmpty
+                      ? Center(
+                          child: Text(
+                            isArabic ? 'لا توجد نتائج' : 'No results found',
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                          child: ListTile(
-                            leading: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary.withAlpha(
-                                  (0.1 * 255).toInt(),
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  isArabic
-                                      ? convertToArabicNumbers(
-                                          (index + 1).toString(),
-                                        )
-                                      : (index + 1).toString(),
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: theme.colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            title: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          name,
-                                          style: theme.textTheme.titleLarge,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      _isSharing && _sharingIndex == index
-                                          ? SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                      Color
-                                                    >(
-                                                      theme.colorScheme.primary,
-                                                    ),
-                                              ),
-                                            )
-                                          : IconButton(
-                                              icon: const Icon(
-                                                Icons.share_rounded,
-                                              ),
-                                              onPressed: () {
-                                                _shareAsImage(
-                                                  data,
-                                                  index,
-                                                  isArabic,
-                                                );
-                                              },
-                                            ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    '${isArabic ? 'المعني' : 'Meaning'} : $text',
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return const Center(child: CustomLoadingIndicator(text: ''));
-          },
-        ),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredData.length,
+                          itemBuilder: (context, index) {
+                            final data = filteredData[index];
+                            // Find the original index for the correct number display
+                            final originalIndex = allData.indexOf(data);
+
+                            return NameOfAllahCard(
+                              data: data,
+                              index: originalIndex,
+                              isArabic: isArabic,
+                              isSharing:
+                                  _isSharing && _sharingIndex == originalIndex,
+                              onShare: () =>
+                                  _shareAsImage(data, originalIndex, isArabic),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          return const Center(child: CustomLoadingIndicator(text: ''));
+        },
       ),
     );
   }
