@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +26,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   Timer? _midnightTimer;
 
   /// التهيئة وجلب مواقيت الصلاة
-  Future<void> init({required bool isArabic}) async {
-    await fetchPrayerTimes(isArabic: isArabic);
+  Future<void> init({required bool isArabic, BuildContext? context}) async {
+    await fetchPrayerTimes(isArabic: isArabic, context: context);
   }
 
   Future<void> checkAllPermissions() async {
@@ -46,12 +47,16 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   /// جلب مواقيت الصلاة
-  Future<void> fetchPrayerTimes({required bool isArabic}) async {
+  Future<void> fetchPrayerTimes({
+    required bool isArabic,
+    BuildContext? context,
+  }) async {
     emit(state.copyWith(status: PrayerTimesStatus.loading));
 
     try {
       final localPrayerTimes = await _prayerTimesService.getPrayerTimes(
         isArabic: isArabic,
+        context: context,
       );
       await _handlePrayerTimesSuccess(localPrayerTimes);
     } catch (error) {
@@ -122,10 +127,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   /// تحديث يدوي لمواقيت الصلاة
-  Future<void> refreshPrayerTimes({required bool isArabic}) async {
+  Future<void> refreshPrayerTimes({
+    required bool isArabic,
+    BuildContext? context,
+  }) async {
     debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
     await checkAllPermissions();
-    init(isArabic: isArabic);
+    init(isArabic: isArabic, context: context);
   }
 
   @override

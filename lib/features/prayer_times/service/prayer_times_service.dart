@@ -1,9 +1,12 @@
-import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
+import 'package:adhan/adhan.dart';
 import 'package:geolocator/geolocator.dart';
+
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/service/location_service.dart';
+import '../../settings/service/settings_service.dart';
 
 import '../model/prayer_times_model.dart';
 
@@ -18,17 +21,21 @@ class PrayerTimesService {
   Future<dynamic> getPrayerTimes({
     required bool isArabic,
     bool forMonth = false,
+    Coordinates? coordinates,
+    BuildContext? context,
   }) async {
     try {
-      final coordinates = await _getCachedOrCurrentCoordinates();
-      if (coordinates == null) return await _getDefaultPrayerTimes();
+      final coords =
+          coordinates ??
+          await _getCachedOrCurrentCoordinates(coordinates == null, context);
+      if (coords == null) return await _getDefaultPrayerTimes();
 
       String? cityName;
       try {
         geo.setLocaleIdentifier(isArabic ? 'ar' : 'en');
         final placemarks = await geo.placemarkFromCoordinates(
-          coordinates.latitude,
-          coordinates.longitude,
+          coords.latitude,
+          coords.longitude,
         );
         if (placemarks.isNotEmpty) {
           final place = placemarks.first;
@@ -41,12 +48,9 @@ class PrayerTimesService {
       }
 
       if (forMonth) {
-        return await _calculateMonthlyPrayerTimes(
-          coordinates,
-          cityName: cityName,
-        );
+        return await _calculateMonthlyPrayerTimes(coords, cityName: cityName);
       } else {
-        return await _calculatePrayerTimes(coordinates, cityName: cityName);
+        return await _calculatePrayerTimes(coords, cityName: cityName);
       }
     } catch (error) {
       debugPrint('❌ خطأ في الحصول على مواقيت الصلاة: $error');
@@ -138,18 +142,26 @@ class PrayerTimesService {
   }
 
   /// الحصول على الإحداثيات (الحالية أو الكاش)
-  Future<Coordinates?> _getCachedOrCurrentCoordinates() async {
+  Future<Coordinates?> _getCachedOrCurrentCoordinates(
+    bool allowRequest, [
+    BuildContext? context,
+  ]) async {
     final prefs = await SharedPreferences.getInstance();
+    final settingsService = SettingsService();
 
-    try {
-      final position = await _getCurrentPosition();
-      await _cacheCoordinates(prefs, position.latitude, position.longitude);
-      return Coordinates(position.latitude, position.longitude);
-    } catch (e) {
-      debugPrint('⚠️ فشل في الحصول على الموقع الحالي: $e');
+    // 1. إذا كان مسموحاً بطلب الموقع (وليس في الخلفية) وكان الخيار مفعلاً
+    if (allowRequest && await settingsService.getAutoLocationEnabled()) {
+      try {
+        final position = await _getCurrentPosition(context);
+
+        await _cacheCoordinates(prefs, position.latitude, position.longitude);
+        return Coordinates(position.latitude, position.longitude);
+      } catch (e) {
+        debugPrint('⚠️ فشل في الحصول على الموقع الحالي: $e');
+      }
     }
 
-    final cachedCoordinates = await _getCachedCoordinates(prefs);
+    final cachedCoordinates = await getCachedCoordinates();
     if (cachedCoordinates != null) {
       return cachedCoordinates;
     }
@@ -157,15 +169,21 @@ class PrayerTimesService {
     return null;
   }
 
-  Future<Coordinates?> _getCachedCoordinates(SharedPreferences prefs) async {
+  Future<Coordinates?> getCachedCoordinates() async {
+    final prefs = await SharedPreferences.getInstance();
     final lat = prefs.getDouble(_latitudeKey);
     final lng = prefs.getDouble(_longitudeKey);
     if (lat == null || lng == null) return null;
     return Coordinates(lat, lng);
   }
 
-  Future<Position> _getCurrentPosition() async =>
-      await Geolocator.getCurrentPosition();
+  Future<Position> _getCurrentPosition([BuildContext? context]) async {
+    final locationService = LocationService();
+    // We call getCurrentLocate which handles the disclosure if context is provided
+    final position = await locationService.getCurrentLocate(context);
+    if (position != null) return position;
+    return await Geolocator.getCurrentPosition();
+  }
 
   Future<void> _cacheCoordinates(
     SharedPreferences prefs,

@@ -51,6 +51,11 @@ class HadithService {
 
       return allHadiths;
     } catch (e) {
+      if (e is http.ClientException ||
+          e.toString().contains('SocketException') ||
+          e is TimeoutException) {
+        return [];
+      }
       throw Exception('Failed to load hadiths: $e');
     }
   }

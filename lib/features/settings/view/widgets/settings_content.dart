@@ -7,6 +7,7 @@ import 'font_size_section.dart';
 import 'notification_switch.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
+import 'location_section.dart';
 
 class SettingsContent extends StatefulWidget {
   const SettingsContent({
@@ -64,13 +65,17 @@ class _SettingsContentState extends State<SettingsContent> {
             theme: widget.theme,
           ),
           divider,
-          NotificationSection(isArabic: widget.isArabic, theme: widget.theme),
-          divider,
+
           ReciterSection(
             localizations: widget.localizations,
             isArabic: widget.isArabic,
             theme: widget.theme,
           ),
+          divider,
+
+          NotificationSection(isArabic: widget.isArabic, theme: widget.theme),
+          divider,
+          LocationSection(isArabic: widget.isArabic, theme: widget.theme),
           divider,
           AppInfoSection(
             localizations: widget.localizations,

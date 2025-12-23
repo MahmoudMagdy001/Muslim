@@ -43,7 +43,14 @@ void callbackDispatcher() {
     try {
       final prayerService = PrayerTimesService();
       final notificationService = PrayerNotificationService();
-      final times = await prayerService.getPrayerTimes(isArabic: true);
+
+      // ✅ الحصول على الإحداثيات المحفوظة لضمان استمرارية المكان في الخلفية
+      final cachedCoords = await prayerService.getCachedCoordinates();
+
+      final times = await prayerService.getPrayerTimes(
+        isArabic: true,
+        coordinates: cachedCoords,
+      );
       await notificationService.schedulePrayerNotifications(times);
 
       debugPrint(
