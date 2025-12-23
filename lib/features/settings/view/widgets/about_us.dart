@@ -6,27 +6,34 @@ class AboutUsView extends StatelessWidget {
   final ThemeData theme;
   final String appVersion;
 
-  Future<void> _launchEmail() async {
+  Future<void> _launchEmail(bool isArabic) async {
     final String subject = Uri.encodeComponent(
-      'تواصل بخصوص التطبيق - مُسَلِّم',
+      isArabic
+          ? 'تواصل بخصوص التطبيق - مُسَلِّم'
+          : 'Contact regarding the app - Muslim',
     );
     final Uri emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
     );
-    await launchUrl(emailLaunchUri);
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    }
   }
 
   Future<void> _launchWebsite() async {
     final Uri websiteUri = Uri.parse('https://github.com/MahmoudMagdy001');
-    await launchUrl(websiteUri, mode: LaunchMode.externalApplication);
+    if (await canLaunchUrl(websiteUri)) {
+      await launchUrl(websiteUri, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = theme.textTheme;
+    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('من نحن')),
+      appBar: AppBar(title: Text(isArabic ? 'من نحن' : 'About Us')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -37,15 +44,18 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'تطبيق مُسَلِّم',
+              isArabic ? 'تطبيق مُسَلِّم' : 'Muslim App',
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              'تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار،'
-              ' صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.',
+              isArabic
+                  ? 'تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار،'
+                        ' صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.'
+                  : 'Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar.'
+                        ' Carefully designed to provide a simple and easy spiritual experience in your daily life.',
               textAlign: TextAlign.center,
               style: textTheme.bodyMedium?.copyWith(height: 2.1),
             ),
@@ -53,19 +63,20 @@ class AboutUsView extends StatelessWidget {
             const Divider(),
             const SizedBox(height: 16),
             Text(
-              'تواصل معنا',
+              isArabic ? 'تواصل معنا' : 'Connect with Us',
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
             SizedBox(
+              width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
-                onPressed: _launchEmail,
+                onPressed: () => _launchEmail(isArabic),
                 icon: const Icon(Icons.email_outlined),
                 label: Text(
-                  'إرسال بريد إلكتروني',
+                  isArabic ? 'إرسال بريد إلكتروني' : 'Send an Email',
                   style: textTheme.labelLarge?.copyWith(
                     color: theme.colorScheme.onPrimary,
                   ),
@@ -74,12 +85,13 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             SizedBox(
+              width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
                 onPressed: _launchWebsite,
                 icon: const Icon(Icons.public),
                 label: Text(
-                  'زيارة موقعنا',
+                  isArabic ? 'زيارة موقعنا' : 'Visit our Website',
                   style: textTheme.labelLarge?.copyWith(
                     color: theme.colorScheme.onPrimary,
                   ),
@@ -88,7 +100,7 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'الإصدار $appVersion',
+              '${isArabic ? 'الإصدار' : 'Version'} $appVersion',
               style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
             ),
           ],

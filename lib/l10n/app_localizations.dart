@@ -1035,6 +1035,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start calculating your Zakat and remember its great reward'**
   String get zakatStart;
+
+  /// No description provided for @aboutUs.
+  ///
+  /// In en, this message translates to:
+  /// **'About Us'**
+  String get aboutUs;
+
+  /// No description provided for @appNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'App Notifications'**
+  String get appNotifications;
+
+  /// No description provided for @enablePrayerNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Prayer Notifications'**
+  String get enablePrayerNotifications;
+
+  /// No description provided for @enableQuranReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Quran Reminders'**
+  String get enableQuranReminders;
+
+  /// No description provided for @prayerNotificationsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer notifications enabled'**
+  String get prayerNotificationsEnabled;
+
+  /// No description provided for @prayerNotificationsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer notifications disabled'**
+  String get prayerNotificationsDisabled;
+
+  /// No description provided for @quranRemindersEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran reminders enabled'**
+  String get quranRemindersEnabled;
+
+  /// No description provided for @quranRemindersDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Quran reminders disabled'**
+  String get quranRemindersDisabled;
+
+  /// No description provided for @quranReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'📖 Quran Reading Reminder'**
+  String get quranReminderTitle;
+
+  /// No description provided for @quranReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget your daily Quran reading 🌿'**
+  String get quranReminderBody;
 }
 
 class _AppLocalizationsDelegate

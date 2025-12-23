@@ -7,46 +7,58 @@ class PrivacyPolicyView extends StatelessWidget {
   const PrivacyPolicyView({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('سياسة الخصوصية')),
-    body: const SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Section
-            _HeaderSection(),
-            SizedBox(height: 24),
+  Widget build(BuildContext context) {
+    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-            // Privacy Principles
-            _PrivacyPrinciples(),
-            SizedBox(height: 24),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(isArabic ? 'سياسة الخصوصية' : 'Privacy Policy'),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Section
+              _HeaderSection(isArabic: isArabic),
+              const SizedBox(height: 24),
 
-            // Local Storage
-            _LocalStorageInfo(),
-            SizedBox(height: 24),
+              // Privacy Principles
+              _PrivacyPrinciples(isArabic: isArabic),
+              const SizedBox(height: 24),
 
-            // Data Collection Info
-            _DataCollectionInfo(),
-            SizedBox(height: 24),
+              // Location Info
+              _LocationSection(isArabic: isArabic),
+              const SizedBox(height: 24),
 
-            // Contact Section
-            _ContactSection(),
-            SizedBox(height: 20),
+              // Local Storage
+              _LocalStorageInfo(isArabic: isArabic),
+              const SizedBox(height: 24),
 
-            // Last Update
-            _LastUpdate(),
-            SizedBox(height: 10),
-          ],
+              // Data Collection Info
+              _DataCollectionInfo(isArabic: isArabic),
+              const SizedBox(height: 24),
+
+              // Contact Section
+              _ContactSection(isArabic: isArabic),
+              const SizedBox(height: 20),
+
+              // Last Update
+              _LastUpdate(isArabic: isArabic),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _HeaderSection extends StatelessWidget {
-  const _HeaderSection();
+  const _HeaderSection({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +84,16 @@ class _HeaderSection extends StatelessWidget {
           Icon(Icons.security, size: 48, color: theme.colorScheme.primary),
           const SizedBox(height: 12),
           Text(
-            'خصوصيتك تهمنا',
+            isArabic ? 'خصوصيتك تهمنا' : 'Your Privacy Matters',
             style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'نحن لا نجمع أي بيانات شخصية على الإطلاق',
+            isArabic
+                ? 'نحن لا نجمع أي بيانات شخصية على الإطلاق'
+                : 'We do not collect any personal data at all',
             textAlign: TextAlign.center,
             style: textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -92,7 +106,9 @@ class _HeaderSection extends StatelessWidget {
 }
 
 class _PrivacyPrinciples extends StatelessWidget {
-  const _PrivacyPrinciples();
+  const _PrivacyPrinciples({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -103,24 +119,30 @@ class _PrivacyPrinciples extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'مبادئ الخصوصية',
+          isArabic ? 'مبادئ الخصوصية' : 'Privacy Principles',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        const _PrincipleItem(
+        _PrincipleItem(
           icon: Icons.no_accounts,
-          title: 'لا يوجد حسابات',
-          description: 'التطبيق لا يتطلب إنشاء حساب أو تسجيل دخول',
+          title: isArabic ? 'لا يوجد حسابات' : 'No Accounts',
+          description: isArabic
+              ? 'التطبيق لا يتطلب إنشاء حساب أو تسجيل دخول'
+              : 'The app does not require account creation or login',
         ),
-        const _PrincipleItem(
+        _PrincipleItem(
           icon: Icons.cloud_off,
-          title: 'لا تتبع',
-          description: 'لا نتابع أو نراقب استخدامك للتطبيق',
+          title: isArabic ? 'لا تتبع' : 'No Tracking',
+          description: isArabic
+              ? 'لا نتابع أو نراقب استخدامك للتطبيق'
+              : 'We do not track or monitor your app usage',
         ),
-        const _PrincipleItem(
+        _PrincipleItem(
           icon: Icons.money_off,
-          title: 'لا مشتريات',
-          description: 'لا توجد عمليات شراء داخل التطبيق',
+          title: isArabic ? 'لا مشتريات' : 'No Purchases',
+          description: isArabic
+              ? 'لا توجد عمليات شراء داخل التطبيق'
+              : 'There are no in-app purchases',
         ),
       ],
     );
@@ -170,6 +192,7 @@ class _PrincipleItem extends StatelessWidget {
                   description,
                   style: textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.4,
                   ),
                 ),
               ],
@@ -181,8 +204,77 @@ class _PrincipleItem extends StatelessWidget {
   }
 }
 
+class _LocationSection extends StatelessWidget {
+  const _LocationSection({required this.isArabic});
+
+  final bool isArabic;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          isArabic ? 'بيانات الموقع (Location)' : 'Location Data',
+          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withAlpha((0.05 * 255).toInt()),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: theme.colorScheme.primary.withAlpha((0.1 * 255).toInt()),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isArabic
+                    ? '• الغرض: حساب مواقيت الصلاة بدقة واتجاه القبلة.'
+                    : '• Purpose: Calculating accurate prayer times and Qibla direction.',
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                isArabic
+                    ? '• طريقة الوصول: يتم الوصول للموقع فقط أثناء استخدامك للتطبيق (Foreground) لتحديث الإحداثيات.'
+                    : '• Access Method: Location is accessed only while using the app (Foreground) to update coordinates.',
+                style: textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                isArabic
+                    ? '• التخزين: يتم حفظ آخر إحداثيات معروفة محلياً على جهازك لضمان استمرارية عمل التنبيهات بدقة حتى في حالة عدم الاتصال.'
+                    : '• Storage: Last known coordinates are saved locally on your device to ensure accurate alerts even offline.',
+                style: textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                isArabic
+                    ? '• الخصوصية: لا يتم إرسال بيانات موقعك لأي خادم خارجي ولا يتم مشاركتها مع أي طرف ثالث.'
+                    : '• Privacy: Your location data is not sent to any external server and is not shared with third parties.',
+                style: textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _DataCollectionInfo extends StatelessWidget {
-  const _DataCollectionInfo();
+  const _DataCollectionInfo({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +295,7 @@ class _DataCollectionInfo extends StatelessWidget {
               Icon(Icons.info, color: theme.colorScheme.primary, size: 20),
               const SizedBox(width: 8),
               Text(
-                'معلومات جمع البيانات',
+                isArabic ? 'معلومات جمع البيانات' : 'Data Collection Info',
                 style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface,
@@ -213,7 +305,9 @@ class _DataCollectionInfo extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'التطبيق لا يجمع أي بيانات شخصية. كل المعلومات تبقى على جهازك فقط ولا نصل إليها بأي شكل من الأشكال.',
+            isArabic
+                ? 'التطبيق لا يجمع أي بيانات شخصية. كل المعلومات تبقى على جهازك فقط ولا نصل إليها بأي شكل من الأشكال.'
+                : 'The app does not collect any personal data. All information remains on your device only and we do not access it in any way.',
             style: textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.5,
@@ -226,7 +320,9 @@ class _DataCollectionInfo extends StatelessWidget {
 }
 
 class _LocalStorageInfo extends StatelessWidget {
-  const _LocalStorageInfo();
+  const _LocalStorageInfo({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -237,15 +333,28 @@ class _LocalStorageInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'التخزين المحلي',
+          isArabic ? 'التخزين المحلي' : 'Local Storage',
           style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        const _StorageItem('إعدادات أوقات الصلاة'),
-        const _StorageItem('تفضيلات التلاوة'),
-        const _StorageItem('الأذكار المفضلة'),
-        const _StorageItem('التسبيحات المحفوظة'),
-        const _StorageItem('موقعك الجغرافي (محلي فقط)'),
+        _StorageItem(
+          isArabic ? 'الإشارات المرجعية لآيات القرآن' : 'Quran Ayah Bookmarks',
+        ),
+        _StorageItem(isArabic ? 'الأحاديث المحفوظة' : 'Saved Hadiths'),
+        _StorageItem(
+          isArabic ? 'إعدادات التنبيهات والأذان' : 'Notification Settings',
+        ),
+        _StorageItem(
+          isArabic ? 'تفضيلات اللغة والمظهر' : 'Language & Theme Preferences',
+        ),
+        _StorageItem(
+          isArabic ? 'حجم الخط والقراء المفضلين' : 'Font Size & Reciters',
+        ),
+        _StorageItem(
+          isArabic
+              ? 'إحداثيات الموقع (محلياً فقط)'
+              : 'Location Coordinates (Local only)',
+        ),
       ],
     );
   }
@@ -280,7 +389,9 @@ class _StorageItem extends StatelessWidget {
 }
 
 class _ContactSection extends StatelessWidget {
-  const _ContactSection();
+  const _ContactSection({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -306,12 +417,14 @@ class _ContactSection extends StatelessWidget {
           Icon(Icons.support_agent, size: 40, color: theme.colorScheme.primary),
           const SizedBox(height: 12),
           Text(
-            'لديك استفسارات؟',
+            isArabic ? 'لديك استفسارات؟' : 'Have Questions?',
             style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
-            'نحن هنا لمساعدتك في أي استفسار حول الخصوصية',
+            isArabic
+                ? 'نحن هنا لمساعدتك في أي استفسار حول الخصوصية'
+                : 'We are here to help with any privacy questions',
             textAlign: TextAlign.center,
             style: textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -323,12 +436,16 @@ class _ContactSection extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.email, size: 18),
-                SizedBox(width: 5),
-                Text('اتصل بنا عبر البريد الإلكتروني'),
+                const Icon(Icons.email, size: 18),
+                const SizedBox(width: 5),
+                Text(
+                  isArabic
+                      ? 'اتصل بنا عبر البريد الإلكتروني'
+                      : 'Contact Us via Email',
+                ),
               ],
             ),
           ),
@@ -339,7 +456,9 @@ class _ContactSection extends StatelessWidget {
 
   Future<void> _launchEmail(BuildContext context) async {
     final String subject = Uri.encodeComponent(
-      'استفسار عن سياسة الخصوصية - مُسَلِّم',
+      isArabic
+          ? 'استفسار عن سياسة الخصوصية - مُسَلِّم'
+          : 'Privacy Policy Inquiry - Muslim',
     );
 
     final Uri emailLaunchUri = Uri.parse(
@@ -351,7 +470,13 @@ class _ContactSection extends StatelessWidget {
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('لا يمكن فتح تطبيق البريد الإلكتروني')),
+          SnackBar(
+            content: Text(
+              isArabic
+                  ? 'لا يمكن فتح تطبيق البريد الإلكتروني'
+                  : 'Cannot open email app',
+            ),
+          ),
         );
       }
     }
@@ -359,7 +484,9 @@ class _ContactSection extends StatelessWidget {
 }
 
 class _LastUpdate extends StatelessWidget {
-  const _LastUpdate();
+  const _LastUpdate({required this.isArabic});
+
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
@@ -368,7 +495,7 @@ class _LastUpdate extends StatelessWidget {
 
     return Center(
       child: Text(
-        'آخر تحديث: ${convertToArabicNumbers(_getCurrentDate())}',
+        '${isArabic ? 'آخر تحديث' : 'Last Updated'}: ${isArabic ? convertToArabicNumbers(_getCurrentDate()) : _getCurrentDate()}',
         textAlign: TextAlign.center,
         style: textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
@@ -378,8 +505,5 @@ class _LastUpdate extends StatelessWidget {
     );
   }
 
-  String _getCurrentDate() {
-    final now = DateTime.now();
-    return '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
-  }
+  String _getCurrentDate() => '2025/12/23';
 }

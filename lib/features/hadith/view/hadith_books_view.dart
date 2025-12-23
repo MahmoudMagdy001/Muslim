@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import 'dart:convert';
 
 import '../../../core/utils/format_helper.dart';
 import '../../../core/utils/navigation_helper.dart';
@@ -12,6 +10,8 @@ import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
 import 'widgets/saved_hadiths_view/saved_hadith_view.dart';
 
+import '../view_model/hadith_books_controller.dart';
+
 class HadithBooksView extends StatefulWidget {
   const HadithBooksView({super.key});
 
@@ -20,57 +20,20 @@ class HadithBooksView extends StatefulWidget {
 }
 
 class _HadithBooksViewState extends State<HadithBooksView> {
-  final apiKey = r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
-  late Future<List<HadithBookModel>> _booksFuture;
-  String _searchText = '';
+  late final HadithBooksController _controller;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _booksFuture = _fetchBooks();
+    _controller = HadithBooksController();
   }
 
-  // جلب الكتب من API مباشرة
-  Future<List<HadithBookModel>> _fetchBooks() async {
-    final url = Uri.parse('https://hadithapi.com/api/books?apiKey=$apiKey');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data =
-          json.decode(response.body) as Map<String, dynamic>;
-      final List<dynamic> booksJson = data['books'] as List<dynamic>? ?? [];
-      return booksJson
-          .map((json) => HadithBookModel.fromJson(json as Map<String, dynamic>))
-          .toList();
-    } else {
-      throw Exception('فشل في جلب الكتب');
-    }
-  }
-
-  // فلترة الكتب حسب البحث
-  List<HadithBookModel> _filterBooks(List<HadithBookModel> books) {
-    if (_searchText.trim().isEmpty) return books;
-
-    final query = _searchText.trim().toLowerCase();
-    final locale = Localizations.localeOf(context).languageCode;
-    final isArabicUI = locale == 'ar';
-
-    return books.where((b) {
-      // الاسم والكاتب حسب لغة الواجهة
-      final name = isArabicUI
-          ? (booksArabic[b.bookName] ?? b.bookName)
-          : b.bookName;
-      final writer = isArabicUI
-          ? (writersArabic[b.writerName] ?? b.writerName)
-          : b.writerName;
-
-      // تحويلهم لـ lowercase للمقارنة غير الحساسة للحروف
-      final nameLower = name.toLowerCase();
-      final writerLower = writer.toLowerCase();
-
-      return nameLower.contains(query) || writerLower.contains(query);
-    }).toList();
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,111 +59,130 @@ class _HadithBooksViewState extends State<HadithBooksView> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // ====== Search Bar ======
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: localization.hadithBooksSearch,
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                ),
-                onChanged: (val) => setState(() => _searchText = val),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              ),
-            ),
-
-            // ====== Books List ======
-            Expanded(
-              child: FutureBuilder<List<HadithBookModel>>(
-                future: _booksFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Skeletonizer(
-                      child: ListView.builder(
-                        padding: const EdgeInsetsDirectional.only(
-                          start: 8,
-                          end: 8,
-                          bottom: 10,
-                        ),
-                        itemCount: 8,
-                        itemBuilder: (context, index) =>
-                            const _SkeletonBookItem(),
-                      ),
-                    );
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${localization.hadithBooksError} ${snapshot.error}',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Text(
-                        localization.hadithBooksEmpty,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    );
-                  }
-
-                  final books = _filterBooks(snapshot.data!);
-
-                  return Scrollbar(
-                    controller: _scrollController,
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsetsDirectional.only(
-                        start: 8,
-                        end: 16,
-                        top: 5,
-                        bottom: 10,
-                      ),
-                      itemCount: books.length,
-                      itemBuilder: (context, index) {
-                        final book = books[index];
-
-                        final id = !isArabic
-                            ? book.id
-                            : convertToArabicNumbers(book.id);
-                        final name = !isArabic
-                            ? book.bookName
-                            : booksArabic[book.bookName]!;
-                        final writer = !isArabic
-                            ? book.writerName
-                            : writersArabic[book.writerName]!;
-                        final chpaterCount = !isArabic
-                            ? book.chapterCount
-                            : convertToArabicNumbers(book.chapterCount);
-                        final hadithCount = !isArabic
-                            ? book.hadithCount
-                            : convertToArabicNumbers(book.hadithCount);
-
-                        if (book.hadithCount == '0') {
-                          return const SizedBox.shrink();
-                        }
-
-                        return SuccessWidget(
-                          book: book,
-                          name: name,
-                          theme: theme,
-                          id: id,
-                          writer: writer,
-                          chpaterCount: chpaterCount,
-                          hadithCount: hadithCount,
-                          localization: localization,
-                        );
-                      },
+      body: InternetStateManager(
+        noInternetScreen: const NoInternetScreen(),
+        onRestoreInternetConnection: _controller.refreshBooks,
+        child: SafeArea(
+          child: ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) => Column(
+              children: [
+                // ====== Search Bar ======
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: localization.hadithBooksSearch,
+                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
                     ),
-                  );
-                },
-              ),
+                    onChanged: _controller.updateSearchText,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  ),
+                ),
+
+                // ====== Books List ======
+                Expanded(
+                  child: FutureBuilder<List<HadithBookModel>>(
+                    future: _controller.booksFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Skeletonizer(
+                          child: ListView.builder(
+                            padding: const EdgeInsetsDirectional.only(
+                              start: 8,
+                              end: 8,
+                              bottom: 10,
+                            ),
+                            itemCount: 8,
+                            itemBuilder: (context, index) =>
+                                const _SkeletonBookItem(),
+                          ),
+                        );
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            '${localization.hadithBooksError} ${snapshot.error}',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(
+                          child: Text(
+                            localization.hadithBooksEmpty,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        );
+                      }
+
+                      final books = _controller.filterBooks(
+                        snapshot.data!,
+                        locale,
+                      );
+
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          _controller.refreshBooks();
+                          await _controller.booksFuture;
+                        },
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsetsDirectional.only(
+                              start: 8,
+                              end: 16,
+                              top: 5,
+                              bottom: 10,
+                            ),
+                            itemCount: books.length,
+                            itemBuilder: (context, index) {
+                              final book = books[index];
+
+                              final id = !isArabic
+                                  ? book.id
+                                  : convertToArabicNumbers(book.id);
+                              final name = !isArabic
+                                  ? book.bookName
+                                  : booksArabic[book.bookName]!;
+                              final writer = !isArabic
+                                  ? book.writerName
+                                  : writersArabic[book.writerName]!;
+                              final chpaterCount = !isArabic
+                                  ? book.chapterCount
+                                  : convertToArabicNumbers(book.chapterCount);
+                              final hadithCount = !isArabic
+                                  ? book.hadithCount
+                                  : convertToArabicNumbers(book.hadithCount);
+
+                              if (book.hadithCount == '0') {
+                                return const SizedBox.shrink();
+                              }
+
+                              return SuccessWidget(
+                                book: book,
+                                name: name,
+                                theme: theme,
+                                id: id,
+                                writer: writer,
+                                chpaterCount: chpaterCount,
+                                hadithCount: hadithCount,
+                                localization: localization,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

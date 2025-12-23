@@ -504,4 +504,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get zakatStart =>
       'Start calculating your Zakat and remember its great reward';
+
+  @override
+  String get aboutUs => 'About Us';
+
+  @override
+  String get appNotifications => 'App Notifications';
+
+  @override
+  String get enablePrayerNotifications => 'Enable Prayer Notifications';
+
+  @override
+  String get enableQuranReminders => 'Enable Quran Reminders';
+
+  @override
+  String get prayerNotificationsEnabled => 'Prayer notifications enabled';
+
+  @override
+  String get prayerNotificationsDisabled => 'Prayer notifications disabled';
+
+  @override
+  String get quranRemindersEnabled => 'Quran reminders enabled';
+
+  @override
+  String get quranRemindersDisabled => 'Quran reminders disabled';
+
+  @override
+  String get quranReminderTitle => '📖 Quran Reading Reminder';
+
+  @override
+  String get quranReminderBody => 'Don\'t forget your daily Quran reading 🌿';
 }

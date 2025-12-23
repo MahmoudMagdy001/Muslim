@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -99,28 +100,30 @@ class _HadithViewState extends State<HadithView> {
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
 
-    return BlocProvider(
-      create: (context) => HadithCubit(
-        bookSlug: widget.bookSlug,
-        chapterNumber: widget.chapterNumber,
-        chapterName: widget.chapterName,
-      )..initializeData(),
-      child: BlocListener<HadithCubit, HadithState>(
-        listener: (context, state) => _handleStateChanges(state),
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '${widget.localizations.hadithsTitle} ${widget.chapterName}',
-            ),
+    return BlocListener<HadithCubit, HadithState>(
+      listener: (context, state) => _handleStateChanges(state),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '${widget.localizations.hadithsTitle} ${widget.chapterName}',
           ),
-          body: HadithsBody(
-            itemScrollController: _itemScrollController,
-            itemPositionsListener: _itemPositionsListener,
-            localizations: widget.localizations,
-            isArabic: isArabic,
-            scrollToHadithId: widget.scrollToHadithId,
-            onScrollToHadith: _scrollToInitialHadith,
-            onShowSnackBar: _showSnackBar,
+        ),
+        body: InternetStateManager(
+          onRestoreInternetConnection: () {
+            context.read<HadithCubit>().initializeData();
+          },
+          noInternetScreen: const NoInternetScreen(),
+          child: RefreshIndicator(
+            onRefresh: () => context.read<HadithCubit>().initializeData(),
+            child: HadithsBody(
+              itemScrollController: _itemScrollController,
+              itemPositionsListener: _itemPositionsListener,
+              localizations: widget.localizations,
+              isArabic: isArabic,
+              scrollToHadithId: widget.scrollToHadithId,
+              onScrollToHadith: _scrollToInitialHadith,
+              onShowSnackBar: _showSnackBar,
+            ),
           ),
         ),
       ),

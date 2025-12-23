@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/service/permissions_sevice.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../prayer_times/service/prayer_notification_service.dart';
 import '../../../prayer_times/viewmodel/prayer_times_cubit.dart';
 
@@ -58,7 +59,9 @@ class _NotificationSectionState extends State<NotificationSection> {
     }
 
     _showSnackBar(
-      value ? 'تم تفعيل إشعارات الأذان' : 'تم تعطيل إشعارات الأذان',
+      value
+          ? AppLocalizations.of(context).prayerNotificationsEnabled
+          : AppLocalizations.of(context).prayerNotificationsDisabled,
     );
   }
 
@@ -70,11 +73,13 @@ class _NotificationSectionState extends State<NotificationSection> {
     if (!value) {
       await _quranNotificationService.cancelAllNotifications();
     } else {
-      await _quranNotificationService.scheduleDailyReminder();
+      await _quranNotificationService.scheduleDailyReminder(context);
     }
 
     _showSnackBar(
-      value ? 'تم تفعيل إشعارات تذكير القرآن' : 'تم تعطيل إشعارات تذكير القرآن',
+      value
+          ? AppLocalizations.of(context).quranRemindersEnabled
+          : AppLocalizations.of(context).quranRemindersDisabled,
     );
   }
 
@@ -87,19 +92,26 @@ class _NotificationSectionState extends State<NotificationSection> {
   }
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.notifications_rounded),
-    title: Text('إشعارات التطبيق', style: widget.theme.textTheme.titleMedium),
-    trailing: const Icon(Icons.arrow_drop_down_rounded),
-    onTap: _showNotificationSettingsModal,
-  );
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    return ListTile(
+      leading: const Icon(Icons.notifications_rounded),
+      title: Text(
+        localizations.appNotifications,
+        style: widget.theme.textTheme.titleMedium,
+      ),
+      trailing: const Icon(Icons.arrow_drop_down_rounded),
+      onTap: () => _showNotificationSettingsModal(localizations),
+    );
+  }
 
-  void _showNotificationSettingsModal() {
+  void _showNotificationSettingsModal(AppLocalizations localizations) {
     showCustomModalBottomSheet(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => _NotificationSettingsModal(
           theme: widget.theme,
+          localizations: localizations,
           settings: _settings,
           onPrayerNotificationsChanged: (value) async {
             await _togglePrayerNotifications(value);
@@ -118,12 +130,14 @@ class _NotificationSectionState extends State<NotificationSection> {
 class _NotificationSettingsModal extends StatelessWidget {
   const _NotificationSettingsModal({
     required this.theme,
+    required this.localizations,
     required this.settings,
     required this.onPrayerNotificationsChanged,
     required this.onQuranNotificationsChanged,
   });
 
   final ThemeData theme;
+  final AppLocalizations localizations;
   final NotificationSettings settings;
   final ValueChanged<bool> onPrayerNotificationsChanged;
   final ValueChanged<bool> onQuranNotificationsChanged;
@@ -134,7 +148,7 @@ class _NotificationSettingsModal extends StatelessWidget {
     children: [
       _NotificationSwitchTile(
         icon: Icons.mosque_rounded,
-        title: 'تفعيل اشعارات الأذان',
+        title: localizations.enablePrayerNotifications,
         value: settings.prayerNotifications,
         onChanged: onPrayerNotificationsChanged,
         theme: theme,
@@ -142,7 +156,7 @@ class _NotificationSettingsModal extends StatelessWidget {
       const SizedBox(height: 12),
       _NotificationSwitchTile(
         icon: Icons.auto_stories_rounded,
-        title: 'تفعيل اشعارات تذكير القران',
+        title: localizations.enableQuranReminders,
         value: settings.quranNotifications,
         onChanged: onQuranNotificationsChanged,
         theme: theme,
@@ -230,7 +244,7 @@ class QuranNotificationService {
     }
   }
 
-  Future<void> scheduleDailyReminder() async {
+  Future<void> scheduleDailyReminder(BuildContext context) async {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
 
@@ -246,12 +260,14 @@ class QuranNotificationService {
         now.hour + 1,
       );
 
+      final localizations = AppLocalizations.of(context);
+
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
           channelKey: 'quran_channel',
-          title: '📖 تذكير بقراءة القرآن',
-          body: 'لا تنس وردك من القرآن الكريم 🌿',
+          title: localizations.quranReminderTitle,
+          body: localizations.quranReminderBody,
         ),
         schedule: NotificationAndroidCrontab.hourly(
           referenceDateTime: firstNotification,

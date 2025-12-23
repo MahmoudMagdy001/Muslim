@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/format_helper.dart';
@@ -112,38 +113,44 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         goldPricePerGram == 0) {
       return Scaffold(
         appBar: _buildAppBar(textTheme, theme, localizations),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: theme.colorScheme.error,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  errorMessage ?? localizations.gold_price_error,
-                  style: textTheme.bodyLarge?.copyWith(
+        body: InternetStateManager(
+          noInternetScreen: const NoInternetScreen(),
+          onRestoreInternetConnection: () {
+            fetchGoldPrice();
+          },
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
                     color: theme.colorScheme.error,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: fetchGoldPrice,
-                  icon: const Icon(Icons.refresh),
-                  label: Text(localizations.retry),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                  const SizedBox(height: 16),
+                  Text(
+                    errorMessage ?? localizations.gold_price_error,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: fetchGoldPrice,
+                    icon: const Icon(Icons.refresh),
+                    label: Text(localizations.retry),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

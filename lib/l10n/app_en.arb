@@ -774,5 +774,15 @@
   "@zakatStart": {
     "description": "Motivational text to start Zakat calculation",
     "type": "text"
-  }
+  },
+  "aboutUs": "About Us",
+  "appNotifications": "App Notifications",
+  "enablePrayerNotifications": "Enable Prayer Notifications",
+  "enableQuranReminders": "Enable Quran Reminders",
+  "prayerNotificationsEnabled": "Prayer notifications enabled",
+  "prayerNotificationsDisabled": "Prayer notifications disabled",
+  "quranRemindersEnabled": "Quran reminders enabled",
+  "quranRemindersDisabled": "Quran reminders disabled",
+  "quranReminderTitle": "📖 Quran Reading Reminder",
+  "quranReminderBody": "Don't forget your daily Quran reading 🌿"
 }

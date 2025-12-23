@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../service/chapter_of_book/chapter_service.dart';
-import 'hadith_view/hadith_view.dart';
+
 import '../../model/chapter_of_book_model.dart';
+import '../../view_model/hadith/hadith_cubit.dart';
+import 'hadith_view/hadith_view.dart';
+
+import '../../view_model/chapter_of_book_controller.dart';
 
 class ChapterOfBook extends StatefulWidget {
   const ChapterOfBook({
@@ -23,56 +28,13 @@ class ChapterOfBook extends StatefulWidget {
 }
 
 class _ChapterOfBookState extends State<ChapterOfBook> {
-  final ChapterOfBookService _chapterRepository = const ChapterOfBookService();
-  final _searchController = TextEditingController();
+  late final ChapterOfBookController _controller;
   final ScrollController _scrollController = ScrollController();
-
-  late Future<List<ChapterOfBookModel>> _chapters;
-  List<ChapterOfBookModel> _allChapters = [];
-  List<ChapterOfBookModel> _filteredChapters = [];
 
   @override
   void initState() {
     super.initState();
-    _chapters = _loadChapters();
-    _searchController.addListener(_onSearchChanged);
-  }
-
-  Future<List<ChapterOfBookModel>> _loadChapters() async {
-    final chapters = await _chapterRepository.fetchChapters(widget.bookSlug);
-    _allChapters = chapters;
-    _filteredChapters = chapters;
-    return chapters;
-  }
-
-  void _onSearchChanged() {
-    final query = _searchController.text.trim().toLowerCase();
-    if (query.isEmpty) {
-      setState(() => _filteredChapters = _allChapters);
-      return;
-    }
-
-    final locale = Localizations.localeOf(context).languageCode;
-    final isArabicUI = locale == 'ar';
-
-    setState(() {
-      _filteredChapters = _allChapters
-          .where((chapter) => _chapterMatchesQuery(chapter, query, isArabicUI))
-          .toList();
-    });
-  }
-
-  bool _chapterMatchesQuery(
-    ChapterOfBookModel chapter,
-    String query,
-    bool isArabicUI,
-  ) {
-    final name = isArabicUI
-        ? chapter.chapterNameAr.toLowerCase()
-        : chapter.chapterNameEn.toLowerCase();
-    final number = chapter.chapterNumber.toLowerCase();
-
-    return name.contains(query) || number.contains(query);
+    _controller = ChapterOfBookController(bookSlug: widget.bookSlug);
   }
 
   void _navigateToHadithView(
@@ -82,11 +44,18 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
   ) {
     navigateWithTransition(
       context,
-      HadithView(
-        bookSlug: widget.bookSlug,
-        chapterNumber: chapter.chapterNumber,
-        chapterName: chapterName,
-        localizations: AppLocalizations.of(context),
+      BlocProvider(
+        create: (context) => HadithCubit(
+          bookSlug: widget.bookSlug,
+          chapterNumber: chapter.chapterNumber,
+          chapterName: chapterName,
+        )..initializeData(),
+        child: HadithView(
+          bookSlug: widget.bookSlug,
+          chapterNumber: chapter.chapterNumber,
+          chapterName: chapterName,
+          localizations: AppLocalizations.of(context),
+        ),
       ),
       type: TransitionType.fade,
     );
@@ -103,12 +72,21 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
       appBar: AppBar(
         title: Text('${localization.chapters} ${widget.bookName}'),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildSearchField(localization),
-            Expanded(child: _buildChapterList(theme, localization, isArabic)),
-          ],
+      body: InternetStateManager(
+        noInternetScreen: const NoInternetScreen(),
+        onRestoreInternetConnection: _controller.refreshChapters,
+        child: SafeArea(
+          child: ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) => Column(
+              children: [
+                _buildSearchField(localization),
+                Expanded(
+                  child: _buildChapterList(theme, localization, isArabic),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -117,7 +95,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
   Widget _buildSearchField(AppLocalizations localization) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
     child: TextField(
-      controller: _searchController,
+      controller: _controller.searchController,
       decoration: InputDecoration(
         hintText: localization.chaptersSearch,
         prefixIcon: const Icon(Icons.search),
@@ -131,7 +109,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     AppLocalizations localization,
     bool isArabic,
   ) => FutureBuilder<List<ChapterOfBookModel>>(
-    future: _chapters,
+    future: _controller.chaptersFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return _buildSkeletonLoader();
@@ -140,7 +118,13 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
         return _buildEmptyWidget(localization);
       } else {
-        return _buildChapterListView(theme, isArabic);
+        return RefreshIndicator(
+          onRefresh: () async {
+            _controller.refreshChapters();
+            await _controller.chaptersFuture;
+          },
+          child: _buildChapterListView(theme, isArabic),
+        );
       }
     },
   );
@@ -168,7 +152,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     controller: _scrollController,
     child: ListView.builder(
       controller: _scrollController,
-      itemCount: _filteredChapters.length,
+      itemCount: _controller.filteredChapters.length,
       padding: const EdgeInsetsDirectional.only(
         start: 8,
         end: 16,
@@ -176,7 +160,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
         bottom: 10,
       ),
       itemBuilder: (context, index) {
-        final chapter = _filteredChapters[index];
+        final chapter = _controller.filteredChapters[index];
         return _buildChapterItem(chapter, theme, isArabic);
       },
     ),
@@ -225,7 +209,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }

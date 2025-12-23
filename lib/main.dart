@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // ← إضافة هذه المكتبة
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/main/main_content/app_content.dart';
@@ -16,6 +17,7 @@ import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await InternetStateManagerInitializer.initialize();
 
   await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
@@ -41,9 +43,14 @@ Future<void> main() async {
           BlocProvider(create: (_) => BookmarksCubit(BookmarksService())),
           BlocProvider(create: (_) => LanguageCubit(initialLocale)),
         ],
-        child: const AppContent(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+        child: InternetStateManagerInitializer(
+          options: InternetStateOptions(
+            checkConnectionPeriodic: const Duration(seconds: 5),
+          ),
+          child: const AppContent(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
         ),
       ),
     );

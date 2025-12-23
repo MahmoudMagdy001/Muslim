@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,7 +29,7 @@ class QiblahCubit extends Cubit<QiblahState> {
   static const double _degreesToRadians = pi / 180;
 
   /// Initializes listeners
-  Future<void> init() async {
+  Future<void> init([BuildContext? context]) async {
     if (_isInitialized) return;
     _isInitialized = true;
 
@@ -36,7 +38,7 @@ class QiblahCubit extends Cubit<QiblahState> {
     ); // Set loading state immediately
 
     _setupLocationServiceListener();
-    await _startIfGranted();
+    await _startIfGranted(context);
   }
 
   // ✅ setup location service listener
@@ -71,9 +73,10 @@ class QiblahCubit extends Cubit<QiblahState> {
   }
 
   // ✅ Start if permissions are granted
-  Future<void> _startIfGranted() async {
+  Future<void> _startIfGranted([BuildContext? context]) async {
     try {
-      final status = await locationService.checkLocationStatus();
+      final status = await locationService.checkLocationStatus(context);
+
       if (status.isGranted) {
         await _startQiblahCompass();
       } else {

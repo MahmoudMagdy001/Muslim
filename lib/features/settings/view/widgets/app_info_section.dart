@@ -42,7 +42,7 @@ class AppInfoSection extends StatelessWidget {
       const Divider(thickness: 0.05),
       _AppInfoTile(
         icon: Icons.person_rounded,
-        title: 'من نحن',
+        title: localizations.aboutUs,
         theme: theme,
         onTap: () => navigateWithTransition(
           context,

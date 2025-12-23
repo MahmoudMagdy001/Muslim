@@ -497,4 +497,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zakatStart => 'ابدأ الآن بحساب زكاتك وتذكّر فضلها العظيم';
+
+  @override
+  String get aboutUs => 'من نحن';
+
+  @override
+  String get appNotifications => 'إشعارات التطبيق';
+
+  @override
+  String get enablePrayerNotifications => 'تفعيل إشعارات الأذان';
+
+  @override
+  String get enableQuranReminders => 'تفعيل إشعارات تذكير القرآن';
+
+  @override
+  String get prayerNotificationsEnabled => 'تم تفعيل إشعارات الأذان';
+
+  @override
+  String get prayerNotificationsDisabled => 'تم تعطيل إشعارات الأذان';
+
+  @override
+  String get quranRemindersEnabled => 'تم تفعيل إشعارات تذكير القرآن';
+
+  @override
+  String get quranRemindersDisabled => 'تم تعطيل إشعارات تذكير القرآن';
+
+  @override
+  String get quranReminderTitle => '📖 تذكير بقراءة القرآن';
+
+  @override
+  String get quranReminderBody => 'لا تنس وردك من القرآن الكريم 🌿';
 }

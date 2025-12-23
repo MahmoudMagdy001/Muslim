@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../view_model/hadith/hadith_cubit.dart';
 import '../hadith_view/hadith_view.dart';
 import 'widgets/saved_hadith_card.dart';
 
@@ -51,15 +53,22 @@ class _SavedHadithViewState extends State<SavedHadithView> {
     if (hadithId == null) return;
 
     navigateWithTransition(
-      type: TransitionType.fade,
       context,
-      HadithView(
-        bookSlug: hadith['bookSlug'],
-        chapterNumber: hadith['chapterNumber'],
-        chapterName: hadith['chapterName'],
-        localizations: AppLocalizations.of(context),
-        scrollToHadithId: hadithId,
+      BlocProvider(
+        create: (context) => HadithCubit(
+          bookSlug: hadith['bookSlug'],
+          chapterNumber: hadith['chapterNumber'],
+          chapterName: hadith['chapterName'],
+        )..initializeData(),
+        child: HadithView(
+          bookSlug: hadith['bookSlug'],
+          chapterNumber: hadith['chapterNumber'],
+          chapterName: hadith['chapterName'],
+          localizations: AppLocalizations.of(context),
+          scrollToHadithId: hadithId,
+        ),
       ),
+      type: TransitionType.fade,
     ).then(
       (value) => setState(() {
         _loadSavedHadiths();
