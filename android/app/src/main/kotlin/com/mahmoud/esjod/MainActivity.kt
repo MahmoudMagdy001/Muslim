@@ -1,4 +1,4 @@
-package com.mahmoud.muslim
+package com.mahmoud.esjod
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -12,7 +12,7 @@ import android.graphics.Color
 
 
 class MainActivity : AudioServiceActivity() {
-    private val CHANNEL = "com.mahmoud.muslim/notification_click"
+    private val CHANNEL = "com.mahmoud.esjod/notification_click"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)

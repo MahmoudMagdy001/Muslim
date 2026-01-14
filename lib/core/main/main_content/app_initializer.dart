@@ -75,7 +75,7 @@ class AppInitializer {
 
   Future<void> _initializeAudioBackground() async {
     await JustAudioBackground.init(
-      androidNotificationChannelId: 'com.example.muslim.audio',
+      androidNotificationChannelId: 'com.example.esjod.audio',
       androidNotificationChannelName: 'تشغيل التلاوة',
       androidNotificationOngoing: true,
       androidNotificationIcon: 'drawable/ic_muslim_logo',

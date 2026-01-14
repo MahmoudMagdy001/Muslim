@@ -92,7 +92,7 @@ class SearchResultTile extends StatelessWidget {
                     Text(
                       result.ayahText,
                       style: GoogleFonts.amiri(
-                        color: const Color(0xFFC0C0C0),
+                        color: Colors.white70,
                         fontSize: 16.toSp,
                         height: 2.1,
                         fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class SearchResultTile extends StatelessWidget {
                           ? 'سورة رقم ${convertToArabicNumbers(result.surahNumber.toString())}'
                           : 'Surah ${result.surahNumber}',
                       style: context.textTheme.bodyMedium?.copyWith(
-                        color: const Color(0xFFC0C0C0),
+                        color: Colors.white70,
                       ),
                     ),
                   ],

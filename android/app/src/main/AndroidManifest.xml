@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mahmoud.muslim">
+    package="com.mahmoud.esjod">
 
     <!-- 🟢 الإشعارات -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -27,7 +27,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:label="muslim"
+        android:label="اسجد و اقترب"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true">
@@ -52,7 +52,7 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="com.mahmoud.muslim.NOTIFICATION_CLICK" />
+                <action android:name="com.mahmoud.esjod.NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

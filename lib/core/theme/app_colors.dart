@@ -5,11 +5,11 @@ class AppColors {
   const AppColors._();
 
   // ================== Base Colors ==================
-  static const Color primary = Color(0xff4C406F);
-  static const Color secondary = Color(0xffE0FF50);
+  static const Color primary = Color(0xff589C94);
+  static const Color secondary = Color(0xffC9E5E2);
 
-  static const Color primaryDark = Color(0xff362C54);
-  static const Color secondaryDark = Color(0xffB6CC3F);
+  static const Color primaryDark = Color(0xff3D6E68);
+  static const Color secondaryDark = Color(0xff4A6E6A);
 
   static const Color white = Colors.white;
   static const Color black87 = Colors.black87;
@@ -19,29 +19,29 @@ class AppColors {
   static const Color errorLight = Color(0xFFE74C3C);
   static const Color errorDark = Color(0xFFFF9A8B);
 
-  static const Color darkBackground = Color(0xFF201A2B); // Deep purple-black
-  static const Color darkSurface = Color(0xFF2A2342); // Slightly lighter
-  static const Color darkCard = Color(0xFF2A2342);
-  static const Color darkInputFill = Color(0xFF382E59);
-  static const Color darkInactiveTrack = Color(0xFF4A5568);
+  static const Color darkBackground = Color(0xFF1A2624); // Dark teal-black
+  static const Color darkSurface = Color(0xFF23312F); // Slightly lighter
+  static const Color darkCard = Color(0xFF23312F);
+  static const Color darkInputFill = Color(0xFF2F413F);
+  static const Color darkInactiveTrack = Color(0xFF4A5553);
 
-  static const Color lightInputFill = Color(0xFFF5F5F5);
-  static const Color lightInactiveTrack = Color(0xFFE2E8F0);
+  static const Color lightInputFill = Color(0xFFF0F5F4);
+  static const Color lightInactiveTrack = Color(0xFFE2E8E7);
   static const Color lightCard = Color(0xFFFFFFFF);
 
   // ================== Text Colors ==================
-  static const Color textPrimary = Color(0xFF2D3436);
-  static const Color textSecondary = Color(0xFF636E72);
+  static const Color textPrimary = Color(0xFF2D3635);
+  static const Color textSecondary = Color(0xFF637271);
 
   // ================== Private Gradients ==================
   static const List<Color> _cardGradientLight = [
-    Color(0xff7C6FB3),
-    Color(0xff4C406F),
+    Color(0xFF7FB6AF),
+    Color(0xFF589C94),
   ];
 
   static const List<Color> _cardGradientDark = [
-    Color(0xff4C406F),
-    Color(0xff2A2342),
+    Color(0xFF589C94),
+    Color(0xFF23312F),
   ];
 
   // ================== Public Smart Gradient ==================

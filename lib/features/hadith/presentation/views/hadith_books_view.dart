@@ -4,16 +4,16 @@ import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/hadith_book_entity.dart';
-import '../helper/hadith_helper.dart';
 import '../cubit/hadith_books_cubit.dart';
 import '../cubit/hadith_books_state.dart';
+import '../helper/hadith_helper.dart';
 import 'widgets/chapter_of_book.dart';
 import 'widgets/hadith_of_the_day_card.dart';
 import 'widgets/saved_hadiths_view/saved_hadith_view.dart';
@@ -372,7 +372,7 @@ class SuccessWidget extends StatelessWidget {
                   Text(
                     '${localization.writer}: $writer',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFFC0C0C0),
+                      color: Colors.white70,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -381,7 +381,7 @@ class SuccessWidget extends StatelessWidget {
                   Text(
                     '${localization.numberOfChapters} $chpaterCount - ${localization.numberOfHadiths} $hadithCount',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFFC0C0C0),
+                      color: Colors.white70,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -14,7 +14,7 @@ android {
         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
     }
 
-    namespace = "com.mahmoud.muslim"
+    namespace = "com.mahmoud.esjod"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -28,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.mahmoud.muslim"
+        applicationId = "com.mahmoud.esjod"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

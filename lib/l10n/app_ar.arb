@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appName": "مُسَلِّم",
+  "appName": "أسجد و أقترب",
   "@appName": {
     "description": "اسم التطبيق الرئيسي المعروض في الواجهة",
     "type": "text"

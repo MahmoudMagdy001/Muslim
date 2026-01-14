@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/utils/navigation_helper.dart';
 import '../../../features/layout/view/layout_view.dart';
-import '../../../features/settings/view_model/theme/theme_cubit.dart';
-import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
-import '../../service/in_app_rate.dart';
-import '../../service/in_app_update.dart';
-import '../../theme/app_theme.dart';
-import '../../../features/settings/view_model/language/language_cubit.dart';
-import '../../../features/settings/view_model/language/language_state.dart';
 import '../../../features/quran/service/quran_service.dart';
 import '../../../features/quran/view/quran_view.dart';
-import '../../../core/utils/navigation_helper.dart';
+import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
+import '../../../features/settings/view_model/language/language_cubit.dart';
+import '../../../features/settings/view_model/language/language_state.dart';
+import '../../../features/settings/view_model/theme/theme_cubit.dart';
 import '../../di/service_locator.dart';
-import 'package:flutter/services.dart';
+import '../../service/in_app_rate.dart';
+import '../../service/in_app_update.dart';
 import '../../service/navigation_service.dart';
+import '../../theme/app_theme.dart';
 
 class AppContent extends StatefulWidget {
   const AppContent({
@@ -54,7 +54,7 @@ class _AppContentState extends State<AppContent> {
 
   void _setupNotificationClickChannel() {
     debugPrint('NotificationNav: Setting up notification click channel');
-    const channel = MethodChannel('com.mahmoud.muslim/notification_click');
+    const channel = MethodChannel('com.mahmoud.esjod/notification_click');
     // ignore: cascade_invocations
     channel.setMethodCallHandler((call) async {
       debugPrint('NotificationNav: Received method call: ${call.method}');
@@ -120,7 +120,7 @@ class _AppContentState extends State<AppContent> {
                     reverseDuration: Duration(milliseconds: 500),
                   ),
                   debugShowCheckedModeBanner: false,
-                  themeMode: themeState.themeMode,
+                  themeMode: ThemeMode.light,
                   theme: lightTheme,
                   darkTheme: darkTheme,
                   locale: languageState.locale,

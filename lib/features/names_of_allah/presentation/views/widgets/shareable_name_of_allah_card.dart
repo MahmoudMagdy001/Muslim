@@ -105,8 +105,8 @@ class ShareableNameOfAllahCard extends StatelessWidget {
         // Footer
         Text(
           isArabic
-              ? 'تمت المشاركة من تطبيق مُسَلِّم'
-              : 'Shared from Muslim App',
+              ? 'تمت المشاركة من تطبيق أسجد و أقترب'
+              : 'Shared from Esjod & Approach App',
           style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
       ],

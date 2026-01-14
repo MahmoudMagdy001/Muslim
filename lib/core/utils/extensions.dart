@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../theme/app_theme.dart';
 
 /// Context Extensions
 extension ContextExtension on BuildContext {
@@ -34,10 +35,5 @@ extension ContextExtension on BuildContext {
   }
 
   /// Returns theme-aware card gradient colors
-  List<Color> get cardGradient {
-    final isDark = theme.brightness == Brightness.dark;
-    return isDark
-        ? [const Color(0xff4C406F), const Color(0xff2A2342)]
-        : [const Color(0xff7C6FB3), const Color(0xff4C406F)];
-  }
+  List<Color> get cardGradient => AppColors.cardGradient(this);
 }

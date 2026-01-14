@@ -466,7 +466,7 @@ class _TafsirContentPage extends StatelessWidget {
     final pageLabel = isArabic
         ? 'صفحة ${TafsirShareService._convertToArabicNumbers(partIndex + 1)} من ${TafsirShareService._convertToArabicNumbers(totalParts)}'
         : 'Page ${partIndex + 1} of $totalParts';
-    final appLabel = isArabic ? 'تطبيق مُسَلِّم' : 'Muslim App';
+    final appLabel = isArabic ? 'تطبيق أسجد و أقترب' : 'Esjod & Approach App';
 
     return Column(
       children: [

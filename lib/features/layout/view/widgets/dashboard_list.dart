@@ -31,52 +31,51 @@ class DashboardGrid extends StatelessWidget {
       DashboardItemModel(
         image: 'assets/home/quran.png',
         label: localizations.quranButton,
-        color: const Color(0xFFB1D4F3),
-        darkColor: const Color(0xFF2C4A70),
+        color: const Color(0xFFC9E4E1),
+        darkColor: const Color(0xFF2C4A47),
         route: SurahsListView(
           selectedReciter: reciterCubit.state.selectedReciter,
         ),
       ),
       DashboardItemModel(
-        image: 'assets/home/hadith.png',
-        label: localizations.hadithButton,
-        color: const Color(0xFFBAE6A2),
-        darkColor: const Color(0xFF395A33),
-        route: const HadithBooksView(),
-      ),
-
-      DashboardItemModel(
         image: 'assets/home/azkar.png',
         label: localizations.azkarButton,
-        color: const Color(0xFFFEED9A),
-        darkColor: const Color(0xFF9E8E3E),
+        color: const Color(0xFFD6EAE5),
+        darkColor: const Color(0xFF395A54),
         route: const AzkarView(),
-      ),
-      DashboardItemModel(
-        image: 'assets/home/qibla.png',
-        label: localizations.qiblahButton,
-        color: const Color(0xFFCEB6F6),
-        darkColor: const Color(0xFF5D4E75),
-        route: BlocProvider(
-          create: (_) => getIt<QiblahCubit>()..init(),
-          child: const QiblahView(),
-        ),
       ),
       DashboardItemModel(
         image: 'assets/home/tasbih.png',
         label: localizations.sebha,
-        color: const Color(0xFFC2EFE1),
-        darkColor: const Color(0xFF386E5D),
+        color: const Color(0xFFE4F1EE),
+        darkColor: const Color(0xFF3E6E64),
         route: BlocProvider(
           create: (_) => getIt<SebhaCubit>()..loadCustomAzkar(),
           child: const SebhaView(),
         ),
       ),
       DashboardItemModel(
+        image: 'assets/home/hadith.png',
+        label: localizations.hadithButton,
+        color: const Color(0xFFC9E4E1),
+        darkColor: const Color(0xFF2C4946),
+        route: const HadithBooksView(),
+      ),
+      DashboardItemModel(
+        image: 'assets/home/qibla.png',
+        label: localizations.qiblahButton,
+        color: const Color(0xFFD6EAE5),
+        darkColor: const Color(0xFF395A54),
+        route: BlocProvider(
+          create: (_) => getIt<QiblahCubit>()..init(),
+          child: const QiblahView(),
+        ),
+      ),
+      DashboardItemModel(
         image: 'assets/home/allah_Names.png',
         label: localizations.namesOfAllah,
-        color: const Color(0xFFE0E0E0),
-        darkColor: const Color(0xFF424242),
+        color: const Color(0xFFE4F1EE),
+        darkColor: const Color(0xFF3E6E64),
         route: BlocProvider(
           create: (_) => getIt<NamesOfAllahCubit>(),
           child: const NamesOfAllahScreen(),
@@ -85,17 +84,17 @@ class DashboardGrid extends StatelessWidget {
     ];
 
     return Column(
-      crossAxisAlignment: .start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: .symmetric(horizontal: 16.toW, vertical: 8.toH),
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 8.toH),
           child: Text(
             localizations.allServices,
             style: context.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.theme.brightness == Brightness.dark
                   ? Colors.white
-                  : const Color(0xff4C406F),
+                  : const Color(0xff589C94),
             ),
           ),
         ),

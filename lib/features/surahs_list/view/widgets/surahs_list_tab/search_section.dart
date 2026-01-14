@@ -34,7 +34,7 @@ class SearchSection extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'ابحث عن السورة',
           hintStyle: context.textTheme.bodyLarge?.copyWith(
-            color: const Color(0xFFC0C0C0),
+            color: Colors.white70,
           ),
           prefixIcon: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.toH, horizontal: 8.toW),
@@ -55,7 +55,10 @@ class SearchSection extends StatelessWidget {
             valueListenable: controller,
             builder: (context, value, _) => value.text.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.clear, color: context.theme.primaryColor),
+                    icon: Icon(
+                      Icons.clear,
+                      color: context.theme.colorScheme.primary,
+                    ),
                     onPressed: clearSearch,
                   )
                 : const SizedBox.shrink(),

@@ -79,14 +79,11 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
     final ayahStr = convertToArabicNumbers(_ayahNumber.toString());
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 6.w),
+      margin: EdgeInsets.symmetric(horizontal: 8.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.toR),
-        gradient: LinearGradient(
-          begin: AlignmentDirectional.topCenter,
-          end: AlignmentDirectional.bottomCenter,
-          colors: context.cardGradient,
-        ),
+        color: const Color(0xFFE0F2F1), // Light teal background
+        borderRadius: BorderRadius.circular(16.toR),
+        border: Border.all(color: context.colorScheme.primary.withAlpha(50)),
       ),
       child: InkWell(
         onTap: () {
@@ -101,72 +98,89 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
             type: TransitionType.fade,
           );
         },
-        borderRadius: BorderRadius.circular(24.toR),
+        borderRadius: BorderRadius.circular(16.toR),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'ورد اليوم',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'سورة ${_surah.nameArabic}',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.primary.withAlpha(200),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.toH),
+              Container(
+                padding: EdgeInsets.all(16.toR),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.toR),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ورد اليوم',
-                      style: context.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
+                      _ayahText,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.amiri(
+                        fontSize: 20.sp,
+                        color: Colors.black87,
+                        height: 1.6,
                         fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4.toH),
-                    Text(
-                      'سورة ${_surah.nameArabic} - آية $ayahStr',
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                       textDirection: TextDirection.rtl,
                     ),
                     SizedBox(height: 12.toH),
                     Text(
-                      _ayahText,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.amiri(
-                        fontSize: 18.sp,
-                        color: Colors.white,
-                        height: 1.4,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textDirection: TextDirection.rtl,
-                    ),
-                    SizedBox(height: 16.toH),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.toW,
-                        vertical: 8.toH,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(20.toR),
-                      ),
-                      child: Text(
-                        'اقرأ المزيد',
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      'سورة ${_surah.nameArabic} - الجزء ${quran.getJuzNumber(_surah.number, _ayahNumber)} - آية $ayahStr',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: Colors.black45,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 8.toW),
-              Image.asset(
-                'assets/home/quran.png',
-                height: 80.toH,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.menu_book,
-                  size: 60,
-                  color: Colors.white70,
+              SizedBox(height: 12.toH),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    final reciter = context
+                        .read<ReciterCubit>()
+                        .state
+                        .selectedReciter;
+                    navigateWithTransition(
+                      context,
+                      QuranView(
+                        surahNumber: _surah.number,
+                        reciter: reciter,
+                        currentAyah: _ayahNumber,
+                      ),
+                      type: TransitionType.fade,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF589C94),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('اقرأ المزيد'),
                 ),
               ),
             ],

@@ -6,10 +6,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../domain/entities/name_of_allah_entity.dart';
 import '../cubit/names_of_allah_cubit.dart';
 import '../cubit/names_of_allah_state.dart';
@@ -72,8 +72,8 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
         ShareParams(
           files: [XFile(file.path)],
           text: isArabic
-              ? 'أسماء الله الحسني - مشاركه من تطبيق مُسَلِّم'
-              : 'Names of Allah - Shared from Muslim App',
+              ? 'أسماء الله الحسني - مشاركه من تطبيق أسجد و أقترب'
+              : 'Names of Allah - Shared from Esjod & Approach App',
           subject: isArabic ? 'أسماء الله الحسني' : 'Names of Allah',
         ),
       );

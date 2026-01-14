@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "Muslim",
+  "appName": "Esjod & Approach",
   "@appName": {
     "description": "Main app name displayed in the interface",
     "type": "text"

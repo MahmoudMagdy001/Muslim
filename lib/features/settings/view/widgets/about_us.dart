@@ -9,8 +9,8 @@ class AboutUsView extends StatelessWidget {
   Future<void> _launchEmail(bool isArabic) async {
     final String subject = Uri.encodeComponent(
       isArabic
-          ? 'تواصل بخصوص التطبيق - مُسَلِّم'
-          : 'Contact regarding the app - Muslim',
+          ? 'تواصل بخصوص التطبيق - أسجد و أقترب'
+          : 'Contact regarding the app - Esjod & Approach',
     );
     final Uri emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
@@ -40,11 +40,11 @@ class AboutUsView extends StatelessWidget {
           children: [
             const CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/images/muslim_logo.png'),
+              backgroundImage: AssetImage('assets/app_icon.png'),
             ),
             const SizedBox(height: 16),
             Text(
-              isArabic ? 'تطبيق مُسَلِّم' : 'Muslim App',
+              isArabic ? 'تطبيق أسجد و أقترب' : 'Esjod & Approach App',
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -52,9 +52,9 @@ class AboutUsView extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               isArabic
-                  ? 'تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار،'
+                  ? 'تطبيق أسجد و أقترب هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار،'
                         ' صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.'
-                  : 'Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar.'
+                  : 'Esjod & Approach App is your daily companion for prayer reminders, Quran reading, and Azkar.'
                         ' Carefully designed to provide a simple and easy spiritual experience in your daily life.',
               textAlign: TextAlign.center,
               style: textTheme.bodyMedium?.copyWith(height: 2.1),

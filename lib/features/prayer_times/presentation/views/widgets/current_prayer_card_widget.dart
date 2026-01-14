@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -7,10 +6,10 @@ import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../domain/entities/prayer_type.dart';
-import '../../helper/prayer_consts.dart';
-import '../../helper/time_left_format.dart';
 import '../../cubit/prayer_times_cubit.dart';
 import '../../cubit/prayer_times_state.dart';
+import '../../helper/prayer_consts.dart';
+import '../../helper/time_left_format.dart';
 
 class CurrentPrayerCard extends StatelessWidget {
   const CurrentPrayerCard({
@@ -35,127 +34,137 @@ class CurrentPrayerCard extends StatelessWidget {
       builder: (context, state) {
         final localPrayerTimes = state.localPrayerTimes;
         final next = state.nextPrayer;
-        final previous = state.previousPrayerDateTime;
-        final nextDateTime = state.localPrayerTimes != null && next != null
-            ? state.localPrayerTimes!.timeForPrayer(next) != '--:--'
-                  ? state.timeLeft != null
-                        ? DateTime.now().add(state.timeLeft!)
-                        : DateTime.now()
-                  : DateTime.now()
-            : DateTime.now();
 
-        // Calculate real progress
-        double progress = 0.0;
-        if (previous != null && state.timeLeft != null) {
-          final totalInterval = nextDateTime.difference(previous).inSeconds;
-          if (totalInterval > 0) {
-            final elapsed = totalInterval - state.timeLeft!.inSeconds;
-            progress = (elapsed / totalInterval).clamp(0.0, 1.0);
-          }
-        }
-
-        return ColoredBox(
-          color: theme.colorScheme.primary,
-          child: Stack(
+        return Skeletonizer(
+          enabled: state.status == RequestStatus.loading,
+          child: Column(
             children: [
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Image.asset('assets/home/vactor.png', fit: BoxFit.fill),
-              ),
-              Skeletonizer(
-                enabled: state.status == RequestStatus.loading,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    children: [
-                      // Top Info: Day, Date, City
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.toW),
-                        child: Row(
-                          mainAxisAlignment: .spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: .start,
-                              children: [
-                                Text(
-                                  '$dayName - $hijriDate',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 4.toH),
-                                _CityText(theme),
-                              ],
-                            ),
-                            _RefreshButton(localizations, isArabic),
-                          ],
-                        ),
+              Container(
+                color: Colors.white,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Teal Header Container
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
                       ),
-
-                      // Center: Circular Progress & Next Prayer
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.toH),
-                        child: Stack(
-                          alignment: .center,
-                          children: [
-                            CustomPaint(
-                              size: Size(200.toW, 180.toH),
-                              painter: _PrayerProgressPainter(
-                                progress: progress,
-                                color: theme.colorScheme.secondary,
+                      child: Stack(
+                        children: [
+                          // Mosque Silhouette Background
+                          Positioned(
+                            child: Skeleton.ignore(
+                              child: Image.asset(
+                                'assets/home/vactor.png',
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            Column(
-                              mainAxisSize: .min,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.toW),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _NextPrayerName(theme, isArabic),
+                                // Top Info: Date
                                 SizedBox(height: 4.toH),
-                                _TimeLeftText(theme, isArabic),
+                                Row(
+                                  children: [
+                                    const Skeleton.ignore(
+                                      child: Icon(
+                                        Icons.calendar_month_outlined,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.toW),
+                                    Text(
+                                      hijriDate,
+                                      style: theme.textTheme.titleSmall
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 4.toH),
+                                // Next Prayer row
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${isArabic ? 'الصلاة القادمة' : 'Next Prayer'}: ',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(color: Colors.white70),
+                                    ),
+                                    _NextPrayerName(theme, isArabic),
+                                  ],
+                                ),
+
+                                _CityText(theme),
+
+                                // Digital Clock
+                                Center(child: _TimeLeftText(theme, isArabic)),
                               ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Overlapping Prayer Strip
+                    Positioned(
+                      bottom: -30.toH,
+                      left: 12.toW,
+                      right: 12.toW,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.toH,
+                          horizontal: 8.toW,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.toR),
+
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(
+                                (0.1 * 255).toInt(),
+                              ),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                      ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: PrayerType.values
+                              .where(
+                                (prayer) => prayerVisuals.containsKey(prayer),
+                              )
+                              .map((prayer) {
+                                final isNext = prayer == next;
+                                final timing =
+                                    localPrayerTimes?.timeForPrayer(prayer) ??
+                                    '';
+                                final visual = prayerVisuals[prayer]!;
 
-                      // Bottom: All Prayer Times Row
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 12.toH),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.toW),
-                          child: Row(
-                            children: PrayerType.values
-                                .where(
-                                  (prayer) => prayerVisuals.containsKey(prayer),
-                                )
-                                .map((prayer) {
-                                  final isNext = prayer == next;
-                                  final timing =
-                                      localPrayerTimes?.timeForPrayer(prayer) ??
-                                      '';
-                                  final visual = prayerVisuals[prayer]!;
-
-                                  return Expanded(
-                                    child: _PrayerSmallCard(
-                                      label: prayer.displayName(
-                                        isArabic: isArabic,
-                                      ),
-                                      time: formatTo12Hour(timing, isArabic),
-                                      isNext: isNext,
-                                      theme: theme,
-                                      iconPath: visual.assetPath,
-                                    ),
-                                  );
-                                })
-                                .toList(),
-                          ),
+                                return _PrayerMiniCard(
+                                  label: prayer.displayName(isArabic: isArabic),
+                                  time: formatTo12Hour(timing, isArabic),
+                                  isNext: isNext,
+                                  theme: theme,
+                                  iconPath: visual.assetPath,
+                                );
+                              })
+                              .toList(),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+              // Spacer to account for overlapping Container
+              SizedBox(height: 45.toH),
             ],
           ),
         );
@@ -164,8 +173,8 @@ class CurrentPrayerCard extends StatelessWidget {
   }
 }
 
-class _PrayerSmallCard extends StatelessWidget {
-  const _PrayerSmallCard({
+class _PrayerMiniCard extends StatelessWidget {
+  const _PrayerMiniCard({
     required this.label,
     required this.time,
     required this.isNext,
@@ -181,46 +190,61 @@ class _PrayerSmallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(horizontal: 2.toW),
-    padding: EdgeInsets.symmetric(vertical: 6.toH),
+    padding: EdgeInsets.symmetric(horizontal: 8.toW, vertical: 8.toH),
     decoration: BoxDecoration(
-      color: isNext
-          ? theme.colorScheme.secondary.withAlpha((0.2 * 255).toInt())
-          : Colors.transparent,
-      borderRadius: BorderRadius.circular(16.toR),
-      border: Border.all(
-        color: isNext ? theme.colorScheme.secondary : Colors.white24,
-        width: 1.toW,
-      ),
+      color: isNext ? theme.colorScheme.primary : Colors.transparent,
+      borderRadius: BorderRadius.circular(8.toR),
     ),
     child: Column(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: isNext ? Colors.white : Colors.white70,
-            fontWeight: isNext ? .bold : .normal,
+        Skeleton.ignore(
+          child: Icon(
+            _getPrayerIcon(label),
+            size: 24.toR,
+            color: isNext
+                ? Colors.white
+                : theme.colorScheme.primary.withAlpha(200),
           ),
         ),
         SizedBox(height: 4.toH),
-        Image.asset(
-          iconPath,
-          height: 24.toH,
-          width: 24.toW,
-          color: isNext ? theme.colorScheme.secondary : Colors.white,
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: isNext ? Colors.white : Colors.black54,
+            fontWeight: isNext ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
-        SizedBox(height: 4.toH),
+        SizedBox(height: 2.toH),
         Text(
           time,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.white,
-            fontWeight: .bold,
+            color: isNext ? Colors.white : Colors.black87,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
     ),
   );
+
+  IconData _getPrayerIcon(String label) {
+    if (label.contains('فجر') || label.contains('Fajr')) {
+      return Icons.nights_stay_outlined;
+    }
+    if (label.contains('شروق') || label.contains('Sunrise')) {
+      return Icons.wb_sunny_outlined;
+    }
+    if (label.contains('ظهر') || label.contains('Dhuhr')) {
+      return Icons.wb_sunny;
+    }
+    if (label.contains('عصر') || label.contains('Asr')) {
+      return Icons.wb_cloudy_outlined;
+    }
+    if (label.contains('مغرب') || label.contains('Maghrib')) {
+      return Icons.wb_twilight;
+    }
+    return Icons.nightlight_round;
+  }
 }
 
 class _CityText extends StatelessWidget {
@@ -249,9 +273,9 @@ class _NextPrayerName extends StatelessWidget {
         selector: (state) => state.nextPrayer,
         builder: (context, nextPrayer) => Text(
           nextPrayer?.displayName(isArabic: isArabic) ?? '------',
-          style: theme.textTheme.headlineLarge?.copyWith(
-            color: theme.colorScheme.secondary,
-            fontWeight: .bold,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       );
@@ -271,62 +295,11 @@ class _TimeLeftText extends StatelessWidget {
             timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
             isArabic,
           ),
-          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
+          style: theme.textTheme.displayMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 48.toSp,
+          ),
         ),
       );
-}
-
-class _RefreshButton extends StatelessWidget {
-  const _RefreshButton(this.localizations, this.isArabic);
-  final AppLocalizations localizations;
-  final bool isArabic;
-
-  @override
-  Widget build(BuildContext context) => IconButton(
-    onPressed: () async {
-      HapticFeedback.heavyImpact();
-      await context.read<PrayerTimesCubit>().refreshPrayerTimes(
-        isArabic: isArabic,
-      );
-    },
-    icon: const Icon(Icons.refresh_rounded, color: Colors.white),
-    tooltip: localizations.updatePrayerTimes,
-  );
-}
-
-class _PrayerProgressPainter extends CustomPainter {
-  _PrayerProgressPainter({required this.progress, required this.color});
-
-  final double progress;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width - 19) / 2;
-    final rect = Rect.fromCircle(center: center, radius: radius);
-
-    const double startAngle = 0.65 * 3.141592653589793;
-    const double totalSweep = 1.7 * 3.141592653589793;
-
-    final backgroundPaint = Paint()
-      ..color = Colors.white12
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 19
-      ..strokeCap = StrokeCap.round;
-
-    final progressPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 19
-      ..strokeCap = StrokeCap.round;
-
-    canvas
-      ..drawArc(rect, startAngle, totalSweep, false, backgroundPaint)
-      ..drawArc(rect, startAngle, totalSweep * progress, false, progressPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _PrayerProgressPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.color != color;
 }

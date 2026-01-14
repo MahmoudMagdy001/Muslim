@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
+
 import '../../../../core/utils/extensions.dart';
 
 class SurahTextContent extends StatelessWidget {
@@ -58,7 +59,7 @@ class SurahTextContent extends StatelessWidget {
               text: '$text ',
               style: context.textTheme.displayMedium?.copyWith(
                 color: isCurrent
-                    ? context.colorScheme.error
+                    ? context.colorScheme.primary
                     : context.textTheme.bodyLarge?.color,
               ),
               recognizer: TapGestureRecognizer()

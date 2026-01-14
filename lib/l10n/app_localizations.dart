@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// Main app name displayed in the interface
   ///
   /// In en, this message translates to:
-  /// **'Muslim'**
+  /// **'Esjod & Approach'**
   String get appName;
 
   ///
