@@ -784,5 +784,6 @@
   "quranRemindersEnabled": "Quran reminders enabled",
   "quranRemindersDisabled": "Quran reminders disabled",
   "quranReminderTitle": "📖 Quran Reading Reminder",
-  "quranReminderBody": "Don't forget your daily Quran reading 🌿"
+  "quranReminderBody": "Don't forget your daily Quran reading 🌿",
+  "allServices": "All Services"
 }

@@ -1095,6 +1095,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t forget your daily Quran reading 🌿'**
   String get quranReminderBody;
+
+  /// No description provided for @allServices.
+  ///
+  /// In en, this message translates to:
+  /// **'All Services'**
+  String get allServices;
 }
 
 class _AppLocalizationsDelegate

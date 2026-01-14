@@ -20,10 +20,7 @@ class HadithCubit extends Cubit<HadithState> {
   final HadithService _hadithService = HadithService();
   final HadithStorageService _storageService = HadithStorageService();
 
-  final Map<int, GlobalKey> _hadithKeys = {};
   final Map<String, ValueNotifier<bool>> _hadithSavedMap = {};
-
-  Map<int, GlobalKey> get hadithKeys => _hadithKeys;
   bool isHadithSaved(String hadithId) =>
       _hadithSavedMap[hadithId]?.value ?? false;
   ValueNotifier<bool>? getHadithNotifier(String hadithId) =>
@@ -66,7 +63,6 @@ class HadithCubit extends Cubit<HadithState> {
     // تقسيم العملية إلى مهام صغيرة لتجنب حجب الـ UI
     for (var i = 0; i < hadiths.length; i++) {
       final hadith = hadiths[i];
-      _hadithKeys[int.parse(hadith.id)] = GlobalKey();
 
       if (!_hadithSavedMap.containsKey(hadith.id)) {
         _hadithSavedMap[hadith.id] = ValueNotifier(false);

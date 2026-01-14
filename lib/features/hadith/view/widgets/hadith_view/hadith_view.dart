@@ -60,9 +60,11 @@ class _HadithViewState extends State<HadithView> {
     );
   }
 
-  void _handleStateChanges(HadithState state) {
+  void _handleStateChanges(HadithState state, HadithCubit cubit) {
     if (state is HadithError) {
       _showErrorSnackBar(state.message);
+    } else if (state is HadithLoaded) {
+      _scrollToInitialHadith(cubit);
     }
   }
 
@@ -101,7 +103,8 @@ class _HadithViewState extends State<HadithView> {
     final isArabic = locale == 'ar';
 
     return BlocListener<HadithCubit, HadithState>(
-      listener: (context, state) => _handleStateChanges(state),
+      listener: (context, state) =>
+          _handleStateChanges(state, context.read<HadithCubit>()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(

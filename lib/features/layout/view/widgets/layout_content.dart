@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../names_of_allah/view/names_of_allah_screen.dart';
 import '../../../prayer_times/view/prayer_times_view.dart';
-import '../../../sebha/view/sebha_view.dart';
 import 'dashboard_list.dart';
-import 'feature_card.dart';
 import 'zakat_card_widget.dart';
 
 class LayoutContent extends StatelessWidget {
@@ -34,36 +30,14 @@ class LayoutContent extends StatelessWidget {
           localizations: localizations,
         ),
       ),
-      SliverToBoxAdapter(
-        child: DashboardGrid(theme: theme, localizations: localizations),
-      ),
-      SliverToBoxAdapter(
-        child: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 8.toW),
-          child: Row(
-            children: [
-              FeatureCard(
-                label: localizations.namesOfAllah,
-                image: 'assets/images/allah.png',
-                onTap: () =>
-                    navigateWithTransition(context, const NamesOfAllahScreen()),
-                theme: theme,
-              ),
-              FeatureCard(
-                label: localizations.sebha,
-                image: 'assets/images/seb7a.png',
-                onTap: () => navigateWithTransition(
-                  context,
-                  SebhaView(localizations: localizations, isArabic: isArabic),
-                ),
-                theme: theme,
-              ),
-            ],
-          ),
+      SliverPadding(
+        padding: .symmetric(vertical: 8.toH, horizontal: 8.toW),
+        sliver: SliverToBoxAdapter(
+          child: ZakatCardWidget(theme: theme, localizations: localizations),
         ),
       ),
       SliverToBoxAdapter(
-        child: ZakatCardWidget(theme: theme, localizations: localizations),
+        child: DashboardGrid(theme: theme, localizations: localizations),
       ),
     ],
   );

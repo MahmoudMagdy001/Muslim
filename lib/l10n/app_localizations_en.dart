@@ -534,4 +534,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quranReminderBody => 'Don\'t forget your daily Quran reading 🌿';
+
+  @override
+  String get allServices => 'All Services';
 }

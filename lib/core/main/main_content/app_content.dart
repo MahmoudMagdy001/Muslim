@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,40 +40,16 @@ class _AppContentState extends State<AppContent> {
     builder: (context, themeState) => BlocBuilder<FontSizeCubit, FontSizeState>(
       builder: (context, fontSizeState) =>
           BlocBuilder<LanguageCubit, LanguageState>(
-            builder: (context, languageState) {
-              final fontSize = fontSizeState.fontSize;
-              final themeFactory = AppThemeFactory(fontSize);
-              final lightTheme = themeFactory.lightTheme;
-              final darkTheme = themeFactory.darkTheme;
+            builder: (context, languageState) => ScreenUtilInit(
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                final fontSize = fontSizeState.fontSize;
+                final themeFactory = AppThemeFactory(fontSize);
+                final lightTheme = themeFactory.lightTheme;
+                final darkTheme = themeFactory.darkTheme;
 
-              final theme = Theme.of(context);
-              final isDark = theme.brightness == Brightness.dark;
-
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                SystemChrome.setSystemUIOverlayStyle(
-                  SystemUiOverlayStyle(
-                    systemNavigationBarColor: Colors.transparent,
-                    systemNavigationBarDividerColor: Colors.transparent,
-                    systemNavigationBarIconBrightness: isDark
-                        ? Brightness.light
-                        : Brightness.dark,
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: isDark
-                        ? Brightness.light
-                        : Brightness.dark,
-                    statusBarBrightness: isDark
-                        ? Brightness.dark
-                        : Brightness.light,
-                    systemNavigationBarContrastEnforced: false,
-                    systemStatusBarContrastEnforced: false,
-                  ),
-                );
-              });
-
-              return ScreenUtilInit(
-                minTextAdapt: true,
-                splitScreenMode: true,
-                builder: (context, child) => MaterialApp(
+                return MaterialApp(
                   themeAnimationStyle: const AnimationStyle(
                     curve: Curves.easeIn,
                     duration: Duration(milliseconds: 500),
@@ -89,9 +64,9 @@ class _AppContentState extends State<AppContent> {
                   localizationsDelegates: widget.localizationsDelegates,
                   supportedLocales: widget.supportedLocales,
                   home: const LayoutView(),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
     ),
   );

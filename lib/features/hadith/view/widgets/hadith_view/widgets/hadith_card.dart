@@ -42,7 +42,6 @@ class HadithCard extends StatelessWidget {
     final status = cubit.getStatus(hadith.status, isArabic);
 
     return RepaintBoundary(
-      key: cubit.hadithKeys[int.parse(hadith.id)],
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
         child: Padding(

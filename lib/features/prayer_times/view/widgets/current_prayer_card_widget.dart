@@ -71,12 +71,12 @@ class CurrentPrayerCard extends StatelessWidget {
                     children: [
                       // Top Info: Day, Date, City
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.toW),
+                        padding: .symmetric(horizontal: 12.toW),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: .spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: .start,
                               children: [
                                 Text(
                                   '$dayName - $hijriDate',
@@ -95,9 +95,9 @@ class CurrentPrayerCard extends StatelessWidget {
 
                       // Center: Circular Progress & Next Prayer
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.toH),
+                        padding: .symmetric(vertical: 10.toH),
                         child: Stack(
-                          alignment: Alignment.center,
+                          alignment: .center,
                           children: [
                             // Circular Progress (Custom Arc)
                             CustomPaint(
@@ -109,7 +109,7 @@ class CurrentPrayerCard extends StatelessWidget {
                             ),
                             // Inner Details
                             Column(
-                              mainAxisSize: MainAxisSize.min,
+                              mainAxisSize: .min,
                               children: [
                                 _NextPrayerName(theme, isArabic),
                                 SizedBox(height: 4.toH),
@@ -122,9 +122,9 @@ class CurrentPrayerCard extends StatelessWidget {
 
                       // Bottom: All Prayer Times Row
                       Padding(
-                        padding: EdgeInsets.only(bottom: 12.toH),
+                        padding: .only(bottom: 12.toH),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.toW),
+                          padding: .symmetric(horizontal: 10.toW),
                           child: Row(
                             children: prayerOrder.map((key) {
                               final isNext = key == next;
@@ -183,26 +183,26 @@ class _PrayerSmallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(horizontal: 2.toW),
-    padding: EdgeInsets.symmetric(vertical: 6.toH),
+    margin: .symmetric(horizontal: 2.toW),
+    padding: .symmetric(vertical: 6.toH),
     decoration: BoxDecoration(
       color: isNext
           ? theme.colorScheme.secondary.withAlpha((0.2 * 255).toInt())
           : Colors.transparent,
-      borderRadius: BorderRadius.circular(12.toR),
-      border: Border.all(
+      borderRadius: .circular(12.toR),
+      border: .all(
         color: isNext ? theme.colorScheme.secondary : Colors.white24,
         width: 1.toW,
       ),
     ),
     child: Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
             color: isNext ? Colors.white : Colors.white70,
-            fontWeight: isNext ? FontWeight.bold : FontWeight.normal,
+            fontWeight: isNext ? .bold : .normal,
           ),
         ),
         SizedBox(height: 4.toH),
@@ -217,7 +217,7 @@ class _PrayerSmallCard extends StatelessWidget {
           time,
           style: theme.textTheme.bodySmall?.copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         ),
       ],
@@ -255,7 +255,7 @@ class _NextPrayerName extends StatelessWidget {
               : nextPrayer ?? '------',
           style: theme.textTheme.headlineLarge?.copyWith(
             color: theme.colorScheme.secondary,
-            fontWeight: FontWeight.bold,
+            fontWeight: .bold,
           ),
         ),
       );

@@ -527,4 +527,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quranReminderBody => 'لا تنس وردك من القرآن الكريم 🌿';
+
+  @override
+  String get allServices => 'كل الخدمات';
 }
