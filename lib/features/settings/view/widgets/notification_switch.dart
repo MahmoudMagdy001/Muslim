@@ -46,6 +46,7 @@ class _NotificationSectionState extends State<NotificationSection> {
 
   Future<void> _togglePrayerNotifications(bool value) async {
     await _settingsManager.savePrayerNotifications(value);
+    if (!mounted) return;
 
     setState(() => _settings = _settings.copyWith(prayerNotifications: value));
 
@@ -58,6 +59,7 @@ class _NotificationSectionState extends State<NotificationSection> {
       }
     }
 
+    if (!mounted) return;
     _showSnackBar(
       value
           ? AppLocalizations.of(context).prayerNotificationsEnabled
@@ -67,6 +69,7 @@ class _NotificationSectionState extends State<NotificationSection> {
 
   Future<void> _toggleQuranNotifications(bool value) async {
     await _settingsManager.saveQuranNotifications(value);
+    if (!mounted) return;
 
     setState(() => _settings = _settings.copyWith(quranNotifications: value));
 
@@ -76,6 +79,7 @@ class _NotificationSectionState extends State<NotificationSection> {
       await _quranNotificationService.scheduleDailyReminder(context);
     }
 
+    if (!mounted) return;
     _showSnackBar(
       value
           ? AppLocalizations.of(context).quranRemindersEnabled
@@ -260,6 +264,7 @@ class QuranNotificationService {
         now.hour + 1,
       );
 
+      if (!context.mounted) return;
       final localizations = AppLocalizations.of(context);
 
       await AwesomeNotifications().createNotification(

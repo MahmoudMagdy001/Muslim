@@ -34,4 +34,8 @@ class AppColors {
     Color(0xFF66B8E8),
     Colors.white,
   ];
+  static const List<Color> cardGradient = [
+    Color(0xff6A5CA5),
+    Color(0xff4C406F),
+  ];
 }

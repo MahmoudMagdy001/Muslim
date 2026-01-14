@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/service/permissions_sevice.dart';
@@ -135,6 +134,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }) async {
     debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
     await checkAllPermissions();
+    if (context != null && !context.mounted) return;
     init(isArabic: isArabic, context: context);
   }
 

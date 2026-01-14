@@ -3,6 +3,10 @@ import '../model/chapter_of_book_model.dart';
 import '../service/chapter_of_book/chapter_service.dart';
 
 class ChapterOfBookController extends ChangeNotifier {
+  ChapterOfBookController({required this.bookSlug}) {
+    _chaptersFuture = _loadChapters();
+    searchController.addListener(_onSearchChanged);
+  }
   final ChapterOfBookService _chapterRepository = const ChapterOfBookService();
   final TextEditingController searchController = TextEditingController();
 
@@ -14,11 +18,6 @@ class ChapterOfBookController extends ChangeNotifier {
   List<ChapterOfBookModel> get filteredChapters => _filteredChapters;
 
   final String bookSlug;
-
-  ChapterOfBookController({required this.bookSlug}) {
-    _chaptersFuture = _loadChapters();
-    searchController.addListener(_onSearchChanged);
-  }
 
   Future<List<ChapterOfBookModel>> _loadChapters() async {
     final chapters = await _chapterRepository.fetchChapters(bookSlug);

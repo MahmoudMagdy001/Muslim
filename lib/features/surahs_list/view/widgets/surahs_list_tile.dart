@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../model/surahs_list_model.dart';
 
 class SurahListTile extends StatelessWidget {
@@ -16,63 +18,61 @@ class SurahListTile extends StatelessWidget {
   final bool isArabic;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return InkWell(
+  Widget build(BuildContext context) => Container(
+    margin: EdgeInsets.symmetric(vertical: 6.toH),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: AppColors.cardGradient,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(15.toR),
+    ),
+    child: InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(15.toR),
       child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: 15,
-          bottom: 15,
-          start: 6,
-          end: 18,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  'assets/quran/marker.png',
+                  width: 40.toW,
+                  height: 40.toH,
+                ),
+                Text(
                   isArabic
                       ? convertToArabicNumbers(surah.number.toString())
                       : surah.number.toString(),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: colorScheme.primary,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+              ],
             ),
-
-            const SizedBox(width: 16),
-
-            // Surah details
+            SizedBox(width: 16.toW),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
                   Text(
                     surah.surahName,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.toH),
                   Text(
                     '${surah.locationArabic} - ${isArabic ? '${convertToArabicNumbers(surah.ayahCount.toString())} آيات' : '${surah.ayahCount.toString()} Verses'}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFFC0C0C0),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -80,15 +80,10 @@ class SurahListTile extends StatelessWidget {
                 ],
               ),
             ),
-
-            Icon(
-              Icons.arrow_forward_ios,
-              color: colorScheme.onSurfaceVariant,
-              size: 16,
-            ),
+            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16.toR),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

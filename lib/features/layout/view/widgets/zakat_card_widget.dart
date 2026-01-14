@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -19,10 +20,10 @@ class ZakatCardWidget extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       borderRadius: .circular(24.toR),
-      gradient: LinearGradient(
-        begin: AlignmentDirectional.topStart,
-        end: AlignmentDirectional.bottomEnd,
-        colors: [theme.primaryColor, theme.primaryColor.withValues(alpha: 0.8)],
+      gradient: const LinearGradient(
+        begin: AlignmentDirectional.topCenter,
+        end: AlignmentDirectional.bottomCenter,
+        colors: AppColors.cardGradient,
       ),
     ),
     child: InkWell(

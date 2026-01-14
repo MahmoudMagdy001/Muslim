@@ -6,6 +6,9 @@ import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
 
 class HadithBooksController extends ChangeNotifier {
+  HadithBooksController() {
+    _booksFuture = _fetchBooks();
+  }
   final String _apiKey =
       r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
@@ -14,10 +17,6 @@ class HadithBooksController extends ChangeNotifier {
 
   String _searchText = '';
   String get searchText => _searchText;
-
-  HadithBooksController() {
-    _booksFuture = _fetchBooks();
-  }
 
   void refreshBooks() {
     _booksFuture = _fetchBooks();

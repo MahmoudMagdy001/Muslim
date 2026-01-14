@@ -152,6 +152,7 @@ class PrayerTimesService {
     // 1. إذا كان مسموحاً بطلب الموقع (وليس في الخلفية) وكان الخيار مفعلاً
     if (allowRequest && await settingsService.getAutoLocationEnabled()) {
       try {
+        if (context != null && !context.mounted) return null;
         final position = await _getCurrentPosition(context);
 
         await _cacheCoordinates(prefs, position.latitude, position.longitude);
