@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../features/layout/view/layout_view.dart';
 import '../../../features/settings/view_model/theme/theme_cubit.dart';
@@ -70,21 +71,25 @@ class _AppContentState extends State<AppContent> {
                 );
               });
 
-              return MaterialApp(
-                themeAnimationStyle: const AnimationStyle(
-                  curve: Curves.easeIn,
-                  duration: Duration(milliseconds: 500),
-                  reverseCurve: Curves.easeOut,
-                  reverseDuration: Duration(milliseconds: 500),
+              return ScreenUtilInit(
+                minTextAdapt: true,
+                splitScreenMode: true,
+                builder: (context, child) => MaterialApp(
+                  themeAnimationStyle: const AnimationStyle(
+                    curve: Curves.easeIn,
+                    duration: Duration(milliseconds: 500),
+                    reverseCurve: Curves.easeOut,
+                    reverseDuration: Duration(milliseconds: 500),
+                  ),
+                  debugShowCheckedModeBanner: false,
+                  themeMode: themeState.themeMode,
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
+                  locale: languageState.locale,
+                  localizationsDelegates: widget.localizationsDelegates,
+                  supportedLocales: widget.supportedLocales,
+                  home: const LayoutView(),
                 ),
-                debugShowCheckedModeBanner: false,
-                themeMode: themeState.themeMode,
-                theme: lightTheme,
-                darkTheme: darkTheme,
-                locale: languageState.locale,
-                localizationsDelegates: widget.localizationsDelegates,
-                supportedLocales: widget.supportedLocales,
-                home: const LayoutView(),
               );
             },
           ),

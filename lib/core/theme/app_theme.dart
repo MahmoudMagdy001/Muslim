@@ -19,18 +19,18 @@ class AppThemeFactory {
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.white,
-      fontFamily: GoogleFonts.amiri().fontFamily,
+      fontFamily: GoogleFonts.cairo().fontFamily,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
-        elevation: 0,
+        elevation: 5,
         centerTitle: true,
         titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
       ),
       tabBarTheme: _lightTabBarTheme(textStyles), // إضافة tab bar theme
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
-        secondary: AppColors.white,
+        secondary: AppColors.secondary,
         error: AppColors.errorLight,
         onSecondary: AppColors.black87,
         onSurface: AppColors.black87,
@@ -52,7 +52,7 @@ class AppThemeFactory {
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.darkBackground,
-      fontFamily: GoogleFonts.amiri().fontFamily,
+      fontFamily: GoogleFonts.cairo().fontFamily,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.darkSurface,
         foregroundColor: AppColors.white,
@@ -107,8 +107,8 @@ class AppThemeFactory {
 
   // Text Themes
   TextTheme _buildLightTextTheme(AppTextStyles styles) =>
-      GoogleFonts.amiriTextTheme().copyWith(
-        headlineLarge: styles.headlineLarge.copyWith(color: AppColors.black87),
+      GoogleFonts.cairoTextTheme().copyWith(
+        headlineLarge: styles.headlineLarge.copyWith(color: AppColors.white),
         headlineMedium: styles.headlineMedium.copyWith(
           color: AppColors.black87,
         ),
@@ -124,7 +124,7 @@ class AppThemeFactory {
       );
 
   TextTheme _buildDarkTextTheme(AppTextStyles styles) =>
-      GoogleFonts.amiriTextTheme().copyWith(
+      GoogleFonts.cairoTextTheme().copyWith(
         headlineLarge: styles.headlineLarge.copyWith(color: AppColors.white),
         headlineMedium: styles.headlineMedium.copyWith(color: AppColors.white),
         headlineSmall: styles.headlineSmall.copyWith(color: AppColors.white),

@@ -81,6 +81,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         localPrayerTimes: times,
         nextPrayer: calculation.nextPrayer,
         timeLeft: calculation.timeLeft,
+        previousPrayerDateTime: calculation.previousPrayerDateTime,
         lastUpdated: DateTime.now(),
         city: times.city,
       ),
@@ -121,6 +122,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         state.copyWith(
           nextPrayer: calculation.nextPrayer,
           timeLeft: calculation.timeLeft,
+          previousPrayerDateTime: calculation.previousPrayerDateTime,
         ),
       );
     }

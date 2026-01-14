@@ -15,6 +15,7 @@ class PrayerTimesState {
     this.localPrayerTimes,
     this.nextPrayer,
     this.timeLeft,
+    this.previousPrayerDateTime,
     this.message,
     this.lastUpdated,
     this.city,
@@ -24,6 +25,7 @@ class PrayerTimesState {
   final LocalPrayerTimes? localPrayerTimes;
   final String? nextPrayer;
   final Duration? timeLeft;
+  final DateTime? previousPrayerDateTime;
   final String? message;
   final DateTime? lastUpdated;
   final String? city;
@@ -33,6 +35,7 @@ class PrayerTimesState {
     LocalPrayerTimes? localPrayerTimes,
     String? nextPrayer,
     Duration? timeLeft,
+    DateTime? previousPrayerDateTime,
     String? message,
     DateTime? lastUpdated,
     String? city,
@@ -41,6 +44,8 @@ class PrayerTimesState {
     localPrayerTimes: localPrayerTimes ?? this.localPrayerTimes,
     nextPrayer: nextPrayer ?? this.nextPrayer,
     timeLeft: timeLeft ?? this.timeLeft,
+    previousPrayerDateTime:
+        previousPrayerDateTime ?? this.previousPrayerDateTime,
     message: message ?? this.message,
     lastUpdated: lastUpdated ?? this.lastUpdated,
     city: city ?? this.city,

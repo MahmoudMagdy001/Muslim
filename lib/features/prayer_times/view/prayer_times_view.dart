@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../core/utils/format_helper.dart';
+import '../../../core/utils/responsive_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
@@ -43,12 +43,9 @@ class PrayerTimesView extends StatelessWidget {
           );
         }
 
-        return Skeletonizer(
-          enabled: status == PrayerTimesStatus.loading,
-          child: _PrayerSuccessSliver(
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
+        return _PrayerSuccessSliver(
+          localizations: localizations,
+          isArabic: isArabic,
         );
       },
     );
@@ -69,7 +66,7 @@ class _PrayerErrorSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 16.toH),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
