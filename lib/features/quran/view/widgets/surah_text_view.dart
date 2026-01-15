@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:quran/quran.dart' as quran;
+
+import '../../../../core/utils/extensions.dart';
 
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/format_helper.dart';
@@ -14,6 +16,8 @@ import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'create_share_tafsir.dart';
 import 'verse_options_menu.dart';
+import 'tafsir_selection_dialog.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({
@@ -37,7 +41,7 @@ class _SurahTextViewState extends State<SurahTextView> {
   final ScrollController _controller = ScrollController();
   final TafsirRepository _tafsirRepository = TafsirRepository();
   GlobalKey? _currentKey;
-  int? _currentAyah;
+  final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
   StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
   List<InlineSpan>? _cachedSpans;
@@ -76,8 +80,8 @@ class _SurahTextViewState extends State<SurahTextView> {
     ) {
       final newAyah = playerState.currentAyah;
       if (!mounted) return;
-      if (newAyah != null && newAyah != _currentAyah) {
-        setState(() => _currentAyah = newAyah);
+      if (newAyah != null && newAyah != currentAyahNotifier.value) {
+        currentAyahNotifier.value = newAyah;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _scrollToCurrentAyah();
         });
@@ -109,21 +113,24 @@ class _SurahTextViewState extends State<SurahTextView> {
   void dispose() {
     _playerSub?.cancel();
     _controller.dispose();
+    currentAyahNotifier.dispose();
     super.dispose();
   }
 
-  List<InlineSpan> _buildSpans(BuildContext context, bool isArabic) {
-    final adjustedAyah = _currentAyah;
-
+  List<InlineSpan> _buildSpans(
+    BuildContext context,
+    bool isArabic,
+    int? currentAyah,
+  ) {
     if (_cachedSpans != null &&
         _cachedSurahNumber == widget.surahNumber &&
-        _cachedCurrentAyah == adjustedAyah) {
+        _cachedCurrentAyah == currentAyah) {
       return _cachedSpans!;
     }
 
     final ayahCount = quran.getVerseCount(widget.surahNumber);
     final spans = <InlineSpan>[];
-    _currentKey = adjustedAyah != null ? _ayahKeys[adjustedAyah] : null;
+    _currentKey = currentAyah != null ? _ayahKeys[currentAyah] : null;
 
     for (int ayah = 1; ayah <= ayahCount; ayah++) {
       final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
@@ -131,7 +138,7 @@ class _SurahTextViewState extends State<SurahTextView> {
           ? quran.getVerse(widget.surahNumber, ayah)
           : quran.getVerseTranslation(widget.surahNumber, ayah);
 
-      final isCurrent = ayah == adjustedAyah;
+      final isCurrent = ayah == currentAyah;
       final keyForThisAyah = _ayahKeys[ayah];
 
       spans.add(
@@ -143,15 +150,15 @@ class _SurahTextViewState extends State<SurahTextView> {
             ),
             TextSpan(
               text: '$text ',
-              style: GoogleFonts.amiri().copyWith(
+              style: context.textTheme.displayMedium?.copyWith(
                 color: isCurrent
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).textTheme.bodyLarge?.color,
+                    ? context.colorScheme.error
+                    : context.textTheme.bodyLarge?.color,
               ),
               recognizer: _createGestureRecognizer(ayah, text),
             ),
 
-            TextSpan(text: endSymbol, style: GoogleFonts.amiri()),
+            TextSpan(text: endSymbol, style: context.textTheme.displayMedium),
             const TextSpan(text: ' '),
           ],
         ),
@@ -160,7 +167,7 @@ class _SurahTextViewState extends State<SurahTextView> {
 
     _cachedSpans = spans;
     _cachedSurahNumber = widget.surahNumber;
-    _cachedCurrentAyah = adjustedAyah;
+    _cachedCurrentAyah = currentAyah;
 
     return spans;
   }
@@ -223,46 +230,10 @@ class _SurahTextViewState extends State<SurahTextView> {
   Future<void> _handleTafsir(int ayah, String text) async {
     if (!mounted) return;
 
-    final selectedTafsir = await showDialog<Map<String, dynamic>>(
-      fullscreenDialog: true,
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          widget.localizations.selectTafsir,
-          textAlign: TextAlign.center,
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: GridView.builder(
-            shrinkWrap: true,
-            itemCount: TafsirRepository.tafasirList.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 6,
-              mainAxisSpacing: 6,
-              childAspectRatio: 1.9,
-            ),
-            itemBuilder: (context, index) {
-              final tafsir = TafsirRepository.tafasirList[index];
-              final tafsirName = widget.isArabic
-                  ? tafsir['name_ar']
-                  : tafsir['name_en'];
-
-              return InkWell(
-                onTap: () => Navigator.pop(context, tafsir),
-                borderRadius: BorderRadius.circular(12),
-                child: Center(
-                  child: Text(
-                    tafsirName,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
+    final selectedTafsir = await TafsirSelectionDialog.show(
+      context,
+      localizations: widget.localizations,
+      isArabic: widget.isArabic,
     );
 
     if (selectedTafsir == null) return;
@@ -302,32 +273,33 @@ class _SurahTextViewState extends State<SurahTextView> {
               Text(
                 '$selectedTafsirName - ${widget.isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                style: context.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.colorScheme.primary,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.toH),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Text(
                   text,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+                  style: context.textTheme.displayMedium?.copyWith(
+                    fontSize: 22.toSp,
+                    height: 2.0,
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.primary,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.toH),
               const Divider(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   tafsirText ?? widget.localizations.emptyTafsir,
                   textAlign: TextAlign.justify,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(height: 1.7),
+                  style: context.textTheme.titleMedium?.copyWith(height: 1.7),
                 ),
               ),
               Padding(
@@ -336,7 +308,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                   vertical: 15,
                 ),
                 child: SizedBox(
-                  height: 52,
+                  height: 52.toH,
                   child: ElevatedButton(
                     onPressed: () async {
                       await createAndShareTafsirImage(
@@ -377,21 +349,24 @@ class _SurahTextViewState extends State<SurahTextView> {
     controller: _controller,
     child: SingleChildScrollView(
       controller: _controller,
-      padding: const EdgeInsetsDirectional.only(
-        start: 6,
-        end: 18,
-        top: 5,
-        bottom: 5,
+      padding: EdgeInsetsDirectional.only(
+        start: 6.toW,
+        end: 18.toW,
+        top: 5.toH,
+        bottom: 5.toH,
       ),
-      child: RepaintBoundary(
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              height: widget.isArabic ? 2.3 : 1.7,
-              fontWeight: FontWeight.normal,
+      child: ValueListenableBuilder<int?>(
+        valueListenable: currentAyahNotifier,
+        builder: (context, currentAyah, child) => RepaintBoundary(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: context.textTheme.titleLarge?.copyWith(
+                height: widget.isArabic ? 2.3 : 1.7,
+                fontWeight: FontWeight.normal,
+              ),
+              children: _buildSpans(context, widget.isArabic, currentAyah),
             ),
-            children: _buildSpans(context, widget.isArabic),
           ),
         ),
       ),

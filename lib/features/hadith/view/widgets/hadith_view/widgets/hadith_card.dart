@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/extensions.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../../core/utils/format_helper.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../model/hadith_model.dart';
@@ -36,16 +38,16 @@ class HadithCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final heading = isArabic ? hadith.headingArabic : hadith.headingEnglish;
     final text = isArabic ? hadith.hadithArabic : hadith.hadithEnglish;
     final status = cubit.getStatus(hadith.status, isArabic);
 
     return RepaintBoundary(
       child: Card(
-        margin: const EdgeInsets.only(bottom: 12),
+        // Color removed to use theme default (AppColors.lightCard/darkCard)
+        margin: EdgeInsets.only(bottom: 12.toH),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.toR),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -55,13 +57,13 @@ class HadithCard extends StatelessWidget {
                 onBookmarkPressed: _onBookmarkPressed,
                 cubit: cubit,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.toH),
               HadithText(text: text, isArabic: isArabic),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.toH),
               HadithMetadata(
                 status: status,
                 hadithId: hadith.id,
-                statusColor: _getStatusColor(hadith.status, theme),
+                statusColor: _getStatusColor(hadith.status, context.theme),
                 localizations: localizations,
               ),
             ],

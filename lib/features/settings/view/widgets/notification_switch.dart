@@ -31,7 +31,9 @@ class _NotificationSectionState extends State<NotificationSection> {
   final PrayerNotificationService _prayerNotificationService =
       PrayerNotificationService();
 
-  NotificationSettings _settings = const NotificationSettings();
+  final ValueNotifier<NotificationSettings> settingsNotifier = ValueNotifier(
+    const NotificationSettings(),
+  );
 
   @override
   void initState() {
@@ -39,16 +41,23 @@ class _NotificationSectionState extends State<NotificationSection> {
     _loadSettings();
   }
 
+  @override
+  void dispose() {
+    settingsNotifier.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadSettings() async {
     final settings = await _settingsManager.loadSettings();
-    setState(() => _settings = settings);
+    settingsNotifier.value = settings;
   }
 
   Future<void> _togglePrayerNotifications(bool value) async {
     await _settingsManager.savePrayerNotifications(value);
-    if (!mounted) return;
 
-    setState(() => _settings = _settings.copyWith(prayerNotifications: value));
+    settingsNotifier.value = settingsNotifier.value.copyWith(
+      prayerNotifications: value,
+    );
 
     if (!value) {
       await _prayerNotificationService.cancelAllNotifications();
@@ -69,14 +78,17 @@ class _NotificationSectionState extends State<NotificationSection> {
 
   Future<void> _toggleQuranNotifications(bool value) async {
     await _settingsManager.saveQuranNotifications(value);
-    if (!mounted) return;
 
-    setState(() => _settings = _settings.copyWith(quranNotifications: value));
+    settingsNotifier.value = settingsNotifier.value.copyWith(
+      quranNotifications: value,
+    );
 
     if (!value) {
       await _quranNotificationService.cancelAllNotifications();
     } else {
-      await _quranNotificationService.scheduleDailyReminder(context);
+      if (mounted) {
+        await _quranNotificationService.scheduleDailyReminder(context);
+      }
     }
 
     if (!mounted) return;
@@ -112,19 +124,14 @@ class _NotificationSectionState extends State<NotificationSection> {
   void _showNotificationSettingsModal(AppLocalizations localizations) {
     showCustomModalBottomSheet(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => _NotificationSettingsModal(
+      builder: (context) => ValueListenableBuilder<NotificationSettings>(
+        valueListenable: settingsNotifier,
+        builder: (context, settings, child) => _NotificationSettingsModal(
           theme: widget.theme,
           localizations: localizations,
-          settings: _settings,
-          onPrayerNotificationsChanged: (value) async {
-            await _togglePrayerNotifications(value);
-            setModalState(() {});
-          },
-          onQuranNotificationsChanged: (value) async {
-            await _toggleQuranNotifications(value);
-            setModalState(() {});
-          },
+          settings: settings,
+          onPrayerNotificationsChanged: _togglePrayerNotifications,
+          onQuranNotificationsChanged: _toggleQuranNotifications,
         ),
       ),
     );

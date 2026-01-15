@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../../core/utils/format_helper.dart';
+import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../view_model/hadith/hadith_cubit.dart';
 import '../hadith_view/hadith_view.dart';
+import '../../../../surahs_list/view/widgets/bookmark_tab/empty_bookmarks_state.dart';
 import 'widgets/saved_hadith_card.dart';
 
 class SavedHadithView extends StatefulWidget {
@@ -17,7 +20,8 @@ class SavedHadithView extends StatefulWidget {
 }
 
 class _SavedHadithViewState extends State<SavedHadithView> {
-  List<Map<String, dynamic>> _savedHadiths = [];
+  final ValueNotifier<List<Map<String, dynamic>>> savedHadithsNotifier =
+      ValueNotifier([]);
 
   @override
   void initState() {
@@ -25,21 +29,30 @@ class _SavedHadithViewState extends State<SavedHadithView> {
     _loadSavedHadiths();
   }
 
+  @override
+  void dispose() {
+    savedHadithsNotifier.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadSavedHadiths() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString('saved_hadiths');
     if (saved != null) {
-      setState(() {
-        _savedHadiths = List<Map<String, dynamic>>.from(json.decode(saved));
-      });
+      savedHadithsNotifier.value = List<Map<String, dynamic>>.from(
+        json.decode(saved),
+      );
     }
   }
 
   Future<void> _removeHadith(int index) async {
     final prefs = await SharedPreferences.getInstance();
-    _savedHadiths.removeAt(index);
-    await prefs.setString('saved_hadiths', json.encode(_savedHadiths));
-    setState(() {});
+    final currentList = List<Map<String, dynamic>>.from(
+      savedHadithsNotifier.value,
+    )..removeAt(index);
+    await prefs.setString('saved_hadiths', json.encode(currentList));
+    savedHadithsNotifier.value = currentList;
+
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,53 +82,102 @@ class _SavedHadithViewState extends State<SavedHadithView> {
         ),
       ),
       type: TransitionType.fade,
-    ).then(
-      (value) => setState(() {
-        _loadSavedHadiths();
-      }),
-    );
+    ).then((value) => _loadSavedHadiths());
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('الأحاديث المحفوظة')),
-      body: _savedHadiths.isEmpty
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('الأحاديث المحفوظة')),
+    body: ValueListenableBuilder<List<Map<String, dynamic>>>(
+      valueListenable: savedHadithsNotifier,
+      builder: (context, savedHadiths, child) => savedHadiths.isEmpty
           ? SafeArea(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.bookmark_border,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'لا يوجد أحاديث محفوظة',
-                      style: theme.textTheme.titleLarge,
-                    ),
-                  ],
-                ),
+              child: EmptyBookmarksState(
+                message: AppLocalizations.of(context).savedHadithsEmpty,
               ),
             )
           : SafeArea(
               child: ListView.builder(
-                cacheExtent: MediaQuery.of(context).size.height * 0.9,
-                itemCount: _savedHadiths.length,
+                cacheExtent: context.screenHeight * 0.9,
+                itemCount: savedHadiths.length,
                 itemBuilder: (context, index) {
-                  final hadith = _savedHadiths[index];
-                  return SavedHadithCard(
-                    hadith: hadith,
-                    onTap: () => _navigateToHadith(hadith),
-                    onDelete: () => _removeHadith(index),
+                  final hadith = savedHadiths[index];
+                  return Dismissible(
+                    key: Key('${hadith['id']}_${hadith['bookSlug']}_$index'),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.error,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    confirmDismiss: (direction) async => await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('تأكيد الحذف'),
+                        content: Text(
+                          'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('إلغاء'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text(
+                              'حذف',
+                              style: TextStyle(
+                                color: context.colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onDismissed: (direction) => _removeHadith(index),
+                    child: SavedHadithCard(
+                      hadith: hadith,
+                      onTap: () => _navigateToHadith(hadith),
+                      onDelete: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('تأكيد الحذف'),
+                            content: Text(
+                              'هل انت متاكد من حذف رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text('إلغاء'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text(
+                                  'حذف',
+                                  style: TextStyle(
+                                    color: context.colorScheme.error,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          _removeHadith(index);
+                        }
+                      },
+                    ),
                   );
                 },
               ),
             ),
-    );
-  }
+    ),
+  );
 }

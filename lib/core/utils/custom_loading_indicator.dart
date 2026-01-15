@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'extensions.dart';
 
 class CustomLoadingIndicator extends StatelessWidget {
   const CustomLoadingIndicator({required this.text, super.key});
@@ -10,16 +11,14 @@ class CustomLoadingIndicator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Theme.of(context).primaryColor,
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
           strokeWidth: 3,
         ),
         const SizedBox(height: 20),
         Text(
           text,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: Theme.of(context).primaryColor,
+          style: context.textTheme.titleMedium?.copyWith(
+            color: context.theme.primaryColor,
           ),
         ),
       ],

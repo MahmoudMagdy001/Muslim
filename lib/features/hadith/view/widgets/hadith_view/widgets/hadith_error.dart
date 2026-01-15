@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/extensions.dart';
 import '../../../../../../l10n/app_localizations.dart';
 
 class ErrorState extends StatelessWidget {
@@ -19,15 +20,11 @@ class ErrorState extends StatelessWidget {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.error_outline,
-          size: 64,
-          color: Theme.of(context).colorScheme.error,
-        ),
+        Icon(Icons.error_outline, size: 64, color: context.colorScheme.error),
         const SizedBox(height: 16),
         Text(
           message,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: context.textTheme.titleMedium,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),

@@ -4,23 +4,55 @@ import 'dart:convert';
 import 'dart:async';
 import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
+import '../service/hadith/hadith_service.dart';
 
 class HadithBooksController extends ChangeNotifier {
   HadithBooksController() {
     _booksFuture = _fetchBooks();
+    refreshRandomHadith(); // Set the initial random hadith
   }
+  final HadithService _hadithService = HadithService();
   final String _apiKey =
       r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
   late Future<List<HadithBookModel>> _booksFuture;
   Future<List<HadithBookModel>> get booksFuture => _booksFuture;
 
+  Future<Map<String, dynamic>>? _randomHadithFuture;
+  Future<Map<String, dynamic>>? get randomHadithFuture => _randomHadithFuture;
+
+  Map<String, dynamic>? _randomHadithData;
+  Map<String, dynamic>? get randomHadithData => _randomHadithData;
+
   String _searchText = '';
   String get searchText => _searchText;
 
   void refreshBooks() {
     _booksFuture = _fetchBooks();
+    refreshRandomHadith();
     notifyListeners();
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  Future<void> refreshRandomHadith() async {
+    _randomHadithFuture = _hadithService.fetchRandomHadith();
+    if (_disposed) return;
+    notifyListeners(); // Start loading
+    try {
+      _randomHadithData = await _randomHadithFuture;
+    } catch (e) {
+      debugPrint('Error fetching random hadith: $e');
+      _randomHadithData = null;
+    }
+    if (_disposed) return;
+    notifyListeners(); // Finished loading
   }
 
   void updateSearchText(String text) {

@@ -64,8 +64,32 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   /// معالجة نجاح جلب مواقيت الصلاة
+  /// معالجة نجاح جلب مواقيت الصلاة
   Future<void> _handlePrayerTimesSuccess(LocalPrayerTimes times) async {
-    await _notificationService.schedulePrayerNotifications(times);
+    // نبدأ بقائمة تحتوي على أوقات اليوم الحالي
+    final List<LocalPrayerTimes> allScheduledTimes = [times];
+
+    try {
+      // محاولة جلب أوقات اليومين القادمين لجدولتهم فوراً
+      final coordinates = await _prayerTimesService.getCachedCoordinates();
+      if (coordinates != null) {
+        final now = DateTime.now();
+        for (int i = 1; i <= 2; i++) {
+          final nextDate = now.add(Duration(days: i));
+          final nextDayTimes = await _prayerTimesService.getPrayerTimesForDate(
+            coordinates,
+            nextDate,
+            cityName: times.city,
+          );
+          allScheduledTimes.add(nextDayTimes);
+        }
+      }
+    } catch (e) {
+      debugPrint('⚠️ تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
+    }
+
+    await _notificationService.schedulePrayerNotifications(allScheduledTimes);
+
     _updateStateWithPrayerTimes(times);
     _startCountdown();
   }

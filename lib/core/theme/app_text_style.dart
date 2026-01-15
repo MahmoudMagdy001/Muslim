@@ -52,4 +52,7 @@ class AppTextStyles {
 
   TextStyle get labelMedium =>
       GoogleFonts.cairo(fontSize: (baseFontSize - 4).sp);
+
+  TextStyle get quranText =>
+      GoogleFonts.amiri(fontSize: (baseFontSize + 4).sp, height: 2.2);
 }

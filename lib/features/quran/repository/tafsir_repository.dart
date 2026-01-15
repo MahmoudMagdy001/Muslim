@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 class TafsirRepository {
   /// 🕌 قائمة المفسرين المدعومين
   static const List<Map<String, dynamic>> tafasirList = [
+    {'id': 1, 'name_ar': 'تفسير الميسر', 'name_en': 'Tafsir Al-Muyassar'},
     {'id': 4, 'name_ar': 'تفسير ابن كثير', 'name_en': 'Tafsir Ibn Kathir'},
     {'id': 7, 'name_ar': 'تفسير القرطبي', 'name_en': 'Tafsir Al-Qurtubi'},
     {'id': 8, 'name_ar': 'تفسير الطبري', 'name_en': 'Tafsir At-Tabari'},

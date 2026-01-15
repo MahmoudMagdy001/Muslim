@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/service/location_service.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../hadith/view/hadith_books_view.dart';
@@ -17,13 +19,8 @@ import '../../model/dashboard_item_model.dart';
 import 'dashboard_button.dart';
 
 class DashboardGrid extends StatelessWidget {
-  const DashboardGrid({
-    required this.theme,
-    required this.localizations,
-    super.key,
-  });
+  const DashboardGrid({required this.localizations, super.key});
 
-  final ThemeData theme;
   final AppLocalizations localizations;
 
   @override
@@ -33,29 +30,34 @@ class DashboardGrid extends StatelessWidget {
 
     final List<DashboardItemModel> items = [
       DashboardItemModel(
-        image: 'assets/home/hadith.png',
-        label: localizations.hadithButton,
-        color: const Color(0xFFBAE6A2),
-        route: const HadithBooksView(),
-      ),
-      DashboardItemModel(
         image: 'assets/home/quran.png',
         label: localizations.quranButton,
         color: const Color(0xFFB1D4F3),
+        darkColor: const Color(0xFF2C4A70),
         route: SurahsListView(
           selectedReciter: reciterCubit.state.selectedReciter,
         ),
       ),
       DashboardItemModel(
+        image: 'assets/home/hadith.png',
+        label: localizations.hadithButton,
+        color: const Color(0xFFBAE6A2),
+        darkColor: const Color(0xFF395A33),
+        route: const HadithBooksView(),
+      ),
+
+      DashboardItemModel(
         image: 'assets/home/azkar.png',
         label: localizations.azkarButton,
         color: const Color(0xFFFEED9A),
+        darkColor: const Color(0xFF9E8E3E),
         route: const AzkarView(),
       ),
       DashboardItemModel(
         image: 'assets/home/qibla.png',
         label: localizations.qiblahButton,
         color: const Color(0xFFCEB6F6),
+        darkColor: const Color(0xFF5D4E75),
         route: BlocProvider(
           create: (_) => QiblahCubit(
             service: QiblahService(),
@@ -68,12 +70,14 @@ class DashboardGrid extends StatelessWidget {
         image: 'assets/home/tasbih.png',
         label: localizations.sebha,
         color: const Color(0xFFC2EFE1),
+        darkColor: const Color(0xFF386E5D),
         route: SebhaView(localizations: localizations, isArabic: isArabic),
       ),
       DashboardItemModel(
         image: 'assets/home/allah_Names.png',
         label: localizations.namesOfAllah,
         color: const Color(0xFFE0E0E0),
+        darkColor: const Color(0xFF424242),
         route: const NamesOfAllahScreen(),
       ),
     ];
@@ -85,10 +89,11 @@ class DashboardGrid extends StatelessWidget {
           padding: .symmetric(horizontal: 16.toW, vertical: 8.toH),
           child: Text(
             localizations.allServices,
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: context.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: const Color(0xff4C406F),
-              fontSize: 20.toSp,
+              color: context.theme.brightness == Brightness.dark
+                  ? AppColors.white
+                  : const Color(0xff4C406F),
             ),
           ),
         ),
@@ -105,7 +110,7 @@ class DashboardGrid extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final item = items[index];
-            return DashboardButton(item: item, theme: theme);
+            return DashboardButton(item: item);
           },
         ),
       ],

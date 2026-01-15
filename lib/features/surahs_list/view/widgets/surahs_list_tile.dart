@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../model/surahs_list_model.dart';
@@ -21,8 +22,8 @@ class SurahListTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     margin: EdgeInsets.symmetric(vertical: 6.toH),
     decoration: BoxDecoration(
-      gradient: const LinearGradient(
-        colors: AppColors.cardGradient,
+      gradient: LinearGradient(
+        colors: AppColors.cardGradient(context),
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -47,8 +48,8 @@ class SurahListTile extends StatelessWidget {
                   isArabic
                       ? convertToArabicNumbers(surah.number.toString())
                       : surah.number.toString(),
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).primaryColor,
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: context.theme.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -61,8 +62,8 @@ class SurahListTile extends StatelessWidget {
                 children: [
                   Text(
                     surah.surahName,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
@@ -71,8 +72,8 @@ class SurahListTile extends StatelessWidget {
                   SizedBox(height: 4.toH),
                   Text(
                     '${surah.locationArabic} - ${isArabic ? '${convertToArabicNumbers(surah.ayahCount.toString())} آيات' : '${surah.ayahCount.toString()} Verses'}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFFC0C0C0),
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.onPrimary.withAlpha(180),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -80,7 +81,11 @@ class SurahListTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16.toR),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: context.colorScheme.onPrimary,
+              size: 16.toR,
+            ),
           ],
         ),
       ),

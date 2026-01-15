@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/custom_loading_indicator.dart';
 import '../../../core/utils/format_helper.dart';
 import '../../../core/utils/navigation_helper.dart';
+import '../../../core/utils/responsive_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/chapter_of_book.dart';
 import '../model/hadith_book_model.dart';
 import '../helper/hadith_helper.dart';
+import '../../../../core/utils/extensions.dart';
 import 'widgets/saved_hadiths_view/saved_hadith_view.dart';
 
 import '../view_model/hadith_books_controller.dart';
+import 'widgets/hadith_of_the_day_card.dart';
 
 class HadithBooksView extends StatefulWidget {
   const HadithBooksView({super.key});
@@ -38,7 +42,7 @@ class _HadithBooksViewState extends State<HadithBooksView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
     final localization = AppLocalizations.of(context);
@@ -69,14 +73,67 @@ class _HadithBooksViewState extends State<HadithBooksView> {
               children: [
                 // ====== Search Bar ======
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 5,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.toW,
+                    vertical: 8.toH,
                   ),
                   child: TextField(
+                    textAlign: isArabic ? TextAlign.right : TextAlign.left,
                     decoration: InputDecoration(
                       hintText: localization.hadithBooksSearch,
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      hintStyle: context.textTheme.bodyLarge?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant.withAlpha(
+                          150,
+                        ),
+                      ),
+                      prefixIcon: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8.toH,
+                          horizontal: 8.toW,
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8.toH,
+                            horizontal: 8.toW,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12.toR),
+                          ),
+                          child: Image.asset(
+                            'assets/quran/search.png',
+                            width: 20.toW,
+                            color: context.colorScheme.secondary,
+                          ),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 20.toW,
+                        vertical: 12.toH,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.toR),
+                        borderSide: BorderSide(
+                          color: theme.primaryColor,
+                          width: 1.5,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.toR),
+                        borderSide: BorderSide(
+                          color: theme.primaryColor,
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.toR),
+                        borderSide: BorderSide(
+                          color: theme.primaryColor,
+                          width: 2,
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                     onChanged: _controller.updateSearchText,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -89,17 +146,8 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                     future: _controller.booksFuture,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Skeletonizer(
-                          child: ListView.builder(
-                            padding: const EdgeInsetsDirectional.only(
-                              start: 8,
-                              end: 8,
-                              bottom: 10,
-                            ),
-                            itemCount: 8,
-                            itemBuilder: (context, index) =>
-                                const _SkeletonBookItem(),
-                          ),
+                        return CustomLoadingIndicator(
+                          text: localization.loading,
                         );
                       }
 
@@ -139,9 +187,35 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                               top: 5,
                               bottom: 10,
                             ),
-                            itemCount: books.length,
+                            itemCount: books.length + 2,
                             itemBuilder: (context, index) {
-                              final book = books[index];
+                              if (index == 0) {
+                                return ListenableBuilder(
+                                  listenable: _controller,
+                                  builder: (context, _) => HadithOfTheDayCard(
+                                    randomHadithFuture:
+                                        _controller.randomHadithFuture,
+                                  ),
+                                );
+                              }
+
+                              if (index == 1) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  child: Text(
+                                    localization.hadithSources,
+                                    style: theme.textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.primaryColor,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              final book = books[index - 2];
 
                               final id = !isArabic
                                   ? book.id
@@ -189,55 +263,6 @@ class _HadithBooksViewState extends State<HadithBooksView> {
   }
 }
 
-class _SkeletonBookItem extends StatelessWidget {
-  const _SkeletonBookItem();
-
-  @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: const Text('0'),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Book Name placeholder',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Author: placeholder',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Chapters: 000 ',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 4),
-
-                Text(
-                  'Hadiths: 0000',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
-        ],
-      ),
-    ),
-  );
-}
-
 class SuccessWidget extends StatelessWidget {
   const SuccessWidget({
     required this.book,
@@ -261,9 +286,18 @@ class SuccessWidget extends StatelessWidget {
   final AppLocalizations localization;
 
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) => Container(
+    margin: EdgeInsets.symmetric(vertical: 6.toH),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: AppColors.cardGradient(context),
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(15.toR),
+    ),
     child: InkWell(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(15.toR),
       onTap: () {
         navigateWithTransition(
           type: TransitionType.fade,
@@ -272,62 +306,62 @@ class SuccessWidget extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
         child: Row(
           children: [
-            // رقم الكتاب داخل دائرة
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: theme.primaryColor.withAlpha(30),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                id,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.bold,
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  'assets/quran/marker.png',
+                  width: 40.toW,
+                  height: 40.toH,
                 ),
-              ),
+                Text(
+                  id,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-
-            // تفاصيل الكتاب
+            SizedBox(width: 16.toW),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.toH),
                   Text(
                     '${localization.writer}: $writer',
-                    style: theme.textTheme.bodySmall,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFFC0C0C0),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
-
+                  SizedBox(height: 2.toH),
                   Text(
-                    '${localization.numberOfChapters} $chpaterCount',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 4),
-
-                  Text(
-                    '${localization.numberOfHadiths} $hadithCount',
-                    style: theme.textTheme.bodySmall,
+                    '${localization.numberOfChapters} $chpaterCount - ${localization.numberOfHadiths} $hadithCount',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: const Color(0xFFC0C0C0),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: theme.iconTheme.color,
-              size: 16,
-            ),
+            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16.toR),
           ],
         ),
       ),

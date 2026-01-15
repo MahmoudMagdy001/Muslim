@@ -9,6 +9,8 @@ import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'crops_zakat_tab.dart';
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import 'zakat_card.dart';
 
 // ==================== Main Calculator Widget ====================
@@ -26,14 +28,23 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
     vsync: this,
   );
 
-  double? goldPricePerGram;
-  bool isLoading = true;
-  String? errorMessage;
+  final ValueNotifier<double?> goldPriceNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> isLoadingNotifier = ValueNotifier(true);
+  final ValueNotifier<String?> errorMessageNotifier = ValueNotifier(null);
 
   @override
   void initState() {
     super.initState();
     fetchGoldPrice();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    goldPriceNotifier.dispose();
+    isLoadingNotifier.dispose();
+    errorMessageNotifier.dispose();
+    super.dispose();
   }
 
   Future<void> fetchGoldPrice() async {
@@ -42,10 +53,8 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
         'https://v6.exchangerate-api.com/v6/1ee47c1bb5322848794692ee/latest/USD';
 
     try {
-      setState(() {
-        isLoading = true;
-        errorMessage = null;
-      });
+      isLoadingNotifier.value = true;
+      errorMessageNotifier.value = null;
 
       // --- 1️⃣ جلب سعر الذهب بالدولار ---
       final goldResponse = await http
@@ -81,108 +90,122 @@ class _ZakatCalculatorState extends State<ZakatCalculator>
 
       debugPrint('Gold price per gram in EGP: $pricePerGramEGP');
 
-      setState(() {
-        goldPricePerGram = pricePerGramEGP;
-        isLoading = false;
-      });
+      goldPriceNotifier.value = pricePerGramEGP;
+      isLoadingNotifier.value = false;
     } catch (e) {
-      setState(() {
-        isLoading = false;
-        errorMessage = 'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
-      });
+      isLoadingNotifier.value = false;
+      errorMessageNotifier.value =
+          'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
       debugPrint('Error: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final theme = context.theme;
+    final textTheme = context.textTheme;
     final localizations = AppLocalizations.of(context);
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    if (isLoading) {
-      return Scaffold(
-        appBar: _buildAppBar(textTheme, theme, localizations),
-        body: CustomLoadingIndicator(text: localizations.loading_gold_price),
-      );
-    }
-
-    if (errorMessage != null ||
-        goldPricePerGram == null ||
-        goldPricePerGram == 0) {
-      return Scaffold(
-        appBar: _buildAppBar(textTheme, theme, localizations),
-        body: InternetStateManager(
-          noInternetScreen: const NoInternetScreen(),
-          onRestoreInternetConnection: () {
-            fetchGoldPrice();
-          },
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: theme.colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    errorMessage ?? localizations.gold_price_error,
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: fetchGoldPrice,
-                    icon: const Icon(Icons.refresh),
-                    label: Text(localizations.retry),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isLoadingNotifier,
+      builder: (context, isLoading, child) {
+        if (isLoading) {
+          return Scaffold(
+            appBar: _buildAppBar(textTheme, theme, localizations),
+            body: CustomLoadingIndicator(
+              text: localizations.loading_gold_price,
             ),
-          ),
-        ),
-      );
-    }
+          );
+        }
 
-    const nisabGoldGrams = 85;
-    final nisabMoney = nisabGoldGrams * goldPricePerGram!;
+        return ValueListenableBuilder<String?>(
+          valueListenable: errorMessageNotifier,
+          builder: (context, errorMessage, child) =>
+              ValueListenableBuilder<double?>(
+                valueListenable: goldPriceNotifier,
+                builder: (context, goldPricePerGram, child) {
+                  if (errorMessage != null ||
+                      goldPricePerGram == null ||
+                      goldPricePerGram == 0) {
+                    return Scaffold(
+                      appBar: _buildAppBar(textTheme, theme, localizations),
+                      body: InternetStateManager(
+                        noInternetScreen: const NoInternetScreen(),
+                        onRestoreInternetConnection: () {
+                          fetchGoldPrice();
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24.toR),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 64.toSp,
+                                  color: theme.colorScheme.error,
+                                ),
+                                SizedBox(height: 16.toH),
+                                Text(
+                                  errorMessage ??
+                                      localizations.gold_price_error,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.error,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 24.toH),
+                                ElevatedButton.icon(
+                                  onPressed: fetchGoldPrice,
+                                  icon: const Icon(Icons.refresh),
+                                  label: Text(localizations.retry),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 24.toW,
+                                      vertical: 12.toH,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
 
-    return Scaffold(
-      appBar: _buildAppBar(textTheme, theme, localizations),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          MoneyZakatTab(
-            nisabMoney: nisabMoney,
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
-          GoldZakatTab(
-            goldPricePerGram: goldPricePerGram!,
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
-          TradeZakatTab(
-            nisabMoney: nisabMoney,
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
-          CropsZakatTab(localizations: localizations),
-        ],
-      ),
+                  const nisabGoldGrams = 85;
+                  final nisabMoney = nisabGoldGrams * goldPricePerGram;
+
+                  return Scaffold(
+                    appBar: _buildAppBar(textTheme, theme, localizations),
+                    body: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        MoneyZakatTab(
+                          nisabMoney: nisabMoney,
+                          localizations: localizations,
+                          isArabic: isArabic,
+                        ),
+                        GoldZakatTab(
+                          goldPricePerGram: goldPricePerGram,
+                          localizations: localizations,
+                          isArabic: isArabic,
+                        ),
+                        TradeZakatTab(
+                          nisabMoney: nisabMoney,
+                          localizations: localizations,
+                          isArabic: isArabic,
+                        ),
+                        CropsZakatTab(localizations: localizations),
+                      ],
+                    ),
+                  );
+                },
+              ),
+        );
+      },
     );
   }
 

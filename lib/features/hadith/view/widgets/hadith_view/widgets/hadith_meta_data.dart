@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/extensions.dart';
 import '../../../../../../core/utils/format_helper.dart';
 import '../../../../../../l10n/app_localizations.dart';
 
@@ -23,16 +24,14 @@ class HadithMetadata extends StatelessWidget {
     children: [
       Text(
         '${localizations.hadithStatus}: $status',
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+        style: context.textTheme.titleSmall?.copyWith(
           color: statusColor,
           fontWeight: FontWeight.bold,
         ),
       ),
       Text(
         'رقم الحديث: ${convertToArabicNumbers(hadithId)}',
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey),
       ),
     ],
   );

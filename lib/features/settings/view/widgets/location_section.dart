@@ -17,7 +17,7 @@ class LocationSection extends StatefulWidget {
 
 class _LocationSectionState extends State<LocationSection> {
   final SettingsService _settingsService = SettingsService();
-  bool _autoLocation = true;
+  final ValueNotifier<bool> autoLocationNotifier = ValueNotifier(true);
 
   @override
   void initState() {
@@ -25,14 +25,20 @@ class _LocationSectionState extends State<LocationSection> {
     _loadSettings();
   }
 
+  @override
+  void dispose() {
+    autoLocationNotifier.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadSettings() async {
     final enabled = await _settingsService.getAutoLocationEnabled();
-    setState(() => _autoLocation = enabled);
+    autoLocationNotifier.value = enabled;
   }
 
   Future<void> _toggleAutoLocation(bool value) async {
     await _settingsService.setAutoLocationEnabled(value);
-    setState(() => _autoLocation = value);
+    autoLocationNotifier.value = value;
 
     _showSnackBar(
       value
@@ -53,18 +59,21 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    leading: const Icon(Icons.location_on_rounded),
-    title: Text(
-      widget.isArabic ? 'تحديث الموقع تلقائياً' : 'Auto Location Updates',
-      style: widget.theme.textTheme.titleMedium,
+  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
+    valueListenable: autoLocationNotifier,
+    builder: (context, autoLocation, child) => ListTile(
+      leading: const Icon(Icons.location_on_rounded),
+      title: Text(
+        widget.isArabic ? 'تحديث الموقع تلقائياً' : 'Auto Location Updates',
+        style: widget.theme.textTheme.titleMedium,
+      ),
+      subtitle: Text(
+        widget.isArabic
+            ? 'تحديث مواقيت الصلاة بناءً على موقعك الحالي'
+            : 'Update prayer times based on your current location',
+        style: widget.theme.textTheme.bodySmall,
+      ),
+      trailing: Switch(value: autoLocation, onChanged: _toggleAutoLocation),
     ),
-    subtitle: Text(
-      widget.isArabic
-          ? 'تحديث مواقيت الصلاة بناءً على موقعك الحالي'
-          : 'Update prayer times based on your current location',
-      style: widget.theme.textTheme.bodySmall,
-    ),
-    trailing: Switch(value: _autoLocation, onChanged: _toggleAutoLocation),
   );
 }

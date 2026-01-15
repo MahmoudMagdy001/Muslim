@@ -60,6 +60,8 @@ flutter:
     - assets/json/names_of_allah.json
     - assets/home/
     - assets/quran/
+    - assets/hadith/
+    - assets/qiblah/
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../quran/service/quran_service.dart';
 import '../../quran/viewmodel/last_played_cubit/last_played.dart';
@@ -18,7 +19,6 @@ class SurahsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
-    final theme = Theme.of(context);
 
     final localizations = AppLocalizations.of(context);
 
@@ -37,6 +37,8 @@ class SurahsListView extends StatelessWidget {
           appBar: AppBar(
             title: Text(localizations.quranText),
             bottom: TabBar(
+              labelColor: context.theme.colorScheme.secondary,
+              unselectedLabelColor: Colors.white,
               tabs: [
                 Tab(text: localizations.surahsText),
                 Tab(text: localizations.bookmarksText),
@@ -53,7 +55,6 @@ class SurahsListView extends StatelessWidget {
                     selectedReciter: selectedReciter,
                     isArabic: isArabic,
                     localizations: localizations,
-                    theme: theme,
                   ),
                 ),
                 BookmarksTab(

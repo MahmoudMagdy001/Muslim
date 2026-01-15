@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
@@ -62,7 +63,7 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Container(
@@ -73,7 +74,7 @@ class _HeaderSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).toInt()),
+            color: context.colorScheme.shadow.withAlpha(13), // 0.05 * 255 ~= 13
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
@@ -112,7 +113,7 @@ class _PrivacyPrinciples extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Column(
@@ -162,7 +163,7 @@ class _PrincipleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Container(
@@ -211,7 +212,7 @@ class _LocationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Column(
@@ -278,7 +279,7 @@ class _DataCollectionInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Container(
@@ -326,7 +327,7 @@ class _LocalStorageInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Column(
@@ -367,7 +368,7 @@ class _StorageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Padding(
@@ -395,7 +396,7 @@ class _ContactSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Container(
@@ -406,7 +407,7 @@ class _ContactSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).toInt()),
+            color: context.colorScheme.shadow.withAlpha(13),
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
@@ -490,7 +491,7 @@ class _LastUpdate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final textTheme = theme.textTheme;
 
     return Center(

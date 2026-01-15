@@ -1,334 +1,323 @@
+// ignore_for_file: avoid_dynamic_calls
+
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:internet_state_manager/internet_state_manager.dart';
 
+import '../../../core/utils/custom_loading_indicator.dart';
 import '../../../core/utils/format_helper.dart';
-import '../../../core/utils/navigation_helper.dart';
 import '../../../l10n/app_localizations.dart';
-import 'widgets/zakat_calculator.dart';
+import 'widgets/crops_zakat_tab.dart';
+import '../../../core/utils/extensions.dart';
+import '../../../core/utils/responsive_helper.dart';
+import 'widgets/zakat_card.dart';
 
-class ZakatView extends StatelessWidget {
+class ZakatView extends StatefulWidget {
   const ZakatView({super.key});
 
   @override
+  State<ZakatView> createState() => _ZakatViewState();
+}
+
+class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
+  late final TabController _tabController = TabController(
+    length: 4,
+    vsync: this,
+  );
+
+  final ValueNotifier<double?> goldPriceNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> isLoadingNotifier = ValueNotifier(true);
+  final ValueNotifier<String?> errorMessageNotifier = ValueNotifier(null);
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGoldPrice();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    goldPriceNotifier.dispose();
+    isLoadingNotifier.dispose();
+    errorMessageNotifier.dispose();
+    super.dispose();
+  }
+
+  Future<void> fetchGoldPrice() async {
+    const goldApiUrl = 'https://api.gold-api.com/price/XAU';
+    const exchangeApiUrl =
+        'https://v6.exchangerate-api.com/v6/1ee47c1bb5322848794692ee/latest/USD';
+
+    try {
+      isLoadingNotifier.value = true;
+      errorMessageNotifier.value = null;
+
+      // --- 1️⃣ جلب سعر الذهب بالدولار ---
+      final goldResponse = await http
+          .get(Uri.parse(goldApiUrl))
+          .timeout(const Duration(seconds: 10));
+
+      if (goldResponse.statusCode != 200) {
+        throw Exception('فشل في جلب سعر الذهب');
+      }
+
+      final goldData = json.decode(goldResponse.body);
+      final pricePerOunceUSD = (goldData['price'] as num?)?.toDouble() ?? 0.0;
+
+      // --- 2️⃣ جلب سعر الدولار مقابل الجنيه ---
+      final exchangeResponse = await http
+          .get(Uri.parse(exchangeApiUrl))
+          .timeout(const Duration(seconds: 10));
+
+      if (exchangeResponse.statusCode != 200) {
+        throw Exception('فشل في جلب سعر الدولار مقابل الجنيه');
+      }
+
+      final exchangeData = json.decode(exchangeResponse.body);
+      final usdToEgp =
+          (exchangeData['conversion_rates']?['EGP'] as num?)?.toDouble() ?? 0.0;
+
+      debugPrint('USD → EGP = $usdToEgp');
+
+      // --- 3️⃣ تحويل السعر من أونصة إلى جرام ---
+      const ounceToGram = 31.1035;
+      final pricePerGramUSD = pricePerOunceUSD / ounceToGram;
+      final pricePerGramEGP = pricePerGramUSD * usdToEgp;
+
+      debugPrint('Gold price per gram in EGP: $pricePerGramEGP');
+
+      goldPriceNotifier.value = pricePerGramEGP;
+      isLoadingNotifier.value = false;
+    } catch (e) {
+      isLoadingNotifier.value = false;
+      errorMessageNotifier.value =
+          'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
+      debugPrint('Error: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final theme = context.theme;
+    final textTheme = context.textTheme;
     final localizations = AppLocalizations.of(context);
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.my_zakat)),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Column(
-            children: [
-              // 💰 لمن الزكاة
-              _buildSectionCard(
-                theme,
-                icon: Icons.people_alt_rounded,
-                title: localizations.zakat_for_whom,
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations.quran_verse,
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${localizations.quran_text} (${isArabic ? 'التوبة' : 'At-Tawbah'}: ${isArabic ? convertToArabicNumbers('60') : '60'})',
-                      textAlign: TextAlign.justify,
-                      style: textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      localizations.beneficiaries,
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('1') : '1'}. ${localizations.poor}',
-                      localizations.poor_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('2') : '2'}. ${localizations.needy}',
-                      localizations.needy_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('3') : '3'}. ${localizations.collectors}',
-                      localizations.collectors_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('4') : '4'}. ${localizations.new_muslims}',
-                      localizations.new_muslims_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('5') : '5'}. ${localizations.slaves}',
-                      localizations.slaves_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('6') : '6'}. ${localizations.debtors}',
-                      localizations.debtors_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('7') : '7'}. ${localizations.cause_of_allah}',
-                      localizations.cause_of_allah_desc,
-                      textTheme: textTheme,
-                    ),
-                    BuildBeneficiaryItem(
-                      '${isArabic ? convertToArabicNumbers('8') : '8'}. ${localizations.traveler}',
-                      localizations.traveler_desc,
-                      textTheme: textTheme,
-                    ),
-                  ],
-                ),
-              ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isLoadingNotifier,
+      builder: (context, isLoading, child) {
+        if (isLoading) {
+          return Scaffold(
+            appBar: _buildAppBar(textTheme, theme, localizations),
+            body: CustomLoadingIndicator(
+              text: localizations.loading_gold_price,
+            ),
+          );
+        }
 
-              // ⏰ متى تجب الزكاة
-              _buildSectionCard(
-                theme,
-                icon: Icons.access_time_filled_rounded,
-                title: localizations.when_zakat_due,
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations.conditions,
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    BuildConditionItem(
-                      localizations.condition_1,
-                      textTheme: textTheme,
-                    ),
-                    BuildConditionItem(
-                      localizations.condition_2,
-                      textTheme: textTheme,
-                    ),
-                    BuildConditionItem(
-                      localizations.condition_3,
-                      textTheme: textTheme,
-                    ),
-                    BuildConditionItem(
-                      localizations.condition_4,
-                      textTheme: textTheme,
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.withAlpha(25),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        localizations.hadith,
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w500,
+        return ValueListenableBuilder<String?>(
+          valueListenable: errorMessageNotifier,
+          builder: (context, errorMessage, child) =>
+              ValueListenableBuilder<double?>(
+                valueListenable: goldPriceNotifier,
+                builder: (context, goldPricePerGram, child) {
+                  if (errorMessage != null ||
+                      goldPricePerGram == null ||
+                      goldPricePerGram == 0) {
+                    return Scaffold(
+                      appBar: _buildAppBar(textTheme, theme, localizations),
+                      body: InternetStateManager(
+                        noInternetScreen: const NoInternetScreen(),
+                        onRestoreInternetConnection: () {
+                          fetchGoldPrice();
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24.toR),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 64.toSp,
+                                  color: theme.colorScheme.error,
+                                ),
+                                SizedBox(height: 16.toH),
+                                Text(
+                                  errorMessage ??
+                                      localizations.gold_price_error,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                    color: theme.colorScheme.error,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 24.toH),
+                                ElevatedButton.icon(
+                                  onPressed: fetchGoldPrice,
+                                  icon: const Icon(Icons.refresh),
+                                  label: Text(localizations.retry),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 24.toW,
+                                      vertical: 12.toH,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    );
+                  }
 
-              // 🧮 حاسبة الزكاة
-              _buildSectionCard(
-                theme,
-                icon: Icons.calculate_rounded,
-                title: localizations.zakat_calculator,
-                content: Column(
-                  children: [
-                    Column(
+                  const nisabGoldGrams = 85;
+                  final nisabMoney = nisabGoldGrams * goldPricePerGram;
+
+                  return Scaffold(
+                    appBar: _buildAppBar(textTheme, theme, localizations),
+                    body: TabBarView(
+                      controller: _tabController,
                       children: [
-                        Text(
-                          localizations.calculate_easily,
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
+                        MoneyZakatTab(
+                          nisabMoney: nisabMoney,
+                          localizations: localizations,
+                          isArabic: isArabic,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          localizations.enter_amount,
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey,
-                          ),
+                        GoldZakatTab(
+                          goldPricePerGram: goldPricePerGram,
+                          localizations: localizations,
+                          isArabic: isArabic,
                         ),
+                        TradeZakatTab(
+                          nisabMoney: nisabMoney,
+                          localizations: localizations,
+                          isArabic: isArabic,
+                        ),
+                        CropsZakatTab(localizations: localizations),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 56,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => navigateWithTransition(
-                          type: TransitionType.fade,
-                          context,
-                          const ZakatCalculator(),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.calculate_rounded, size: 24),
-                            const SizedBox(width: 8),
-                            Text(
-                              localizations.start_calculation,
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withAlpha((0.1 * 255).toInt()),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        localizations.note,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: Colors.grey,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSectionCard(
-    ThemeData theme, {
-    required IconData icon,
-    required String title,
-    required Widget content,
-  }) {
-    final textTheme = theme.textTheme;
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: theme.colorScheme.primary, size: 24),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            content,
-          ],
-        ),
+  AppBar _buildAppBar(
+    TextTheme textTheme,
+    ThemeData theme,
+    AppLocalizations localizations,
+  ) => AppBar(
+    title: Text(localizations.my_zakat),
+    actions: [
+      IconButton(
+        onPressed: fetchGoldPrice,
+        icon: const Icon(Icons.refresh),
+        tooltip: localizations.refresh_gold_price,
       ),
-    );
-  }
-}
-
-// Widgets مساعدة
-class BuildBeneficiaryItem extends StatelessWidget {
-  const BuildBeneficiaryItem(
-    this.title,
-    this.description, {
-    required this.textTheme,
-    super.key,
-  });
-
-  final String title;
-  final String description;
-  final TextTheme textTheme;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                description,
-                style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-              ),
-            ],
-          ),
-        ),
+    ],
+    bottom: TabBar(
+      controller: _tabController,
+      labelColor: context.theme.colorScheme.secondary,
+      unselectedLabelColor: Colors.white,
+      dividerColor: Colors.transparent,
+      tabs: [
+        Tab(text: localizations.money),
+        Tab(text: localizations.gold),
+        Tab(text: localizations.trade),
+        Tab(text: localizations.crops),
       ],
     ),
   );
 }
 
-class BuildConditionItem extends StatelessWidget {
-  const BuildConditionItem(this.text, {required this.textTheme, super.key});
+// ==================== Tabs Implementations ====================
+class MoneyZakatTab extends StatelessWidget {
+  const MoneyZakatTab({
+    required this.nisabMoney,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
+  final double nisabMoney;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
-  final String text;
-  final TextTheme textTheme;
+  @override
+  Widget build(BuildContext context) => ZakatCard(
+    title: localizations.money_zakat_title,
+    description: localizations.money_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+          : nisabMoney.toStringAsFixed(0),
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    ),
+    hintText: localizations.money_zakat_hint,
+    calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+    localizations: localizations,
+  );
+}
+
+class GoldZakatTab extends StatelessWidget {
+  const GoldZakatTab({
+    required this.goldPricePerGram,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
+  final double goldPricePerGram;
+  final AppLocalizations localizations;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final descriptionText = localizations.gold_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(goldPricePerGram.toStringAsFixed(2))
+          : goldPricePerGram.toStringAsFixed(2),
+      isArabic ? convertToArabicNumbers('85') : '85',
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    );
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.check_circle, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              isArabic ? convertToArabicNumbers(text) : text,
-              style: textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
+    return ZakatCard(
+      title: localizations.gold_zakat_title,
+      description: descriptionText,
+      hintText: localizations.gold_zakat_hint,
+      calculate: (input) {
+        final grams = double.tryParse(input) ?? 0;
+        return grams * goldPricePerGram * 0.025;
+      },
+      localizations: localizations,
     );
   }
+}
+
+class TradeZakatTab extends StatelessWidget {
+  const TradeZakatTab({
+    required this.nisabMoney,
+    required this.localizations,
+    required this.isArabic,
+    super.key,
+  });
+  final double nisabMoney;
+  final AppLocalizations localizations;
+  final bool isArabic;
+
+  @override
+  Widget build(BuildContext context) => ZakatCard(
+    title: localizations.trade_zakat_title,
+    description: localizations.trade_zakat_description(
+      isArabic
+          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+          : nisabMoney.toStringAsFixed(0),
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
+    ),
+    hintText: localizations.trade_zakat_hint,
+    calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+    localizations: localizations,
+  );
 }

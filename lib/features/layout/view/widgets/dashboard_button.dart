@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../model/dashboard_item_model.dart';
 
 class DashboardButton extends StatelessWidget {
-  const DashboardButton({required this.item, required this.theme, super.key});
+  const DashboardButton({required this.item, super.key});
 
   final DashboardItemModel item;
-  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) => InkWell(
@@ -16,7 +16,9 @@ class DashboardButton extends StatelessWidget {
     borderRadius: .circular(20.toR),
     child: Container(
       decoration: BoxDecoration(
-        color: item.color,
+        color: context.theme.brightness == Brightness.dark
+            ? item.darkColor
+            : item.color,
         borderRadius: .circular(20.toR),
       ),
       padding: .all(12.toW),
@@ -25,10 +27,11 @@ class DashboardButton extends StatelessWidget {
         children: [
           Text(
             item.label,
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: context.textTheme.titleMedium?.copyWith(
               fontWeight: .bold,
-              color: Colors.black87,
-              fontSize: 18.toSp,
+              color: context.theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black87,
             ),
             textAlign: .center,
           ),

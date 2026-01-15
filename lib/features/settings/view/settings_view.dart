@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/settings_content.dart';
 
@@ -11,7 +12,7 @@ class SettingsView extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
 
     return Scaffold(
       appBar: AppBar(title: Text(localizations.settingsButton)),

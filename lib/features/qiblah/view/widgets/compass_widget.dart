@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'arrow_painter.dart';
+import '../../../../core/utils/extensions.dart';
 import 'compass_background_painter.dart';
 
 class CompassWidget extends StatelessWidget {
@@ -34,13 +35,13 @@ class CompassWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = context.screenSize;
     final diameter = min(
       size.width * _compassDiameterFactor,
       _maxCompassDiameter,
     );
     final compassSize = Size(diameter, diameter);
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final isDark = theme.brightness == Brightness.dark;
 
     return Center(
@@ -55,7 +56,7 @@ class CompassWidget extends StatelessWidget {
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
-                _buildMainCircle(compassSize, theme, isDark),
+                _buildMainCircle(compassSize, theme, isDark, context),
                 _buildFixedArrow(theme, isDark),
                 if (isAligned) _buildAlignedText(theme, isDark),
                 _buildKaabaIcon(),
@@ -67,70 +68,70 @@ class CompassWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMainCircle(Size compassSize, ThemeData theme, bool isDark) =>
-      AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: compassSize.width,
-        height: compassSize.height,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isDark ? Colors.grey.shade900 : Colors.white,
-          border: Border.all(
-            color: isAligned
-                ? theme.colorScheme.primary
-                : (isDark ? Colors.grey.shade700 : theme.colorScheme.surface),
-            width: isAligned ? 18.0 : 14.0,
+  Widget _buildMainCircle(
+    Size compassSize,
+    ThemeData theme,
+    bool isDark,
+    BuildContext context,
+  ) => AnimatedContainer(
+    duration: const Duration(milliseconds: 300),
+    width: compassSize.width,
+    height: compassSize.height,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: isDark ? Colors.grey.shade900 : Colors.white,
+      border: Border.all(
+        color: isAligned
+            ? theme.colorScheme.primary
+            : (isDark ? Colors.grey.shade700 : theme.primaryColor),
+        width: isAligned ? 18.0 : 14.0,
+      ),
+      boxShadow: [
+        if (!isDark)
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
-          boxShadow: [
-            if (!isDark)
-              BoxShadow(
-                color: Colors.black.withAlpha(25),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+      ],
+    ),
+    child: Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.rotate(
+          angle: headingAngle,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              size: Size(
+                compassSize.width * _compassBackgroundSizeFactor,
+                compassSize.height * _compassBackgroundSizeFactor,
               ),
-          ],
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Transform.rotate(
-              angle: headingAngle,
-              child: RepaintBoundary(
-                child: CustomPaint(
-                  size: Size(
-                    compassSize.width * _compassBackgroundSizeFactor,
-                    compassSize.height * _compassBackgroundSizeFactor,
-                  ),
-                  painter: CompassBackgroundPainter(theme: theme),
-                ),
-              ),
+              painter: CompassBackgroundPainter(theme: theme),
             ),
-            Transform.rotate(
-              angle: qiblahAngle,
-              child: RepaintBoundary(
-                child: CustomPaint(
-                  size: Size(
-                    compassSize.width * _arrowSizeFactor,
-                    compassSize.height * _arrowHeightFactor,
-                  ),
-                  painter: ProfessionalArrowPainter(theme: theme),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-      );
+        Transform.rotate(
+          angle: qiblahAngle,
+          child: RepaintBoundary(
+            child: CustomPaint(
+              size: Size(
+                compassSize.width * _arrowSizeFactor,
+                compassSize.height * _arrowHeightFactor,
+              ),
+              painter: ProfessionalArrowPainter(theme: theme, context: context),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   Widget _buildFixedArrow(ThemeData theme, bool isDark) => Positioned(
     top: _fixedArrowTopPosition,
     child: Icon(
       Icons.arrow_drop_up,
       size: _fixedArrowSize,
-      color: isAligned
-          ? theme.colorScheme.primary
-          : (isDark
-                ? Colors.grey.shade700
-                : theme.colorScheme.surface.withAlpha(230)),
+      color: theme.colorScheme.primary,
     ),
   );
 
@@ -166,7 +167,7 @@ class CompassWidget extends StatelessWidget {
         child: Image.asset(
           cacheHeight: 210,
           cacheWidth: 210,
-          'assets/images/kaaba.png',
+          'assets/qiblah/image_3.png',
           width: _kaabaIconSize,
           fit: BoxFit.cover,
         ),

@@ -22,6 +22,25 @@ class QuranSearchService {
     final normalizedKeyword = normalizeArabic(keyword.trim());
     final results = <SearchResult>[];
 
+    // 1. البحث في أسماء السور
+    for (int surah = 1; surah <= 114; surah++) {
+      final surahName = quran.getSurahNameArabic(surah);
+      final normalizedSurahName = normalizeArabic(surahName);
+
+      if (normalizedSurahName.contains(normalizedKeyword)) {
+        results.add(
+          SearchResult(
+            surahNumber: surah,
+            verseNumber: 0,
+            surahName: surahName,
+            ayahText: '',
+            isSurah: true,
+          ),
+        );
+      }
+    }
+
+    // 2. البحث في الآيات
     for (int surah = 1; surah <= 114; surah++) {
       final totalAyahs = quran.getVerseCount(surah);
 
@@ -31,10 +50,8 @@ class QuranSearchService {
 
         bool matches;
         if (partial) {
-          // البحث الجزئي: أي ظهور للكلمة
           matches = normalizedAyah.contains(normalizedKeyword);
         } else {
-          // البحث الكامل: الكلمة ككلمة مستقلة
           final words = normalizedAyah.split(RegExp(r'\s+'));
           matches = words.contains(normalizedKeyword);
         }

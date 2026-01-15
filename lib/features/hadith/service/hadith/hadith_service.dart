@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -112,6 +113,88 @@ class HadithService {
   ) => Uri.parse(
     'https://hadithapi.com/api/hadiths/?apiKey=$apiKey&book=$bookSlug&chapter=$chapterNumber&page=$page',
   );
+
+  /// Fetches a random hadith.
+  /// Returns a Map containing the [HadithModel], book information, and chapter information.
+  Future<Map<String, dynamic>> fetchRandomHadith() async {
+    final random = Random();
+
+    // 1. Fetch Books
+    final booksUrl = Uri.parse(
+      'https://hadithapi.com/api/books?apiKey=$apiKey',
+    );
+    final booksResponse = await http
+        .get(booksUrl)
+        .timeout(const Duration(seconds: _timeoutSeconds));
+
+    if (booksResponse.statusCode != 200) {
+      throw Exception('Failed to fetch books for random hadith');
+    }
+
+    final booksData = json.decode(booksResponse.body);
+    final List books = booksData['books'] ?? [];
+    if (books.isEmpty) {
+      throw Exception('No books found');
+    }
+
+    // Pick a random book that has hadiths
+    final validBooks = books.where((b) {
+      final count = int.tryParse(b['hadiths_count']?.toString() ?? '0') ?? 0;
+      return count > 0;
+    }).toList();
+    if (validBooks.isEmpty) {
+      throw Exception('No books with hadiths found');
+    }
+    final book = validBooks[random.nextInt(validBooks.length)];
+    final bookSlug = book['bookSlug'];
+    final bookName = book['bookName'];
+
+    // 2. Fetch Chapters for that book
+    final chaptersUrl = Uri.parse(
+      'https://hadithapi.com/api/$bookSlug/chapters?apiKey=$apiKey',
+    );
+    final chaptersResponse = await http
+        .get(chaptersUrl)
+        .timeout(const Duration(seconds: _timeoutSeconds));
+
+    if (chaptersResponse.statusCode != 200) {
+      throw Exception('Failed to fetch chapters for random hadith');
+    }
+
+    final chaptersData = json.decode(chaptersResponse.body);
+    final List chapters = chaptersData['chapters'] ?? [];
+    if (chapters.isEmpty) {
+      throw Exception('No chapters found for book $bookSlug');
+    }
+
+    // Pick a random chapter
+    final chapter = chapters[random.nextInt(chapters.length)];
+    final chapterNumber = chapter['chapterNumber'].toString();
+    final chapterNameAr = chapter['chapterArabic'] ?? '';
+    final chapterNameEn = chapter['chapterEnglish'] ?? '';
+
+    // 3. Fetch Hadiths for that chapter
+    final hadiths = await fetchHadithsForChapter(
+      bookSlug: bookSlug,
+      chapterNumber: chapterNumber,
+    );
+
+    if (hadiths.isEmpty) {
+      throw Exception('No hadiths found in selected chapter');
+    }
+
+    // Pick a random hadith
+    final hadith = hadiths[random.nextInt(hadiths.length)];
+
+    return {
+      'hadith': hadith,
+      'bookSlug': bookSlug,
+      'bookName': bookName,
+      'chapterNumber': chapterNumber,
+      'chapterNameAr': chapterNameAr,
+      'chapterNameEn': chapterNameEn,
+    };
+  }
 }
 
 // Top-level function for compute

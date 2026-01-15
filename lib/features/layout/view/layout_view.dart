@@ -10,7 +10,6 @@ class LayoutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final localization = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
@@ -31,7 +30,6 @@ class LayoutView extends StatelessWidget {
         child: Builder(
           builder: (scaffoldContext) => LayoutContent(
             scaffoldContext,
-            theme,
             localizations: localization,
             isArabic: isArabic,
           ),

@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../zakat/view/widgets/zakat_calculator.dart';
 
 class ZakatCardWidget extends StatelessWidget {
-  const ZakatCardWidget({
-    required this.theme,
-    required this.localizations,
-    super.key,
-  });
+  const ZakatCardWidget({required this.localizations, super.key});
 
-  final ThemeData theme;
   final AppLocalizations localizations;
 
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       borderRadius: .circular(24.toR),
-      gradient: const LinearGradient(
+      gradient: LinearGradient(
         begin: AlignmentDirectional.topCenter,
         end: AlignmentDirectional.bottomCenter,
-        colors: AppColors.cardGradient,
+        colors: AppColors.cardGradient(context),
       ),
     ),
     child: InkWell(
@@ -39,7 +35,7 @@ class ZakatCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     localizations.my_zakat,
-                    style: theme.textTheme.headlineSmall?.copyWith(
+                    style: context.textTheme.headlineSmall?.copyWith(
                       color: Colors.white,
                       fontWeight: .bold,
                     ),
@@ -47,22 +43,21 @@ class ZakatCardWidget extends StatelessWidget {
                   SizedBox(height: 4.toH),
                   Text(
                     localizations.zakatDuaa,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: context.textTheme.bodyMedium?.copyWith(
                       color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 14.toSp,
                     ),
                   ),
                   SizedBox(height: 16.toH),
                   Container(
                     padding: .symmetric(horizontal: 16.toW, vertical: 8.toH),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.secondary,
+                      color: context.colorScheme.secondary,
                       borderRadius: BorderRadius.circular(20.toR),
                     ),
                     child: Text(
                       localizations.start_calculation,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.primaryColor,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.primary,
                         fontWeight: .bold,
                       ),
                     ),

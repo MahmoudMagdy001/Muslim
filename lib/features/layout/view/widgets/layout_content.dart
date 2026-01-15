@@ -8,15 +8,13 @@ import 'zakat_card_widget.dart';
 
 class LayoutContent extends StatelessWidget {
   const LayoutContent(
-    this.scaffoldContext,
-    this.theme, {
+    this.scaffoldContext, {
     required this.localizations,
     required this.isArabic,
     super.key,
   });
 
   final BuildContext scaffoldContext;
-  final ThemeData theme;
   final AppLocalizations localizations;
   final bool isArabic;
 
@@ -26,18 +24,17 @@ class LayoutContent extends StatelessWidget {
       SliverToBoxAdapter(
         child: PrayerTimesView(
           scaffoldContext: scaffoldContext,
-          theme: theme,
           localizations: localizations,
         ),
       ),
       SliverPadding(
         padding: .symmetric(vertical: 8.toH, horizontal: 8.toW),
         sliver: SliverToBoxAdapter(
-          child: ZakatCardWidget(theme: theme, localizations: localizations),
+          child: ZakatCardWidget(localizations: localizations),
         ),
       ),
       SliverToBoxAdapter(
-        child: DashboardGrid(theme: theme, localizations: localizations),
+        child: DashboardGrid( localizations: localizations),
       ),
     ],
   );
