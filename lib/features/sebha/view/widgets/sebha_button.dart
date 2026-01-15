@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class SebhaButton extends StatefulWidget {
@@ -59,7 +61,7 @@ class _SebhaButtonState extends State<SebhaButton>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = context.screenSize;
     final width = size.width;
     return ScaleTransition(
       scale: _animation,
@@ -75,14 +77,18 @@ class _SebhaButtonState extends State<SebhaButton>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${widget.counter}',
-              style: Theme.of(context).textTheme.headlineMedium,
+              convertToArabicNumbers(widget.counter.toString()),
+              style: context.textTheme.headlineMedium?.copyWith(
+                color: Colors.white,
+              ),
             ),
             if (widget.goal != null) ...[
               const SizedBox(height: 12),
               Text(
-                '${widget.localizations.goal}: ${widget.goal}',
-                style: Theme.of(context).textTheme.headlineSmall,
+                '${widget.localizations.goal}: ${convertToArabicNumbers(widget.goal.toString())}',
+                style: context.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ],
           ],

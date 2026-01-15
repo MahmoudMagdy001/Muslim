@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../model/names_of_allah_model.dart';
+import '../../../../core/utils/extensions.dart';
 
 class ShareableNameOfAllahCard extends StatelessWidget {
   const ShareableNameOfAllahCard({
@@ -31,10 +32,10 @@ class ShareableNameOfAllahCard extends StatelessWidget {
       children: [
         Text(
           'أسماء الله الحسني',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          style: context.textTheme.titleLarge?.copyWith(
             fontSize: 42,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.colorScheme.primary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -43,10 +44,10 @@ class ShareableNameOfAllahCard extends StatelessWidget {
         // Name
         Text(
           data.name,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          style: context.textTheme.titleLarge?.copyWith(
             fontSize: 40,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
+            color: context.colorScheme.primary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -81,7 +82,7 @@ class ShareableNameOfAllahCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: context.colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 10),

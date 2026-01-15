@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+import '../../../../core/utils/extensions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../model/azkar_model/azkar_model.dart';
 
 class AzkarListView extends StatefulWidget {
@@ -18,37 +22,81 @@ class AzkarListView extends StatefulWidget {
 }
 
 class _AzkarListViewState extends State<AzkarListView> {
-  late List<int> currentCounts;
+  late List<ValueNotifier<int>> currentCounts;
   late List<int> totalCounts;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    // تهيئة العدادات
-    currentCounts = List.generate(widget.azkarList.length, (index) => 0);
+    currentCounts = List.generate(
+      widget.azkarList.length,
+      (index) => ValueNotifier(0),
+    );
     totalCounts = widget.azkarList.map((e) => e.count ?? 1).toList();
+    _loadPersistedCounts();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    for (var notifier in currentCounts) {
+      notifier.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _loadPersistedCounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now().toIso8601String().split('T')[0];
+    final lastUpdateDate = prefs.getString('azkar_last_update_date');
+
+    // Reset counts if it's a new day
+    if (lastUpdateDate != today) {
+      await prefs.setString('azkar_last_update_date', today);
+      await prefs.remove('azkar_daily_counts');
+      return;
+    }
+
+    final savedData = prefs.getString('azkar_daily_counts');
+    if (savedData != null) {
+      final Map<String, dynamic> countsMap = jsonDecode(savedData);
+      for (int i = 0; i < widget.azkarList.length; i++) {
+        final zekrKey = widget.azkarList[i].zekr;
+        if (zekrKey != null && countsMap.containsKey(zekrKey)) {
+          currentCounts[i].value = countsMap[zekrKey] as int;
+        }
+      }
+    }
+  }
+
+  Future<void> _saveCurrentCounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final Map<String, int> countsMap = {};
+    for (int i = 0; i < widget.azkarList.length; i++) {
+      final zekrKey = widget.azkarList[i].zekr;
+      if (zekrKey != null) {
+        countsMap[zekrKey] = currentCounts[i].value;
+      }
+    }
+    await prefs.setString('azkar_daily_counts', jsonEncode(countsMap));
   }
 
   void _incrementCounter(int index) {
-    if (currentCounts[index] < totalCounts[index]) {
-      setState(() {
-        currentCounts[index]++;
-      });
+    if (currentCounts[index].value < totalCounts[index]) {
+      currentCounts[index].value++;
+      _saveCurrentCounts();
     }
   }
 
   void _resetCounter(int index) {
-    setState(() {
-      currentCounts[index] = 0;
-    });
+    currentCounts[index].value = 0;
+    _saveCurrentCounts();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final local = Localizations.localeOf(context).languageCode;
+    final theme = context.theme;
     final localization = AppLocalizations.of(context);
 
     return Scaffold(
@@ -60,224 +108,178 @@ class _AzkarListViewState extends State<AzkarListView> {
           itemCount: widget.azkarList.length,
           itemBuilder: (context, index) {
             final item = widget.azkarList[index];
-            final current = currentCounts[index];
             final total = totalCounts[index];
-            final isFinished = current >= total;
-            final progress = total > 0 ? current / total : 0.0;
             final hasCount = total > 0;
 
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsetsDirectional.only(
-                start: 5,
-                end: 15,
-                top: 5,
-                bottom: 5,
-              ),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: isFinished && hasCount
-                        ? colorScheme.primary
-                        : theme.cardColor,
-                    width: isFinished && hasCount ? 2.0 : 1.0,
+            return ValueListenableBuilder<int>(
+              valueListenable: currentCounts[index],
+              builder: (context, current, child) {
+                final isFinished = current >= total;
+
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: EdgeInsetsDirectional.only(
+                    start: 8.toW,
+                    end: 16.toW,
+                    top: 6.toH,
+                    bottom: 6.toH,
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 15, 12, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.zekr ?? '',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              height: local == 'ar' ? 2.1 : 1.5,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: isFinished && hasCount
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          // المرجع
-                          if (item.reference?.isNotEmpty ?? false)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.primary.withAlpha(
-                                  (0.1 * 255).toInt(),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.bookmark_border,
-                                    size: 16,
-                                    color: colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '${localization.revision}: ${item.reference}',
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: colorScheme.primary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 10),
-
-                          // الوصف / الفوائد
-                          if (item.description?.isNotEmpty ?? false) ...[
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: colorScheme.surfaceContainerHighest
-                                    .withAlpha((0.5 * 255).toInt()),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.lightbulb_outline,
-                                    size: 18,
-                                    color: colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      item.description!,
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.onSurfaceVariant,
-                                          ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                  decoration: BoxDecoration(
+                    color: theme
+                        .colorScheme
+                        .primaryContainer, // Mint green background equivalent
+                    borderRadius: BorderRadius.circular(20.toR),
+                    border: Border.all(
+                      color: isFinished && hasCount
+                          ? theme.primaryColor
+                          : Colors.transparent,
+                      width: 2.0,
                     ),
-
-                    // قسم التكرار (يظهر فقط لو فيه تكرار)
-                    if (hasCount) ...[
-                      const SizedBox(height: 16),
-                      Column(
-                        children: [
-                          // Progress Bar
-                          LinearProgressIndicator(
-                            value: progress,
-                            minHeight: 6,
-                            backgroundColor:
-                                colorScheme.surfaceContainerHighest,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              colorScheme.primary,
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      current.toString(),
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '/',
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                          ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      total.toString(),
-                                      style: theme.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                          ),
-                                    ),
-                                  ],
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16.toR),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // النص الأساسي - الذكر
+                            Align(
+                              child: Text(
+                                item.zekr ?? '',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  height: 1.7,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
-                                if (!isFinished) ...[
-                                  // زر التسبيح
-                                  SizedBox(
-                                    height: 45,
-                                    width: 120,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        HapticFeedback.mediumImpact();
-                                        _incrementCounter(index);
-                                      },
-
-                                      child: Text(localization.tasbih),
-                                    ),
-                                  ),
-                                ] else
-                                  // زر إعادة العد
-                                  SizedBox(
-                                    height: 45,
-                                    width: 120,
-                                    child: OutlinedButton.icon(
-                                      onPressed: () {
-                                        _resetCounter(index);
-                                      },
-                                      icon: Icon(
-                                        Icons.refresh,
-                                        color: colorScheme.primary,
-                                      ),
-                                      label: Text(
-                                        localization.reset,
-                                        style: TextStyle(
-                                          color: colorScheme.primary,
-                                        ),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        side: BorderSide(
-                                          color: colorScheme.primary,
-                                        ),
-                                        foregroundColor: colorScheme.primary,
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+
+                            if ((item.reference?.isNotEmpty ?? false) ||
+                                (item.description?.isNotEmpty ?? false))
+                              SizedBox(height: 16.toH),
+
+                            // المرجع - pill shape
+                            if (item.reference?.isNotEmpty ?? false)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.toW,
+                                  vertical: 8.toH,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25.toR),
+                                ),
+                                child: Text(
+                                  '${localization.revision}: ${item.reference}',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface
+                                        .withAlpha(
+                                          150,
+                                        ), // gray 666666 equivalent
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+
+                            // الوصف - gray text below reference
+                            if (item.description?.isNotEmpty ?? false) ...[
+                              if (item.reference?.isNotEmpty ?? false)
+                                SizedBox(height: 12.toH),
+                              Text(
+                                item.description!,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white60,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
+
+                      // قسم الأزرار (يظهر فقط لو فيه تكرار)
+                      if (hasCount) ...[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            16.toW,
+                            0,
+                            16.toW,
+                            16.toH,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    current.toString(),
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(
+                                          color: Colors.white,
+
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  Text(
+                                    '/',
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                  Text(
+                                    total.toString(),
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                onPressed: () => _resetCounter(index),
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  color: Colors.white,
+                                ),
+                                iconSize: 32.toR,
+                              ),
+                              SizedBox(
+                                height: 42.toH,
+                                width: 130.toW,
+                                child: ElevatedButton(
+                                  onPressed: isFinished
+                                      ? null
+                                      : () {
+                                          HapticFeedback.mediumImpact();
+                                          _incrementCounter(index);
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        theme.colorScheme.secondary,
+                                    foregroundColor:
+                                        theme.colorScheme.onSecondary,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        25.toR,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    localization.tasbih,
+                                    style: context.textTheme.titleSmall
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           },
         ),

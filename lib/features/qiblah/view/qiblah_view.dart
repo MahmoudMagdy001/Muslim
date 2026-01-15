@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/qiblah_cubit.dart';
 import '../viewmodel/qiblah_state.dart';
@@ -78,45 +77,19 @@ class QiblahSuccessWidget extends StatelessWidget {
   final bool isArabic;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Stack(
+  Widget build(BuildContext context) => SafeArea(
+    child: Column(
       children: [
-        _buildBackgroundGradient(theme),
-        SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: CompassWidget(
-                  headingAngle: headingAngle,
-                  qiblahAngle: qiblahAngle,
-                  isAligned: isAligned,
-                  isLoading: isLoading,
-                  localizations: localizations,
-                ),
-              ),
-            ],
+        Expanded(
+          child: CompassWidget(
+            headingAngle: headingAngle,
+            qiblahAngle: qiblahAngle,
+            isAligned: isAligned,
+            isLoading: isLoading,
+            localizations: localizations,
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildBackgroundGradient(ThemeData theme) {
-    final bool isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0.0, 0.5, 1.0],
-          colors: isDark
-              ? AppColors.darkGradientColors
-              : AppColors.lightGradientColors,
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }

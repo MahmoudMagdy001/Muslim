@@ -426,6 +426,12 @@ abstract class AppLocalizations {
   /// **'No bookmarks yet'**
   String get emptyBookmarks;
 
+  /// Message when there are no saved hadiths
+  ///
+  /// In en, this message translates to:
+  /// **'No saved hadiths yet'**
+  String get savedHadithsEmpty;
+
   /// Message when no tafsir is available
   ///
   /// In en, this message translates to:
@@ -513,6 +519,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hadith Books'**
   String get hadithBooks;
+
+  /// No description provided for @hadithSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith Sources'**
+  String get hadithSources;
 
   /// Message when no Hadith books are available
   ///
@@ -1095,6 +1107,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t forget your daily Quran reading 🌿'**
   String get quranReminderBody;
+
+  /// No description provided for @allServices.
+  ///
+  /// In en, this message translates to:
+  /// **'All Services'**
+  String get allServices;
+
+  /// Button to add a new custom tasbih
+  ///
+  /// In en, this message translates to:
+  /// **'Add Custom Tasbih'**
+  String get addCustomTasbih;
+
+  /// Title for edit tasbih dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Tasbih'**
+  String get editTasbih;
+
+  /// Button to delete tasbih
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Tasbih'**
+  String get deleteTasbih;
+
+  /// Confirmation message for deleting tasbih
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this Tasbih?'**
+  String get deleteTasbihConfirm;
+
+  /// Label for Arabic text field
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih Text in Arabic'**
+  String get tasbihTextAr;
+
+  /// Label for English text field
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbih Text in English'**
+  String get tasbihTextEn;
+
+  /// Label for goal field
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get tasbihGoal;
+
+  /// Hint text for Arabic text field
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Astaghfirullah'**
+  String get tasbihTextArHint;
+
+  /// Hint text for English text field
+  ///
+  /// In en, this message translates to:
+  /// **'Example: I seek forgiveness from Allah'**
+  String get tasbihTextEnHint;
+
+  /// Hint text for goal field
+  ///
+  /// In en, this message translates to:
+  /// **'Example: 100'**
+  String get tasbihGoalHint;
+
+  /// Error message for required fields
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get fieldRequired;
+
+  /// Error message when goal is zero or negative
+  ///
+  /// In en, this message translates to:
+  /// **'Goal must be greater than zero'**
+  String get goalMustBePositive;
 }
 
 class _AppLocalizationsDelegate

@@ -1,10 +1,12 @@
 // --- Professional Arrow Painter (Refactored) ---
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfessionalArrowPainter extends CustomPainter {
-  ProfessionalArrowPainter({required this.theme});
+  ProfessionalArrowPainter({required this.context, required this.theme});
 
   final ThemeData theme;
+  final BuildContext context;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -29,9 +31,10 @@ class ProfessionalArrowPainter extends CustomPainter {
     Color primaryColor,
     Color primaryColorDark,
   ) {
-    final gradient = RadialGradient(
-      colors: [primaryColor.withAlpha(229), primaryColorDark.withAlpha(204)],
-      radius: 0.8,
+    final gradient = LinearGradient(
+      colors: AppColors.cardGradient(context),
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
     );
 
     final paint = Paint()

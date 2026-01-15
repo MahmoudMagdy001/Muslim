@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../model/names_of_allah_model.dart';
+import '../../../../core/utils/extensions.dart';
 
 class NameOfAllahCard extends StatelessWidget {
   const NameOfAllahCard({
@@ -19,66 +22,85 @@ class NameOfAllahCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final name = isArabic ? data.name : data.nameTranslation;
     final text = isArabic ? data.text : data.textTranslation;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              isArabic
-                  ? convertToArabicNumbers((index + 1).toString())
-                  : (index + 1).toString(),
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.toH, horizontal: 8.toW),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: AppColors.cardGradient(context),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        borderRadius: BorderRadius.circular(15.toR),
+      ),
+      child: InkWell(
+        onTap: () {}, // Keep for ripple effect
+        borderRadius: BorderRadius.circular(15.toR),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+          child: Row(
             children: [
-              Row(
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Expanded(
-                    child: Text(name, style: theme.textTheme.titleLarge),
+                  Image.asset(
+                    'assets/quran/marker.png',
+                    width: 40.toW,
+                    height: 40.toH,
                   ),
-                  const SizedBox(width: 8),
-                  isSharing
-                      ? SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              theme.colorScheme.primary,
-                            ),
-                          ),
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.share_rounded),
-                          onPressed: onShare,
-                        ),
+                  Text(
+                    isArabic
+                        ? convertToArabicNumbers((index + 1).toString())
+                        : (index + 1).toString(),
+                    style: context.textTheme.labelSmall?.copyWith(
+                      color: context.theme.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 12),
-              Text(
-                '${isArabic ? 'المعني' : 'Meaning'} : $text',
-                style: theme.textTheme.bodyMedium,
+              SizedBox(width: 16.toW),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: context.textTheme.bodyLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4.toH),
+                    Text(
+                      '${isArabic ? 'المعني' : 'Meaning'}: $text',
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              SizedBox(width: 8.toW),
+              isSharing
+                  ? SizedBox(
+                      width: 24.toR,
+                      height: 24.toR,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.share_rounded,
+                        color: Colors.white,
+                        size: 20.toR,
+                      ),
+                      onPressed: onShare,
+                    ),
             ],
           ),
         ),

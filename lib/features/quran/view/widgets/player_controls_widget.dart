@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_state.dart';
 
@@ -9,9 +11,17 @@ class PlayerControlsWidget extends StatelessWidget {
   const PlayerControlsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) => const Padding(
-    padding: EdgeInsetsDirectional.only(bottom: 45, top: 15),
-    child: Column(children: [_PlayerSlider(), _PlayerButtons()]),
+  Widget build(BuildContext context) => Container(
+    margin: EdgeInsets.symmetric(horizontal: 10.toW, vertical: 10.toH),
+    padding: EdgeInsets.only(left: 14.toW, right: 14.toW, bottom: 12.toH),
+    decoration: BoxDecoration(
+      color: context.theme.primaryColor,
+      borderRadius: BorderRadius.circular(30.toR),
+    ),
+    child: const Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [_PlayerSlider(), _PlayerButtons()],
+    ),
   );
 }
 
@@ -25,60 +35,55 @@ class _PlayerSlider extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
-      buildWhen: (previous, current) =>
-          previous.currentPosition != current.currentPosition ||
-          previous.totalDuration != current.totalDuration,
-      builder: (context, state) => Column(
-        children: [
-          SfSlider(
-            enableTooltip: true,
-            activeColor: theme.colorScheme.primary,
-            inactiveColor: theme.colorScheme.primary.withAlpha(40),
-            value: state.currentPosition.inSeconds.toDouble().clamp(
-              0.0,
-              state.totalDuration.inSeconds.toDouble().clamp(
-                1.0,
-                double.infinity,
+  Widget build(BuildContext context) =>
+      BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
+        buildWhen: (previous, current) =>
+            previous.currentPosition != current.currentPosition ||
+            previous.totalDuration != current.totalDuration,
+        builder: (context, state) => Column(
+          children: [
+            SfSlider(
+              activeColor: Colors.white,
+              inactiveColor: Colors.white.withAlpha(80),
+              value: state.currentPosition.inSeconds.toDouble().clamp(
+                0.0,
+                state.totalDuration.inSeconds.toDouble().clamp(
+                  1.0,
+                  double.infinity,
+                ),
+              ),
+              max: state.totalDuration.inSeconds > 0
+                  ? state.totalDuration.inSeconds.toDouble()
+                  : 1,
+              onChanged: (value) {
+                context.read<QuranPlayerCubit>().seek(
+                  Duration(seconds: (value as double).toInt()),
+                );
+              },
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0.toW),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _formatDuration(state.currentPosition),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    _formatDuration(state.totalDuration),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
-            max: state.totalDuration.inSeconds > 0
-                ? state.totalDuration.inSeconds.toDouble()
-                : 1,
-            onChanged: (value) {
-              context.read<QuranPlayerCubit>().seek(
-                Duration(seconds: (value as double).toInt()),
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  _formatDuration(state.currentPosition),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: colorScheme.primary,
-                  ),
-                ),
-                Text(
-                  _formatDuration(state.totalDuration),
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.textTheme.bodySmall?.color,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 class _PlayerButtons extends StatelessWidget {
@@ -89,67 +94,50 @@ class _PlayerButtons extends StatelessWidget {
       BlocSelector<QuranPlayerCubit, QuranPlayerState, bool>(
         selector: (state) => state.isPlaying,
         builder: (context, isPlaying) => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildControlButton(
-              context: context,
-              icon: Icons.skip_previous_rounded,
+            IconButton(
+              onPressed: () =>
+                  context.read<QuranPlayerCubit>().seekToPrevious(),
+              icon: Icon(
+                Icons.skip_previous_rounded,
+                color: Colors.white,
+                size: 36.toW,
+              ),
               tooltip: 'السابق',
-              onTap: () => context.read<QuranPlayerCubit>().seekToPrevious(),
             ),
-            _buildControlButton(
-              context: context,
-              icon: isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-              tooltip: isPlaying ? 'إيقاف مؤقت' : 'تشغيل',
-              big: true,
-              onTap: isPlaying
-                  ? () => context.read<QuranPlayerCubit>().pause()
-                  : () => context.read<QuranPlayerCubit>().play(),
-            ),
-            _buildControlButton(
-              context: context,
-              icon: Icons.skip_next_rounded,
+            const SizedBox(width: 24),
+            _buildPlayPauseButton(context, isPlaying),
+            const SizedBox(width: 24),
+            IconButton(
+              onPressed: () => context.read<QuranPlayerCubit>().seekToNext(),
+              icon: Icon(
+                Icons.skip_next_rounded,
+                color: Colors.white,
+                size: 36.toW,
+              ),
               tooltip: 'التالي',
-              onTap: () => context.read<QuranPlayerCubit>().seekToNext(),
             ),
           ],
         ),
       );
 
-  Widget _buildControlButton({
-    required BuildContext context,
-    required IconData icon,
-    required String tooltip,
-    required VoidCallback onTap,
-    bool big = false,
-  }) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(50),
-      child: Container(
-        padding: EdgeInsets.all(big ? 16 : 12),
-        decoration: BoxDecoration(
-          color: big ? colorScheme.primary : theme.cardColor,
-          shape: BoxShape.circle,
-          boxShadow: big
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withAlpha((0.26 * 255).toInt()),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
-        ),
-        child: Icon(
-          icon,
-          size: big ? 28 : 22,
-          color: big ? theme.colorScheme.onPrimary : theme.iconTheme.color,
-        ),
+  Widget _buildPlayPauseButton(BuildContext context, bool isPlaying) => InkWell(
+    onTap: isPlaying
+        ? () => context.read<QuranPlayerCubit>().pause()
+        : () => context.read<QuranPlayerCubit>().play(),
+    child: Container(
+      width: 60.toW,
+      height: 60.toH,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
       ),
-    );
-  }
+      child: Icon(
+        isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+        size: 38.toW,
+        color: context.theme.primaryColor,
+      ),
+    ),
+  );
 }

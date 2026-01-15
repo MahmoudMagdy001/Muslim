@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../../../core/utils/format_helper.dart';
+import '../../../core/utils/responsive_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
@@ -13,13 +14,11 @@ import 'widgets/current_prayer_card_widget.dart';
 class PrayerTimesView extends StatelessWidget {
   const PrayerTimesView({
     required this.scaffoldContext,
-    required this.theme,
     required this.localizations,
     super.key,
   });
 
   final BuildContext scaffoldContext;
-  final ThemeData theme;
   final AppLocalizations localizations;
 
   @override
@@ -43,12 +42,9 @@ class PrayerTimesView extends StatelessWidget {
           );
         }
 
-        return Skeletonizer(
-          enabled: status == PrayerTimesStatus.loading,
-          child: _PrayerSuccessSliver(
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
+        return _PrayerSuccessSliver(
+          localizations: localizations,
+          isArabic: isArabic,
         );
       },
     );
@@ -69,14 +65,17 @@ class _PrayerErrorSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 16.toH),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.red, fontSize: 16),
+            style: TextStyle(
+              color: context.colorScheme.error,
+              fontSize: 16.toSp,
+            ),
           ),
           const SizedBox(height: 20),
           ElevatedButton.icon(
@@ -104,7 +103,7 @@ class _PrayerSuccessSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
 
     final hijriDate = _getHijriDate(isArabic);
     final String dayName = DateFormat.EEEE(

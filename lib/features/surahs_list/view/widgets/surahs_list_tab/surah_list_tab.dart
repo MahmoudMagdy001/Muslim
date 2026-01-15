@@ -18,14 +18,12 @@ class SurahListTab extends StatefulWidget {
     required this.selectedReciter,
     required this.isArabic,
     required this.localizations,
-    required this.theme,
     super.key,
   });
 
   final String selectedReciter;
   final bool isArabic;
   final AppLocalizations localizations;
-  final ThemeData theme;
 
   @override
   State<SurahListTab> createState() => _SurahListTabState();
@@ -34,24 +32,26 @@ class SurahListTab extends StatefulWidget {
 class _SurahListTabState extends State<SurahListTab> {
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
-  bool _exactSearch = false;
+  final ValueNotifier<bool> exactSearchNotifier = ValueNotifier(false);
 
   @override
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
+    exactSearchNotifier.dispose();
     super.dispose();
   }
 
   void _onSearchChanged(String value) {
-    context.read<SurahListCubit>().searchInQuran(value, partial: !_exactSearch);
+    context.read<SurahListCubit>().searchInQuran(
+      value,
+      partial: !exactSearchNotifier.value,
+    );
   }
 
   void _toggleExactSearch() {
-    setState(() {
-      _exactSearch = !_exactSearch;
-      _onSearchChanged(_searchController.text);
-    });
+    exactSearchNotifier.value = !exactSearchNotifier.value;
+    _onSearchChanged(_searchController.text);
   }
 
   void _clearSearch() {
@@ -80,12 +80,15 @@ class _SurahListTabState extends State<SurahListTab> {
     child: CustomScrollView(
       controller: _scrollController,
       slivers: [
-        SearchSection(
-          controller: _searchController,
-          exactSearch: _exactSearch,
-          onSearchChanged: _onSearchChanged,
-          toggleExactSearch: _toggleExactSearch,
-          clearSearch: _clearSearch,
+        ValueListenableBuilder<bool>(
+          valueListenable: exactSearchNotifier,
+          builder: (context, exactSearch, child) => SearchSection(
+            controller: _searchController,
+            exactSearch: exactSearch,
+            onSearchChanged: _onSearchChanged,
+            toggleExactSearch: _toggleExactSearch,
+            clearSearch: _clearSearch,
+          ),
         ),
         BlocBuilder<SurahListCubit, SurahsListState>(
           buildWhen: (previous, current) =>
@@ -96,7 +99,6 @@ class _SurahListTabState extends State<SurahListTab> {
               return ResultsCount(
                 searchText: state.searchText,
                 resultsCount: state.searchResults.length,
-                theme: widget.theme,
               );
             }
             return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -107,10 +109,7 @@ class _SurahListTabState extends State<SurahListTab> {
               previous.searchText != current.searchText,
           builder: (context, state) {
             if (state.searchText.isEmpty) {
-              return LastPlayedSection(
-                theme: widget.theme,
-                navigateToSurah: _navigateTo,
-              );
+              return LastPlayedSection(navigateToSurah: _navigateTo);
             }
             return const SliverToBoxAdapter(child: SizedBox.shrink());
           },
@@ -123,7 +122,6 @@ class _SurahListTabState extends State<SurahListTab> {
             if (state.searchText.isNotEmpty) {
               return SearchResultsList(
                 searchResults: state.searchResults,
-                theme: widget.theme,
                 navigateToResult: _navigateTo,
               );
             }

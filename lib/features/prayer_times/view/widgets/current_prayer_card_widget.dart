@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helper/prayer_consts.dart';
 import '../../helper/time_left_format.dart';
 import '../../viewmodel/prayer_times_cubit.dart';
 import '../../viewmodel/prayer_times_state.dart';
-import 'more_prayer_times_button.dart';
 
 class CurrentPrayerCard extends StatelessWidget {
   const CurrentPrayerCard({
@@ -29,61 +30,199 @@ class CurrentPrayerCard extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
 
-    return Card(
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 🏙️ المدينة
-          _CityText(theme),
-          // 🕌 التاريخ الهجري و اسم اليوم + زر التحديث
-          Padding(
-            padding: const EdgeInsetsDirectional.only(
-              top: 5,
-              start: 10,
-              end: 5,
-              bottom: 5,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '$dayName - $hijriDate',
-                  style: theme.textTheme.bodyMedium,
+    return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+      builder: (context, state) {
+        final timingsMap = state.localPrayerTimes?.toMap() ?? {};
+        final next = state.nextPrayer;
+        final previous = state.previousPrayerDateTime;
+        final nextDateTime = state.localPrayerTimes != null && next != null
+            ? state.localPrayerTimes!.toMap()[next] != null
+                  ? state.timeLeft != null
+                        ? DateTime.now().add(state.timeLeft!)
+                        : DateTime.now()
+                  : DateTime.now()
+            : DateTime.now();
+
+        // Calculate real progress
+        double progress = 0.0;
+        if (previous != null && state.timeLeft != null) {
+          final totalInterval = nextDateTime.difference(previous).inSeconds;
+          if (totalInterval > 0) {
+            final elapsed = totalInterval - state.timeLeft!.inSeconds;
+            progress = (elapsed / totalInterval).clamp(0.0, 1.0);
+          }
+        }
+
+        return ColoredBox(
+          color: theme.colorScheme.primary,
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Image.asset('assets/home/vactor.png', fit: BoxFit.fill),
+              ),
+              Skeletonizer(
+                enabled: state.status == PrayerTimesStatus.loading,
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
+                    children: [
+                      // Top Info: Day, Date, City
+                      Padding(
+                        padding: .symmetric(horizontal: 12.toW),
+                        child: Row(
+                          mainAxisAlignment: .spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: .start,
+                              children: [
+                                Text(
+                                  '$dayName - $hijriDate',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 4.toH),
+                                _CityText(theme),
+                              ],
+                            ),
+                            _RefreshButton(localizations, isArabic),
+                          ],
+                        ),
+                      ),
+
+                      // Center: Circular Progress & Next Prayer
+                      Padding(
+                        padding: .symmetric(vertical: 10.toH),
+                        child: Stack(
+                          alignment: .center,
+                          children: [
+                            // Circular Progress (Custom Arc)
+                            CustomPaint(
+                              size: Size(200.toW, 180.toH),
+                              painter: _PrayerProgressPainter(
+                                progress: progress,
+                                color: theme.colorScheme.secondary,
+                              ),
+                            ),
+                            // Inner Details
+                            Column(
+                              mainAxisSize: .min,
+                              children: [
+                                _NextPrayerName(theme, isArabic),
+                                SizedBox(height: 4.toH),
+                                _TimeLeftText(theme, isArabic),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Bottom: All Prayer Times Row
+                      Padding(
+                        padding: .only(bottom: 12.toH),
+                        child: Padding(
+                          padding: .symmetric(horizontal: 10.toW),
+                          child: Row(
+                            children: prayerOrder.map((key) {
+                              final isNext = key == next;
+                              final timing = timingsMap[key] ?? '';
+                              // Icon mapping
+                              final String iconPath = switch (key) {
+                                'Fajr' => 'assets/home/fagr.png',
+                                'Dhuhr' => 'assets/home/dohr.png',
+                                'Asr' => 'assets/home/asr.png',
+                                'Maghrib' => 'assets/home/maghreb.png',
+                                'Isha' => 'assets/home/asiha.png',
+                                _ => 'assets/home/fagr.png',
+                              };
+
+                              return Expanded(
+                                child: _PrayerSmallCard(
+                                  label: isArabic
+                                      ? prayerNamesAr[key] ?? key
+                                      : key,
+                                  time: formatTo12Hour(timing, isArabic),
+                                  isNext: isNext,
+                                  theme: theme,
+                                  iconPath: iconPath,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                _RefreshButton(localizations, isArabic),
-              ],
-            ),
+              ),
+            ],
           ),
-          // 🕋 اسم الصلاة القادمة + وقتها
-          Padding(
-            padding: const EdgeInsetsDirectional.only(
-              start: 10,
-              end: 5,
-              bottom: 5,
-            ),
-            child: Row(
-              children: [
-                _NextPrayerName(theme, isArabic),
-                const SizedBox(width: 8),
-                _NextPrayerTime(isArabic),
-              ],
-            ),
-          ),
-          // ⏳ الوقت المتبقي
-          _TimeLeftText(theme, isArabic),
-          const Divider(thickness: 0.1),
-          // 📅 زر المزيد من مواقيت الصلاة
-          MorePrayerTimesButton(
-            theme: theme,
-            hijriDate: hijriDate,
-            localizations: localizations,
-            isArabic: isArabic,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
+}
+
+class _PrayerSmallCard extends StatelessWidget {
+  const _PrayerSmallCard({
+    required this.label,
+    required this.time,
+    required this.isNext,
+    required this.theme,
+    required this.iconPath,
+  });
+
+  final String label;
+  final String time;
+  final bool isNext;
+  final ThemeData theme;
+  final String iconPath;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: .symmetric(horizontal: 2.toW),
+    padding: .symmetric(vertical: 6.toH),
+    decoration: BoxDecoration(
+      color: isNext
+          ? theme.colorScheme.secondary.withAlpha((0.2 * 255).toInt())
+          : Colors.transparent,
+      borderRadius: .circular(12.toR),
+      border: .all(
+        color: isNext ? theme.colorScheme.secondary : Colors.white24,
+        width: 1.toW,
+      ),
+    ),
+    child: Column(
+      mainAxisSize: .min,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: isNext ? Colors.white : Colors.white70,
+            fontWeight: isNext ? .bold : .normal,
+          ),
+        ),
+        SizedBox(height: 4.toH),
+        Image.asset(
+          iconPath,
+          height: 24.toH,
+          width: 24.toW,
+          color: isNext ? theme.colorScheme.secondary : Colors.white,
+        ),
+        SizedBox(height: 4.toH),
+        Text(
+          time,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: Colors.white,
+            fontWeight: .bold,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _CityText extends StatelessWidget {
@@ -91,16 +230,14 @@ class _CityText extends StatelessWidget {
   final ThemeData theme;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 8.0),
-    child: Center(
-      child: BlocSelector<PrayerTimesCubit, PrayerTimesState, String?>(
+  Widget build(BuildContext context) =>
+      BlocSelector<PrayerTimesCubit, PrayerTimesState, String?>(
         selector: (state) => state.city,
-        builder: (context, city) =>
-            Text(city ?? '--------------', style: theme.textTheme.bodyMedium),
-      ),
-    ),
-  );
+        builder: (context, city) => Text(
+          city ?? '--------------',
+          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
+        ),
+      );
 }
 
 class _NextPrayerName extends StatelessWidget {
@@ -116,39 +253,11 @@ class _NextPrayerName extends StatelessWidget {
           isArabic
               ? prayerNamesAr[nextPrayer] ?? '------'
               : nextPrayer ?? '------',
-          style: theme.textTheme.labelLarge,
+          style: theme.textTheme.headlineLarge?.copyWith(
+            color: theme.colorScheme.secondary,
+            fontWeight: .bold,
+          ),
         ),
-      );
-}
-
-class _NextPrayerTime extends StatelessWidget {
-  const _NextPrayerTime(this.isArabic);
-  final bool isArabic;
-
-  @override
-  Widget build(BuildContext context) =>
-      BlocSelector<
-        PrayerTimesCubit,
-        PrayerTimesState,
-        ({String? nextPrayer, Map<String, dynamic>? localPrayerTimes})
-      >(
-        selector: (state) => (
-          nextPrayer: state.nextPrayer,
-          localPrayerTimes: state.localPrayerTimes?.toMap(),
-        ),
-        builder: (context, data) {
-          final timingsMap = data.localPrayerTimes ?? {};
-          final next = data.nextPrayer;
-          final time = next != null
-              ? formatTo12Hour(timingsMap[next] ?? '', isArabic)
-              : '00:00 ص';
-          return Text(
-            time,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
-          );
-        },
       );
 }
 
@@ -161,20 +270,12 @@ class _TimeLeftText extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocSelector<PrayerTimesCubit, PrayerTimesState, Duration?>(
         selector: (state) => state.timeLeft,
-        builder: (context, timeLeft) => Padding(
-          padding: const EdgeInsetsDirectional.only(
-            start: 10,
-            end: 5,
-            bottom: 8,
-            top: 16,
+        builder: (context, timeLeft) => Text(
+          formatTimeLeft(
+            timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
+            isArabic,
           ),
-          child: Text(
-            formatTimeLeft(
-              timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
-              isArabic,
-            ),
-            style: theme.textTheme.bodySmall,
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
         ),
       );
 }
@@ -192,7 +293,44 @@ class _RefreshButton extends StatelessWidget {
         isArabic: isArabic,
       );
     },
-    icon: const Icon(Icons.refresh_rounded),
+    icon: const Icon(Icons.refresh_rounded, color: Colors.white),
     tooltip: localizations.updatePrayerTimes,
   );
+}
+
+class _PrayerProgressPainter extends CustomPainter {
+  _PrayerProgressPainter({required this.progress, required this.color});
+
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - 19) / 2;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+
+    const double startAngle = 0.65 * 3.141592653589793;
+    const double totalSweep = 1.7 * 3.141592653589793;
+
+    final backgroundPaint = Paint()
+      ..color = Colors.white12
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 19
+      ..strokeCap = StrokeCap.round;
+
+    final progressPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 19
+      ..strokeCap = StrokeCap.round;
+
+    canvas
+      ..drawArc(rect, startAngle, totalSweep, false, backgroundPaint)
+      ..drawArc(rect, startAngle, totalSweep * progress, false, progressPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PrayerProgressPainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.color != color;
 }

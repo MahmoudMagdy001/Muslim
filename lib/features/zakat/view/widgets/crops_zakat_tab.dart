@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -16,197 +18,264 @@ class CropsZakatTab extends StatefulWidget {
 
 class _CropsZakatTabState extends State<CropsZakatTab> {
   final TextEditingController _controller = TextEditingController();
-  String irrigationType = 'natural';
-  double? _result;
-  bool _hasError = false;
+  final ValueNotifier<String> irrigationTypeNotifier = ValueNotifier('natural');
+  final ValueNotifier<double?> resultNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> hasErrorNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    irrigationTypeNotifier.dispose();
+    resultNotifier.dispose();
+    hasErrorNotifier.dispose();
+    super.dispose();
+  }
 
   void _calculate() {
     final input = _controller.text.trim();
     if (input.isEmpty) {
-      setState(() {
-        _result = null;
-        _hasError = true;
-      });
+      resultNotifier.value = null;
+      hasErrorNotifier.value = true;
       return;
     }
 
     final cropAmount = double.tryParse(input);
     if (cropAmount == null || cropAmount < 0) {
-      setState(() {
-        _result = null;
-        _hasError = true;
-      });
+      resultNotifier.value = null;
+      hasErrorNotifier.value = true;
       return;
     }
 
-    final rate = irrigationType == 'natural' ? 0.10 : 0.05;
-    setState(() {
-      _result = cropAmount * rate;
-      _hasError = false;
-    });
+    final rate = irrigationTypeNotifier.value == 'natural' ? 0.10 : 0.05;
+    resultNotifier.value = cropAmount * rate;
+    hasErrorNotifier.value = false;
   }
 
   void _clear() {
-    setState(() {
-      _controller.clear();
-      _result = null;
-      _hasError = false;
-    });
+    _controller.clear();
+    resultNotifier.value = null;
+    hasErrorNotifier.value = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final theme = context.theme;
+    final textTheme = context.textTheme;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
       child: SingleChildScrollView(
         child: Column(
           children: [
             // Header Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.localizations.crops_zakat_title,
-                            style: textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
-                            ),
-                          ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.primaryColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.localizations.crops_zakat_title,
+                        style: textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimary,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.localizations.crops_zakat_description(
-                        isArabic ? convertToArabicNumbers('10') : '10',
-                        isArabic ? convertToArabicNumbers('5') : '5',
-                        isArabic ? convertToArabicNumbers('653') : '653',
                       ),
-
-                      style: textTheme.bodyMedium?.copyWith(height: 1.5),
-                      textAlign: TextAlign.start,
+                    ],
+                  ),
+                  SizedBox(height: 16.toH),
+                  Text(
+                    widget.localizations.crops_zakat_description(
+                      isArabic ? convertToArabicNumbers('10') : '10',
+                      isArabic ? convertToArabicNumbers('5') : '5',
+                      isArabic ? convertToArabicNumbers('653') : '653',
                     ),
-                  ],
-                ),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary.withAlpha(230),
+                      height: 1.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                ],
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: 20.toH),
+
             // Input Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    TextField(
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.primaryColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.localizations.enter_amount,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16.toH),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: hasErrorNotifier,
+                    builder: (context, hasError, child) => TextField(
                       controller: _controller,
                       keyboardType: TextInputType.number,
+                      style: TextStyle(color: theme.colorScheme.onSurface),
                       decoration: InputDecoration(
-                        labelText: widget.localizations.crops_zakat_hint,
-                        errorText: _hasError
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        hintText: widget.localizations.crops_zakat_hint,
+                        hintStyle: TextStyle(
+                          color: theme.hintColor,
+                          fontSize: 14.toSp,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.toW,
+                          vertical: 16.toH,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.toR),
+                          borderSide: BorderSide.none,
+                        ),
+                        errorText: hasError
                             ? widget.localizations.invalid_input_error
                             : null,
                         suffixIcon: _controller.text.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear),
+                                icon: Icon(Icons.clear, color: theme.hintColor),
                                 onPressed: _clear,
                               )
                             : null,
                       ),
                       onChanged: (value) {
-                        if (_hasError) {
-                          setState(() => _hasError = false);
+                        if (hasError) {
+                          hasErrorNotifier.value = false;
                         }
                       },
                       onSubmitted: (_) => _calculate(),
                       onTapOutside: (event) => FocusScope.of(context).unfocus(),
                     ),
-                    const SizedBox(height: 20),
-                    Column(
+                  ),
+                  SizedBox(height: 20.toH),
+
+                  // Radio Buttons for Irrigation
+                  ValueListenableBuilder<String>(
+                    valueListenable: irrigationTypeNotifier,
+                    builder: (context, irrigationType, child) => Column(
                       children: [
                         _buildIrrigationOption(
                           'natural',
                           widget.localizations.natural_irrigation_title(
                             isArabic ? convertToArabicNumbers('10') : '10',
                           ),
-
                           widget.localizations.natural_irrigation_subtitle,
                           theme,
+                          irrigationType,
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.toH),
                         _buildIrrigationOption(
                           'machine',
                           widget.localizations.machine_irrigation_title(
                             isArabic ? convertToArabicNumbers('5') : '5',
                           ),
-
                           widget.localizations.machine_irrigation_subtitle,
                           theme,
+                          irrigationType,
                         ),
                       ],
                     ),
+                  ),
 
-                    const SizedBox(height: 20),
+                  SizedBox(height: 24.toH),
 
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton.icon(
-                        onPressed: _calculate,
-                        icon: const Icon(Icons.calculate),
-                        label: Text(
-                          widget.localizations.calculate_zakat,
-                          style: textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                          ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56.toH,
+                    child: ElevatedButton(
+                      onPressed: _calculate,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.secondary,
+                        foregroundColor: theme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        widget.localizations.calculate_zakat,
+                        style: textTheme.titleMedium?.copyWith(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
 
             // Result Card
-            if (_result != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Row(
+            ValueListenableBuilder<double?>(
+              valueListenable: resultNotifier,
+              builder: (context, result, child) {
+                if (result == null) return const SizedBox.shrink();
+                return Column(
+                  children: [
+                    SizedBox(height: 20.toH),
+                    Container(
+                      padding: EdgeInsets.all(20.toR),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(20.toR),
+                        border: Border.all(
+                          color: theme.primaryColor.withAlpha(50),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.colorScheme.shadow.withAlpha(10),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
                         children: [
                           Text(
-                            '${widget.localizations.due_zakat}:',
+                            widget.localizations.due_zakat,
                             style: textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
+                              color: theme.primaryColor,
                             ),
                           ),
+                          SizedBox(height: 8.toH),
                           Text(
-                            ' ${isArabic ? convertToArabicNumbers(_result!.toStringAsFixed(2)) : _result!.toStringAsFixed(2)} ${widget.localizations.unit_kg}',
-                            style: textTheme.headlineSmall?.copyWith(
+                            ' ${isArabic ? convertToArabicNumbers(result.toStringAsFixed(2)) : result.toStringAsFixed(2)} ${widget.localizations.unit_kg}',
+                            style: textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.primary,
+                              color: theme.primaryColor,
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -218,16 +287,43 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
     String title,
     String subtitle,
     ThemeData theme,
-  ) => RadioListTile<String>(
-    title: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-      ],
+    String currentIrrigationType,
+  ) => Theme(
+    data: context.theme.copyWith(
+      unselectedWidgetColor: context.colorScheme.onPrimary.withAlpha(180),
     ),
-    value: value,
-    groupValue: irrigationType,
-    onChanged: (val) => setState(() => irrigationType = val!),
+    child: RadioListTile<String>(
+      activeColor: theme.colorScheme.secondary,
+      contentPadding: EdgeInsets.zero,
+      title: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onPrimary,
+                    fontSize: 16.toSp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12.toSp,
+          color: theme.colorScheme.onPrimary.withAlpha(180),
+        ),
+      ),
+      value: value,
+      groupValue: currentIrrigationType,
+      onChanged: (val) => irrigationTypeNotifier.value = val!,
+    ),
   );
 }

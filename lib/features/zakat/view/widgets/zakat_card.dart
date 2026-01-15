@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -10,7 +12,6 @@ class ZakatCard extends StatefulWidget {
     required this.hintText,
     required this.calculate,
     required this.localizations,
-
     this.showNisabInfo = true,
     super.key,
   });
@@ -29,126 +30,174 @@ class ZakatCard extends StatefulWidget {
 
 class _ZakatCardState extends State<ZakatCard> {
   final TextEditingController _controller = TextEditingController();
-  double? _result;
-  bool _hasError = false;
+  final ValueNotifier<double?> resultNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> hasErrorNotifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    resultNotifier.dispose();
+    hasErrorNotifier.dispose();
+    super.dispose();
+  }
 
   void _compute() {
     final input = _controller.text.trim();
     if (input.isEmpty) {
-      setState(() {
-        _result = null;
-        _hasError = true;
-      });
+      resultNotifier.value = null;
+      hasErrorNotifier.value = true;
       return;
     }
 
     final value = double.tryParse(input);
     if (value == null || value < 0) {
-      setState(() {
-        _result = null;
-        _hasError = true;
-      });
+      resultNotifier.value = null;
+      hasErrorNotifier.value = true;
       return;
     }
 
-    setState(() {
-      _result = widget.calculate(input);
-      _hasError = false;
-    });
+    resultNotifier.value = widget.calculate(input);
+    hasErrorNotifier.value = false;
   }
 
   void _clear() {
-    setState(() {
-      _controller.clear();
-      _result = null;
-      _hasError = false;
-    });
+    _controller.clear();
+    resultNotifier.value = null;
+    hasErrorNotifier.value = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final theme = context.theme;
+    final textTheme = context.textTheme;
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      child: Column(
-        children: [
-          // Header Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Card
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(20.toR),
+              decoration: BoxDecoration(
+                color: theme.primaryColor,
+                borderRadius: BorderRadius.circular(20.toR),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          widget.title,
-                          style: textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
+                      Text(
+                        widget.title,
+                        style: textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 16.toH),
                   Text(
                     widget.description,
-                    style: textTheme.bodyMedium?.copyWith(height: 1.5),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary.withAlpha(230),
+                      height: 1.5,
+                      fontWeight: FontWeight.w500,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                 ],
               ),
             ),
-          ),
 
-          const SizedBox(height: 20),
+            SizedBox(height: 20.toH),
 
-          // Input Card
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+            // Input Card
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(20.toR),
+              decoration: BoxDecoration(
+                color: theme.primaryColor,
+                borderRadius: BorderRadius.circular(20.toR),
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
-                    controller: _controller,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: widget.hintText,
-                      errorText: _hasError
-                          ? widget.localizations.invalid_input_error
-                          : null,
-                      suffixIcon: _controller.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: _clear,
-                            )
-                          : null,
+                  Text(
+                    widget.localizations.enter_amount,
+                    style: textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
                     ),
-                    onChanged: (value) {
-                      if (_hasError) {
-                        setState(() => _hasError = false);
-                      }
-                    },
-                    onSubmitted: (_) => _compute(),
-                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.toH),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: hasErrorNotifier,
+                    builder: (context, hasError, child) => TextField(
+                      controller: _controller,
+                      keyboardType: TextInputType.number,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        hintText: widget.hintText,
+                        hintStyle: TextStyle(
+                          color: theme.hintColor,
+                          fontSize: 14.toSp,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 20.toW,
+                          vertical: 16.toH,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.toR),
+                          borderSide: BorderSide.none,
+                        ),
+                        errorText: hasError
+                            ? widget.localizations.invalid_input_error
+                            : null,
+                        suffixIcon: _controller.text.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.clear, color: theme.hintColor),
+                                onPressed: _clear,
+                              )
+                            : null,
+                      ),
+                      onChanged: (value) {
+                        if (hasError) {
+                          hasErrorNotifier.value = false;
+                        }
+                      },
+                      onSubmitted: (_) => _compute(),
+                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                    ),
+                  ),
+                  SizedBox(height: 24.toH),
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton.icon(
+                    height: 56.toH,
+                    child: ElevatedButton(
                       onPressed: _compute,
-                      icon: const Icon(Icons.calculate),
-                      label: Text(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.secondary,
+                        foregroundColor: theme.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.toR),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
                         widget.localizations.calculate_zakat,
                         style: textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -156,64 +205,95 @@ class _ZakatCardState extends State<ZakatCard> {
                 ],
               ),
             ),
-          ),
 
-          // Result Card
-          if (_result != null) ...[
-            const SizedBox(height: 20),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
+            // Result Card
+            ValueListenableBuilder<double?>(
+              valueListenable: resultNotifier,
+              builder: (context, result, child) {
+                if (result == null) return const SizedBox.shrink();
+                return Column(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          '${widget.localizations.due_zakat}:',
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
+                    SizedBox(height: 20.toH),
+                    Container(
+                      padding: EdgeInsets.all(20.toR),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(20.toR),
+                        border: Border.all(
+                          color: theme.primaryColor.withAlpha(50),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.colorScheme.shadow.withAlpha(10),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
-                        ),
-                        Text(
-                          ' ${isArabic ? convertToArabicNumbers(_result!.toStringAsFixed(2)) : _result!.toStringAsFixed(2)} ${isArabic ? 'جنيه' : 'EGP'}',
-                          style: textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            widget.localizations.due_zakat,
+                            style: textTheme.titleMedium?.copyWith(
+                              color: theme.primaryColor,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    if (widget.showNisabInfo && _result != null) ...[
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.amber.withAlpha(20),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.info, color: Colors.amber[600]),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                widget.localizations.zakat_reminder,
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: Colors.amber[700],
-                                ),
+                          SizedBox(height: 8.toH),
+                          Text(
+                            '${isArabic ? convertToArabicNumbers(result.toStringAsFixed(2)) : result.toStringAsFixed(2)} ${isArabic ? 'جنيه' : 'EGP'}',
+                            style: textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                          if (widget.showNisabInfo) ...[
+                            SizedBox(height: 16.toH),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.toW,
+                                vertical: 10.toH,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.colorScheme.tertiaryContainer
+                                    .withAlpha(
+                                      200,
+                                    ), // Use tertiary container or similar
+                                borderRadius: BorderRadius.circular(12.toR),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    color: context
+                                        .colorScheme
+                                        .onTertiaryContainer, // Use meaningful color
+                                    size: 20.toR,
+                                  ),
+                                  SizedBox(width: 8.toW),
+                                  Expanded(
+                                    child: Text(
+                                      widget.localizations.zakat_reminder,
+                                      style: textTheme.bodySmall?.copyWith(
+                                        color: context
+                                            .colorScheme
+                                            .onTertiaryContainer,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ],
-                ),
-              ),
+                );
+              },
             ),
           ],
-        ],
+        ),
       ),
     );
   }

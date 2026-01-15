@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../l10n/app_localizations.dart';
 
 import '../../model/chapter_of_book_model.dart';
@@ -65,7 +68,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     final isArabic = locale == 'ar';
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final localization = AppLocalizations.of(context);
 
     return Scaffold(
@@ -80,7 +83,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
             listenable: _controller,
             builder: (context, _) => Column(
               children: [
-                _buildSearchField(localization),
+                _buildSearchField(localization, isArabic, theme),
                 Expanded(
                   child: _buildChapterList(theme, localization, isArabic),
                 ),
@@ -92,13 +95,53 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     );
   }
 
-  Widget _buildSearchField(AppLocalizations localization) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+  Widget _buildSearchField(
+    AppLocalizations localization,
+    bool isArabic,
+    ThemeData theme,
+  ) => Padding(
+    padding: EdgeInsets.symmetric(horizontal: 12.toW, vertical: 8.toH),
     child: TextField(
       controller: _controller.searchController,
+      textAlign: isArabic ? TextAlign.right : TextAlign.left,
       decoration: InputDecoration(
         hintText: localization.chaptersSearch,
-        prefixIcon: const Icon(Icons.search),
+        hintStyle: context.textTheme.bodyLarge?.copyWith(
+          color: context.colorScheme.onSurfaceVariant.withAlpha(150),
+        ),
+        prefixIcon: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.toH, horizontal: 8.toW),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 8.toH, horizontal: 8.toW),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
+              borderRadius: BorderRadius.circular(12.toR),
+            ),
+            child: Image.asset(
+              'assets/quran/search.png',
+              width: 20.toW,
+              color: context.colorScheme.secondary,
+            ),
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 12.toW,
+          vertical: 12.toH,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.toR),
+          borderSide: BorderSide(color: theme.primaryColor, width: 1.5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.toR),
+          borderSide: BorderSide(color: theme.primaryColor, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25.toR),
+          borderSide: BorderSide(color: theme.primaryColor, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.white,
       ),
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
     ),
@@ -112,7 +155,9 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     future: _controller.chaptersFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return _buildSkeletonLoader();
+        return CustomLoadingIndicator(
+          text: 'جاري تحميل ابواب ${widget.bookName}',
+        );
       } else if (snapshot.hasError) {
         return _buildErrorWidget(localization, snapshot.error);
       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -129,19 +174,6 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     },
   );
 
-  Widget _buildSkeletonLoader() => Skeletonizer(
-    child: ListView.builder(
-      padding: const EdgeInsetsDirectional.only(
-        start: 8,
-        end: 16,
-        top: 5,
-        bottom: 10,
-      ),
-      itemCount: 10,
-      itemBuilder: (context, index) => const _SkeletonChapterItem(),
-    ),
-  );
-
   Widget _buildErrorWidget(AppLocalizations localization, Object? error) =>
       Center(child: Text('${localization.errorMain}: $error'));
 
@@ -153,12 +185,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     child: ListView.builder(
       controller: _scrollController,
       itemCount: _controller.filteredChapters.length,
-      padding: const EdgeInsetsDirectional.only(
-        start: 8,
-        end: 16,
-        top: 5,
-        bottom: 10,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.toW, vertical: 8.toH),
       itemBuilder: (context, index) {
         final chapter = _controller.filteredChapters[index];
         return _buildChapterItem(chapter, theme, isArabic);
@@ -178,29 +205,54 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
         ? convertToArabicNumbers(chapter.chapterNumber)
         : chapter.chapterNumber;
 
-    return SizedBox(
-      height: 100,
-      child: Card(
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () =>
-              _navigateToHadithView(chapter, chapterName, chapterNumber),
-          child: Center(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: theme.primaryColor.withAlpha(
-                  (0.1 * 255).toInt(),
-                ),
-                child: Text(
-                  chapterNumber,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.primaryColor,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.toH),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: AppColors.cardGradient(context),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15.toR),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(15.toR),
+        onTap: () => _navigateToHadithView(chapter, chapterName, chapterNumber),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+          child: Row(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/quran/marker.png',
+                    width: 40.toW,
+                    height: 40.toH,
                   ),
+                  Text(
+                    chapterNumber,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: 16.toW),
+              Expanded(
+                child: Text(
+                  chapterName,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              title: Text(chapterName, style: theme.textTheme.titleMedium),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            ),
+              Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16.toR),
+            ],
           ),
         ),
       ),
@@ -213,25 +265,4 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     _scrollController.dispose();
     super.dispose();
   }
-}
-
-class _SkeletonChapterItem extends StatelessWidget {
-  const _SkeletonChapterItem();
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 100,
-    child: Card(
-      child: Center(
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Theme.of(context).primaryColor.withAlpha(30),
-            child: const Text('0'),
-          ),
-          title: const Text('chapterName'),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        ),
-      ),
-    ),
-  );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/service/in_app_rate.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_info_section.dart';
 import 'font_size_section.dart';
@@ -26,7 +27,7 @@ class SettingsContent extends StatefulWidget {
 }
 
 class _SettingsContentState extends State<SettingsContent> {
-  String? appVersion;
+  final ValueNotifier<String?> appVersionNotifier = ValueNotifier(null);
 
   @override
   void initState() {
@@ -36,12 +37,16 @@ class _SettingsContentState extends State<SettingsContent> {
     });
   }
 
+  @override
+  void dispose() {
+    appVersionNotifier.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchAppInfo() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        appVersion = packageInfo.version;
-      });
+      appVersionNotifier.value = packageInfo.version;
     } catch (e) {
       debugPrint('❌ Failed to get package info: $e');
     }
@@ -77,10 +82,13 @@ class _SettingsContentState extends State<SettingsContent> {
           divider,
           LocationSection(isArabic: widget.isArabic, theme: widget.theme),
           divider,
-          AppInfoSection(
-            localizations: widget.localizations,
-            theme: widget.theme,
-            appVersion: appVersion ?? '...',
+          ValueListenableBuilder<String?>(
+            valueListenable: appVersionNotifier,
+            builder: (context, appVersion, child) => AppInfoSection(
+              localizations: widget.localizations,
+              theme: widget.theme,
+              appVersion: appVersion ?? '...',
+            ),
           ),
           const SizedBox(height: 20),
 
@@ -90,17 +98,23 @@ class _SettingsContentState extends State<SettingsContent> {
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.theme.colorScheme.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.toR),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 12.0,
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.toW,
+                vertical: 12.toH,
               ),
             ),
-            icon: const Icon(Icons.star_rate_rounded, color: Colors.white),
+            icon: Icon(
+              Icons.star_rate_rounded,
+              color: widget.theme.colorScheme.onPrimary,
+            ),
             label: Text(
               widget.isArabic ? 'قيّم التطبيق' : 'Rate App',
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: widget.theme.textTheme.labelLarge?.copyWith(
+                color: widget.theme.colorScheme.onPrimary,
+                fontSize: 16.toSp,
+              ),
             ),
           ),
           const SizedBox(height: 30),

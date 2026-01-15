@@ -4,6 +4,7 @@ import 'package:workmanager/workmanager.dart';
 
 import 'prayer_notification_service.dart';
 import 'prayer_times_service.dart';
+import '../model/prayer_times_model.dart';
 
 const String updatePrayerTimesTask = 'update_prayer_times_task';
 
@@ -47,14 +48,28 @@ void callbackDispatcher() {
       // ✅ الحصول على الإحداثيات المحفوظة لضمان استمرارية المكان في الخلفية
       final cachedCoords = await prayerService.getCachedCoordinates();
 
-      final times = await prayerService.getPrayerTimes(
-        isArabic: true,
-        coordinates: cachedCoords,
-      );
-      await notificationService.schedulePrayerNotifications(times);
+      if (cachedCoords == null) {
+        debugPrint('⚠️ لا توجد إحداثيات محفوظة، لا يمكن جدولة الصلاة');
+        return Future.value(false);
+      }
+
+      final List<LocalPrayerTimes> upcomingDaysTimes = [];
+      final now = DateTime.now();
+
+      // جدولة لمدة 3 أيام قادمة
+      for (int i = 0; i < 3; i++) {
+        final date = now.add(Duration(days: i));
+        final times = await prayerService.getPrayerTimesForDate(
+          cachedCoords,
+          date,
+        );
+        upcomingDaysTimes.add(times);
+      }
+
+      await notificationService.schedulePrayerNotifications(upcomingDaysTimes);
 
       debugPrint(
-        '✅ تمت جدولة مواقيت الصلاة بنجاح في الخلفية - ${DateTime.now()}',
+        '✅ تمت جدولة مواقيت الصلاة لـ 3 أيام بنجاح في الخلفية - ${DateTime.now()}',
       );
       return Future.value(true);
     } catch (e, s) {

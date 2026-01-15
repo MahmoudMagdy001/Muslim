@@ -16,6 +16,9 @@ class LocationService {
     if (permission == LocationPermission.denied && context != null) {
       final shouldShow = await LocationDisclosureDialog.shouldShow();
       if (shouldShow) {
+        if (!context.mounted) {
+          return LocationStatus(enabled: enabled, permission: permission);
+        }
         final accepted = await showDialog<bool>(
           context: context,
           barrierDismissible: false,

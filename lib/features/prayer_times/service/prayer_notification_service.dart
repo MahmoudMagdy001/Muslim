@@ -1,58 +1,57 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 
 import '../../settings/service/settings_service.dart';
-import '../helper/prayer_consts.dart';
 import '../model/prayer_times_model.dart';
 
 class PrayerNotificationService {
   final SettingsService _settingsService = SettingsService();
 
-  final DateFormat _timeFormat = DateFormat('HH:mm');
-
-  /// جدولة إشعارات الصلاة
-  Future<void> schedulePrayerNotifications(LocalPrayerTimes times) async {
+  /// جدولة إشعارات الصلاة لعدة أيام
+  Future<void> schedulePrayerNotifications(
+    List<LocalPrayerTimes> upcomingDaysTimes,
+  ) async {
     final enabled = await _settingsService.getPrayerNotificationsEnabled();
     if (!enabled) {
       debugPrint('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
-      await AwesomeNotifications().cancelSchedulesByChannelKey(
-        'prayer_reminder',
-      );
+      await cancelAllNotifications();
       return;
     }
 
     final now = DateTime.now();
-    final areAllPrayersFinished = _areAllPrayersFinished(times, now);
-
-    await AwesomeNotifications().cancelSchedulesByChannelKey('prayer_reminder');
+    await cancelAllNotifications(); // تنظيف القديم والجدولة من جديد
     debugPrint('⏳ تم مسح أي إشعارات قديمة...');
 
-    final prayers = _getPrayersMap(times);
-    int scheduledCount = 0;
+    int totalScheduled = 0;
 
-    for (final entry in prayers.entries) {
-      final prayerName = entry.key;
-      final prayerTimeStr = entry.value;
+    for (final times in upcomingDaysTimes) {
+      final date = times.date ?? now; // استخدام تاريخ اليوم من الموديل
+      final prayers = _getPrayersMap(times);
 
-      if (prayerTimeStr == '--:--') {
-        debugPrint('⚠️ تخطي $prayerName لعدم توفر توقيت');
-        continue;
-      }
-
-      final shouldSchedule = await _scheduleSinglePrayer(
-        prayerName,
-        prayerTimeStr,
-        now,
-        areAllPrayersFinished,
+      debugPrint(
+        '📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}',
       );
 
-      if (shouldSchedule) scheduledCount++;
+      for (final entry in prayers.entries) {
+        final prayerName = entry.key;
+        final prayerTimeStr = entry.value;
+
+        if (prayerTimeStr == '--:--') continue;
+
+        final shouldSchedule = await _scheduleSinglePrayer(
+          prayerName,
+          prayerTimeStr,
+          date,
+        );
+
+        if (shouldSchedule) totalScheduled++;
+      }
     }
 
-    debugPrint('🎉 تم جدولة $scheduledCount إشعار بنجاح!');
+    debugPrint('🎉 تم جدولة إجمالي $totalScheduled إشعار بنجاح لأيام متعددة!');
 
-    if (scheduledCount == 0 && !areAllPrayersFinished) {
+    // جدولة تحديث لليوم التالي (اختياري الآن مع الـ WorkManager، ولكن جيد كاحتياط)
+    if (totalScheduled == 0) {
       await _scheduleUpdateNotification(now);
     }
   }
@@ -61,46 +60,43 @@ class PrayerNotificationService {
   Future<bool> _scheduleSinglePrayer(
     String prayerName,
     String prayerTimeStr,
-    DateTime now,
-    bool areAllPrayersFinished,
+    DateTime date,
   ) async {
-    final prayerDateTime = _getPrayerDateTime(
-      prayerTimeStr,
-      now,
-      prayerName,
-      areAllPrayersFinished,
-    );
+    final now = DateTime.now();
+    final prayerDateTime = _getPrayerDateTime(prayerTimeStr, date);
 
-    if (prayerDateTime == null) return false;
-
-    if (prayerDateTime.isAfter(now) ||
-        (areAllPrayersFinished && prayerName == 'الفجر')) {
-      final notificationId = _getPrayerNotificationId(prayerName);
-
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: notificationId,
-          channelKey: 'prayer_reminder',
-          title: 'أذان $prayerName',
-          body: 'حان الأن موعد أذان $prayerName',
-          wakeUpScreen: true,
-        ),
-        schedule: NotificationCalendar(
-          year: prayerDateTime.year,
-          month: prayerDateTime.month,
-          day: prayerDateTime.day,
-          hour: prayerDateTime.hour,
-          minute: prayerDateTime.minute,
-          second: 0,
-        ),
-      );
-
-      debugPrint('✅ تم جدولة إشعار $prayerName (${prayerDateTime.toLocal()})');
-      return true;
+    if (prayerDateTime.isBefore(now)) {
+      // تخطي الصلوات التي مضى وقتها (لليوم الحالي فقط)
+      return false;
     }
 
-    debugPrint('⚠️ تم تخطي إشعار $prayerName');
-    return false;
+    final notificationId = _getPrayerNotificationId(date, prayerName);
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: notificationId,
+        channelKey: 'prayer_reminder',
+        title: 'أذان $prayerName',
+        body: 'حان الأن موعد أذان $prayerName',
+        wakeUpScreen: true,
+        category: NotificationCategory.Alarm, // مهم جداً للأذان
+        criticalAlert: true,
+      ),
+      schedule: NotificationCalendar(
+        year: prayerDateTime.year,
+        month: prayerDateTime.month,
+        day: prayerDateTime.day,
+        hour: prayerDateTime.hour,
+        minute: prayerDateTime.minute,
+        second: 0,
+        allowWhileIdle: true, // يعمل حتى لو الجوال في وضع الخمول
+      ),
+    );
+
+    debugPrint(
+      '✅ تم جدولة $prayerName في ${prayerDateTime.toString()} (ID: $notificationId)',
+    );
+    return true;
   }
 
   /// الحصول على خريطة الصلوات
@@ -112,8 +108,10 @@ class PrayerNotificationService {
     'العشاء': times.isha,
   };
 
-  /// الحصول على معرف الإشعار للصلاة
-  int _getPrayerNotificationId(String prayerName) {
+  /// توليد ID فريد بناءً على التاريخ واسم الصلاة
+  /// التنسيق: YYYYMMDD + Index (1-5)
+  /// مثال: 202401151 (الفجر يوم 15 يناير 2024)
+  int _getPrayerNotificationId(DateTime date, String prayerName) {
     final prayerIds = {
       'الفجر': 1,
       'الظهر': 2,
@@ -121,83 +119,50 @@ class PrayerNotificationService {
       'المغرب': 4,
       'العشاء': 5,
     };
-    return prayerIds[prayerName]!;
+
+    final dateStr =
+        "${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}";
+    final prayerIndex = prayerIds[prayerName]!;
+
+    // دمج التاريخ مع رقم الصلاة لإنشاء ID فريد
+    return int.parse('$dateStr$prayerIndex');
   }
 
-  /// الحصول على وقت الصلاة كـ DateTime
-  DateTime? _getPrayerDateTime(
-    String prayerTimeStr,
-    DateTime now,
-    String prayerName,
-    bool areAllPrayersFinished,
-  ) {
+  /// تحويل وقت الصلاة النصي إلى DateTime بناءً على تاريخ معين
+  DateTime _getPrayerDateTime(String prayerTimeStr, DateTime date) {
     final parts = prayerTimeStr.split(':');
     final hour = int.parse(parts[0]);
     final minute = int.parse(parts[1]);
 
-    // إذا انتهت جميع الصلوات، نجدول الفجر للغد
-    if (areAllPrayersFinished && prayerName == 'الفجر') {
-      return DateTime(now.year, now.month, now.day + 1, hour, minute);
-    }
-
-    final prayerDateTime = DateTime(now.year, now.month, now.day, hour, minute);
-
-    // إذا مضى وقت الصلاة ولا نجدول للغد، نتخطاها
-    if (prayerDateTime.isBefore(now) && !areAllPrayersFinished) {
-      return null;
-    }
-
-    return prayerDateTime;
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   /// جدولة إشعار التحديث
   Future<void> _scheduleUpdateNotification(DateTime now) async {
-    final updateTime = DateTime(now.year, now.month, now.day, 23, 59);
+    // يمكن الإبقاء عليه كاحتياطي لتذكير المستخدم بفتح التطبيق
+    final updateTime = DateTime(
+      now.year,
+      now.month,
+      now.day + 3,
+      9,
+    ); // بعد 3 أيام
 
-    if (updateTime.isAfter(now)) {
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 100,
-          channelKey: 'prayer_reminder',
-          title: 'تحديث مواعيد الصلاة',
-          body: 'سيتم تحديث مواعيد الصلاة لليوم الجديد تلقائياً',
-        ),
-        schedule: NotificationCalendar(
-          year: updateTime.year,
-          month: updateTime.month,
-          day: updateTime.day,
-          hour: updateTime.hour,
-          minute: updateTime.minute,
-          second: 0,
-        ),
-      );
-      debugPrint('🔔 تم جدولة إشعار التحديث');
-    }
-  }
-
-  /// التحقق إذا انتهت جميع صلوات اليوم
-  bool _areAllPrayersFinished(LocalPrayerTimes times, DateTime now) {
-    final timingsMap = times.toMap();
-
-    for (final prayer in prayerOrder) {
-      final prayerTime = timingsMap[prayer]!;
-      if (prayerTime == '--:--') continue;
-
-      final prayerDateTime = _parsePrayerTime(prayerTime, now);
-      if (prayerDateTime.isAfter(now)) return false;
-    }
-
-    return true;
-  }
-
-  DateTime _parsePrayerTime(String timeString, DateTime referenceDate) {
-    final parsed = _timeFormat.parse(timeString);
-    return DateTime(
-      referenceDate.year,
-      referenceDate.month,
-      referenceDate.day,
-      parsed.hour,
-      parsed.minute,
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 999999,
+        channelKey: 'prayer_reminder',
+        title: 'تحديث المواقيت',
+        body: 'يرجى فتح التطبيق لتحديث مواقيت الصلاة للأيام القادمة',
+      ),
+      schedule: NotificationCalendar(
+        year: updateTime.year,
+        month: updateTime.month,
+        day: updateTime.day,
+        hour: updateTime.hour,
+        minute: updateTime.minute,
+        second: 0,
+        allowWhileIdle: true,
+      ),
     );
   }
 
@@ -206,7 +171,7 @@ class PrayerNotificationService {
       await AwesomeNotifications().cancelSchedulesByChannelKey(
         'prayer_reminder',
       );
-      debugPrint('❌ تم إلغاء جميع إشعارات الصلاة');
+      debugPrint('❌ تم إلغاء جميع إشعارات الصلاة السابقة');
     } catch (e) {
       debugPrint('⚠️ حدث خطأ أثناء إلغاء الإشعارات: $e');
     }

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../../core/utils/extensions.dart';
 
 // مدير الكاش للصور مع حد أقصى للذاكرة
 class ImageCacheManager {
@@ -100,8 +101,8 @@ Future<ShareResult> createAndShareTafsirImage({
     final screenshotController = ScreenshotController();
 
     // Capture theme data to ensure generated images match app design
-    final titleLargeStyle = Theme.of(context).textTheme.titleLarge;
-    final titleMediumStyle = Theme.of(context).textTheme.titleMedium;
+    final titleLargeStyle = context.textTheme.titleLarge;
+    final titleMediumStyle = context.textTheme.titleMedium;
 
     final textDirection = isArabic ? TextDirection.rtl : TextDirection.ltr;
 

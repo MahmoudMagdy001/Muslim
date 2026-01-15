@@ -58,13 +58,29 @@ class PrayerTimesService {
     }
   }
 
-  /// حساب مواقيت الصلاة لليوم
+  /// الحصول على مواقيت الصلاة لتاريخ محدد
+  Future<LocalPrayerTimes> getPrayerTimesForDate(
+    Coordinates coordinates,
+    DateTime date, {
+    String? cityName,
+  }) async =>
+      _calculatePrayerTimes(coordinates, date: date, cityName: cityName);
+
+  /// حساب مواقيت الصلاة ليوم محدد (الافتراضي هو اليوم)
   Future<LocalPrayerTimes> _calculatePrayerTimes(
     Coordinates coordinates, {
+    DateTime? date,
     String? cityName,
   }) async {
     final calculationParams = _getCalculationParameters();
-    final prayerTimes = PrayerTimes.today(coordinates, calculationParams);
+    final targetDate = date ?? DateTime.now();
+
+    // استخدام PrayerTimes بالمنشئ العادي لتحديد التاريخ
+    final prayerTimes = PrayerTimes(
+      coordinates,
+      DateComponents.from(targetDate),
+      calculationParams,
+    );
 
     return LocalPrayerTimes(
       fajr: _formatTime(prayerTimes.fajr),
@@ -73,6 +89,7 @@ class PrayerTimesService {
       maghrib: _formatTime(prayerTimes.maghrib),
       isha: _formatTime(prayerTimes.isha),
       city: cityName ?? 'غير معروف',
+      date: targetDate, // سنحتاج هذا التاريخ لاحقاً لتوليد ID
     );
   }
 
@@ -103,6 +120,7 @@ class PrayerTimesService {
           maghrib: _formatTime(prayerTimes.maghrib),
           isha: _formatTime(prayerTimes.isha),
           city: cityName ?? 'غير معروف',
+          date: date,
         ),
       );
     }
@@ -122,7 +140,12 @@ class PrayerTimesService {
   Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
     final cairoCoordinates = Coordinates(30.0444, 31.2357);
     final calculationParams = _getCalculationParameters();
-    final prayerTimes = PrayerTimes.today(cairoCoordinates, calculationParams);
+    final now = DateTime.now();
+    final prayerTimes = PrayerTimes(
+      cairoCoordinates,
+      DateComponents.from(now),
+      calculationParams,
+    );
 
     final prefs = await SharedPreferences.getInstance();
     await _cacheCoordinates(
@@ -138,6 +161,7 @@ class PrayerTimesService {
       maghrib: _formatTime(prayerTimes.maghrib),
       isha: _formatTime(prayerTimes.isha),
       city: 'القاهرة',
+      date: now,
     );
   }
 
@@ -152,6 +176,7 @@ class PrayerTimesService {
     // 1. إذا كان مسموحاً بطلب الموقع (وليس في الخلفية) وكان الخيار مفعلاً
     if (allowRequest && await settingsService.getAutoLocationEnabled()) {
       try {
+        if (context != null && !context.mounted) return null;
         final position = await _getCurrentPosition(context);
 
         await _cacheCoordinates(prefs, position.latitude, position.longitude);

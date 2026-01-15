@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../view_model/hadith/hadith_cubit.dart';
+import '../../../../../../core/utils/extensions.dart';
 
 class HadithCardHeader extends StatelessWidget {
   const HadithCardHeader({
@@ -26,8 +27,8 @@ class HadithCardHeader extends StatelessWidget {
         Expanded(
           child: Text(
             heading,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).primaryColor,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.theme.primaryColor,
               fontWeight: FontWeight.bold,
             ),
           ),

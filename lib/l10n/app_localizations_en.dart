@@ -181,6 +181,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyBookmarks => 'No bookmarks yet';
 
   @override
+  String get savedHadithsEmpty => 'No saved hadiths yet';
+
+  @override
   String get emptyTafsir => 'No tafsir available right now';
 
   @override
@@ -229,6 +232,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hadithBooks => 'Hadith Books';
+
+  @override
+  String get hadithSources => 'Hadith Sources';
 
   @override
   String get hadithBooksEmpty => 'No books available';
@@ -534,4 +540,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quranReminderBody => 'Don\'t forget your daily Quran reading 🌿';
+
+  @override
+  String get allServices => 'All Services';
+
+  @override
+  String get addCustomTasbih => 'Add Custom Tasbih';
+
+  @override
+  String get editTasbih => 'Edit Tasbih';
+
+  @override
+  String get deleteTasbih => 'Delete Tasbih';
+
+  @override
+  String get deleteTasbihConfirm =>
+      'Are you sure you want to delete this Tasbih?';
+
+  @override
+  String get tasbihTextAr => 'Tasbih Text in Arabic';
+
+  @override
+  String get tasbihTextEn => 'Tasbih Text in English';
+
+  @override
+  String get tasbihGoal => 'Goal';
+
+  @override
+  String get tasbihTextArHint => 'Example: Astaghfirullah';
+
+  @override
+  String get tasbihTextEnHint => 'Example: I seek forgiveness from Allah';
+
+  @override
+  String get tasbihGoalHint => 'Example: 100';
+
+  @override
+  String get fieldRequired => 'This field is required';
+
+  @override
+  String get goalMustBePositive => 'Goal must be greater than zero';
 }

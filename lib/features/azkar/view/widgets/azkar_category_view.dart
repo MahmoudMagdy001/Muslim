@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../core/utils/extensions.dart';
+import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../model/azkar_model/azkar_model.dart';
 import 'azkar_list_view.dart';
@@ -19,6 +23,15 @@ class AzkarCategoriesView extends StatefulWidget {
 class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
   Future<Map<String, List<AzkarModel>>>? _groupedAzkarFuture;
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+  Map<String, List<AzkarModel>> _filteredGroupedAzkar = {};
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
@@ -48,13 +61,14 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
       grouped.putIfAbsent(category, () => []);
       grouped[category]!.add(zekr);
     }
+    _filteredGroupedAzkar = grouped;
     return grouped;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final localization = AppLocalizations.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       appBar: AppBar(title: Text(localization.azkarCategoryList)),
@@ -73,27 +87,32 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text(localization.azkarError));
             } else {
-              final groupedAzkar = snapshot.data!;
               return Scrollbar(
                 controller: _scrollController,
-                child: ListView.builder(
+                child: CustomScrollView(
                   controller: _scrollController,
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 8,
-                    end: 16,
-                    top: 5,
-                  ),
-                  itemCount: groupedAzkar.keys.length,
-                  itemBuilder: (context, index) {
-                    final category = groupedAzkar.keys.elementAt(index);
-                    final azkarList = groupedAzkar[category]!;
-                    return _AzkarCategoryListItem(
-                      category: category,
-                      azkarList: azkarList,
-                      theme: theme,
-                      localization: localization,
-                    );
-                  },
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: 8.toW,
+                        end: 16.toW,
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final category = _filteredGroupedAzkar.keys.elementAt(
+                            index,
+                          );
+                          final azkarList = _filteredGroupedAzkar[category]!;
+                          return _AzkarCategoryListItem(
+                            index: index + 1,
+                            category: category,
+                            azkarList: azkarList,
+                            isArabic: isArabic,
+                          );
+                        }, childCount: _filteredGroupedAzkar.keys.length),
+                      ),
+                    ),
+                  ],
                 ),
               );
             }
@@ -106,25 +125,32 @@ class _AzkarCategoriesViewState extends State<AzkarCategoriesView> {
 
 class _AzkarCategoryListItem extends StatelessWidget {
   const _AzkarCategoryListItem({
+    required this.index,
     required this.category,
     required this.azkarList,
-    required this.theme,
-    required this.localization,
+    required this.isArabic,
   });
 
+  final int index;
   final String category;
   final List<AzkarModel> azkarList;
-  final ThemeData theme;
-  final AppLocalizations localization;
+  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = theme.colorScheme;
-    final count = azkarList.length;
+    final localization = AppLocalizations.of(context);
 
-    return Card(
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.toH),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: AppColors.cardGradient(context),
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15.toR),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
         onTap: () {
           navigateWithTransition(
             type: TransitionType.fade,
@@ -132,45 +158,60 @@ class _AzkarCategoryListItem extends StatelessWidget {
             AzkarListView(category: category, azkarList: azkarList),
           );
         },
-        child: Container(
-          padding: const EdgeInsets.all(20),
+        borderRadius: BorderRadius.circular(15.toR),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
           child: Row(
             children: [
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.book, color: colorScheme.primary, size: 24),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/quran/marker.png',
+                    width: 40.toW,
+                    height: 40.toH,
+                  ),
+                  Text(
+                    isArabic
+                        ? convertToArabicNumbers(index.toString())
+                        : index.toString(),
+                    style: context.textTheme.labelSmall?.copyWith(
+                      color: context.theme.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.toW),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       category,
-                      style: theme.textTheme.titleMedium?.copyWith(
+                      style: context.textTheme.bodyLarge?.copyWith(
+                        color: context.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.toH),
                     Text(
-                      '$count ${localization.azkar}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                      '${isArabic ? convertToArabicNumbers(azkarList.length.toString()) : azkarList.length} ${localization.azkar}',
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onPrimary.withAlpha(180),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
               Icon(
                 Icons.arrow_forward_ios,
-                size: 16,
-                color: colorScheme.onSurfaceVariant,
+                color: context.colorScheme.onPrimary,
+                size: 16.toR,
               ),
             ],
           ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/extensions.dart';
 
 class VerseOptionsMenu {
   static Future<String?> show(
@@ -28,7 +29,7 @@ class VerseOptionsMenu {
             children: [
               Icon(
                 Icons.play_arrow_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.theme.colorScheme.primary,
               ),
               const SizedBox(width: 12),
               Text(localizations.playVerseSound),
@@ -41,7 +42,7 @@ class VerseOptionsMenu {
             children: [
               Icon(
                 Icons.bookmark_border_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.theme.colorScheme.primary,
               ),
               const SizedBox(width: 12),
               Text(localizations.bookmarkVerse),

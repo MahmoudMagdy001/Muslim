@@ -270,6 +270,11 @@
     "description": "نص يظهر عند عدم وجود علامات مرجعية محفوظة",
     "type": "text"
   },
+  "savedHadithsEmpty": "لا توجد أحاديث محفوظة بعد",
+  "@savedHadithsEmpty": {
+    "description": "نص يظهر عند عدم وجود أحاديث محفوظة",
+    "type": "text"
+  },
   "emptyTafsir": "لا يوجد تفسير متاح حاليًا",
   "@emptyTafsir": {
     "description": "رسالة عند عدم توفر تفسير",
@@ -336,6 +341,7 @@
     "type": "text"
   },
   "hadithBooks": "كتب الحديث",
+  "hadithSources": "مصادر الأحاديث",
   "@hadithBooks": {
     "description": "عنوان شاشة قائمة كتب الحديث",
     "type": "text"
@@ -784,5 +790,66 @@
   "quranRemindersEnabled": "تم تفعيل إشعارات تذكير القرآن",
   "quranRemindersDisabled": "تم تعطيل إشعارات تذكير القرآن",
   "quranReminderTitle": "📖 تذكير بقراءة القرآن",
-  "quranReminderBody": "لا تنس وردك من القرآن الكريم 🌿"
+  "quranReminderBody": "لا تنس وردك من القرآن الكريم 🌿",
+  "allServices": "كل الخدمات",
+  "addCustomTasbih": "إضافة تسبيح خاص",
+  "@addCustomTasbih": {
+    "description": "زر لإضافة تسبيح مخصص جديد",
+    "type": "text"
+  },
+  "editTasbih": "تعديل التسبيح",
+  "@editTasbih": {
+    "description": "عنوان حوار تعديل التسبيح",
+    "type": "text"
+  },
+  "deleteTasbih": "حذف التسبيح",
+  "@deleteTasbih": {
+    "description": "زر حذف التسبيح",
+    "type": "text"
+  },
+  "deleteTasbihConfirm": "هل أنت متأكد من حذف هذا التسبيح؟",
+  "@deleteTasbihConfirm": {
+    "description": "رسالة تأكيد حذف التسبيح",
+    "type": "text"
+  },
+  "tasbihTextAr": "نص التسبيح بالعربية",
+  "@tasbihTextAr": {
+    "description": "عنوان حقل النص العربي للتسبيح",
+    "type": "text"
+  },
+  "tasbihTextEn": "نص التسبيح بالإنجليزية",
+  "@tasbihTextEn": {
+    "description": "عنوان حقل النص الإنجليزي للتسبيح",
+    "type": "text"
+  },
+  "tasbihGoal": "الهدف",
+  "@tasbihGoal": {
+    "description": "عنوان حقل هدف التسبيح",
+    "type": "text"
+  },
+  "tasbihTextArHint": "مثال: أستغفر الله",
+  "@tasbihTextArHint": {
+    "description": "نص توضيحي لحقل النص العربي",
+    "type": "text"
+  },
+  "tasbihTextEnHint": "Example: Astaghfirullah",
+  "@tasbihTextEnHint": {
+    "description": "نص توضيحي لحقل النص الإنجليزي",
+    "type": "text"
+  },
+  "tasbihGoalHint": "مثال: 100",
+  "@tasbihGoalHint": {
+    "description": "نص توضيحي لحقل الهدف",
+    "type": "text"
+  },
+  "fieldRequired": "هذا الحقل مطلوب",
+  "@fieldRequired": {
+    "description": "رسالة خطأ للحقول المطلوبة",
+    "type": "text"
+  },
+  "goalMustBePositive": "الهدف يجب أن يكون أكبر من صفر",
+  "@goalMustBePositive": {
+    "description": "رسالة خطأ عندما يكون الهدف صفر أو سالب",
+    "type": "text"
+  }
 }

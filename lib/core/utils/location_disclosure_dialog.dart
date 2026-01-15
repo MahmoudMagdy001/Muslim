@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'extensions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationDisclosureDialog extends StatelessWidget {
@@ -20,7 +21,7 @@ class LocationDisclosureDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
 
     return AlertDialog(
       title: Row(

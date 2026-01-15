@@ -37,7 +37,6 @@ class HadithsBody extends StatelessWidget {
       if (state is HadithInitial || state is HadithLoading) {
         return const CustomLoadingIndicator(text: 'جاري تحميل الأحاديث');
       } else if (state is HadithLoaded) {
-        onScrollToHadith(cubit);
         return HadithsList(
           itemScrollController: itemScrollController,
           itemPositionsListener: itemPositionsListener,

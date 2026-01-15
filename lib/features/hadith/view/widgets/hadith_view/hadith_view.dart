@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../../../core/utils/extensions.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../view_model/hadith/hadith_cubit.dart';
 import '../../../view_model/hadith/hadith_state.dart';
@@ -35,10 +36,34 @@ class _HadithViewState extends State<HadithView> {
   final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
   bool _initialScrollAttempted = false;
+  final ValueNotifier<bool> showScrollToTopNotifier = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _itemPositionsListener.itemPositions.addListener(_scrollListener);
+  }
 
   @override
   void dispose() {
+    _itemPositionsListener.itemPositions.removeListener(_scrollListener);
+    showScrollToTopNotifier.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    final positions = _itemPositionsListener.itemPositions.value;
+    if (positions.isEmpty) return;
+
+    final firstItem = positions.reduce(
+      (value, element) => value.index < element.index ? value : element,
+    );
+
+    final shouldShow = firstItem.index > 0 || firstItem.itemLeadingEdge < -0.1;
+
+    if (shouldShow != showScrollToTopNotifier.value) {
+      showScrollToTopNotifier.value = shouldShow;
+    }
   }
 
   void _showSnackBar(String message) {
@@ -55,14 +80,16 @@ class _HadithViewState extends State<HadithView> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: context.colorScheme.error,
       ),
     );
   }
 
-  void _handleStateChanges(HadithState state) {
+  void _handleStateChanges(HadithState state, HadithCubit cubit) {
     if (state is HadithError) {
       _showErrorSnackBar(state.message);
+    } else if (state is HadithLoaded) {
+      _scrollToInitialHadith(cubit);
     }
   }
 
@@ -101,7 +128,8 @@ class _HadithViewState extends State<HadithView> {
     final isArabic = locale == 'ar';
 
     return BlocListener<HadithCubit, HadithState>(
-      listener: (context, state) => _handleStateChanges(state),
+      listener: (context, state) =>
+          _handleStateChanges(state, context.read<HadithCubit>()),
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -125,6 +153,23 @@ class _HadithViewState extends State<HadithView> {
               onShowSnackBar: _showSnackBar,
             ),
           ),
+        ),
+        floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: showScrollToTopNotifier,
+          builder: (context, showScrollToTop, child) => showScrollToTop
+              ? FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    _itemScrollController.scrollTo(
+                      index: 0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  backgroundColor: context.theme.primaryColor,
+                  child: const Icon(Icons.arrow_upward, color: Colors.white),
+                )
+              : const SizedBox.shrink(),
         ),
       ),
     );

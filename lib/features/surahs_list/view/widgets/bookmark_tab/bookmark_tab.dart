@@ -5,11 +5,13 @@ import 'package:quran/quran.dart' as quran;
 import '../../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/navigation_helper.dart';
+import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../quran/view/quran_view.dart';
 import '../../../../quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import '../../../../quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
 import 'bookmark_card.dart';
+import 'empty_bookmarks_state.dart';
 
 class BookmarksTab extends StatelessWidget {
   const BookmarksTab({
@@ -53,7 +55,7 @@ class BookmarksTab extends StatelessWidget {
         }
 
         if (state.bookmarks.isEmpty) {
-          return Center(child: Text(localizations.emptyBookmarks));
+          return EmptyBookmarksState(message: localizations.emptyBookmarks);
         }
 
         return Scrollbar(
@@ -62,44 +64,88 @@ class BookmarksTab extends StatelessWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final bookmark = state.bookmarks[index];
-                  return BookmarkCard(
-                    bookmark: bookmark,
-                    isArabic: isArabic,
-                    localizations: localizations,
-                    reciter: reciter,
-                    onOpen: () => _openBookmark(
+                  return Dismissible(
+                    key: Key(
+                      'bookmark_${bookmark.surahNumber}_${bookmark.ayahNumber}',
+                    ),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: AlignmentDirectional.centerEnd,
+                      padding: EdgeInsets.symmetric(horizontal: 20.toW),
+                      margin: EdgeInsets.symmetric(
+                        vertical: 6.toH,
+                        horizontal: 8.toW,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade400,
+                        borderRadius: BorderRadius.circular(15.toR),
+                      ),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    confirmDismiss: (direction) => _showDeleteDialog(
                       context,
                       bookmark.surahNumber,
                       bookmark.ayahNumber,
+                      localizations,
+                      isArabic,
                     ),
-                    onDelete: () async {
-                      final confirmed = await _showDeleteDialog(
+                    onDismissed: (direction) async {
+                      await cubit.removeBookmark(
+                        surah: bookmark.surahNumber,
+                        ayah: bookmark.ayahNumber,
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${localizations.deleteBookmarkSuccess} '
+                              '${isArabic ? quran.getSurahNameArabic(bookmark.surahNumber) : quran.getSurahName(bookmark.surahNumber)} '
+                              '${isArabic ? 'آية' : 'Verse'} ${bookmark.ayahNumber}',
+                            ),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                    child: BookmarkCard(
+                      bookmark: bookmark,
+                      isArabic: isArabic,
+                      localizations: localizations,
+                      reciter: reciter,
+                      onOpen: () => _openBookmark(
                         context,
                         bookmark.surahNumber,
                         bookmark.ayahNumber,
-                        localizations,
-                        isArabic,
-                      );
-
-                      if (confirmed == true) {
-                        await cubit.removeBookmark(
-                          surah: bookmark.surahNumber,
-                          ayah: bookmark.ayahNumber,
+                      ),
+                      onDelete: () async {
+                        final confirmed = await _showDeleteDialog(
+                          context,
+                          bookmark.surahNumber,
+                          bookmark.ayahNumber,
+                          localizations,
+                          isArabic,
                         );
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '${localizations.deleteBookmarkSuccess} '
-                                '${isArabic ? quran.getSurahNameArabic(bookmark.surahNumber) : quran.getSurahName(bookmark.surahNumber)} '
-                                '${isArabic ? 'آية' : 'Verse'} ${bookmark.ayahNumber}',
-                              ),
-                              duration: const Duration(seconds: 2),
-                            ),
+
+                        if (confirmed == true) {
+                          await cubit.removeBookmark(
+                            surah: bookmark.surahNumber,
+                            ayah: bookmark.ayahNumber,
                           );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${localizations.deleteBookmarkSuccess} '
+                                  '${isArabic ? quran.getSurahNameArabic(bookmark.surahNumber) : quran.getSurahName(bookmark.surahNumber)} '
+                                  '${isArabic ? 'آية' : 'Verse'} ${bookmark.ayahNumber}',
+                                ),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   );
                 }, childCount: state.bookmarks.length),
               ),

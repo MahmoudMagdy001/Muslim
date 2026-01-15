@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/extensions.dart';
+
 class HadithText extends StatelessWidget {
   const HadithText({required this.text, required this.isArabic, super.key});
 
@@ -9,9 +11,9 @@ class HadithText extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     text,
-    style: Theme.of(
-      context,
-    ).textTheme.titleMedium?.copyWith(height: isArabic ? 2.1 : 1.6),
-    textAlign: isArabic ? TextAlign.right : TextAlign.left,
+    style: context.textTheme.titleMedium?.copyWith(
+      height: isArabic ? 1.8 : 1.6,
+    ),
+    textAlign: TextAlign.center,
   );
 }

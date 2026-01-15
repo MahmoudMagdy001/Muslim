@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../consts/reciters_name_arabic.dart';
 
 class ReciterDialog extends StatefulWidget {
@@ -21,17 +22,23 @@ class ReciterDialog extends StatefulWidget {
 }
 
 class _ReciterDialogState extends State<ReciterDialog> {
-  late String _selectedReciterId;
+  late final ValueNotifier<String> selectedReciterNotifier;
 
   @override
   void initState() {
     super.initState();
-    _selectedReciterId = widget.selectedReciterId;
+    selectedReciterNotifier = ValueNotifier(widget.selectedReciterId);
+  }
+
+  @override
+  void dispose() {
+    selectedReciterNotifier.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -41,18 +48,21 @@ class _ReciterDialogState extends State<ReciterDialog> {
           style: theme.textTheme.titleMedium,
         ),
         Flexible(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: recitersNames.length,
-            itemBuilder: (context, index) => _ReciterRadioItem(
-              reciter: recitersNames[index],
-              selectedReciterId: _selectedReciterId,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _selectedReciterId = value);
-                }
-              },
-              isArabic: widget.isArabic,
+          child: ValueListenableBuilder<String>(
+            valueListenable: selectedReciterNotifier,
+            builder: (context, selectedReciterId, child) => ListView.builder(
+              shrinkWrap: true,
+              itemCount: recitersNames.length,
+              itemBuilder: (context, index) => _ReciterRadioItem(
+                reciter: recitersNames[index],
+                selectedReciterId: selectedReciterId,
+                onChanged: (value) {
+                  if (value != null) {
+                    selectedReciterNotifier.value = value;
+                  }
+                },
+                isArabic: widget.isArabic,
+              ),
             ),
           ),
         ),
@@ -73,7 +83,8 @@ class _ReciterDialogState extends State<ReciterDialog> {
               ),
               const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context, _selectedReciterId),
+                onPressed: () =>
+                    Navigator.pop(context, selectedReciterNotifier.value),
                 child: Text(widget.localizations.save),
               ),
             ],
@@ -99,7 +110,7 @@ class _ReciterRadioItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     final isSelected = reciter.id == selectedReciterId;
 
     return RadioListTile<String>(

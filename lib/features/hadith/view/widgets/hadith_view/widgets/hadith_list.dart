@@ -40,7 +40,7 @@ class HadithsList extends StatelessWidget {
         padding: const EdgeInsetsDirectional.only(
           start: 5,
           end: 5,
-          top: 8,
+          top: 16,
           bottom: 8,
         ).resolve(Directionality.of(context)),
         itemCount: hadiths.length,

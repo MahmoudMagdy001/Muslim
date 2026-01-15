@@ -179,6 +179,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emptyBookmarks => 'لا توجد علامات بعد';
 
   @override
+  String get savedHadithsEmpty => 'لا توجد أحاديث محفوظة بعد';
+
+  @override
   String get emptyTafsir => 'لا يوجد تفسير متاح حاليًا';
 
   @override
@@ -225,6 +228,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hadithBooks => 'كتب الحديث';
+
+  @override
+  String get hadithSources => 'مصادر الأحاديث';
 
   @override
   String get hadithBooksEmpty => 'لا توجد كتب متاحة';
@@ -527,4 +533,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quranReminderBody => 'لا تنس وردك من القرآن الكريم 🌿';
+
+  @override
+  String get allServices => 'كل الخدمات';
+
+  @override
+  String get addCustomTasbih => 'إضافة تسبيح خاص';
+
+  @override
+  String get editTasbih => 'تعديل التسبيح';
+
+  @override
+  String get deleteTasbih => 'حذف التسبيح';
+
+  @override
+  String get deleteTasbihConfirm => 'هل أنت متأكد من حذف هذا التسبيح؟';
+
+  @override
+  String get tasbihTextAr => 'نص التسبيح بالعربية';
+
+  @override
+  String get tasbihTextEn => 'نص التسبيح بالإنجليزية';
+
+  @override
+  String get tasbihGoal => 'الهدف';
+
+  @override
+  String get tasbihTextArHint => 'مثال: أستغفر الله';
+
+  @override
+  String get tasbihTextEnHint => 'Example: Astaghfirullah';
+
+  @override
+  String get tasbihGoalHint => 'مثال: 100';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get goalMustBePositive => 'الهدف يجب أن يكون أكبر من صفر';
 }

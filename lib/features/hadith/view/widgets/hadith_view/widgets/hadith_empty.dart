@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/extensions.dart';
 import '../../../../../../l10n/app_localizations.dart';
 
 class EmptyHadithsState extends StatelessWidget {
@@ -15,12 +16,12 @@ class EmptyHadithsState extends StatelessWidget {
         Icon(
           Icons.bookmark_border,
           size: 64,
-          color: Theme.of(context).colorScheme.onSurface,
+          color: context.colorScheme.onSurface,
         ),
         const SizedBox(height: 16),
         Text(
           localizations.errorMain,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: context.textTheme.titleMedium,
         ),
       ],
     ),
