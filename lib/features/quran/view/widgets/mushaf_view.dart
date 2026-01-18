@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import '../../../../core/utils/extensions.dart';
+import '../../../../core/widgets/base_app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -204,11 +205,7 @@ class _MushafViewState extends State<MushafView> {
     if (selectedTafsir == null) return;
 
     if (mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => const Center(child: CircularProgressIndicator()),
-      );
+      BaseAppDialog.showLoading(context);
     }
     final tafsirText = await _tafsirRepository.fetchTafsirById(
       selectedTafsir['id'],
@@ -311,12 +308,20 @@ class _MushafViewState extends State<MushafView> {
           final pageData = quran.getPageData(pageNumber);
 
           return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 20.toH),
+            padding: EdgeInsetsDirectional.only(
+              start: 8.toW,
+              end: 8.toW,
+              top: 16.toH,
+              bottom: 8.toH,
+            ),
+
             child: Column(
               children: [
                 Text(
-                  '${widget.isArabic ? 'صفحة' : 'Page'} $pageNumber',
-                  style: context.textTheme.labelSmall,
+                  '${widget.isArabic ? 'صفحة' : 'Page'} ${convertToArabicNumbers(pageNumber.toString())}',
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: context.theme.colorScheme.onSurface,
+                  ),
                 ),
                 const Divider(),
                 RichText(

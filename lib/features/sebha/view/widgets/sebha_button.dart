@@ -79,7 +79,7 @@ class _SebhaButtonState extends State<SebhaButton>
             Text(
               convertToArabicNumbers(widget.counter.toString()),
               style: context.textTheme.headlineMedium?.copyWith(
-                color: Colors.white,
+                color: context.colorScheme.onPrimary,
               ),
             ),
             if (widget.goal != null) ...[
@@ -87,7 +87,7 @@ class _SebhaButtonState extends State<SebhaButton>
               Text(
                 '${widget.localizations.goal}: ${convertToArabicNumbers(widget.goal.toString())}',
                 style: context.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                  color: context.colorScheme.onPrimary,
                 ),
               ),
             ],

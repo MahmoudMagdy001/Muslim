@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../../../../core/utils/extensions.dart';
-
+import '../../../../core/widgets/base_app_dialog.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -239,11 +239,7 @@ class _SurahTextViewState extends State<SurahTextView> {
     if (selectedTafsir == null) return;
 
     if (mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => const Center(child: CircularProgressIndicator()),
-      );
+      BaseAppDialog.showLoading(context);
     }
     final tafsirText = await _tafsirRepository.fetchTafsirById(
       selectedTafsir['id'],

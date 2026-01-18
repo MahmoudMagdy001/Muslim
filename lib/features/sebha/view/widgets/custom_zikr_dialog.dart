@@ -1,7 +1,6 @@
+import '../../../../core/widgets/base_app_dialog.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/utils/extensions.dart';
 import '../../model/zikr_model.dart';
 
 class CustomZikrDialog extends StatefulWidget {
@@ -71,63 +70,48 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
   Widget build(BuildContext context) {
     final isEditing = widget.zikr != null;
 
-    return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isEditing
-                    ? widget.localizations.editTasbih
-                    : widget.localizations.addCustomTasbih,
-                style: context.textTheme.titleLarge,
+    return BaseAppDialog(
+      title: isEditing
+          ? widget.localizations.editTasbih
+          : widget.localizations.addCustomTasbih,
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _textArController,
+              decoration: InputDecoration(
+                labelText: widget.localizations.tasbihTextAr,
+                hintText: widget.localizations.tasbihTextArHint,
+                border: const OutlineInputBorder(),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _textArController,
-                decoration: InputDecoration(
-                  labelText: widget.localizations.tasbihTextAr,
-                  hintText: widget.localizations.tasbihTextArHint,
-                  border: const OutlineInputBorder(),
-                ),
-                validator: _validateRequired,
-                textDirection: TextDirection.rtl,
+              validator: _validateRequired,
+              textDirection: TextDirection.rtl,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _goalController,
+              decoration: InputDecoration(
+                labelText: widget.localizations.tasbihGoal,
+                hintText: widget.localizations.tasbihGoalHint,
+                border: const OutlineInputBorder(),
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _goalController,
-                decoration: InputDecoration(
-                  labelText: widget.localizations.tasbihGoal,
-                  hintText: widget.localizations.tasbihGoalHint,
-                  border: const OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: _validateGoal,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(widget.localizations.cancelButton),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _save,
-                    child: Text(widget.localizations.save),
-                  ),
-                ],
-              ),
-            ],
-          ),
+              keyboardType: TextInputType.number,
+              validator: _validateGoal,
+            ),
+          ],
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(widget.localizations.cancelButton),
+        ),
+        FilledButton(onPressed: _save, child: Text(widget.localizations.save)),
+      ],
     );
   }
 }

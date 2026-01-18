@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../../core/widgets/base_app_dialog.dart';
 import '../../../../core/utils/extensions.dart';
 
 // مدير الكاش للصور مع حد أقصى للذاكرة
@@ -73,27 +74,9 @@ Future<ShareResult> createAndShareTafsirImage({
 
   // إظهار مؤشر التحميل
   if (context.mounted) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PopScope(
-        canPop: false,
-        child: AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(width: 20),
-              Flexible(
-                child: Text(
-                  isArabic ? 'جاري إنشاء الصور...' : 'Creating images...',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    BaseAppDialog.showLoading(
+      context,
+      message: isArabic ? 'جاري إنشاء الصور...' : 'Creating images...',
     );
   }
 
@@ -218,21 +201,16 @@ Future<ShareResult> createAndShareTafsirImage({
 
     // إظهار رسالة خطأ
     if (context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            isArabic ? '⚠️ خطأ' : '⚠️ Error',
-            style: const TextStyle(color: Colors.red),
+      BaseAppDialog.show(
+        context,
+        title: isArabic ? '⚠️ خطأ' : '⚠️ Error',
+        contentText: error.toString().replaceAll('Exception: ', ''),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(isArabic ? 'موافق' : 'OK'),
           ),
-          content: Text(error.toString().replaceAll('Exception: ', '')),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(isArabic ? 'موافق' : 'OK'),
-            ),
-          ],
-        ),
+        ],
       );
     }
 

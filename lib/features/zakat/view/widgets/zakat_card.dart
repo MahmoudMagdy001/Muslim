@@ -128,14 +128,6 @@ class _ZakatCardState extends State<ZakatCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.localizations.enter_amount,
-                    style: textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.toH),
                   ValueListenableBuilder<bool>(
                     valueListenable: hasErrorNotifier,
                     builder: (context, hasError, child) => TextField(
@@ -182,14 +174,14 @@ class _ZakatCardState extends State<ZakatCard> {
                   SizedBox(height: 24.toH),
                   SizedBox(
                     width: double.infinity,
-                    height: 56.toH,
+                    height: 48.toH,
                     child: ElevatedButton(
                       onPressed: _compute,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.secondary,
                         foregroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.toR),
+                          borderRadius: BorderRadius.circular(22.toR),
                         ),
                         elevation: 0,
                       ),

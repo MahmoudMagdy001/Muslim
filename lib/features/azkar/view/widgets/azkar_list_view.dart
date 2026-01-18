@@ -131,7 +131,7 @@ class _AzkarListViewState extends State<AzkarListView> {
                     borderRadius: BorderRadius.circular(20.toR),
                     border: Border.all(
                       color: isFinished && hasCount
-                          ? theme.primaryColor
+                          ? theme.colorScheme.secondary
                           : Colors.transparent,
                       width: 2.0,
                     ),
@@ -174,10 +174,9 @@ class _AzkarListViewState extends State<AzkarListView> {
                                 child: Text(
                                   '${localization.revision}: ${item.reference}',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurface
-                                        .withAlpha(
-                                          150,
-                                        ), // gray 666666 equivalent
+                                    color: theme.colorScheme.primary.withAlpha(
+                                      150,
+                                    ), // gray 666666 equivalent
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.start,

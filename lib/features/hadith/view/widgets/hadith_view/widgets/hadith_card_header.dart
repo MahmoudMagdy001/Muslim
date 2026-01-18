@@ -28,7 +28,7 @@ class HadithCardHeader extends StatelessWidget {
           child: Text(
             heading,
             style: context.textTheme.titleMedium?.copyWith(
-              color: context.theme.primaryColor,
+              color: Colors.grey.shade500,
               fontWeight: FontWeight.bold,
             ),
           ),

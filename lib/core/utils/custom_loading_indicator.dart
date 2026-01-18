@@ -11,14 +11,16 @@ class CustomLoadingIndicator extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
+          valueColor: AlwaysStoppedAnimation<Color>(
+            context.theme.colorScheme.onSurface,
+          ),
           strokeWidth: 3,
         ),
         const SizedBox(height: 20),
         Text(
           text,
           style: context.textTheme.titleMedium?.copyWith(
-            color: context.theme.primaryColor,
+            color: context.theme.colorScheme.onSurface,
           ),
         ),
       ],

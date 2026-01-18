@@ -141,7 +141,6 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
           borderSide: BorderSide(color: theme.primaryColor, width: 2),
         ),
         filled: true,
-        fillColor: Colors.white,
       ),
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
     ),
@@ -185,7 +184,7 @@ class _ChapterOfBookState extends State<ChapterOfBook> {
     child: ListView.builder(
       controller: _scrollController,
       itemCount: _controller.filteredChapters.length,
-      padding: EdgeInsets.symmetric(horizontal: 12.toW, vertical: 8.toH),
+      padding: const EdgeInsetsDirectional.only(start: 6, end: 20, bottom: 10),
       itemBuilder: (context, index) {
         final chapter = _controller.filteredChapters[index];
         return _buildChapterItem(chapter, theme, isArabic);

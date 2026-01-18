@@ -6,6 +6,8 @@ import '../../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
+import '../../../../../core/widgets/base_app_dialog.dart';
+import '../../../../../core/utils/extensions.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../quran/view/quran_view.dart';
 import '../../../../quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
@@ -163,41 +165,30 @@ class BookmarksTab extends StatelessWidget {
     AppLocalizations localizations,
     bool isArabic,
   ) {
-    final theme = Theme.of(context);
     final surahName = isArabic
         ? quran.getSurahNameArabic(surahNumber)
         : quran.getSurahName(surahNumber);
 
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          localizations.deleteBookmark,
-          style: theme.textTheme.titleMedium,
-        ),
-        content: Text(
+    return BaseAppDialog.show<bool>(
+      context,
+      title: localizations.deleteBookmark,
+      contentText:
           '${localizations.deleteBookmarkQuestion} $surahName '
           '${isArabic ? 'الآية رقم' : 'Verse Number'} '
           '${isArabic ? convertToArabicNumbers(ayahNumber.toString()) : ayahNumber}?',
-          style: theme.textTheme.bodyMedium,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(localizations.cancelButton),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              localizations.cancelButton,
-              style: theme.textTheme.bodyMedium,
-            ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(
+            localizations.deleteButton,
+            style: TextStyle(color: context.colorScheme.error),
           ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              localizations.deleteButton,
-              style: theme.textTheme.bodyMedium!.copyWith(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

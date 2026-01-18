@@ -193,7 +193,6 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                         ),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
                     ),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   ),

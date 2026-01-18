@@ -180,6 +180,7 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
                     appBar: _buildAppBar(textTheme, theme, localizations),
                     body: TabBarView(
                       controller: _tabController,
+
                       children: [
                         MoneyZakatTab(
                           nisabMoney: nisabMoney,
@@ -224,7 +225,6 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
       controller: _tabController,
       labelColor: context.theme.colorScheme.secondary,
       unselectedLabelColor: Colors.white,
-      dividerColor: Colors.transparent,
       tabs: [
         Tab(text: localizations.money),
         Tab(text: localizations.gold),
