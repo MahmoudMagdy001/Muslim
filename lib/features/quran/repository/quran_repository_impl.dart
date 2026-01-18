@@ -22,6 +22,15 @@ class QuranRepositoryImpl implements QuranRepository {
       _quranService.audioPlayer.currentIndexStream;
 
   @override
+  int? get currentIndex => _quranService.audioPlayer.currentIndex;
+
+  @override
+  bool get isPlaying => _quranService.audioPlayer.playing;
+
+  @override
+  int? get currentSurah => _quranService.currentSurah;
+
+  @override
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,

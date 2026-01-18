@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/main/main_content/app_content.dart';
 import 'core/main/main_content/app_initializer.dart';
+import 'core/di/service_locator.dart';
 import 'features/prayer_times/viewmodel/prayer_times_cubit.dart';
 import 'features/quran/service/bookmarks_service.dart';
 import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
@@ -17,6 +18,7 @@ import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   await InternetStateManagerInitializer.initialize();
 
   await SystemChrome.setEnabledSystemUIMode(
@@ -40,7 +42,9 @@ Future<void> main() async {
           BlocProvider(create: (_) => FontSizeCubit(initialFontSize)),
           BlocProvider(create: (_) => ThemeCubit(initialMode)),
           BlocProvider(create: (_) => ReciterCubit()),
-          BlocProvider(create: (_) => BookmarksCubit(BookmarksService())),
+          BlocProvider(
+            create: (_) => BookmarksCubit(getIt<BookmarksService>()),
+          ),
           BlocProvider(create: (_) => LanguageCubit(initialLocale)),
         ],
         child: InternetStateManagerInitializer(

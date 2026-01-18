@@ -57,9 +57,9 @@ class HadithCard extends StatelessWidget {
                 onBookmarkPressed: _onBookmarkPressed,
                 cubit: cubit,
               ),
-              SizedBox(height: 12.toH),
+              const SizedBox(height: 12),
               HadithText(text: text, isArabic: isArabic),
-              SizedBox(height: 8.toH),
+              const SizedBox(height: 8),
               HadithMetadata(
                 status: status,
                 hadithId: hadith.id,
@@ -73,16 +73,12 @@ class HadithCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String status, ThemeData theme) {
-    switch (status.toLowerCase()) {
-      case 'sahih':
-        return Colors.green;
-      case 'hasan':
-        return Colors.blue;
-      case 'da`eef':
-        return Colors.orange;
-      default:
-        return theme.primaryColor;
-    }
-  }
+  static const Map<String, Color> _statusColors = {
+    'sahih': Colors.green,
+    'hasan': Colors.blue,
+    'da`eef': Colors.orange,
+  };
+
+  Color _getStatusColor(String status, ThemeData theme) =>
+      _statusColors[status.toLowerCase()] ?? theme.primaryColor;
 }

@@ -2,13 +2,18 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../repository/surahs_list_repository.dart';
 import '../../service/search_service.dart';
 import 'surahs_list_state.dart';
 
 class SurahListCubit extends Cubit<SurahsListState> {
-  SurahListCubit({required this.surahRepository, required this.searchService})
-    : super(const SurahsListState()) {
+  SurahListCubit({
+    SurahsListRepository? surahRepository,
+    QuranSearchService? searchService,
+  }) : surahRepository = surahRepository ?? getIt<SurahsListRepository>(),
+       searchService = searchService ?? getIt<QuranSearchService>(),
+       super(const SurahsListState()) {
     // _loadSurahs();
   }
   final SurahsListRepository surahRepository;

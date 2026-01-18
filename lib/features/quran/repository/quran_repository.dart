@@ -5,6 +5,9 @@ abstract class QuranRepository {
   Stream<Duration?> get durationStream;
   Stream<PlayerState> get playerStateStream;
   Stream<int?> get currentIndexStream;
+  int? get currentIndex;
+  bool get isPlaying;
+  int? get currentSurah;
 
   Future<void> prepareSurahPlaylist({
     required int surahNumber,

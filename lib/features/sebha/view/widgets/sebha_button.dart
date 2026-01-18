@@ -65,33 +65,35 @@ class _SebhaButtonState extends State<SebhaButton>
     final width = size.width;
     return ScaleTransition(
       scale: _animation,
-      child: ElevatedButton(
-        onPressed: _onTap,
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(
-            widget.goal != null ? width * 0.3 : width * 0.37,
-          ),
-          shape: const CircleBorder(),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              convertToArabicNumbers(widget.counter.toString()),
-              style: context.textTheme.headlineMedium?.copyWith(
-                color: Colors.white,
-              ),
+      child: RepaintBoundary(
+        child: ElevatedButton(
+          onPressed: _onTap,
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.all(
+              widget.goal != null ? width * 0.3 : width * 0.37,
             ),
-            if (widget.goal != null) ...[
-              const SizedBox(height: 12),
+            shape: const CircleBorder(),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               Text(
-                '${widget.localizations.goal}: ${convertToArabicNumbers(widget.goal.toString())}',
-                style: context.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                convertToArabicNumbers(widget.counter.toString()),
+                style: context.textTheme.headlineMedium?.copyWith(
+                  color: context.colorScheme.onPrimary,
                 ),
               ),
+              if (widget.goal != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  '${widget.localizations.goal}: ${convertToArabicNumbers(widget.goal.toString())}',
+                  style: context.textTheme.headlineSmall?.copyWith(
+                    color: context.colorScheme.onPrimary,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

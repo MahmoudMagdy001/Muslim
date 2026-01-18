@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/navigation_helper.dart';
+import '../../../../../core/widgets/base_app_dialog.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../view_model/hadith/hadith_cubit.dart';
 import '../hadith_view/hadith_view.dart';
@@ -114,60 +115,53 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                       ),
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                    confirmDismiss: (direction) async => await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('تأكيد الحذف'),
-                        content: Text(
-                          'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('إلغاء'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: Text(
-                              'حذف',
-                              style: TextStyle(
-                                color: context.colorScheme.error,
+                    confirmDismiss: (direction) async =>
+                        await BaseAppDialog.show<bool>(
+                          context,
+                          title: 'تأكيد الحذف',
+                          contentText:
+                              'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('إلغاء'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(
+                                'حذف',
+                                style: TextStyle(
+                                  color: context.colorScheme.error,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          ],
+                        ),
                     onDismissed: (direction) => _removeHadith(index),
                     child: SavedHadithCard(
                       hadith: hadith,
                       onTap: () => _navigateToHadith(hadith),
                       onDelete: () async {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('تأكيد الحذف'),
-                            content: Text(
+                        final confirm = await BaseAppDialog.show<bool>(
+                          context,
+                          title: 'تأكيد الحذف',
+                          contentText:
                               'هل انت متاكد من حذف رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('إلغاء'),
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: const Text('إلغاء'),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: Text(
-                                  'حذف',
-                                  style: TextStyle(
-                                    color: context.colorScheme.error,
-                                  ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(
+                                'حذف',
+                                style: TextStyle(
+                                  color: context.colorScheme.error,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                         if (confirm == true) {
                           _removeHadith(index);

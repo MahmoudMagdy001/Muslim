@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../../core/di/service_locator.dart';
 import '../../model/hadith_model.dart';
 import '../../service/hadith/hadith_service.dart';
 import 'hadith_state.dart';
@@ -11,23 +11,29 @@ class HadithCubit extends Cubit<HadithState> {
     required this.bookSlug,
     required this.chapterNumber,
     required this.chapterName,
-  }) : super(HadithInitial());
+    HadithService? hadithService,
+    HadithStorageService? storageService,
+  }) : _hadithService = hadithService ?? getIt<HadithService>(),
+       _storageService = storageService ?? getIt<HadithStorageService>(),
+       super(const HadithState());
 
   final String bookSlug;
   final String chapterNumber;
   final String chapterName;
 
-  final HadithService _hadithService = HadithService();
-  final HadithStorageService _storageService = HadithStorageService();
+  final HadithService _hadithService;
+  final HadithStorageService _storageService;
 
   final Map<String, ValueNotifier<bool>> _hadithSavedMap = {};
+
   bool isHadithSaved(String hadithId) =>
       _hadithSavedMap[hadithId]?.value ?? false;
+
   ValueNotifier<bool>? getHadithNotifier(String hadithId) =>
       _hadithSavedMap[hadithId];
 
   Future<void> initializeData() async {
-    emit(HadithLoading());
+    emit(state.copyWith(status: HadithStatus.loading));
 
     try {
       // تحميل البيانات المحفوظة أولاً
@@ -48,14 +54,20 @@ class HadithCubit extends Cubit<HadithState> {
       await _prepareHadithData(hadiths);
 
       emit(
-        HadithLoaded(
+        state.copyWith(
+          status: HadithStatus.success,
           hadiths: hadiths,
           savedHadiths: savedHadiths,
           dataLoaded: true,
         ),
       );
     } catch (e) {
-      emit(HadithError('Failed to load hadiths: $e'));
+      emit(
+        state.copyWith(
+          status: HadithStatus.error,
+          message: 'Failed to load hadiths: $e',
+        ),
+      );
     }
   }
 
@@ -104,7 +116,6 @@ class HadithCubit extends Cubit<HadithState> {
         notifier.value = true;
       }
     } catch (e) {
-      // يمكن إضافة handling للخطأ هنا
       rethrow;
     }
   }

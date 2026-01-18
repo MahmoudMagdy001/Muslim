@@ -1,26 +1,20 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // State class
-class ReciterState {
-  ReciterState({required this.selectedReciter});
+class ReciterState extends Equatable {
+  const ReciterState({required this.selectedReciter});
   final String selectedReciter;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ReciterState &&
-          runtimeType == other.runtimeType &&
-          selectedReciter == other.selectedReciter;
-
-  @override
-  int get hashCode => selectedReciter.hashCode;
+  List<Object?> get props => [selectedReciter];
 }
 
 // Cubit class
 class ReciterCubit extends Cubit<ReciterState> {
-  ReciterCubit() : super(ReciterState(selectedReciter: _defaultReciter)) {
+  ReciterCubit() : super(const ReciterState(selectedReciter: _defaultReciter)) {
     _initializeReciter();
   }
   static const String _defaultReciter = 'ar.alafasy';
@@ -32,7 +26,7 @@ class ReciterCubit extends Cubit<ReciterState> {
     } catch (error) {
       debugPrint('Error initializing reciter: $error');
       // Fall back to default value
-      emit(ReciterState(selectedReciter: _defaultReciter));
+      emit(const ReciterState(selectedReciter: _defaultReciter));
     }
   }
 
@@ -43,7 +37,7 @@ class ReciterCubit extends Cubit<ReciterState> {
     if (savedReciter != null) {
       emit(ReciterState(selectedReciter: savedReciter));
     } else {
-      emit(ReciterState(selectedReciter: _defaultReciter));
+      emit(const ReciterState(selectedReciter: _defaultReciter));
     }
   }
 

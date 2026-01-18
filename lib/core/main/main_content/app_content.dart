@@ -10,6 +10,12 @@ import '../../service/in_app_update.dart';
 import '../../theme/app_theme.dart';
 import '../../../features/settings/view_model/language/language_cubit.dart';
 import '../../../features/settings/view_model/language/language_state.dart';
+import '../../../features/quran/service/quran_service.dart';
+import '../../../features/quran/view/quran_view.dart';
+import '../../../core/utils/navigation_helper.dart';
+import '../../di/service_locator.dart';
+import 'package:flutter/services.dart';
+import '../../service/navigation_service.dart';
 
 class AppContent extends StatefulWidget {
   const AppContent({
@@ -32,7 +38,61 @@ class _AppContentState extends State<AppContent> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AppUpdateService.checkForUpdate(context);
       RateAppHelper.handleAppLaunch(context);
+      _setupNotificationClickChannel();
+      _listenToNotificationClick();
+      _checkPendingNotificationClick();
     });
+  }
+
+  void _checkPendingNotificationClick() {
+    final quranService = getIt<QuranService>();
+    if (quranService.hasPendingNotificationClick) {
+      quranService.consumePendingNotificationClick();
+      _handleDeepLink();
+    }
+  }
+
+  void _setupNotificationClickChannel() {
+    print('NotificationNav: Setting up notification click channel');
+    const channel = MethodChannel('com.mahmoud.muslim/notification_click');
+    channel.setMethodCallHandler((call) async {
+      print('NotificationNav: Received method call: ${call.method}');
+      if (call.method == 'onNotificationClick') {
+        getIt<QuranService>().onNotificationClick();
+      }
+    });
+  }
+
+  void _listenToNotificationClick() {
+    getIt<QuranService>().notificationClickStream.listen((bool clicked) {
+      print('NotificationNav: notificationClickStream received: $clicked');
+      if (clicked) {
+        _handleDeepLink();
+      }
+    });
+  }
+
+  void _handleDeepLink() {
+    print('NotificationNav: Handling deep link');
+    final quranService = getIt<QuranService>();
+    final surah = quranService.currentSurah;
+    final reciter = quranService.currentReciter;
+    final ayah = quranService.audioPlayer.currentIndex != null
+        ? quranService.audioPlayer.currentIndex! + 1
+        : 1;
+
+    print('NotificationNav: Surah: $surah, Reciter: $reciter, Ayah: $ayah');
+
+    if (surah != null && reciter != null) {
+      print('NotificationNav: Navigating to QuranView');
+      navigateWithTransition(
+        NavigationService.context!,
+        QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
+        type: TransitionType.fade,
+      );
+    } else {
+      print('NotificationNav: Surah or Reciter is NULL, cannot navigate');
+    }
   }
 
   @override
@@ -63,6 +123,7 @@ class _AppContentState extends State<AppContent> {
                   locale: languageState.locale,
                   localizationsDelegates: widget.localizationsDelegates,
                   supportedLocales: widget.supportedLocales,
+                  navigatorKey: NavigationService.navigatorKey,
                   home: const LayoutView(),
                 );
               },

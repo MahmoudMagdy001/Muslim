@@ -133,7 +133,6 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                         ),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
                     ),
                     onChanged: _controller.updateSearchText,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -182,8 +181,8 @@ class _HadithBooksViewState extends State<HadithBooksView> {
                           child: ListView.builder(
                             controller: _scrollController,
                             padding: const EdgeInsetsDirectional.only(
-                              start: 8,
-                              end: 16,
+                              start: 6,
+                              end: 20,
                               top: 5,
                               bottom: 10,
                             ),
@@ -201,15 +200,15 @@ class _HadithBooksViewState extends State<HadithBooksView> {
 
                               if (index == 1) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
+                                  padding: const EdgeInsets.only(
+                                    right: 16,
+                                    top: 16,
                                   ),
                                   child: Text(
                                     localization.hadithSources,
                                     style: theme.textTheme.titleLarge?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: theme.primaryColor,
+                                      color: theme.colorScheme.onSurface,
                                     ),
                                   ),
                                 );

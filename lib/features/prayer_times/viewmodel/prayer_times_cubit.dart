@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/di/service_locator.dart';
 import '../../../core/service/permissions_sevice.dart';
 import '../model/prayer_times_model.dart';
 import '../service/prayer_calculator_service.dart';
@@ -11,15 +12,20 @@ import '../service/prayer_times_service.dart';
 import 'prayer_times_state.dart';
 
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
-  PrayerTimesCubit() : super(const PrayerTimesState()) {
-    _prayerTimesService = PrayerTimesService();
-    _notificationService = PrayerNotificationService();
-    _calculatorService = PrayerCalculatorService();
-  }
+  PrayerTimesCubit({
+    PrayerTimesService? prayerTimesService,
+    PrayerNotificationService? notificationService,
+    PrayerCalculatorService? calculatorService,
+  }) : _prayerTimesService = prayerTimesService ?? getIt<PrayerTimesService>(),
+       _notificationService =
+           notificationService ?? getIt<PrayerNotificationService>(),
+       _calculatorService =
+           calculatorService ?? getIt<PrayerCalculatorService>(),
+       super(const PrayerTimesState());
 
-  late final PrayerTimesService _prayerTimesService;
-  late final PrayerNotificationService _notificationService;
-  late final PrayerCalculatorService _calculatorService;
+  final PrayerTimesService _prayerTimesService;
+  final PrayerNotificationService _notificationService;
+  final PrayerCalculatorService _calculatorService;
 
   Timer? _timer;
   Timer? _midnightTimer;

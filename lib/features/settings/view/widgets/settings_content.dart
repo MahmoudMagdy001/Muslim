@@ -92,34 +92,37 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           const SizedBox(height: 20),
 
-          // 🔹 زر التقييم اليدوي في آخر الصفحة
-          ElevatedButton.icon(
-            onPressed: () => RateAppHelper.rateNow(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: widget.theme.colorScheme.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.toR),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.toW,
-                vertical: 12.toH,
-              ),
-            ),
-            icon: Icon(
-              Icons.star_rate_rounded,
-              color: widget.theme.colorScheme.onPrimary,
-            ),
-            label: Text(
-              widget.isArabic ? 'قيّم التطبيق' : 'Rate App',
-              style: widget.theme.textTheme.labelLarge?.copyWith(
-                color: widget.theme.colorScheme.onPrimary,
-                fontSize: 16.toSp,
-              ),
-            ),
-          ),
+          _RateAppButton(isArabic: widget.isArabic, theme: widget.theme),
           const SizedBox(height: 30),
         ],
       ),
     );
   }
+}
+
+class _RateAppButton extends StatelessWidget {
+  const _RateAppButton({required this.isArabic, required this.theme});
+
+  final bool isArabic;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) => ElevatedButton.icon(
+    onPressed: () => RateAppHelper.rateNow(context),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: theme.colorScheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.toR),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 20.toW, vertical: 12.toH),
+    ),
+    icon: Icon(Icons.star_rate_rounded, color: theme.colorScheme.onPrimary),
+    label: Text(
+      isArabic ? 'قيّم التطبيق' : 'Rate App',
+      style: theme.textTheme.labelLarge?.copyWith(
+        color: theme.colorScheme.onPrimary,
+        fontSize: 16.toSp,
+      ),
+    ),
+  );
 }

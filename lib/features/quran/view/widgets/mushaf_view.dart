@@ -1,7 +1,8 @@
-import 'package:flutter/gestures.dart';
 import '../../../../core/utils/extensions.dart';
+import '../../../../core/widgets/base_app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran/quran.dart' as quran;
 import 'dart:async';
@@ -99,6 +100,32 @@ class _MushafViewState extends State<MushafView> {
         }
       }
     });
+
+    final playerState = context.read<QuranPlayerCubit>().state;
+    if (playerState.currentSurah == widget.surahNumber &&
+        playerState.currentAyah != null) {
+      currentAyahNotifier.value = playerState.currentAyah;
+      currentSurahNotifier.value = playerState.currentSurah;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final page = quran.getPageNumber(
+          playerState.currentSurah!,
+          playerState.currentAyah!,
+        );
+        final targetIndex = page - _startPage;
+        if (_pageController.hasClients) {
+          if ((_pageController.page?.round() ?? 0) != targetIndex) {
+            _pageController.jumpToPage(targetIndex);
+          }
+          // Use a small delay to ensure page content is built before scrolling to ayah
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (mounted) {
+              _scrollToCurrentAyah();
+            }
+          });
+        }
+      });
+    }
   }
 
   void _scrollToCurrentAyah() {
@@ -128,38 +155,30 @@ class _MushafViewState extends State<MushafView> {
     super.dispose();
   }
 
-  TapGestureRecognizer _createGestureRecognizer(
+  // Performance Optimization: Extracted gesture recognition logic
+  // into the MushafPageContent implementation.
+  Future<void> _onAyahTap(
     int surah,
     int ayah,
     String text,
-  ) {
-    final tapRecognizer = TapGestureRecognizer();
-    Offset? tapPosition;
+    Offset position,
+  ) async {
+    final selected = await VerseOptionsMenu.show(
+      context,
+      position: position,
+      localizations: widget.localizations,
+    );
 
-    tapRecognizer
-      ..onTapDown = (details) {
-        tapPosition = details.globalPosition;
-      }
-      ..onTap = () async {
-        final position = tapPosition ?? Offset.zero;
-
-        final selected = await VerseOptionsMenu.show(
-          context,
-          position: position,
-          localizations: widget.localizations,
-        );
-
-        if (selected == 'play') {
-          _handlePlay(surah, ayah);
-        } else if (selected == 'bookmark') {
-          _handleBookmark(surah, ayah, text);
-        } else if (selected == 'tafseer') {
-          await _handleTafsir(surah, ayah, text);
-        }
-      };
-
-    return tapRecognizer;
+    if (selected == 'play') {
+      _handlePlay(surah, ayah);
+    } else if (selected == 'bookmark') {
+      _handleBookmark(surah, ayah, text);
+    } else if (selected == 'tafseer') {
+      await _handleTafsir(surah, ayah, text);
+    }
   }
+
+  // Removed old _createGestureRecognizer as it's now handled in MushafPageContent.
 
   void _handlePlay(int surah, int ayah) {
     if (mounted) {
@@ -204,11 +223,7 @@ class _MushafViewState extends State<MushafView> {
     if (selectedTafsir == null) return;
 
     if (mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => const Center(child: CircularProgressIndicator()),
-      );
+      BaseAppDialog.showLoading(context);
     }
     final tafsirText = await _tafsirRepository.fetchTafsirById(
       selectedTafsir['id'],
@@ -298,91 +313,107 @@ class _MushafViewState extends State<MushafView> {
   }
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<int?>(
-    valueListenable: currentAyahNotifier,
-    builder: (context, currentAyah, child) => ValueListenableBuilder<int?>(
-      valueListenable: currentSurahNotifier,
-      builder: (context, currentSurah, child) => PageView.builder(
-        controller: _pageController,
-        reverse: widget.isArabic,
-        itemCount: _totalPages,
-        itemBuilder: (context, index) {
-          final pageNumber = _startPage + index;
-          final pageData = quran.getPageData(pageNumber);
+  Widget build(BuildContext context) => PageView.builder(
+    controller: _pageController,
+    reverse: widget.isArabic,
+    itemCount: _totalPages,
+    itemBuilder: (context, index) {
+      final pageNumber = _startPage + index;
+      final pageData = quran.getPageData(pageNumber);
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 20.toH),
-            child: Column(
-              children: [
-                Text(
-                  '${widget.isArabic ? 'صفحة' : 'Page'} $pageNumber',
-                  style: context.textTheme.labelSmall,
-                ),
-                const Divider(),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: GoogleFonts.amiri().copyWith(
-                      fontSize: 22.toSp,
-                      height: 2.0,
-                      color: context.textTheme.bodyLarge?.color,
-                    ),
-                    children: pageData.map((data) {
-                      final Map<String, dynamic> rowData =
-                          data as Map<String, dynamic>;
-                      final surah = rowData['surah'] as int;
-                      final start = rowData['start'] as int;
-                      final end = rowData['end'] as int;
-                      final spans = <InlineSpan>[];
-
-                      for (int ayah = start; ayah <= end; ayah++) {
-                        final isCurrent =
-                            ayah == currentAyah && surah == currentSurah;
-                        final text = quran.getVerse(surah, ayah);
-                        final endSymbol = quran.getVerseEndSymbol(
-                          ayah,
-                          arabicNumeral: widget.isArabic,
-                        );
-
-                        final keyString = '${surah}_$ayah';
-                        final key = _ayahKeys.putIfAbsent(
-                          keyString,
-                          () => GlobalKey(),
-                        );
-
-                        spans
-                          ..add(
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.top,
-                              child: SizedBox(key: key, width: 0, height: 0),
-                            ),
-                          )
-                          ..add(
-                            TextSpan(
-                              text: '$text ',
-                              style: TextStyle(
-                                color: isCurrent
-                                    ? context.colorScheme.error
-                                    : null,
-                              ),
-                              recognizer: _createGestureRecognizer(
-                                surah,
-                                ayah,
-                                text,
-                              ),
-                            ),
-                          )
-                          ..add(TextSpan(text: '$endSymbol '));
-                      }
-                      return TextSpan(children: spans);
-                    }).toList(),
-                  ),
-                ),
-              ],
+      return SingleChildScrollView(
+        padding: EdgeInsetsDirectional.only(
+          start: 8.toW,
+          end: 8.toW,
+          top: 16.toH,
+          bottom: 8.toH,
+        ),
+        child: Column(
+          children: [
+            Text(
+              '${widget.isArabic ? 'صفحة' : 'Page'} ${convertToArabicNumbers(pageNumber.toString())}',
+              style: context.textTheme.labelSmall?.copyWith(
+                color: context.theme.colorScheme.onSurface,
+              ),
             ),
-          );
-        },
-      ),
-    ),
+            const Divider(),
+            ValueListenableBuilder<int?>(
+              valueListenable: currentAyahNotifier,
+              builder: (context, currentAyah, _) =>
+                  ValueListenableBuilder<int?>(
+                    valueListenable: currentSurahNotifier,
+                    builder: (context, currentSurah, _) => RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: GoogleFonts.amiri().copyWith(
+                          fontSize: 22.toSp,
+                          height: 2.0,
+                          color: context.textTheme.bodyLarge?.color,
+                        ),
+                        children: pageData.map((data) {
+                          final Map<String, dynamic> rowData =
+                              data as Map<String, dynamic>;
+                          final surah = rowData['surah'] as int;
+                          final start = rowData['start'] as int;
+                          final end = rowData['end'] as int;
+                          final spans = <InlineSpan>[];
+
+                          for (int ayah = start; ayah <= end; ayah++) {
+                            final isCurrent =
+                                ayah == currentAyah && surah == currentSurah;
+                            final text = quran.getVerse(surah, ayah);
+                            final endSymbol = quran.getVerseEndSymbol(
+                              ayah,
+                              arabicNumeral: widget.isArabic,
+                            );
+
+                            final keyString = '${surah}_$ayah';
+                            final key = _ayahKeys.putIfAbsent(
+                              keyString,
+                              () => GlobalKey(),
+                            );
+
+                            spans
+                              ..add(
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.top,
+                                  child: SizedBox(
+                                    key: key,
+                                    width: 0,
+                                    height: 0,
+                                  ),
+                                ),
+                              )
+                              ..add(
+                                TextSpan(
+                                  text: '$text ',
+                                  style: TextStyle(
+                                    color: isCurrent
+                                        ? context.colorScheme.error
+                                        : null,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTapDown = (details) {
+                                      _onAyahTap(
+                                        surah,
+                                        ayah,
+                                        text,
+                                        details.globalPosition,
+                                      );
+                                    },
+                                ),
+                              )
+                              ..add(TextSpan(text: '$endSymbol '));
+                          }
+                          return TextSpan(children: spans);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+            ),
+          ],
+        ),
+      );
+    },
   );
 }

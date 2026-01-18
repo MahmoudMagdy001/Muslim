@@ -1,13 +1,10 @@
-// widgets/surah_text_view_horizontal.dart
 import 'dart:async';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:quran/quran.dart' as quran;
 
 import '../../../../core/utils/extensions.dart';
-
+import '../../../../core/widgets/base_app_dialog.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -15,6 +12,7 @@ import '../../repository/tafsir_repository.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'create_share_tafsir.dart';
+import 'surah_text_content.dart';
 import 'verse_options_menu.dart';
 import 'tafsir_selection_dialog.dart';
 import '../../../../core/utils/responsive_helper.dart';
@@ -38,37 +36,15 @@ class SurahTextView extends StatefulWidget {
 }
 
 class _SurahTextViewState extends State<SurahTextView> {
-  final ScrollController _controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   final TafsirRepository _tafsirRepository = TafsirRepository();
-  GlobalKey? _currentKey;
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
-  StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
-  List<InlineSpan>? _cachedSpans;
-  int? _cachedSurahNumber;
-  int? _cachedCurrentAyah;
+  StreamSubscription? _playerSub;
 
   @override
   void initState() {
     super.initState();
-    _generateKeys();
-  }
-
-  @override
-  void didUpdateWidget(SurahTextView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.surahNumber != widget.surahNumber) {
-      _generateKeys();
-      _cachedSpans = null;
-    }
-  }
-
-  void _generateKeys() {
-    _ayahKeys.clear();
-    final ayahCount = quran.getVerseCount(widget.surahNumber);
-    for (int i = 1; i <= ayahCount; i++) {
-      _ayahKeys[i] = GlobalKey();
-    }
   }
 
   @override
@@ -79,18 +55,31 @@ class _SurahTextViewState extends State<SurahTextView> {
       playerState,
     ) {
       final newAyah = playerState.currentAyah;
+      final newSurah = playerState.currentSurah;
       if (!mounted) return;
-      if (newAyah != null && newAyah != currentAyahNotifier.value) {
+      if (newSurah == widget.surahNumber &&
+          newAyah != null &&
+          newAyah != currentAyahNotifier.value) {
         currentAyahNotifier.value = newAyah;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToCurrentAyah();
-        });
+        _scrollToAyah(newAyah);
       }
     });
 
-    if (widget.startAyah != null && widget.startAyah! > 1) {
+    final playerState = context.read<QuranPlayerCubit>().state;
+    if (playerState.currentSurah == widget.surahNumber &&
+        playerState.currentAyah != null) {
+      currentAyahNotifier.value = playerState.currentAyah;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToAyah(widget.startAyah!);
+        _scrollToAyah(playerState.currentAyah!);
+      });
+    } else if (widget.startAyah != null && widget.startAyah! > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Small delay to ensure layout is complete
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            _scrollToAyah(widget.startAyah!);
+          }
+        });
       });
     }
   }
@@ -99,106 +88,38 @@ class _SurahTextViewState extends State<SurahTextView> {
     final key = _ayahKeys[ayahNumber];
     if (key == null) return;
 
-    final ctx = key.currentContext;
-    if (ctx == null) return;
+    final context = key.currentContext;
+    if (context == null) return;
 
     Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 200),
-      alignment: 0.4,
+      context,
+      duration: const Duration(milliseconds: 400),
+      alignment: 0.2, // Adjust alignment to center the ayah better
     );
   }
 
   @override
   void dispose() {
     _playerSub?.cancel();
-    _controller.dispose();
+    _scrollController.dispose();
     currentAyahNotifier.dispose();
     super.dispose();
   }
 
-  List<InlineSpan> _buildSpans(
-    BuildContext context,
-    bool isArabic,
-    int? currentAyah,
-  ) {
-    if (_cachedSpans != null &&
-        _cachedSurahNumber == widget.surahNumber &&
-        _cachedCurrentAyah == currentAyah) {
-      return _cachedSpans!;
+  Future<void> _handleAyahTap(int ayah, String text, Offset position) async {
+    final selected = await VerseOptionsMenu.show(
+      context,
+      position: position,
+      localizations: widget.localizations,
+    );
+
+    if (selected == 'play') {
+      _handlePlay(ayah);
+    } else if (selected == 'bookmark') {
+      _handleBookmark(ayah, text);
+    } else if (selected == 'tafseer') {
+      await _handleTafsir(ayah, text);
     }
-
-    final ayahCount = quran.getVerseCount(widget.surahNumber);
-    final spans = <InlineSpan>[];
-    _currentKey = currentAyah != null ? _ayahKeys[currentAyah] : null;
-
-    for (int ayah = 1; ayah <= ayahCount; ayah++) {
-      final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
-      final text = isArabic
-          ? quran.getVerse(widget.surahNumber, ayah)
-          : quran.getVerseTranslation(widget.surahNumber, ayah);
-
-      final isCurrent = ayah == currentAyah;
-      final keyForThisAyah = _ayahKeys[ayah];
-
-      spans.add(
-        TextSpan(
-          children: [
-            WidgetSpan(
-              alignment: PlaceholderAlignment.top,
-              child: SizedBox(key: keyForThisAyah, width: 0, height: 0),
-            ),
-            TextSpan(
-              text: '$text ',
-              style: context.textTheme.displayMedium?.copyWith(
-                color: isCurrent
-                    ? context.colorScheme.error
-                    : context.textTheme.bodyLarge?.color,
-              ),
-              recognizer: _createGestureRecognizer(ayah, text),
-            ),
-
-            TextSpan(text: endSymbol, style: context.textTheme.displayMedium),
-            const TextSpan(text: ' '),
-          ],
-        ),
-      );
-    }
-
-    _cachedSpans = spans;
-    _cachedSurahNumber = widget.surahNumber;
-    _cachedCurrentAyah = currentAyah;
-
-    return spans;
-  }
-
-  TapGestureRecognizer _createGestureRecognizer(int ayah, String text) {
-    final tapRecognizer = TapGestureRecognizer();
-    Offset? tapPosition;
-
-    tapRecognizer
-      ..onTapDown = (details) {
-        tapPosition = details.globalPosition;
-      }
-      ..onTap = () async {
-        final position = tapPosition ?? Offset.zero;
-
-        final selected = await VerseOptionsMenu.show(
-          context,
-          position: position,
-          localizations: widget.localizations,
-        );
-
-        if (selected == 'play') {
-          _handlePlay(ayah);
-        } else if (selected == 'bookmark') {
-          _handleBookmark(ayah, text);
-        } else if (selected == 'tafseer') {
-          await _handleTafsir(ayah, text);
-        }
-      };
-
-    return tapRecognizer;
   }
 
   void _handlePlay(int ayah) {
@@ -239,11 +160,7 @@ class _SurahTextViewState extends State<SurahTextView> {
     if (selectedTafsir == null) return;
 
     if (mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => const Center(child: CircularProgressIndicator()),
-      );
+      BaseAppDialog.showLoading(context);
     }
     final tafsirText = await _tafsirRepository.fetchTafsirById(
       selectedTafsir['id'],
@@ -332,44 +249,20 @@ class _SurahTextViewState extends State<SurahTextView> {
     }
   }
 
-  void _scrollToCurrentAyah() {
-    if (_currentKey == null) return;
-    final ctx = _currentKey!.currentContext;
-    if (ctx == null) return;
+  @override
+  Widget build(BuildContext context) {
+    const scrollPadding = EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 
-    Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 400),
-      alignment: 0.4,
+    return SingleChildScrollView(
+      controller: _scrollController,
+      padding: scrollPadding,
+      child: SurahTextContent(
+        surahNumber: widget.surahNumber,
+        isArabic: widget.isArabic,
+        currentAyahNotifier: currentAyahNotifier,
+        ayahKeys: _ayahKeys,
+        onAyahTap: _handleAyahTap,
+      ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) => Scrollbar(
-    controller: _controller,
-    child: SingleChildScrollView(
-      controller: _controller,
-      padding: EdgeInsetsDirectional.only(
-        start: 6.toW,
-        end: 18.toW,
-        top: 5.toH,
-        bottom: 5.toH,
-      ),
-      child: ValueListenableBuilder<int?>(
-        valueListenable: currentAyahNotifier,
-        builder: (context, currentAyah, child) => RepaintBoundary(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: context.textTheme.titleLarge?.copyWith(
-                height: widget.isArabic ? 2.3 : 1.7,
-                fontWeight: FontWeight.normal,
-              ),
-              children: _buildSpans(context, widget.isArabic, currentAyah),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 }

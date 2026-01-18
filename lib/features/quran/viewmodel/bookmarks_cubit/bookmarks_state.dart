@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import '../../model/bookmark_model.dart';
 
 enum BookmarksStatus { initial, loading, ready, error }
 
-class BookmarksState {
+class BookmarksState extends Equatable {
   const BookmarksState({
     this.status = BookmarksStatus.initial,
     this.bookmarks = const [],
@@ -22,4 +23,7 @@ class BookmarksState {
     bookmarks: bookmarks ?? this.bookmarks,
     message: message ?? this.message,
   );
+
+  @override
+  List<Object?> get props => [status, bookmarks, message];
 }

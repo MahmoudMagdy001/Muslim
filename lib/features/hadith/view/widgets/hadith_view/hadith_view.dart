@@ -86,9 +86,9 @@ class _HadithViewState extends State<HadithView> {
   }
 
   void _handleStateChanges(HadithState state, HadithCubit cubit) {
-    if (state is HadithError) {
+    if (state.status == HadithStatus.error) {
       _showErrorSnackBar(state.message);
-    } else if (state is HadithLoaded) {
+    } else if (state.status == HadithStatus.success) {
       _scrollToInitialHadith(cubit);
     }
   }
@@ -107,7 +107,7 @@ class _HadithViewState extends State<HadithView> {
 
   void _scrollToHadith(int hadithId, HadithCubit cubit) {
     final state = cubit.state;
-    if (state is HadithLoaded) {
+    if (state.status == HadithStatus.success) {
       final index = state.hadiths.indexWhere(
         (h) => int.parse(h.id) == hadithId,
       );

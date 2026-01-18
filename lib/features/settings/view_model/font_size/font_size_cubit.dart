@@ -1,21 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // State class
-class FontSizeState {
-  FontSizeState({required this.fontSize});
+class FontSizeState extends Equatable {
+  const FontSizeState({required this.fontSize});
   final double fontSize;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is FontSizeState &&
-          runtimeType == other.runtimeType &&
-          fontSize == other.fontSize;
-
-  @override
-  int get hashCode => fontSize.hashCode;
+  List<Object?> get props => [fontSize];
 }
 
 // Cubit class

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/responsive_helper.dart';
 import '../../../model/surahs_list_model.dart';
 import '../surahs_list_tile.dart';
 
@@ -18,11 +19,11 @@ class SurahList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SliverPadding(
-    padding: const EdgeInsetsDirectional.only(
-      top: 8,
-      bottom: 15,
-      start: 6,
-      end: 18,
+    padding: EdgeInsetsDirectional.only(
+      start: 6.toW,
+      end: 20.toW,
+      top: 8.toH,
+      bottom: 8.toH,
     ),
     sliver: SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {

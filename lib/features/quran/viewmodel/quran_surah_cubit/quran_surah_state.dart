@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 enum QuranSurahStatus { initial, loading, loaded, error, alreadyLoaded }
 
-// In your quran_surah_state.dart file
-class QuranSurahState {
+class QuranSurahState extends Equatable {
   const QuranSurahState({
     this.status = QuranSurahStatus.initial,
     this.surahNumber,
@@ -9,6 +10,7 @@ class QuranSurahState {
     this.startAyah,
     this.message,
   });
+
   final QuranSurahStatus status;
   final int? surahNumber;
   final int? ayahCount;
@@ -28,4 +30,13 @@ class QuranSurahState {
     startAyah: startAyah ?? this.startAyah,
     message: message ?? this.message,
   );
+
+  @override
+  List<Object?> get props => [
+    status,
+    surahNumber,
+    ayahCount,
+    startAyah,
+    message,
+  ];
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../widgets/base_app_dialog.dart';
 
 class AppUpdateService {
   static Future<void> checkForUpdate(BuildContext context) async {
@@ -20,50 +21,37 @@ class AppUpdateService {
   }
 
   static Future<void> _showUpdateDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'تحديث جديد متاح',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: const Text(
+    BaseAppDialog.show(
+      context,
+      title: 'تحديث جديد متاح',
+      contentText:
           'تم إصدار نسخة جديدة من تطبيق المسلم.\nهل ترغب في التحديث الآن لتحصل على أحدث المزايا والتحسينات؟',
-          textAlign: TextAlign.center,
+      barrierDismissible: false,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('لاحقًا'),
         ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('لاحقًا'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              try {
-                await InAppUpdate.performImmediateUpdate();
-              } catch (_) {
-                const url =
-                    'https://play.google.com/store/apps/details?id=com.mahmoud.muslim';
+        FilledButton(
+          onPressed: () async {
+            Navigator.pop(context);
+            try {
+              await InAppUpdate.performImmediateUpdate();
+            } catch (_) {
+              const url =
+                  'https://play.google.com/store/apps/details?id=com.mahmoud.muslim';
 
-                if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(
-                    Uri.parse(url),
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
+              if (await canLaunchUrl(Uri.parse(url))) {
+                await launchUrl(
+                  Uri.parse(url),
+                  mode: LaunchMode.externalApplication,
+                );
               }
-            },
-            child: const Text(
-              'تحديث الآن',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
+            }
+          },
+          child: const Text('تحديث الآن'),
+        ),
+      ],
     );
   }
 }

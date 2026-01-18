@@ -22,7 +22,12 @@ class SearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SliverToBoxAdapter(
     child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 8.toH),
+      padding: EdgeInsetsDirectional.only(
+        start: 6.toW,
+        end: 20.toW,
+        top: 8.toH,
+        bottom: 8.toH,
+      ),
       child: TextField(
         controller: controller,
         textAlign: TextAlign.right,
@@ -78,7 +83,6 @@ class SearchSection extends StatelessWidget {
             borderSide: BorderSide(color: context.theme.primaryColor, width: 2),
           ),
           filled: true,
-          fillColor: Colors.white,
         ),
         onChanged: onSearchChanged,
         onTapOutside: (_) => FocusScope.of(context).unfocus(),

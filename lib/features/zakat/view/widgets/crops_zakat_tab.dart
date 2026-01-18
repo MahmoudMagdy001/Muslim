@@ -122,14 +122,6 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.localizations.enter_amount,
-                    style: textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.toH),
                   ValueListenableBuilder<bool>(
                     valueListenable: hasErrorNotifier,
                     builder: (context, hasError, child) => TextField(
@@ -205,14 +197,14 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
 
                   SizedBox(
                     width: double.infinity,
-                    height: 56.toH,
+                    height: 48.toH,
                     child: ElevatedButton(
                       onPressed: _calculate,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.secondary,
                         foregroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(22),
                         ),
                         elevation: 0,
                       ),

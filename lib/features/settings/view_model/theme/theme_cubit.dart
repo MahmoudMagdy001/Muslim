@@ -1,23 +1,17 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // State class
-class ThemeState {
-  ThemeState({required this.themeMode});
+class ThemeState extends Equatable {
+  const ThemeState({required this.themeMode});
   final ThemeMode themeMode;
 
   bool get isDarkMode => themeMode == ThemeMode.dark;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ThemeState &&
-          runtimeType == other.runtimeType &&
-          themeMode == other.themeMode;
-
-  @override
-  int get hashCode => themeMode.hashCode;
+  List<Object?> get props => [themeMode];
 }
 
 // Cubit class
