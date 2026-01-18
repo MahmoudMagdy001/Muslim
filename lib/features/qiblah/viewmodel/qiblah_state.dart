@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 enum QiblahStatus { initial, loading, success, error }
 
-class QiblahState {
+class QiblahState extends Equatable {
   const QiblahState({
     this.status = QiblahStatus.initial,
     this.message,
@@ -47,4 +48,17 @@ class QiblahState {
     distance: distance ?? this.distance,
     duration: duration ?? this.duration,
   );
+
+  @override
+  List<Object?> get props => [
+    status,
+    message,
+    qiblahAngle,
+    headingAngle,
+    isAligned,
+    userLocation,
+    routePoints,
+    distance,
+    duration,
+  ];
 }

@@ -23,22 +23,9 @@ class QiblahView extends StatelessWidget {
               previous.qiblahAngle != current.qiblahAngle,
           builder: (context, state) {
             if (state.status == QiblahStatus.error) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error, size: 64, color: Colors.red),
-                    const SizedBox(height: 16),
-                    Text('${localizations.errorMain} ${state.message}'),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<QiblahCubit>().init();
-                      },
-                      child: Text(localizations.retry),
-                    ),
-                  ],
-                ),
+              return _QiblahErrorWidget(
+                message: state.message ?? '',
+                localizations: localizations,
               );
             } else {
               return QiblahSuccessWidget(
@@ -88,6 +75,35 @@ class QiblahSuccessWidget extends StatelessWidget {
             isLoading: isLoading,
             localizations: localizations,
           ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _QiblahErrorWidget extends StatelessWidget {
+  const _QiblahErrorWidget({
+    required this.message,
+    required this.localizations,
+  });
+
+  final String message;
+  final AppLocalizations localizations;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.error, size: 64, color: Colors.red),
+        const SizedBox(height: 16),
+        Text('${localizations.errorMain} $message'),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: () {
+            context.read<QiblahCubit>().init();
+          },
+          child: Text(localizations.retry),
         ),
       ],
     ),

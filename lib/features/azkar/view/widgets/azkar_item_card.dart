@@ -92,7 +92,7 @@ class AzkarItemCard extends StatelessWidget {
                       ),
                     if (item.description?.isNotEmpty ?? false) ...[
                       if (item.reference?.isNotEmpty ?? false)
-                        SizedBox(height: 12.toH),
+                        const SizedBox(height: 12),
                       Text(
                         item.description!,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -138,6 +138,7 @@ class AzkarItemCard extends StatelessWidget {
                         icon: const Icon(Icons.refresh, color: Colors.white),
                         iconSize: 32.toR,
                       ),
+                      const SizedBox(width: 8),
                       SizedBox(
                         height: 42.toH,
                         width: 130.toW,

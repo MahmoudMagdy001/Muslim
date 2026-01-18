@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../quran/viewmodel/last_played_cubit/last_played.dart';
+import '../../../../quran/viewmodel/last_played_cubit/last_played_state.dart';
 import 'last_played_card.dart';
 
 class LastPlayedSection extends StatelessWidget {
@@ -16,12 +17,8 @@ class LastPlayedSection extends StatelessWidget {
     child: Padding(
       padding: EdgeInsetsDirectional.only(start: 6.toW, end: 18.toW),
       child:
-          BlocSelector<
-            LastPlayedCubit,
-            Map<String, dynamic>?,
-            Map<String, dynamic>?
-          >(
-            selector: (state) => state,
+          BlocSelector<LastPlayedCubit, LastPlayedState, Map<String, dynamic>?>(
+            selector: (state) => state.lastPlayed,
             builder: (context, lastPlayed) {
               if (lastPlayed == null) return const SizedBox.shrink();
               return LastPlayedCard(

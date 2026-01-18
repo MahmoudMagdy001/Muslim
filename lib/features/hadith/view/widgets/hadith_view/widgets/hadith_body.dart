@@ -34,9 +34,10 @@ class HadithsBody extends StatelessWidget {
     builder: (context, state) {
       final cubit = context.read<HadithCubit>();
 
-      if (state is HadithInitial || state is HadithLoading) {
+      if (state.status == HadithStatus.initial ||
+          state.status == HadithStatus.loading) {
         return const CustomLoadingIndicator(text: 'جاري تحميل الأحاديث');
-      } else if (state is HadithLoaded) {
+      } else if (state.status == HadithStatus.success) {
         return HadithsList(
           itemScrollController: itemScrollController,
           itemPositionsListener: itemPositionsListener,
@@ -46,7 +47,7 @@ class HadithsBody extends StatelessWidget {
           cubit: cubit,
           onShowSnackBar: onShowSnackBar,
         );
-      } else if (state is HadithError) {
+      } else if (state.status == HadithStatus.error) {
         return ErrorState(
           message: state.message,
           localizations: localizations,

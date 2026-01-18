@@ -22,16 +22,14 @@ class SurahTextContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<int?>(
     valueListenable: currentAyahNotifier,
-    builder: (context, currentAyah, child) => RepaintBoundary(
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          style: context.textTheme.titleLarge?.copyWith(
-            height: isArabic ? 2.3 : 1.7,
-            fontWeight: FontWeight.normal,
-          ),
-          children: _buildSpans(context, currentAyah),
+    builder: (context, currentAyah, child) => RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: context.textTheme.titleLarge?.copyWith(
+          height: isArabic ? 2.3 : 1.7,
+          fontWeight: FontWeight.normal,
         ),
+        children: _buildSpans(context, currentAyah),
       ),
     ),
   );
@@ -47,7 +45,7 @@ class SurahTextContent extends StatelessWidget {
           : quran.getVerseTranslation(surahNumber, ayah);
 
       final isCurrent = ayah == currentAyah;
-      final keyForThisAyah = ayahKeys[ayah];
+      final keyForThisAyah = ayahKeys.putIfAbsent(ayah, () => GlobalKey());
 
       spans.add(
         TextSpan(

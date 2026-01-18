@@ -6,7 +6,15 @@ import 'quran_player_state.dart';
 
 class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   QuranPlayerCubit(this._repository, {int? initialSurah})
-    : super(QuranPlayerState(currentSurah: initialSurah)) {
+    : super(
+        QuranPlayerState(
+          currentSurah: _repository.currentSurah ?? initialSurah,
+          currentAyah: _repository.currentIndex != null
+              ? _repository.currentIndex! + 1
+              : null,
+          isPlaying: _repository.isPlaying,
+        ),
+      ) {
     _initializeListeners();
   }
 

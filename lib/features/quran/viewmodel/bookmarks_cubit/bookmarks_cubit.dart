@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../model/bookmark_model.dart';
 import '../../service/bookmarks_service.dart';
 import 'bookmarks_state.dart';
 
 class BookmarksCubit extends Cubit<BookmarksState> {
-  BookmarksCubit(this._service) : super(const BookmarksState());
+  BookmarksCubit([BookmarksService? service])
+    : _service = service ?? getIt<BookmarksService>(),
+      super(const BookmarksState());
 
   final BookmarksService _service;
 

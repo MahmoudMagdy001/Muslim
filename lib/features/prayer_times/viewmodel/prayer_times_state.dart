@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import '../model/prayer_times_model.dart';
 
 enum PrayerTimesStatus {
@@ -9,7 +10,7 @@ enum PrayerTimesStatus {
   permissionError,
 }
 
-class PrayerTimesState {
+class PrayerTimesState extends Equatable {
   const PrayerTimesState({
     this.status = PrayerTimesStatus.initial,
     this.localPrayerTimes,
@@ -29,6 +30,18 @@ class PrayerTimesState {
   final String? message;
   final DateTime? lastUpdated;
   final String? city;
+
+  @override
+  List<Object?> get props => [
+    status,
+    localPrayerTimes,
+    nextPrayer,
+    timeLeft,
+    previousPrayerDateTime,
+    message,
+    lastUpdated,
+    city,
+  ];
 
   PrayerTimesState copyWith({
     PrayerTimesStatus? status,

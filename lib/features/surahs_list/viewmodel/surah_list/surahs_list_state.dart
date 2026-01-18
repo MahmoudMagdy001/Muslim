@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 
 import '../../model/search_model.dart';
 import '../../model/surahs_list_model.dart';
 
 enum SurahsListStatus { initial, loading, success, error }
 
-class SurahsListState {
+class SurahsListState extends Equatable {
   const SurahsListState({
     this.status = SurahsListStatus.initial,
     this.message,
@@ -39,24 +39,12 @@ class SurahsListState {
   );
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is SurahsListState &&
-        other.status == status &&
-        other.message == message &&
-        listEquals(other.allSurahs, allSurahs) &&
-        listEquals(other.filteredSurahs, filteredSurahs) &&
-        listEquals(other.searchResults, searchResults) &&
-        other.searchText == searchText;
-  }
-
-  @override
-  int get hashCode => Object.hash(
+  List<Object?> get props => [
     status,
     message,
     allSurahs,
     filteredSurahs,
-    searchResults,
     searchText,
-  );
+    searchResults,
+  ];
 }

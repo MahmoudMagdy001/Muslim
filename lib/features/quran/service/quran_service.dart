@@ -5,6 +5,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:audio_service/audio_service.dart';
 import '../../settings/consts/reciters_name_arabic.dart';
 
 class QuranService {
@@ -14,10 +15,29 @@ class QuranService {
   final StreamController<Map<String, dynamic>?> _lastPlayedController =
       StreamController<Map<String, dynamic>?>.broadcast();
 
+  // StreamController لنقرات الإشعارات
+  final StreamController<bool> _notificationClickController =
+      StreamController<bool>.broadcast();
+
+  bool _pendingNotificationClick = false;
+  bool get hasPendingNotificationClick => _pendingNotificationClick;
+
   AudioPlayer get audioPlayer => _audioPlayer;
+
+  int? get currentSurah => _currentSurah ?? _getMetadataFromPlayer('surah');
+  String? get currentReciter =>
+      _currentReciter ?? _getMetadataFromPlayer('reciter');
 
   int? _currentSurah;
   String? _currentReciter;
+
+  dynamic _getMetadataFromPlayer(String key) {
+    final tag = _audioPlayer.sequenceState.currentSource?.tag;
+    if (tag is MediaItem) {
+      return tag.extras?[key];
+    }
+    return null;
+  }
 
   /// يحسب الرقم التسلسلي العام للآية (عبر جميع السور)
   int globalAyahNumber(int surah, int ayah) {
@@ -39,7 +59,10 @@ class QuranService {
     required int surahNumber,
     required String reciter,
   }) async {
-    if (_isSameAsCurrent(surahNumber, reciter)) return;
+    if (_isSameAsCurrent(surahNumber, reciter) &&
+        _audioPlayer.audioSource != null) {
+      return;
+    }
 
     _currentSurah = surahNumber;
     _currentReciter = reciter;
@@ -87,6 +110,24 @@ class QuranService {
   Stream<Map<String, dynamic>?> get lastPlayedStream =>
       _lastPlayedController.stream;
 
+  /// الحصول على Stream لنقرات الإشعارات
+  Stream<bool> get notificationClickStream =>
+      _notificationClickController.stream;
+
+  /// إرسال حدث نقرة الإشعار
+  void onNotificationClick() {
+    if (_notificationClickController.hasListener) {
+      _notificationClickController.add(true);
+    } else {
+      _pendingNotificationClick = true;
+    }
+  }
+
+  /// استهلاك النقرة المنتظرة
+  void consumePendingNotificationClick() {
+    _pendingNotificationClick = false;
+  }
+
   /// تنظيف الموارد
   void dispose() {
     _audioPlayer.stop();
@@ -131,6 +172,7 @@ class QuranService {
         album: 'سورة $surahName',
         title: 'سورة $surahName - آية رقم: $verseNumber',
         artist: 'القارئ: ${getReciterName(reciter)}',
+        extras: {'surah': surahNumber, 'reciter': reciter},
       ),
     );
   }

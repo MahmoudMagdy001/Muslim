@@ -1,33 +1,43 @@
+import 'package:equatable/equatable.dart';
 import '../../model/hadith_model.dart';
 
-abstract class HadithState {}
+enum HadithStatus { initial, loading, success, error }
 
-class HadithInitial extends HadithState {}
-
-class HadithLoading extends HadithState {}
-
-class HadithLoaded extends HadithState {
-  HadithLoaded({
-    required this.hadiths,
-    required this.savedHadiths,
-    required this.dataLoaded,
+class HadithState extends Equatable {
+  const HadithState({
+    this.status = HadithStatus.initial,
+    this.hadiths = const [],
+    this.savedHadiths = const [],
+    this.dataLoaded = false,
+    this.message = '',
   });
+
+  final HadithStatus status;
   final List<HadithModel> hadiths;
   final List<Map<String, dynamic>> savedHadiths;
   final bool dataLoaded;
+  final String message;
 
-  HadithLoaded copyWith({
+  HadithState copyWith({
+    HadithStatus? status,
     List<HadithModel>? hadiths,
     List<Map<String, dynamic>>? savedHadiths,
     bool? dataLoaded,
-  }) => HadithLoaded(
+    String? message,
+  }) => HadithState(
+    status: status ?? this.status,
     hadiths: hadiths ?? this.hadiths,
     savedHadiths: savedHadiths ?? this.savedHadiths,
     dataLoaded: dataLoaded ?? this.dataLoaded,
+    message: message ?? this.message,
   );
-}
 
-class HadithError extends HadithState {
-  HadithError(this.message);
-  final String message;
+  @override
+  List<Object?> get props => [
+    status,
+    hadiths,
+    savedHadiths,
+    dataLoaded,
+    message,
+  ];
 }

@@ -9,13 +9,16 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/di/service_locator.dart';
 import '../../../core/service/location_service.dart';
 import '../service/qiblah_service.dart';
 import 'qiblah_state.dart';
 
 class QiblahCubit extends Cubit<QiblahState> {
-  QiblahCubit({required this.service, required this.locationService})
-    : super(const QiblahState());
+  QiblahCubit({QiblahService? service, LocationService? locationService})
+    : service = service ?? getIt<QiblahService>(),
+      locationService = locationService ?? getIt<LocationService>(),
+      super(const QiblahState());
 
   final QiblahService service;
   final LocationService locationService;

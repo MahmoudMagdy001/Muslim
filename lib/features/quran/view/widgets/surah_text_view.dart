@@ -1,10 +1,6 @@
-// widgets/surah_text_view_horizontal.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'surah_text_content.dart';
-
 import 'package:quran/quran.dart' as quran;
 
 import '../../../../core/utils/extensions.dart';
@@ -16,6 +12,7 @@ import '../../repository/tafsir_repository.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'create_share_tafsir.dart';
+import 'surah_text_content.dart';
 import 'verse_options_menu.dart';
 import 'tafsir_selection_dialog.dart';
 import '../../../../core/utils/responsive_helper.dart';
@@ -39,35 +36,15 @@ class SurahTextView extends StatefulWidget {
 }
 
 class _SurahTextViewState extends State<SurahTextView> {
-  final ScrollController _controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   final TafsirRepository _tafsirRepository = TafsirRepository();
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
-  StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
-
-  // Performance Optimization: Removed unused cachedSpans and cached surah numbers
-  // to reduce memory overhead and rely on widget lifecycle.
+  StreamSubscription? _playerSub;
 
   @override
   void initState() {
     super.initState();
-    _generateKeys();
-  }
-
-  @override
-  void didUpdateWidget(SurahTextView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.surahNumber != widget.surahNumber) {
-      _generateKeys();
-    }
-  }
-
-  void _generateKeys() {
-    _ayahKeys.clear();
-    final ayahCount = quran.getVerseCount(widget.surahNumber);
-    for (int i = 1; i <= ayahCount; i++) {
-      _ayahKeys[i] = GlobalKey();
-    }
   }
 
   @override
@@ -78,18 +55,31 @@ class _SurahTextViewState extends State<SurahTextView> {
       playerState,
     ) {
       final newAyah = playerState.currentAyah;
+      final newSurah = playerState.currentSurah;
       if (!mounted) return;
-      if (newAyah != null && newAyah != currentAyahNotifier.value) {
+      if (newSurah == widget.surahNumber &&
+          newAyah != null &&
+          newAyah != currentAyahNotifier.value) {
         currentAyahNotifier.value = newAyah;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToCurrentAyah();
-        });
+        _scrollToAyah(newAyah);
       }
     });
 
-    if (widget.startAyah != null && widget.startAyah! > 1) {
+    final playerState = context.read<QuranPlayerCubit>().state;
+    if (playerState.currentSurah == widget.surahNumber &&
+        playerState.currentAyah != null) {
+      currentAyahNotifier.value = playerState.currentAyah;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToAyah(widget.startAyah!);
+        _scrollToAyah(playerState.currentAyah!);
+      });
+    } else if (widget.startAyah != null && widget.startAyah! > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Small delay to ensure layout is complete
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            _scrollToAyah(widget.startAyah!);
+          }
+        });
       });
     }
   }
@@ -98,48 +88,39 @@ class _SurahTextViewState extends State<SurahTextView> {
     final key = _ayahKeys[ayahNumber];
     if (key == null) return;
 
-    final ctx = key.currentContext;
-    if (ctx == null) return;
+    final context = key.currentContext;
+    if (context == null) return;
 
     Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 200),
-      alignment: 0.4,
+      context,
+      duration: const Duration(milliseconds: 400),
+      alignment: 0.2, // Adjust alignment to center the ayah better
     );
   }
 
   @override
   void dispose() {
     _playerSub?.cancel();
-    _controller.dispose();
+    _scrollController.dispose();
     currentAyahNotifier.dispose();
     super.dispose();
   }
 
-  /// Performance Optimization: Isolated heavy text building in SurahTextContent.
-  /// This ensures that only the text widget rebuilds when currentAyah changes,
-  /// rather than the entire SurahTextView state.
-  Widget _buildContent(BuildContext context) => SurahTextContent(
-    surahNumber: widget.surahNumber,
-    isArabic: widget.isArabic,
-    currentAyahNotifier: currentAyahNotifier,
-    ayahKeys: _ayahKeys,
-    onAyahTap: (ayah, text, position) async {
-      final selected = await VerseOptionsMenu.show(
-        context,
-        position: position,
-        localizations: widget.localizations,
-      );
+  Future<void> _handleAyahTap(int ayah, String text, Offset position) async {
+    final selected = await VerseOptionsMenu.show(
+      context,
+      position: position,
+      localizations: widget.localizations,
+    );
 
-      if (selected == 'play') {
-        _handlePlay(ayah);
-      } else if (selected == 'bookmark') {
-        _handleBookmark(ayah, text);
-      } else if (selected == 'tafseer') {
-        await _handleTafsir(ayah, text);
-      }
-    },
-  );
+    if (selected == 'play') {
+      _handlePlay(ayah);
+    } else if (selected == 'bookmark') {
+      _handleBookmark(ayah, text);
+    } else if (selected == 'tafseer') {
+      await _handleTafsir(ayah, text);
+    }
+  }
 
   void _handlePlay(int ayah) {
     if (mounted) {
@@ -268,40 +249,19 @@ class _SurahTextViewState extends State<SurahTextView> {
     }
   }
 
-  void _scrollToCurrentAyah() {
-    final currentAyah = currentAyahNotifier.value;
-    if (currentAyah == null) return;
-
-    final key = _ayahKeys[currentAyah];
-    if (key == null) return;
-
-    final ctx = key.currentContext;
-    if (ctx == null) return;
-
-    Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 400),
-      alignment: 0.4,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Performance Optimization: Extracted paddings to static constants or local variables
-    // to avoid re-allocation during rebuilds.
-    const scrollPadding = EdgeInsetsDirectional.only(
-      start: 6.0,
-      end: 18.0,
-      top: 5.0,
-      bottom: 5.0,
-    );
+    const scrollPadding = EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0);
 
-    return Scrollbar(
-      controller: _controller,
-      child: SingleChildScrollView(
-        controller: _controller,
-        padding: scrollPadding,
-        child: _buildContent(context),
+    return SingleChildScrollView(
+      controller: _scrollController,
+      padding: scrollPadding,
+      child: SurahTextContent(
+        surahNumber: widget.surahNumber,
+        isArabic: widget.isArabic,
+        currentAyahNotifier: currentAyahNotifier,
+        ayahKeys: _ayahKeys,
+        onAyahTap: _handleAyahTap,
       ),
     );
   }

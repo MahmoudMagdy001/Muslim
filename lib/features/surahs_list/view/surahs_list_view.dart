@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/utils/extensions.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../quran/service/quran_service.dart';
 import '../../quran/viewmodel/last_played_cubit/last_played.dart';
-import '../repository/surahs_list_repository_impl.dart';
-import '../service/search_service.dart';
 import '../viewmodel/surah_list/surahs_list_cubit.dart';
 import 'widgets/bookmark_tab/bookmark_tab.dart';
 import 'widgets/surahs_list_tab/surah_list_tab.dart';
@@ -25,10 +22,7 @@ class SurahsListView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => SurahListCubit(
-            surahRepository: SurahsListRepositoryImpl(),
-            searchService: QuranSearchService(),
-          )..loadSurahs(isArabic: isArabic),
+          create: (context) => SurahListCubit()..loadSurahs(isArabic: isArabic),
         ),
       ],
       child: DefaultTabController(
@@ -49,8 +43,7 @@ class SurahsListView extends StatelessWidget {
             child: TabBarView(
               children: [
                 BlocProvider(
-                  create: (context) =>
-                      LastPlayedCubit(QuranService())..initialize(),
+                  create: (context) => LastPlayedCubit()..initialize(),
                   child: SurahListTab(
                     selectedReciter: selectedReciter,
                     isArabic: isArabic,
