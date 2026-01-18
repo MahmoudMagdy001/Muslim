@@ -45,9 +45,9 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 <div align="center">
   <table>
     <tr>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.11 AM (1).jpeg" width="200" alt="Home Screen"></td>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.11 AM.jpeg" width="200" alt="Quran Player"></td>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.10 AM (2).jpeg" width="200" alt="Qibla Finder"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.11 AM (1).jpeg" width="200" alt="Home Screen"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.11 AM.jpeg" width="200" alt="Quran Player"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.10 AM (2).jpeg" width="200" alt="Qibla Finder"></td>
     </tr>
     <tr>
       <td align="center"><b>Home Dashboard</b></td>
@@ -55,9 +55,9 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
       <td align="center"><b>Live Qibla</b></td>
     </tr>
     <tr>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.10 AM (4).jpeg" width="200" alt="Hadith"></td>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.10 AM.jpeg" width="200" alt="Names of Allah"></td>
-      <td><img src="app_review/WhatsApp Image 2026-01-16 at 3.44.10 AM (1).jpeg" width="200" alt="Digital Sebha"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.10 AM (4).jpeg" width="200" alt="Hadith"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.10 AM.jpeg" width="200" alt="Names of Allah"></td>
+      <td><img src="WhatsApp Image 2026-01-16 at 3.44.10 AM (1).jpeg" width="200" alt="Digital Sebha"></td>
     </tr>
     <tr>
       <td align="center"><b>Hadith Library</b></td>
