@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert';
-import '../../../../core/utils/extensions.dart';
+
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../core/utils/responsive_helper.dart';
+import 'azkar_item_card.dart';
 import '../../model/azkar_model/azkar_model.dart';
 
 class AzkarListView extends StatefulWidget {
@@ -95,194 +93,21 @@ class _AzkarListViewState extends State<AzkarListView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final localization = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.category)),
-      body: Scrollbar(
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text(widget.category)),
+    body: Scrollbar(
+      controller: _scrollController,
+      child: ListView.builder(
         controller: _scrollController,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: widget.azkarList.length,
-          itemBuilder: (context, index) {
-            final item = widget.azkarList[index];
-            final total = totalCounts[index];
-            final hasCount = total > 0;
-
-            return ValueListenableBuilder<int>(
-              valueListenable: currentCounts[index],
-              builder: (context, current, child) {
-                final isFinished = current >= total;
-
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: EdgeInsetsDirectional.only(
-                    start: 8.toW,
-                    end: 16.toW,
-                    top: 6.toH,
-                    bottom: 6.toH,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme
-                        .colorScheme
-                        .primaryContainer, // Mint green background equivalent
-                    borderRadius: BorderRadius.circular(20.toR),
-                    border: Border.all(
-                      color: isFinished && hasCount
-                          ? theme.colorScheme.secondary
-                          : Colors.transparent,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(16.toR),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // النص الأساسي - الذكر
-                            Align(
-                              child: Text(
-                                item.zekr ?? '',
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  height: 1.7,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-
-                            if ((item.reference?.isNotEmpty ?? false) ||
-                                (item.description?.isNotEmpty ?? false))
-                              SizedBox(height: 16.toH),
-
-                            // المرجع - pill shape
-                            if (item.reference?.isNotEmpty ?? false)
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16.toW,
-                                  vertical: 8.toH,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(25.toR),
-                                ),
-                                child: Text(
-                                  '${localization.revision}: ${item.reference}',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.primary.withAlpha(
-                                      150,
-                                    ), // gray 666666 equivalent
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-
-                            // الوصف - gray text below reference
-                            if (item.description?.isNotEmpty ?? false) ...[
-                              if (item.reference?.isNotEmpty ?? false)
-                                SizedBox(height: 12.toH),
-                              Text(
-                                item.description!,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white60,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-
-                      // قسم الأزرار (يظهر فقط لو فيه تكرار)
-                      if (hasCount) ...[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            16.toW,
-                            0,
-                            16.toW,
-                            16.toH,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    current.toString(),
-                                    style: theme.textTheme.headlineSmall
-                                        ?.copyWith(
-                                          color: Colors.white,
-
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  Text(
-                                    '/',
-                                    style: theme.textTheme.headlineSmall
-                                        ?.copyWith(color: Colors.white),
-                                  ),
-                                  Text(
-                                    total.toString(),
-                                    style: theme.textTheme.headlineSmall
-                                        ?.copyWith(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                onPressed: () => _resetCounter(index),
-                                icon: const Icon(
-                                  Icons.refresh,
-                                  color: Colors.white,
-                                ),
-                                iconSize: 32.toR,
-                              ),
-                              SizedBox(
-                                height: 42.toH,
-                                width: 130.toW,
-                                child: ElevatedButton(
-                                  onPressed: isFinished
-                                      ? null
-                                      : () {
-                                          HapticFeedback.mediumImpact();
-                                          _incrementCounter(index);
-                                        },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        theme.colorScheme.secondary,
-                                    foregroundColor:
-                                        theme.colorScheme.onSecondary,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        25.toR,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    localization.tasbih,
-                                    style: context.textTheme.titleSmall
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            );
-          },
+        itemCount: widget.azkarList.length,
+        itemBuilder: (context, index) => AzkarItemCard(
+          item: widget.azkarList[index],
+          currentCount: currentCounts[index],
+          totalCount: totalCounts[index],
+          onIncrement: () => _incrementCounter(index),
+          onReset: () => _resetCounter(index),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

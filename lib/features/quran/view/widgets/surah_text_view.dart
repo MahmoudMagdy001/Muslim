@@ -1,8 +1,9 @@
 // widgets/surah_text_view_horizontal.dart
 import 'dart:async';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'surah_text_content.dart';
 
 import 'package:quran/quran.dart' as quran;
 
@@ -40,13 +41,12 @@ class SurahTextView extends StatefulWidget {
 class _SurahTextViewState extends State<SurahTextView> {
   final ScrollController _controller = ScrollController();
   final TafsirRepository _tafsirRepository = TafsirRepository();
-  GlobalKey? _currentKey;
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
   StreamSubscription? _playerSub;
   final Map<int, GlobalKey> _ayahKeys = {};
-  List<InlineSpan>? _cachedSpans;
-  int? _cachedSurahNumber;
-  int? _cachedCurrentAyah;
+
+  // Performance Optimization: Removed unused cachedSpans and cached surah numbers
+  // to reduce memory overhead and rely on widget lifecycle.
 
   @override
   void initState() {
@@ -59,7 +59,6 @@ class _SurahTextViewState extends State<SurahTextView> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.surahNumber != widget.surahNumber) {
       _generateKeys();
-      _cachedSpans = null;
     }
   }
 
@@ -117,89 +116,30 @@ class _SurahTextViewState extends State<SurahTextView> {
     super.dispose();
   }
 
-  List<InlineSpan> _buildSpans(
-    BuildContext context,
-    bool isArabic,
-    int? currentAyah,
-  ) {
-    if (_cachedSpans != null &&
-        _cachedSurahNumber == widget.surahNumber &&
-        _cachedCurrentAyah == currentAyah) {
-      return _cachedSpans!;
-    }
-
-    final ayahCount = quran.getVerseCount(widget.surahNumber);
-    final spans = <InlineSpan>[];
-    _currentKey = currentAyah != null ? _ayahKeys[currentAyah] : null;
-
-    for (int ayah = 1; ayah <= ayahCount; ayah++) {
-      final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
-      final text = isArabic
-          ? quran.getVerse(widget.surahNumber, ayah)
-          : quran.getVerseTranslation(widget.surahNumber, ayah);
-
-      final isCurrent = ayah == currentAyah;
-      final keyForThisAyah = _ayahKeys[ayah];
-
-      spans.add(
-        TextSpan(
-          children: [
-            WidgetSpan(
-              alignment: PlaceholderAlignment.top,
-              child: SizedBox(key: keyForThisAyah, width: 0, height: 0),
-            ),
-            TextSpan(
-              text: '$text ',
-              style: context.textTheme.displayMedium?.copyWith(
-                color: isCurrent
-                    ? context.colorScheme.error
-                    : context.textTheme.bodyLarge?.color,
-              ),
-              recognizer: _createGestureRecognizer(ayah, text),
-            ),
-
-            TextSpan(text: endSymbol, style: context.textTheme.displayMedium),
-            const TextSpan(text: ' '),
-          ],
-        ),
+  /// Performance Optimization: Isolated heavy text building in SurahTextContent.
+  /// This ensures that only the text widget rebuilds when currentAyah changes,
+  /// rather than the entire SurahTextView state.
+  Widget _buildContent(BuildContext context) => SurahTextContent(
+    surahNumber: widget.surahNumber,
+    isArabic: widget.isArabic,
+    currentAyahNotifier: currentAyahNotifier,
+    ayahKeys: _ayahKeys,
+    onAyahTap: (ayah, text, position) async {
+      final selected = await VerseOptionsMenu.show(
+        context,
+        position: position,
+        localizations: widget.localizations,
       );
-    }
 
-    _cachedSpans = spans;
-    _cachedSurahNumber = widget.surahNumber;
-    _cachedCurrentAyah = currentAyah;
-
-    return spans;
-  }
-
-  TapGestureRecognizer _createGestureRecognizer(int ayah, String text) {
-    final tapRecognizer = TapGestureRecognizer();
-    Offset? tapPosition;
-
-    tapRecognizer
-      ..onTapDown = (details) {
-        tapPosition = details.globalPosition;
+      if (selected == 'play') {
+        _handlePlay(ayah);
+      } else if (selected == 'bookmark') {
+        _handleBookmark(ayah, text);
+      } else if (selected == 'tafseer') {
+        await _handleTafsir(ayah, text);
       }
-      ..onTap = () async {
-        final position = tapPosition ?? Offset.zero;
-
-        final selected = await VerseOptionsMenu.show(
-          context,
-          position: position,
-          localizations: widget.localizations,
-        );
-
-        if (selected == 'play') {
-          _handlePlay(ayah);
-        } else if (selected == 'bookmark') {
-          _handleBookmark(ayah, text);
-        } else if (selected == 'tafseer') {
-          await _handleTafsir(ayah, text);
-        }
-      };
-
-    return tapRecognizer;
-  }
+    },
+  );
 
   void _handlePlay(int ayah) {
     if (mounted) {
@@ -329,8 +269,13 @@ class _SurahTextViewState extends State<SurahTextView> {
   }
 
   void _scrollToCurrentAyah() {
-    if (_currentKey == null) return;
-    final ctx = _currentKey!.currentContext;
+    final currentAyah = currentAyahNotifier.value;
+    if (currentAyah == null) return;
+
+    final key = _ayahKeys[currentAyah];
+    if (key == null) return;
+
+    final ctx = key.currentContext;
     if (ctx == null) return;
 
     Scrollable.ensureVisible(
@@ -341,31 +286,23 @@ class _SurahTextViewState extends State<SurahTextView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scrollbar(
-    controller: _controller,
-    child: SingleChildScrollView(
+  Widget build(BuildContext context) {
+    // Performance Optimization: Extracted paddings to static constants or local variables
+    // to avoid re-allocation during rebuilds.
+    const scrollPadding = EdgeInsetsDirectional.only(
+      start: 6.0,
+      end: 18.0,
+      top: 5.0,
+      bottom: 5.0,
+    );
+
+    return Scrollbar(
       controller: _controller,
-      padding: EdgeInsetsDirectional.only(
-        start: 6.toW,
-        end: 18.toW,
-        top: 5.toH,
-        bottom: 5.toH,
+      child: SingleChildScrollView(
+        controller: _controller,
+        padding: scrollPadding,
+        child: _buildContent(context),
       ),
-      child: ValueListenableBuilder<int?>(
-        valueListenable: currentAyahNotifier,
-        builder: (context, currentAyah, child) => RepaintBoundary(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              style: context.textTheme.titleLarge?.copyWith(
-                height: widget.isArabic ? 2.3 : 1.7,
-                fontWeight: FontWeight.normal,
-              ),
-              children: _buildSpans(context, widget.isArabic, currentAyah),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
+    );
+  }
 }

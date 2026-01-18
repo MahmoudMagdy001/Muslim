@@ -1,17 +1,14 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../core/utils/custom_loading_indicator.dart';
 import '../../../core/utils/format_helper.dart';
 import '../../../l10n/app_localizations.dart';
 import 'widgets/crops_zakat_tab.dart';
 import '../../../core/utils/extensions.dart';
-import '../../../core/utils/responsive_helper.dart';
 import 'widgets/zakat_card.dart';
+import 'widgets/zakat_error_view.dart';
 
 class ZakatView extends StatefulWidget {
   const ZakatView({super.key});
@@ -63,7 +60,7 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
         throw Exception('فشل في جلب سعر الذهب');
       }
 
-      final goldData = json.decode(goldResponse.body);
+      final goldData = json.decode(goldResponse.body) as Map<String, dynamic>;
       final pricePerOunceUSD = (goldData['price'] as num?)?.toDouble() ?? 0.0;
 
       // --- 2️⃣ جلب سعر الدولار مقابل الجنيه ---
@@ -75,9 +72,11 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
         throw Exception('فشل في جلب سعر الدولار مقابل الجنيه');
       }
 
-      final exchangeData = json.decode(exchangeResponse.body);
-      final usdToEgp =
-          (exchangeData['conversion_rates']?['EGP'] as num?)?.toDouble() ?? 0.0;
+      final exchangeData =
+          json.decode(exchangeResponse.body) as Map<String, dynamic>;
+      final conversionRates =
+          exchangeData['conversion_rates'] as Map<String, dynamic>?;
+      final usdToEgp = (conversionRates?['EGP'] as num?)?.toDouble() ?? 0.0;
 
       debugPrint('USD → EGP = $usdToEgp');
 
@@ -128,47 +127,10 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
                       goldPricePerGram == 0) {
                     return Scaffold(
                       appBar: _buildAppBar(textTheme, theme, localizations),
-                      body: InternetStateManager(
-                        noInternetScreen: const NoInternetScreen(),
-                        onRestoreInternetConnection: () {
-                          fetchGoldPrice();
-                        },
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24.toR),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  size: 64.toSp,
-                                  color: theme.colorScheme.error,
-                                ),
-                                SizedBox(height: 16.toH),
-                                Text(
-                                  errorMessage ??
-                                      localizations.gold_price_error,
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    color: theme.colorScheme.error,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 24.toH),
-                                ElevatedButton.icon(
-                                  onPressed: fetchGoldPrice,
-                                  icon: const Icon(Icons.refresh),
-                                  label: Text(localizations.retry),
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 24.toW,
-                                      vertical: 12.toH,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      body: ZakatErrorView(
+                        errorMessage: errorMessage,
+                        onRetry: fetchGoldPrice,
+                        localizations: localizations,
                       ),
                     );
                   }
