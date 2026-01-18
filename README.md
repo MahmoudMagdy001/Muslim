@@ -1,88 +1,125 @@
-# 🕋 Muslim App
+<div align="center">
+  <img src="assets/images/muslim_logo.png" width="128" height="128" alt="Muslim App Logo">
+  <h1>🕋 Muslim App</h1>
+  <p><b>Your Elegant Daily companion for Spiritual Growth</b></p>
 
-A modern, elegant, and comprehensive Islamic application built with Flutter. Designed to be a daily companion for every Muslim, providing accurate prayer times, Holy Quran with audio recitations, Qibla direction, Zakat calculator, and more.
-
----
-
-## ✨ Features
-
-### 📖 Holy Quran
-- Full Quran text with a clean and readable interface.
-- Audio recitations from various famous Qaris (e.g., Mishary Rashid Alafasy).
-- Background audio player support for seamless listening.
-- Bookmarking and search functionality.
-
-### 🕌 Prayer Times & Adhan
-- Accurate prayer times based on your current location (`adhan` package).
-- Professional Adhan notifications (`awesome_notifications`).
-- Countdown timer for the next prayer.
-
-### 🧭 Qibla Finder
-- Real-time Qibla direction using device sensors and GPS.
-- Intuitive and beautiful compass UI.
-
-### 💰 Zakat Calculator
-- Smart calculator to help you determine your Zakat.
-- Integration with real-time gold prices via API.
-- Offline support with local data persistence.
-
-### 📜 Islamic Daily Content
-- **Azkar**: Morning, evening, and various daily supplications.
-- **Hadith**: Curated collection of authentic Hadiths.
-- **Names of Allah**: Beautiful presentation of the 99 Names with meanings.
-- **Sebhas**: Digital tasbih counter for daily dhikr.
-
-### 🛠️ Key Technical Features
-- **Modern UI/UX**: Built with vanilla CSS principles and custom Material 3 themes.
-- **Bi-lingual Support**: Full support for Arabic and English localization.
-- **Offline First**: Most features work without an internet connection using local caching.
-- **State Management**: Robust implementation using `flutter_bloc` (Cubit).
-- **Responsive Design**: Optimized for various screen sizes and orientations.
+  [![Flutter](https://img.shields.io/badge/Flutter-v3.10+-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+  [![License](https://img.shields.io/badge/License-Open%20Source-brightgreen)](LICENSE)
+  [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)](https://flutter.dev)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](CONTRIBUTING.md)
+</div>
 
 ---
 
-## 🚀 Tech Stack
+## 🌟 Overview
 
-- **Framework**: [Flutter](https://flutter.dev/)
-- **State Management**: [BLoC / Cubit](https://pub.dev/packages/flutter_bloc)
-- **Audio Utility**: [just_audio](https://pub.dev/packages/just_audio) & [just_audio_background](https://pub.dev/packages/just_audio_background)
-- **Calculations**: [adhan](https://pub.dev/packages/adhan)
-- **Notifications**: [awesome_notifications](https://pub.dev/packages/awesome_notifications)
-- **Connectivity**: [internet_state_manager](https://pub.dev/packages/internet_state_manager)
-- **Persistent Storage**: [shared_preferences](https://pub.dev/packages/shared_preferences)
+**Muslim App** is a modern, elegant, and comprehensive Islamic application built with Flutter. It's designed to be more than just an app; it's a daily companion for every Muslim, providing a seamless and spiritually enriching experience. 
+
+Whether you're looking for high-quality Quran recitations, precise prayer timings, or a smart Zakat calculator, this app delivers it all with a premium Material 3 interface.
 
 ---
 
-## 📦 Installation
+## ✨ Key Features
 
-1.  **Clone the repository**:
+### 📖 Holy Quran Center
+*   **Immersive Reading**: Clean, readable interface with adjustable typography.
+*   **Global Reciters**: Crystal-clear audio from world-renowned Qaris (e.g., Mishary Rashid Alafasy).
+*   **Active Playback**: Background audio support with lock-screen controls.
+*   **Smart Search**: Instantly find Surahs or Ayahs with bookmarks for your favorites.
+
+### 🕌 Prayer & Spiritual Tools
+*   **Precision Adhan**: Location-aware prayer times using the industry-standard `adhan` package.
+*   **Visual Notifications**: Beautiful, custom-designed Adhan alerts via `awesome_notifications`.
+*   **Live Qibla**: Real-time direction finding using advanced device sensors and GPS integration.
+*   **Digital Tasbih**: A minimalist and haptic-responsive Sebha counter.
+
+### 💰 Essential Utilities
+*   **Zakat Calculator**: Intelligent calculations based on current wealth and assets.
+*   **Gold Rate Integration**: Real-time gold price fetching via API for accurate Zakat values.
+*   **Offline Daily Content**: Azkar (Morning/Evening), 99 Names of Allah, and curated Hadith collections—all accessible without an internet connection.
+
+---
+
+## 📸 App Experience
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="https://via.placeholder.com/200x400?text=Home+Screen" width="200" alt="Home Screen"></td>
+      <td><img src="https://via.placeholder.com/200x400?text=Quran+Player" width="200" alt="Quran Player"></td>
+      <td><img src="https://via.placeholder.com/200x400?text=Qibla+Finder" width="200" alt="Qibla Finder"></td>
+    </tr>
+    <tr>
+      <td align="center"><b>Home</b></td>
+      <td align="center"><b>Holy Quran</b></td>
+      <td align="center"><b>Live Qibla</b></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 🛠️ Technical Excellence
+
+### Built With
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | [Flutter](https://flutter.dev/) |
+| **State Management** | [BLoC / Cubit](https://pub.dev/packages/flutter_bloc) |
+| **Audio Engine** | [just_audio](https://pub.dev/packages/just_audio) |
+| **Calculations** | [adhan](https://pub.dev/packages/adhan) |
+| **Persistence** | [shared_preferences](https://pub.dev/packages/shared_preferences) |
+| **UI Enhancement** | Google Fonts, Skeletonizer, ScreenUtil |
+
+### Architecture Highlights
+- **Clean Architecture**: Separation of concerns between UI, Business Logic (BLoC), and Data layers.
+- **Offline-First Strategy**: Local caching ensures the app remains functional in low-connectivity areas.
+- **Responsive Layouts**: Fully optimized for both phone and tablet form factors.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Flutter SDK (v3.10.0 or higher)
+- Android Studio / VS Code
+- An active Internet connection for the initial setup
+
+### Installation
+1.  **Clone the Repo**
     ```bash
     git clone https://github.com/MahmoudMagdy001/Muslim.git
-    ```
-2.  **Navigate to project directory**:
-    ```bash
     cd muslim
     ```
-3.  **Install dependencies**:
+2.  **Install Dependencies**
     ```bash
     flutter pub get
     ```
-4.  **Run the app**:
+3.  **Launch the App**
     ```bash
     flutter run
     ```
 
 ---
 
-## 🤝 Contribution
+## 🤝 Roadmap & Contributions
+We are constantly improving! Future updates will include:
+- [ ] Apple Watch & WearOS support.
+- [ ] Community prayer tracking.
+- [ ] Multi-language support expansion.
 
-Contributions are welcome! If you have suggestions or find bugs, please open an issue or submit a pull request.
+**Want to contribute?** We love PRs! Check out our [Contribution Guidelines](CONTRIBUTING.md) to get started.
 
-## 📄 License
+---
 
-This project is open-source. Please refer to the developer for licensing details.
+## 📄 License & Contact
 
-## 📧 Contact
+Distributed under the MIT License. See `LICENSE` for more information.
 
-**Mahmoud Magdy**
-Email: [mahmodmansour2001@gmail.com](mailto:mahmodmansour2001@gmail.com)
+**Mahmoud Magdy**  
+📧 [mahmodmansour2001@gmail.com](mailto:mahmodmansour2001@gmail.com)  
+🔗 [LinkedIn](https://www.linkedin.com/in/mahmoud-magdy-001/) | [GitHub](https://github.com/MahmoudMagdy001)
+
+<div align="center">
+  <sub>Built with ❤️ for the Ummah</sub>
+</div>

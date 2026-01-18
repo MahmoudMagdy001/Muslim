@@ -53,10 +53,11 @@ class _AppContentState extends State<AppContent> {
   }
 
   void _setupNotificationClickChannel() {
-    print('NotificationNav: Setting up notification click channel');
+    debugPrint('NotificationNav: Setting up notification click channel');
     const channel = MethodChannel('com.mahmoud.muslim/notification_click');
+    // ignore: cascade_invocations
     channel.setMethodCallHandler((call) async {
-      print('NotificationNav: Received method call: ${call.method}');
+      debugPrint('NotificationNav: Received method call: ${call.method}');
       if (call.method == 'onNotificationClick') {
         getIt<QuranService>().onNotificationClick();
       }
@@ -65,7 +66,7 @@ class _AppContentState extends State<AppContent> {
 
   void _listenToNotificationClick() {
     getIt<QuranService>().notificationClickStream.listen((bool clicked) {
-      print('NotificationNav: notificationClickStream received: $clicked');
+      debugPrint('NotificationNav: notificationClickStream received: $clicked');
       if (clicked) {
         _handleDeepLink();
       }
@@ -73,7 +74,7 @@ class _AppContentState extends State<AppContent> {
   }
 
   void _handleDeepLink() {
-    print('NotificationNav: Handling deep link');
+    debugPrint('NotificationNav: Handling deep link');
     final quranService = getIt<QuranService>();
     final surah = quranService.currentSurah;
     final reciter = quranService.currentReciter;
@@ -81,17 +82,17 @@ class _AppContentState extends State<AppContent> {
         ? quranService.audioPlayer.currentIndex! + 1
         : 1;
 
-    print('NotificationNav: Surah: $surah, Reciter: $reciter, Ayah: $ayah');
+    debugPrint('NotificationNav: Surah: $surah, Reciter: $reciter, Ayah: $ayah');
 
     if (surah != null && reciter != null) {
-      print('NotificationNav: Navigating to QuranView');
+      debugPrint('NotificationNav: Navigating to QuranView');
       navigateWithTransition(
         NavigationService.context!,
         QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
         type: TransitionType.fade,
       );
     } else {
-      print('NotificationNav: Surah or Reciter is NULL, cannot navigate');
+      debugPrint('NotificationNav: Surah or Reciter is NULL, cannot navigate');
     }
   }
 
