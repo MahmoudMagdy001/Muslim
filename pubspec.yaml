@@ -14,25 +14,25 @@ dependencies:
   quran: ^1.4.1
   just_audio: ^0.10.5
   intl: ^0.20.2
-  http: ^1.5.0
-  shared_preferences: ^2.5.3
-  google_fonts: ^6.3.2
+  http: ^1.6.0
+  shared_preferences: ^2.5.4
+  google_fonts: ^8.0.1
   awesome_notifications: ^0.10.1
   just_audio_background: ^0.0.1-beta.17
-  audio_service: ^0.18.12
+  audio_service: ^0.18.18
   permission_handler: ^12.0.1
-  flutter_qiblah: ^3.1.0+1
+  flutter_qiblah: ^3.2.0
   flutter_bloc: ^9.1.1
-  geolocator: ^13.0.2
+  geolocator: ^14.0.2
   adhan: ^2.0.0+1
   hijri: ^3.0.0
   geocoding: ^4.0.0
   disable_battery_optimization: ^1.1.2
   share_plus: ^12.0.1
-  skeletonizer: ^2.1.0+1
+  skeletonizer: ^2.1.2
   latlong2: ^0.9.1
   workmanager: ^0.9.0+3
-  syncfusion_flutter_sliders: ^31.2.4
+  syncfusion_flutter_sliders: ^32.2.4
   url_launcher: ^6.3.2
   in_app_update: ^4.2.5
   package_info_plus: ^9.0.0
@@ -59,6 +59,7 @@ flutter:
     - assets/images/kaaba.png
     - assets/images/muslim_logo.png
     - assets/json/azkar.json
+    - assets/json/zekr.json
     - assets/json/azkar_en.json
     - assets/json/names_of_allah.json
     - assets/home/

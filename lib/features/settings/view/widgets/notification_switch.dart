@@ -5,9 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/service/permissions_sevice.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../prayer_times/service/prayer_notification_service.dart';
+import '../../../prayer_times/models/prayer_notification_settings_model.dart';
+import '../../../prayer_times/models/prayer_type.dart';
 import '../../../prayer_times/viewmodel/prayer_times_cubit.dart';
+import '../../../prayer_times/viewmodel/prayer_times_state.dart';
 
 class NotificationSection extends StatefulWidget {
   const NotificationSection({
@@ -24,15 +27,13 @@ class NotificationSection extends StatefulWidget {
 }
 
 class _NotificationSectionState extends State<NotificationSection> {
-  final NotificationSettingsManager _settingsManager =
-      NotificationSettingsManager();
-  final QuranNotificationService _quranNotificationService =
-      QuranNotificationService();
-  final PrayerNotificationService _prayerNotificationService =
-      PrayerNotificationService();
+  final _NotificationSettingsManager _settingsManager =
+      _NotificationSettingsManager();
+  final _QuranNotificationService _quranNotificationService =
+      _QuranNotificationService();
 
-  final ValueNotifier<NotificationSettings> settingsNotifier = ValueNotifier(
-    const NotificationSettings(),
+  final ValueNotifier<_NotificationSettings> settingsNotifier = ValueNotifier(
+    const _NotificationSettings(),
   );
 
   @override
@@ -50,30 +51,6 @@ class _NotificationSectionState extends State<NotificationSection> {
   Future<void> _loadSettings() async {
     final settings = await _settingsManager.loadSettings();
     settingsNotifier.value = settings;
-  }
-
-  Future<void> _togglePrayerNotifications(bool value) async {
-    await _settingsManager.savePrayerNotifications(value);
-
-    settingsNotifier.value = settingsNotifier.value.copyWith(
-      prayerNotifications: value,
-    );
-
-    if (!value) {
-      await _prayerNotificationService.cancelAllNotifications();
-    } else {
-      await requestAllPermissions();
-      if (mounted) {
-        context.read<PrayerTimesCubit>().init(isArabic: widget.isArabic);
-      }
-    }
-
-    if (!mounted) return;
-    _showSnackBar(
-      value
-          ? AppLocalizations.of(context).prayerNotificationsEnabled
-          : AppLocalizations.of(context).prayerNotificationsDisabled,
-    );
   }
 
   Future<void> _toggleQuranNotifications(bool value) async {
@@ -124,13 +101,13 @@ class _NotificationSectionState extends State<NotificationSection> {
   void _showNotificationSettingsModal(AppLocalizations localizations) {
     showCustomModalBottomSheet(
       context: context,
-      builder: (context) => ValueListenableBuilder<NotificationSettings>(
+      builder: (context) => ValueListenableBuilder<_NotificationSettings>(
         valueListenable: settingsNotifier,
         builder: (context, settings, child) => _NotificationSettingsModal(
           theme: widget.theme,
           localizations: localizations,
+          isArabic: widget.isArabic,
           settings: settings,
-          onPrayerNotificationsChanged: _togglePrayerNotifications,
           onQuranNotificationsChanged: _toggleQuranNotifications,
         ),
       ),
@@ -142,29 +119,37 @@ class _NotificationSettingsModal extends StatelessWidget {
   const _NotificationSettingsModal({
     required this.theme,
     required this.localizations,
+    required this.isArabic,
     required this.settings,
-    required this.onPrayerNotificationsChanged,
     required this.onQuranNotificationsChanged,
   });
 
   final ThemeData theme;
   final AppLocalizations localizations;
-  final NotificationSettings settings;
-  final ValueChanged<bool> onPrayerNotificationsChanged;
+  final bool isArabic;
+  final _NotificationSettings settings;
   final ValueChanged<bool> onQuranNotificationsChanged;
 
   @override
   Widget build(BuildContext context) => Column(
     mainAxisSize: MainAxisSize.min,
     children: [
-      _NotificationSwitchTile(
-        icon: Icons.mosque_rounded,
-        title: localizations.enablePrayerNotifications,
-        value: settings.prayerNotifications,
-        onChanged: onPrayerNotificationsChanged,
-        theme: theme,
+      // Prayer Notifications Header
+      ListTile(
+        leading: Icon(Icons.mosque_rounded, color: theme.colorScheme.primary),
+        title: Text(
+          localizations.enablePrayerNotifications,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      const SizedBox(height: 12),
+
+      // Per-prayer toggles
+      _PerPrayerSettingsSection(theme: theme, isArabic: isArabic),
+
+      Divider(height: 24.toH, indent: 16.toW, endIndent: 16.toW),
+
       _NotificationSwitchTile(
         icon: Icons.auto_stories_rounded,
         title: localizations.enableQuranReminders,
@@ -172,9 +157,60 @@ class _NotificationSettingsModal extends StatelessWidget {
         onChanged: onQuranNotificationsChanged,
         theme: theme,
       ),
-      const SizedBox(height: 12),
+      SizedBox(height: 12.toH),
     ],
   );
+}
+
+/// Per-prayer notification toggles section.
+///
+/// Uses [BlocBuilder] to read notification settings from [PrayerTimesCubit].
+class _PerPrayerSettingsSection extends StatelessWidget {
+  const _PerPrayerSettingsSection({
+    required this.theme,
+    required this.isArabic,
+  });
+
+  final ThemeData theme;
+  final bool isArabic;
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocSelector<
+        PrayerTimesCubit,
+        PrayerTimesState,
+        PrayerNotificationSettings
+      >(
+        selector: (state) => state.notificationSettings,
+        builder: (context, notificationSettings) => Padding(
+          padding: EdgeInsets.only(left: 24.toW),
+          child: Column(
+            children: PrayerType.values.map((prayer) {
+              final enabled = notificationSettings.isEnabled(prayer);
+              return _NotificationSwitchTile(
+                icon: Icons.notifications_active_rounded,
+                title: prayer.displayName(isArabic: isArabic),
+                value: enabled,
+                onChanged: (value) async {
+                  // Request permissions if enabling a notification
+                  if (value) {
+                    await requestAllPermissions();
+                  }
+
+                  if (context.mounted) {
+                    context.read<PrayerTimesCubit>().togglePrayerNotification(
+                      prayer,
+                      enabled: value,
+                    );
+                  }
+                },
+                theme: theme,
+                dense: true,
+              );
+            }).toList(),
+          ),
+        ),
+      );
 }
 
 class _NotificationSwitchTile extends StatelessWidget {
@@ -184,6 +220,7 @@ class _NotificationSwitchTile extends StatelessWidget {
     required this.value,
     required this.onChanged,
     required this.theme,
+    this.dense = false,
   });
 
   final IconData icon;
@@ -191,49 +228,40 @@ class _NotificationSwitchTile extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
   final ThemeData theme;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) => ListTile(
-    leading: Icon(icon),
-    title: Text(title, style: theme.textTheme.titleMedium),
+    dense: dense,
+    leading: Icon(icon, size: dense ? 20.toW : null),
+    title: Text(
+      title,
+      style: dense ? theme.textTheme.bodyMedium : theme.textTheme.titleMedium,
+    ),
     trailing: Switch(value: value, onChanged: onChanged),
   );
 }
 
-// Data model for notification settings
-class NotificationSettings {
-  const NotificationSettings({
-    this.prayerNotifications = true,
-    this.quranNotifications = true,
-  });
-  final bool prayerNotifications;
+// ── Private helpers (kept in this file for settings UI scope) ──────────
+
+class _NotificationSettings {
+  const _NotificationSettings({this.quranNotifications = true});
   final bool quranNotifications;
 
-  NotificationSettings copyWith({
-    bool? prayerNotifications,
-    bool? quranNotifications,
-  }) => NotificationSettings(
-    prayerNotifications: prayerNotifications ?? this.prayerNotifications,
-    quranNotifications: quranNotifications ?? this.quranNotifications,
-  );
+  _NotificationSettings copyWith({bool? quranNotifications}) =>
+      _NotificationSettings(
+        quranNotifications: quranNotifications ?? this.quranNotifications,
+      );
 }
 
-// Service for managing notification settings persistence
-class NotificationSettingsManager {
-  static const String _prayerNotificationsKey = 'prayer_notifications';
+class _NotificationSettingsManager {
   static const String _quranNotificationsKey = 'quran_notifications';
 
-  Future<NotificationSettings> loadSettings() async {
+  Future<_NotificationSettings> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    return NotificationSettings(
-      prayerNotifications: prefs.getBool(_prayerNotificationsKey) ?? true,
+    return _NotificationSettings(
       quranNotifications: prefs.getBool(_quranNotificationsKey) ?? true,
     );
-  }
-
-  Future<void> savePrayerNotifications(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_prayerNotificationsKey, value);
   }
 
   Future<void> saveQuranNotifications(bool value) async {
@@ -242,8 +270,7 @@ class NotificationSettingsManager {
   }
 }
 
-// Service for Quran notifications
-class QuranNotificationService {
+class _QuranNotificationService {
   static const String _channelKey = 'quran_channel';
 
   Future<void> cancelAllNotifications() async {
@@ -258,12 +285,9 @@ class QuranNotificationService {
   Future<void> scheduleDailyReminder(BuildContext context) async {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
-
-      // احذف أي إشعارات قديمة قبل جدولة الجديدة
       await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
 
       final DateTime now = DateTime.now();
-
       final DateTime firstNotification = DateTime(
         now.year,
         now.month,

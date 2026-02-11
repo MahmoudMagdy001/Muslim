@@ -1,67 +1,70 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/service_locator.dart';
 import '../../../core/service/permissions_sevice.dart';
+import '../../../core/utils/app_logger.dart';
+import '../helper/notification_constants.dart';
 import '../model/prayer_times_model.dart';
-import '../service/prayer_calculator_service.dart';
-import '../service/prayer_notification_service.dart';
-import '../service/prayer_times_service.dart';
+import '../models/prayer_type.dart';
+import '../repositories/prayer_notification_repository.dart';
+import '../repositories/prayer_times_repository.dart';
+import '../services/prayer_calculator_service.dart';
 import 'prayer_times_state.dart';
 
+/// Cubit managing prayer times state, notification scheduling,
+/// and per-prayer notification settings.
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   PrayerTimesCubit({
-    PrayerTimesService? prayerTimesService,
-    PrayerNotificationService? notificationService,
+    PrayerTimesRepository? prayerTimesRepository,
+    PrayerNotificationRepository? notificationRepository,
     PrayerCalculatorService? calculatorService,
-  }) : _prayerTimesService = prayerTimesService ?? getIt<PrayerTimesService>(),
-       _notificationService =
-           notificationService ?? getIt<PrayerNotificationService>(),
+  }) : _prayerTimesRepository =
+           prayerTimesRepository ?? getIt<PrayerTimesRepository>(),
+       _notificationRepository =
+           notificationRepository ?? getIt<PrayerNotificationRepository>(),
        _calculatorService =
            calculatorService ?? getIt<PrayerCalculatorService>(),
        super(const PrayerTimesState());
 
-  final PrayerTimesService _prayerTimesService;
-  final PrayerNotificationService _notificationService;
+  final PrayerTimesRepository _prayerTimesRepository;
+  final PrayerNotificationRepository _notificationRepository;
   final PrayerCalculatorService _calculatorService;
 
   Timer? _timer;
   Timer? _midnightTimer;
 
-  /// التهيئة وجلب مواقيت الصلاة
-  Future<void> init({required bool isArabic, BuildContext? context}) async {
-    await fetchPrayerTimes(isArabic: isArabic, context: context);
+  /// Initializes prayer times and loads notification settings.
+  Future<void> init({required bool isArabic}) async {
+    await loadNotificationSettings();
+    await fetchPrayerTimes(isArabic: isArabic);
   }
 
+  /// Checks and requests all required permissions.
   Future<void> checkAllPermissions() async {
-    emit(state.copyWith(status: PrayerTimesStatus.checkingPermissions));
-    await requestAllPermissions();
+    emit(state.copyWith(status: RequestStatus.loading));
     try {
-      debugPrint('✅ تم التحقق من جميع الصلاحيات بنجاح');
+      await requestAllPermissions();
+      AppLogger.success('تم التحقق من جميع الصلاحيات بنجاح');
     } catch (error) {
-      debugPrint('❌ خطأ في التحقق من الصلاحيات: $error');
+      AppLogger.error('خطأ في التحقق من الصلاحيات', error);
       emit(
         state.copyWith(
-          status: PrayerTimesStatus.permissionError,
+          status: RequestStatus.failure,
           message: 'يجب منح الصلاحيات المطلوبة لعرض مواقيت الصلاة',
         ),
       );
     }
   }
 
-  /// جلب مواقيت الصلاة
-  Future<void> fetchPrayerTimes({
-    required bool isArabic,
-    BuildContext? context,
-  }) async {
-    emit(state.copyWith(status: PrayerTimesStatus.loading));
+  /// Fetches prayer times for today.
+  Future<void> fetchPrayerTimes({required bool isArabic}) async {
+    emit(state.copyWith(status: RequestStatus.loading));
 
     try {
-      final localPrayerTimes = await _prayerTimesService.getPrayerTimes(
+      final localPrayerTimes = await _prayerTimesRepository.getPrayerTimes(
         isArabic: isArabic,
-        context: context,
       );
       await _handlePrayerTimesSuccess(localPrayerTimes);
     } catch (error) {
@@ -69,44 +72,42 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     }
   }
 
-  /// معالجة نجاح جلب مواقيت الصلاة
-  /// معالجة نجاح جلب مواقيت الصلاة
+  /// Handles successful prayer times fetch — schedules notifications
+  /// and updates state.
   Future<void> _handlePrayerTimesSuccess(LocalPrayerTimes times) async {
-    // نبدأ بقائمة تحتوي على أوقات اليوم الحالي
     final List<LocalPrayerTimes> allScheduledTimes = [times];
 
     try {
-      // محاولة جلب أوقات اليومين القادمين لجدولتهم فوراً
-      final coordinates = await _prayerTimesService.getCachedCoordinates();
+      final coordinates = await _prayerTimesRepository.getCachedCoordinates();
       if (coordinates != null) {
         final now = DateTime.now();
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
           final nextDate = now.add(Duration(days: i));
-          final nextDayTimes = await _prayerTimesService.getPrayerTimesForDate(
-            coordinates,
-            nextDate,
-            cityName: times.city,
-          );
+          final nextDayTimes = await _prayerTimesRepository
+              .getPrayerTimesForDate(
+                coordinates,
+                nextDate,
+                cityName: times.city,
+              );
           allScheduledTimes.add(nextDayTimes);
         }
       }
     } catch (e) {
-      debugPrint('⚠️ تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
+      AppLogger.warning('تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
     }
 
-    await _notificationService.schedulePrayerNotifications(allScheduledTimes);
-
+    await _notificationRepository.scheduleNotifications(allScheduledTimes);
     _updateStateWithPrayerTimes(times);
     _startCountdown();
   }
 
-  /// تحديث الحالة بمواقيت الصلاة
+  /// Updates state with prayer calculation results.
   void _updateStateWithPrayerTimes(LocalPrayerTimes times) {
     final calculation = _calculatorService.calculateNextPrayer(times);
 
     emit(
       state.copyWith(
-        status: PrayerTimesStatus.success,
+        status: RequestStatus.success,
         localPrayerTimes: times,
         nextPrayer: calculation.nextPrayer,
         timeLeft: calculation.timeLeft,
@@ -117,17 +118,16 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     );
   }
 
-  /// معالجة خطأ جلب مواقيت الصلاة
   void _handlePrayerTimesError(Object error) {
     emit(
       state.copyWith(
-        status: PrayerTimesStatus.error,
+        status: RequestStatus.failure,
         message: 'من فضلك فعل الاشعارات للحصول علي مواقيت الصلاه',
       ),
     );
   }
 
-  /// بدء العد التنازلي
+  /// Starts a per-second countdown for the next prayer.
   void _startCountdown() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -135,16 +135,14 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     });
   }
 
-  /// تحديث العد التنازلي
   void _updateCountdown() {
     final currentTimes = state.localPrayerTimes;
     if (currentTimes == null) return;
 
     final calculation = _calculatorService.calculateNextPrayer(currentTimes);
 
-    // إذا انتهى وقت الصلاة، نحدث الجدولة
     if (calculation.timeLeft.inSeconds <= 0) {
-      debugPrint('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
+      AppLogger.info('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
       _handlePrayerTimesSuccess(currentTimes);
     } else {
       emit(
@@ -157,15 +155,58 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     }
   }
 
-  /// تحديث يدوي لمواقيت الصلاة
-  Future<void> refreshPrayerTimes({
-    required bool isArabic,
-    BuildContext? context,
+  /// Loads per-prayer notification settings into state.
+  Future<void> loadNotificationSettings() async {
+    try {
+      final settings = await _notificationRepository.getSettings();
+      emit(state.copyWith(notificationSettings: settings));
+    } catch (e) {
+      AppLogger.warning('تعذر تحميل إعدادات الإشعارات: $e');
+    }
+  }
+
+  /// Toggles notification for a specific prayer and reschedules.
+  Future<void> togglePrayerNotification(
+    PrayerType type, {
+    required bool enabled,
   }) async {
-    debugPrint('🔄 تحديث يدوي لمواعيد الصلاة...');
+    // Optimistically update UI
+    final updatedSettings = state.notificationSettings.copyWithPrayer(
+      type,
+      enabled: enabled,
+    );
+    emit(state.copyWith(notificationSettings: updatedSettings));
+
+    // Persist and reschedule
+    await _notificationRepository.setPrayerEnabled(type, enabled: enabled);
+
+    if (state.localPrayerTimes != null) {
+      final List<LocalPrayerTimes> times = [state.localPrayerTimes!];
+      try {
+        final coordinates = await _prayerTimesRepository.getCachedCoordinates();
+        if (coordinates != null) {
+          final now = DateTime.now();
+          for (int i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
+            final date = now.add(Duration(days: i));
+            times.add(
+              await _prayerTimesRepository.getPrayerTimesForDate(
+                coordinates,
+                date,
+                cityName: state.localPrayerTimes!.city,
+              ),
+            );
+          }
+        }
+      } catch (_) {}
+      await _notificationRepository.scheduleNotifications(times);
+    }
+  }
+
+  /// Manual refresh of prayer times.
+  Future<void> refreshPrayerTimes({required bool isArabic}) async {
+    AppLogger.info('🔄 تحديث يدوي لمواعيد الصلاة...');
     await checkAllPermissions();
-    if (context != null && !context.mounted) return;
-    init(isArabic: isArabic, context: context);
+    await init(isArabic: isArabic);
   }
 
   @override

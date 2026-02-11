@@ -1,21 +1,22 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/widgets/base_app_dialog.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/widgets/base_app_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../repository/tafsir_repository.dart';
-import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
 import 'create_share_tafsir.dart';
 import 'surah_text_content.dart';
-import 'verse_options_menu.dart';
 import 'tafsir_selection_dialog.dart';
-import '../../../../core/utils/responsive_helper.dart';
+import 'verse_options_menu.dart';
 
 class SurahTextView extends StatefulWidget {
   const SurahTextView({
@@ -192,7 +193,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20.toH),
@@ -205,7 +206,7 @@ class _SurahTextViewState extends State<SurahTextView> {
                     fontSize: 22.toSp,
                     height: 2.0,
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary,
+                    color: Colors.white,
                   ),
                 ),
               ),

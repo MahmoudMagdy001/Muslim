@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/service/location_service.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../azkar/views/azkar_view.dart';
 import '../../../hadith/view/hadith_books_view.dart';
-import '../../../azkar/view/azkar_view.dart';
 import '../../../names_of_allah/view/names_of_allah_screen.dart';
 import '../../../qiblah/service/qiblah_service.dart';
 import '../../../qiblah/view/qiblah_view.dart';

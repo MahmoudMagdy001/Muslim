@@ -26,11 +26,10 @@ class PrayerTimesView extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
 
-    return BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerTimesStatus>(
+    return BlocSelector<PrayerTimesCubit, PrayerTimesState, RequestStatus>(
       selector: (state) => state.status,
       builder: (context, status) {
-        if (status == PrayerTimesStatus.error ||
-            status == PrayerTimesStatus.permissionError) {
+        if (status == RequestStatus.failure) {
           final message = context.select(
             (PrayerTimesCubit cubit) =>
                 cubit.state.message ?? localizations.errorMain,

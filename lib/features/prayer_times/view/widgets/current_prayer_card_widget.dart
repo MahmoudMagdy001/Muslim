@@ -8,6 +8,7 @@ import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../helper/prayer_consts.dart';
 import '../../helper/time_left_format.dart';
+import '../../models/prayer_type.dart';
 import '../../viewmodel/prayer_times_cubit.dart';
 import '../../viewmodel/prayer_times_state.dart';
 
@@ -36,7 +37,7 @@ class CurrentPrayerCard extends StatelessWidget {
         final next = state.nextPrayer;
         final previous = state.previousPrayerDateTime;
         final nextDateTime = state.localPrayerTimes != null && next != null
-            ? state.localPrayerTimes!.toMap()[next] != null
+            ? state.localPrayerTimes!.toMap()[next.id] != null
                   ? state.timeLeft != null
                         ? DateTime.now().add(state.timeLeft!)
                         : DateTime.now()
@@ -64,7 +65,7 @@ class CurrentPrayerCard extends StatelessWidget {
                 child: Image.asset('assets/home/vactor.png', fit: BoxFit.fill),
               ),
               Skeletonizer(
-                enabled: state.status == PrayerTimesStatus.loading,
+                enabled: state.status == RequestStatus.loading,
                 child: SafeArea(
                   bottom: false,
                   child: Column(
@@ -99,7 +100,6 @@ class CurrentPrayerCard extends StatelessWidget {
                         child: Stack(
                           alignment: .center,
                           children: [
-                            // Circular Progress (Custom Arc)
                             CustomPaint(
                               size: Size(200.toW, 180.toH),
                               painter: _PrayerProgressPainter(
@@ -107,7 +107,6 @@ class CurrentPrayerCard extends StatelessWidget {
                                 color: theme.colorScheme.secondary,
                               ),
                             ),
-                            // Inner Details
                             Column(
                               mainAxisSize: .min,
                               children: [
@@ -126,28 +125,18 @@ class CurrentPrayerCard extends StatelessWidget {
                         child: Padding(
                           padding: .symmetric(horizontal: 10.toW),
                           child: Row(
-                            children: prayerOrder.map((key) {
-                              final isNext = key == next;
-                              final timing = timingsMap[key] ?? '';
-                              // Icon mapping
-                              final String iconPath = switch (key) {
-                                'Fajr' => 'assets/home/fagr.png',
-                                'Dhuhr' => 'assets/home/dohr.png',
-                                'Asr' => 'assets/home/asr.png',
-                                'Maghrib' => 'assets/home/maghreb.png',
-                                'Isha' => 'assets/home/asiha.png',
-                                _ => 'assets/home/fagr.png',
-                              };
+                            children: PrayerType.values.map((prayer) {
+                              final isNext = prayer == next;
+                              final timing = timingsMap[prayer.id] ?? '';
+                              final visual = prayerVisuals[prayer]!;
 
                               return Expanded(
                                 child: _PrayerSmallCard(
-                                  label: isArabic
-                                      ? prayerNamesAr[key] ?? key
-                                      : key,
+                                  label: prayer.displayName(isArabic: isArabic),
                                   time: formatTo12Hour(timing, isArabic),
                                   isNext: isNext,
                                   theme: theme,
-                                  iconPath: iconPath,
+                                  iconPath: visual.assetPath,
                                 ),
                               );
                             }).toList(),
@@ -247,12 +236,10 @@ class _NextPrayerName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocSelector<PrayerTimesCubit, PrayerTimesState, String?>(
+      BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerType?>(
         selector: (state) => state.nextPrayer,
         builder: (context, nextPrayer) => Text(
-          isArabic
-              ? prayerNamesAr[nextPrayer] ?? '------'
-              : nextPrayer ?? '------',
+          nextPrayer?.displayName(isArabic: isArabic) ?? '------',
           style: theme.textTheme.headlineLarge?.copyWith(
             color: theme.colorScheme.secondary,
             fontWeight: .bold,

@@ -29,7 +29,8 @@
     <application
         android:label="muslim"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true">
 
         <!-- Activity الأساسية -->
         <activity

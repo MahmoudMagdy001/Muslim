@@ -1,77 +1,71 @@
 import 'package:flutter/material.dart';
 
-class Prayer {
-  const Prayer({
-    required this.id,
-    required this.name,
-    required this.arabicName,
+import '../models/prayer_type.dart';
+
+/// Visual metadata (icon, color) for each [PrayerType].
+class PrayerVisualData {
+  const PrayerVisualData({
+    required this.type,
     required this.icon,
     required this.color,
+    required this.assetPath,
   });
-  final String id;
-  final String name;
-  final String arabicName;
+
+  final PrayerType type;
   final IconData icon;
   final Color color;
+  final String assetPath;
 }
 
-const List<Prayer> prayers = [
-  Prayer(
-    id: 'Fajr',
-    name: 'Fajr',
-    arabicName: 'الفجر',
+/// Map of [PrayerType] to its visual data (icon, color, asset).
+const Map<PrayerType, PrayerVisualData> prayerVisuals = {
+  PrayerType.fajr: PrayerVisualData(
+    type: PrayerType.fajr,
     icon: Icons.wb_sunny,
     color: Colors.yellow,
+    assetPath: 'assets/home/fagr.png',
   ),
-  Prayer(
-    id: 'Dhuhr',
-    name: 'Dhuhr',
-    arabicName: 'الظهر',
+  PrayerType.dhuhr: PrayerVisualData(
+    type: PrayerType.dhuhr,
     icon: Icons.brightness_high,
     color: Colors.orange,
+    assetPath: 'assets/home/dohr.png',
   ),
-  Prayer(
-    id: 'Asr',
-    name: 'Asr',
-    arabicName: 'العصر',
+  PrayerType.asr: PrayerVisualData(
+    type: PrayerType.asr,
     icon: Icons.cloud,
     color: Colors.blueGrey,
+    assetPath: 'assets/home/asr.png',
   ),
-  Prayer(
-    id: 'Maghrib',
-    name: 'Maghrib',
-    arabicName: 'المغرب',
+  PrayerType.maghrib: PrayerVisualData(
+    type: PrayerType.maghrib,
     icon: Icons.nightlight_round,
     color: Colors.deepOrange,
+    assetPath: 'assets/home/maghreb.png',
   ),
-  Prayer(
-    id: 'Isha',
-    name: 'Isha',
-    arabicName: 'العشاء',
+  PrayerType.isha: PrayerVisualData(
+    type: PrayerType.isha,
     icon: Icons.bedtime,
     color: Colors.indigo,
+    assetPath: 'assets/home/asiha.png',
   ),
-];
+};
 
-// Helper getters for backward compatibility
-List<String> get prayerOrder => prayers.map((p) => p.id).toList();
+// ── Backward-compatible getters ────────────────────────────────────────
 
+/// Ordered list of prayer type IDs.
+List<String> get prayerOrder => PrayerType.values.map((p) => p.id).toList();
+
+/// Map of prayer ID → Arabic name.
 Map<String, String> get prayerNamesAr =>
-    Map.fromEntries(prayers.map((p) => MapEntry(p.id, p.arabicName)));
+    Map.fromEntries(PrayerType.values.map((p) => MapEntry(p.id, p.arabicName)));
 
-Map<String, IconData> get prayerIcons =>
-    Map.fromEntries(prayers.map((p) => MapEntry(p.id, p.icon)));
+/// Map of prayer ID → icon.
+Map<String, IconData> get prayerIcons => Map.fromEntries(
+  prayerVisuals.entries.map((e) => MapEntry(e.key.id, e.value.icon)),
+);
 
-Map<String, Color> get prayerColors =>
-    Map.fromEntries(prayers.map((p) => MapEntry(p.id, p.color)));
-
-// Extension for easy access
-extension PrayerListExtensions on List<Prayer> {
-  Prayer get fajr => firstWhere((p) => p.id == 'Fajr');
-  Prayer get dhuhr => firstWhere((p) => p.id == 'Dhuhr');
-  Prayer get asr => firstWhere((p) => p.id == 'Asr');
-  Prayer get maghrib => firstWhere((p) => p.id == 'Maghrib');
-  Prayer get isha => firstWhere((p) => p.id == 'Isha');
-
-  Prayer byId(String id) => firstWhere((p) => p.id == id);
-}
+/// Map of prayer ID → color.
+Map<String, Color> get prayerColors => Map.fromEntries(
+  prayerVisuals.entries.map((e) => MapEntry(e.key.id, e.value.color)),
+);

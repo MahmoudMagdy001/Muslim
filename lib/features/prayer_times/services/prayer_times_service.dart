@@ -1,15 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:adhan/adhan.dart';
-import 'package:geolocator/geolocator.dart';
-
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/service/location_service.dart';
-import '../../settings/service/settings_service.dart';
 
+import '../../../core/service/location_service.dart';
+import '../../../core/utils/app_logger.dart';
+import '../../settings/service/settings_service.dart';
 import '../model/prayer_times_model.dart';
 
+/// Service responsible for calculating and providing prayer times.
+///
+/// Handles coordinate caching, geocoding, and prayer time calculations
+/// using the `adhan` package.
 class PrayerTimesService {
   static const String _latitudeKey = 'lat';
   static const String _longitudeKey = 'lng';
@@ -17,17 +21,20 @@ class PrayerTimesService {
 
   final DateFormat _timeFormatter = DateFormat.Hm();
 
-  /// الحصول على مواقيت الصلاة (يوم واحد أو شهر كامل)
+  /// Fetches prayer times for today, optionally for the whole month.
+  ///
+  /// [isArabic] controls geocoding locale.
+  /// [forMonth] returns a list of all days in the current month.
+  /// [coordinates] overrides cached/detected coordinates.
   Future<dynamic> getPrayerTimes({
     required bool isArabic,
     bool forMonth = false,
     Coordinates? coordinates,
-    BuildContext? context,
   }) async {
     try {
       final coords =
           coordinates ??
-          await _getCachedOrCurrentCoordinates(coordinates == null, context);
+          await _getCachedOrCurrentCoordinates(coordinates == null);
       if (coords == null) return await _getDefaultPrayerTimes();
 
       String? cityName;
@@ -44,7 +51,7 @@ class PrayerTimesService {
               : place.administrativeArea;
         }
       } catch (e) {
-        debugPrint('⚠️ فشل geocoding: $e');
+        AppLogger.warning('فشل geocoding: $e');
       }
 
       if (forMonth) {
@@ -53,12 +60,12 @@ class PrayerTimesService {
         return await _calculatePrayerTimes(coords, cityName: cityName);
       }
     } catch (error) {
-      debugPrint('❌ خطأ في الحصول على مواقيت الصلاة: $error');
+      AppLogger.error('خطأ في الحصول على مواقيت الصلاة', error);
       return await _getDefaultPrayerTimes();
     }
   }
 
-  /// الحصول على مواقيت الصلاة لتاريخ محدد
+  /// Fetches prayer times for a specific [date] with given [coordinates].
   Future<LocalPrayerTimes> getPrayerTimesForDate(
     Coordinates coordinates,
     DateTime date, {
@@ -66,7 +73,7 @@ class PrayerTimesService {
   }) async =>
       _calculatePrayerTimes(coordinates, date: date, cityName: cityName);
 
-  /// حساب مواقيت الصلاة ليوم محدد (الافتراضي هو اليوم)
+  /// Calculates prayer times for a single day (defaults to today).
   Future<LocalPrayerTimes> _calculatePrayerTimes(
     Coordinates coordinates, {
     DateTime? date,
@@ -75,7 +82,6 @@ class PrayerTimesService {
     final calculationParams = _getCalculationParameters();
     final targetDate = date ?? DateTime.now();
 
-    // استخدام PrayerTimes بالمنشئ العادي لتحديد التاريخ
     final prayerTimes = PrayerTimes(
       coordinates,
       DateComponents.from(targetDate),
@@ -89,11 +95,11 @@ class PrayerTimesService {
       maghrib: _formatTime(prayerTimes.maghrib),
       isha: _formatTime(prayerTimes.isha),
       city: cityName ?? 'غير معروف',
-      date: targetDate, // سنحتاج هذا التاريخ لاحقاً لتوليد ID
+      date: targetDate,
     );
   }
 
-  /// حساب مواقيت الصلاة للشهر كله
+  /// Calculates prayer times for every day of the current month.
   Future<List<LocalPrayerTimes>> _calculateMonthlyPrayerTimes(
     Coordinates coordinates, {
     String? cityName,
@@ -128,15 +134,13 @@ class PrayerTimesService {
     return monthlyTimes;
   }
 
-  /// معاملات الحساب
   CalculationParameters _getCalculationParameters() =>
       CalculationMethod.egyptian.getParameters()..madhab = Madhab.shafi;
 
-  /// تنسيق الوقت
   String _formatTime(DateTime dateTime) =>
       _timeFormatter.format(dateTime.toLocal());
 
-  /// مواقيت افتراضية (القاهرة)
+  /// Fallback prayer times using Cairo coordinates.
   Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
     final cairoCoordinates = Coordinates(30.0444, 31.2357);
     final calculationParams = _getCalculationParameters();
@@ -165,24 +169,18 @@ class PrayerTimesService {
     );
   }
 
-  /// الحصول على الإحداثيات (الحالية أو الكاش)
-  Future<Coordinates?> _getCachedOrCurrentCoordinates(
-    bool allowRequest, [
-    BuildContext? context,
-  ]) async {
+  /// Gets coordinates from cache or current location.
+  Future<Coordinates?> _getCachedOrCurrentCoordinates(bool allowRequest) async {
     final prefs = await SharedPreferences.getInstance();
     final settingsService = SettingsService();
 
-    // 1. إذا كان مسموحاً بطلب الموقع (وليس في الخلفية) وكان الخيار مفعلاً
     if (allowRequest && await settingsService.getAutoLocationEnabled()) {
       try {
-        if (context != null && !context.mounted) return null;
-        final position = await _getCurrentPosition(context);
-
+        final position = await _getCurrentPosition();
         await _cacheCoordinates(prefs, position.latitude, position.longitude);
         return Coordinates(position.latitude, position.longitude);
       } catch (e) {
-        debugPrint('⚠️ فشل في الحصول على الموقع الحالي: $e');
+        AppLogger.warning('فشل في الحصول على الموقع الحالي: $e');
       }
     }
 
@@ -202,10 +200,9 @@ class PrayerTimesService {
     return Coordinates(lat, lng);
   }
 
-  Future<Position> _getCurrentPosition([BuildContext? context]) async {
+  Future<Position> _getCurrentPosition() async {
     final locationService = LocationService();
-    // We call getCurrentLocate which handles the disclosure if context is provided
-    final position = await locationService.getCurrentLocate(context);
+    final position = await locationService.getCurrentLocate();
     if (position != null) return position;
     return await Geolocator.getCurrentPosition();
   }

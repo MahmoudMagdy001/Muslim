@@ -1,0 +1,1320 @@
+{
+  "data": [
+    {
+      "ID": 27,
+      "TITLE": "أذكار الصباح والمساء",
+      "eng_title": "Words of remembrance for morning and evening",
+      "slug": "أذكار_الصباح_والمساء",
+      "isFavorite": true,
+      "CATEGORY": "أذكار الصباح والمساء",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_028.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/27.json"
+    },
+    {
+      "ID": 28,
+      "TITLE": "أذكار النوم",
+      "eng_title": "",
+      "slug": "أذكار_النوم",
+      "isFavorite": false,
+      "CATEGORY": "النوم",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_029.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/28.json"
+    },
+    {
+      "ID": 1,
+      "TITLE": "أذكار الاستيقاظ من النوم",
+      "eng_title": "",
+      "slug": "أذكار_النوم",
+      "isFavorite": false,
+      "CATEGORY": "النوم",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_002.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/1.json"
+    },
+    {
+      "ID": 6,
+      "TITLE": "دعاء دخول الخلاء",
+      "eng_title": "",
+      "slug": "دعاء_دخول_الخلاء",
+      "isFavorite": false,
+      "CATEGORY": "الخلاء",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_007.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/6.json"
+    },
+    {
+      "ID": 7,
+      "TITLE": "دعاء الخروج من الخلاء",
+      "eng_title": "",
+      "slug": "دعاء_الخروج_من_الخلاء",
+      "isFavorite": false,
+      "CATEGORY": "الخلاء",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_008.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/7.json"
+    },
+    {
+      "ID": 8,
+      "TITLE": "الذكر قبل الوضوء",
+      "eng_title": "",
+      "slug": "الذكر_قبل_الوضوء",
+      "isFavorite": false,
+      "CATEGORY": "الوضوء",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_009.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/8.json"
+    },
+    {
+      "ID": 9,
+      "TITLE": "الذكر بعد الفراغ من الوضوء",
+      "eng_title": "",
+      "slug": "الذكر بعد الفراغ من الوضوء",
+      "isFavorite": false,
+      "CATEGORY": "الوضوء",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_010.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/9.json"
+    },
+    {
+      "ID": 10,
+      "TITLE": "الذكر عند الخروج من المنزل",
+      "eng_title": "",
+      "slug": "الذكر_عند_الخروج_من_المنزل",
+      "isFavorite": false,
+      "CATEGORY": "دعاء المنزل",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_011.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/10.json"
+    },
+    {
+      "ID": 11,
+      "TITLE": "الذكر عند دخول المنزل",
+      "eng_title": "",
+      "slug": "الذكر عند دخول المنزل",
+      "isFavorite": false,
+      "CATEGORY": "دعاء المنزل",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_012.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/11.json"
+    },
+    {
+      "ID": 12,
+      "TITLE": "دعاء الذهاب إلى المسجد",
+      "eng_title": "",
+      "slug": "دعاء_الذهاب_إلى_المسجد",
+      "isFavorite": false,
+      "CATEGORY": "المسجد",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_013.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/12.json"
+    },
+    {
+      "ID": 13,
+      "TITLE": "دعاء دخول المسجد",
+      "eng_title": "",
+      "slug": "دعاء_دخول_المسجد",
+      "isFavorite": false,
+      "CATEGORY": "المسجد",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_014.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/13.json"
+    },
+    {
+      "ID": 14,
+      "TITLE": "دعاء الخروج من المسجد",
+      "eng_title": "",
+      "slug": "دعاء_الخروج_من_المسجد",
+      "isFavorite": false,
+      "CATEGORY": "المسجد",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_015.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/14.json"
+    },
+    {
+      "ID": 15,
+      "TITLE": "أذكار الآذان",
+      "eng_title": "",
+      "slug": "أذكار الآذان",
+      "isFavorite": false,
+      "CATEGORY": " متنوع-المسجد",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_016.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/15.json"
+    },
+    {
+      "ID": 2,
+      "TITLE": "دعاء ُلبْس الثوب",
+      "eng_title": "",
+      "slug": "دعاء ُلبْس الثوب",
+      "isFavorite": false,
+      "CATEGORY": "متنوع- اللباس",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_003.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/2.json"
+    },
+    {
+      "ID": 3,
+      "TITLE": "دعاء ُلبْس الثوب الجديد",
+      "eng_title": "",
+      "slug": "دعاء ُلبْس الثوب الجديد",
+      "isFavorite": false,
+      "CATEGORY": "متنوع- اللباس",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_004.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/3.json"
+    },
+    {
+      "ID": 4,
+      "TITLE": "الدعاء لمن لبس ثوبا جديدا",
+      "eng_title": "",
+      "slug": "الدعاء لمن لبس ثوبا جديدا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع- اللباس",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_005.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/4.json"
+    },
+    {
+      "ID": 5,
+      "TITLE": "ما يقول إذا وضع ثوبه",
+      "eng_title": "",
+      "slug": "ما يقول إذا وضع ثوبه",
+      "isFavorite": false,
+      "CATEGORY": "متنوع- اللباس",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_006.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/5.json"
+    },
+    {
+      "ID": 16,
+      "TITLE": "دعاء الاستفتاح",
+      "eng_title": "",
+      "slug": "دعاء الاستفتاح",
+      "isFavorite": false,
+      "CATEGORY": "متنوع- الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_017.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/16.json"
+    },
+    {
+      "ID": 17,
+      "TITLE": "دعاء الركوع",
+      "eng_title": "",
+      "slug": "دعاء الركوع",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_018.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/17.json"
+    },
+    {
+      "ID": 18,
+      "TITLE": "دعاء الرفع من الركوع",
+      "eng_title": "دعاء الرفع من الركوع",
+      "slug": "دعاء الرفع من الركوع",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_019.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/18.json"
+    },
+    {
+      "ID": 19,
+      "TITLE": "دعاء السجود",
+      "eng_title": "دعاء السجود",
+      "slug": "دعاء السجود",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_020.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/19.json"
+    },
+    {
+      "ID": 20,
+      "TITLE": "دعاء الجلسة بين السجدتين",
+      "eng_title": "",
+      "slug": "دعاء الجلسة بين السجدتين",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_021.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/20.json"
+    },
+    {
+      "ID": 21,
+      "TITLE": "دعاء سجود التلاوة",
+      "eng_title": "",
+      "slug": "دعاء سجود التلاوة",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_022.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/21.json"
+    },
+    {
+      "ID": 22,
+      "TITLE": "التشهد",
+      "eng_title": "",
+      "slug": "التشهد",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_023.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/22.json"
+    },
+    {
+      "ID": 23,
+      "TITLE": "الصلاة على النبي بعد التشهد",
+      "eng_title": "",
+      "slug": "الصلاة على النبي بعد التشهد",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_024.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/23.json"
+    },
+    {
+      "ID": 24,
+      "TITLE": "الدعاء بعد التشهد الأخير قبل السلام",
+      "eng_title": "",
+      "slug": "الدعاء بعد التشهد الأخير قبل السلام",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_025.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/24.json"
+    },
+    {
+      "ID": 25,
+      "TITLE": "الأذكار بعد السلام من الصلاة",
+      "eng_title": "",
+      "slug": "الأذكار بعد السلام من الصلاة",
+      "isFavorite": false,
+      "CATEGORY": "بعد الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_026.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/25.json"
+    },
+    {
+      "ID": 26,
+      "TITLE": "دعاء صلاة الاستخارة",
+      "eng_title": "",
+      "slug": "دعاء صلاة الاستخارة",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_027.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/26.json"
+    },
+    {
+      "ID": 29,
+      "TITLE": "الدعاء إذا تقلب ليلا",
+      "eng_title": "",
+      "slug": "الدعاء إذا تقلب اليل",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_030.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/29.json"
+    },
+    {
+      "ID": 30,
+      "TITLE": "دعاء الفزع في النوم و من بُلِيَ بالوحشة",
+      "eng_title": "",
+      "slug": "دعاء الفزع في النوم و من بُلِيَ بالوحشة",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_031.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/30.json"
+    },
+    {
+      "ID": 31,
+      "TITLE": "ما يفعل من رأى الرؤيا أو الحلم",
+      "eng_title": "",
+      "slug": "ما يفعل من رأى الرؤيا أو الحلم",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_032.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/31.json"
+    },
+    {
+      "ID": 32,
+      "TITLE": "دعاء قنوت الوتر",
+      "eng_title": "",
+      "slug": "دعاء قنوت الوتر",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_033.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/32.json"
+    },
+    {
+      "ID": 33,
+      "TITLE": "الذكر عقب السلام من الوتر",
+      "eng_title": "",
+      "slug": "الذكر عقب السلام من الوتر",
+      "isFavorite": false,
+      "CATEGORY": "متنوع - الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_034.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/33.json"
+    },
+    {
+      "ID": 34,
+      "TITLE": "دعاء الهم والحزن",
+      "eng_title": "",
+      "slug": "دعاء الهم والحزن",
+      "isFavorite": false,
+      "CATEGORY": "الحزن والكرب",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_035.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/34.json"
+    },
+    {
+      "ID": 35,
+      "TITLE": "دعاء الكرب",
+      "eng_title": "",
+      "slug": "دعاء الكرب",
+      "isFavorite": false,
+      "CATEGORY": "الحزن والكرب",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_036.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/35.json"
+    },
+    {
+      "ID": 36,
+      "TITLE": "دعاء لقاء العدو و ذي السلطان",
+      "eng_title": "",
+      "slug": "دعاء الكرب",
+      "isFavorite": false,
+      "CATEGORY": "متنوع الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_037.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/36.json"
+    },
+    {
+      "ID": 37,
+      "TITLE": "دعاء من خاف ظلم السلطان",
+      "eng_title": "",
+      "slug": "دعاء من خاف ظلم السلطان",
+      "isFavorite": false,
+      "CATEGORY": "متنوع الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_038.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/37.json"
+    },
+    {
+      "ID": 38,
+      "TITLE": "الدعاء على العدو",
+      "eng_title": "",
+      "slug": "الدعاء على العدو",
+      "isFavorite": false,
+      "CATEGORY": "متنوع الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_039.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/38.json"
+    },
+    {
+      "ID": 39,
+      "TITLE": "ما يقول من خاف قوما",
+      "eng_title": "",
+      "slug": "ما يقول من خاف قوما",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_040.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/39.json"
+    },
+    {
+      "ID": 40,
+      "TITLE": "دعاء من أصابه وسوسة في الإيمان",
+      "eng_title": "",
+      "slug": "دعاء من أصابه وسوسة في الإيمان",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_041.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/40.json"
+    },
+    {
+      "ID": 41,
+      "TITLE": "دعاء قضاء الدين",
+      "eng_title": "",
+      "slug": "دعاء قضاء الدين",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_042.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/41.json"
+    },
+    {
+      "ID": 42,
+      "TITLE": "دعاء الوسوسة في الصلاة و القراءة",
+      "eng_title": "",
+      "slug": "عاء الوسوسة في الصلاة و القراءة",
+      "isFavorite": false,
+      "CATEGORY": "أثناء الصلاة",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_043.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/42.json"
+    },
+    {
+      "ID": 43,
+      "TITLE": "دعاء من استصعب عليه أمر",
+      "eng_title": "",
+      "slug": "دعاء من استصعب عليه أمر",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_044.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/43.json"
+    },
+    {
+      "ID": 44,
+      "TITLE": "ما يقول ويفعل من أذنب ذنبا",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_045.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/44.json"
+    },
+    {
+      "ID": 45,
+      "TITLE": "دعاء طرد الشيطان و وساوسه",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_046.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/45.json"
+    },
+    {
+      "ID": 46,
+      "TITLE": "الدعاء حينما يقع ما لا يرضاه أو ُ غلب على أمره",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_047.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/46.json"
+    },
+    {
+      "ID": 47,
+      "TITLE": "ﺗﻬنئة المولود له وجوابه",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_048.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/47.json"
+    },
+    {
+      "ID": 48,
+      "TITLE": "ما يعوذ به الأولاد",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_049.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/48.json"
+    },
+    {
+      "ID": 49,
+      "TITLE": "الدعاء للمريض في عيادته",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_050.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/49.json"
+    },
+    {
+      "ID": 50,
+      "TITLE": "فضل عيادة المريض",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_051.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/50.json"
+    },
+    {
+      "ID": 51,
+      "TITLE": "دعاء المريض الذي يئس من حياته",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_052.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/51.json"
+    },
+    {
+      "ID": 52,
+      "TITLE": "تلقين المحتضر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_053.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/52.json"
+    },
+    {
+      "ID": 53,
+      "TITLE": "دعاء من أصيب بمصيبة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_054.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/53.json"
+    },
+    {
+      "ID": 54,
+      "TITLE": "الدعاء عند إغماض الميت",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_055.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/54.json"
+    },
+    {
+      "ID": 55,
+      "TITLE": "الدعاء للميت في الصلاة عليه",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_056.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/55.json"
+    },
+    {
+      "ID": 56,
+      "TITLE": "الدعاء للفرط في الصلاة عليه",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_057.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/56.json"
+    },
+    {
+      "ID": 57,
+      "TITLE": "دعاء التعزية",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_058.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/57.json"
+    },
+    {
+      "ID": 58,
+      "TITLE": "الدعاء عند إدخال الميت القبر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_059.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/58.json"
+    },
+    {
+      "ID": 59,
+      "TITLE": "الدعاء بعد دفن الميت",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_060.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/59.json"
+    },
+    {
+      "ID": 60,
+      "TITLE": "دعاء زيارة القبور",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_061.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/60.json"
+    },
+    {
+      "ID": 61,
+      "TITLE": "دعاء الريح",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_062.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/61.json"
+    },
+    {
+      "ID": 62,
+      "TITLE": "دعاء الرعد",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_063.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/62.json"
+    },
+    {
+      "ID": 63,
+      "TITLE": "من أدعية الاستسقاء",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_064.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/63.json"
+    },
+    {
+      "ID": 64,
+      "TITLE": "الدعاء إذا نزل المطر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_065.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/64.json"
+    },
+    {
+      "ID": 65,
+      "TITLE": "الذكر بعد نزول المطر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_066.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/65.json"
+    },
+    {
+      "ID": 66,
+      "TITLE": "من أدعية الاستصحاء",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_067.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/66.json"
+    },
+    {
+      "ID": 67,
+      "TITLE": "دعاء رؤية الهلال",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_068.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/67.json"
+    },
+    {
+      "ID": 68,
+      "TITLE": "الدعاء عند إفطار الصائم",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_069.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/68.json"
+    },
+    {
+      "ID": 69,
+      "TITLE": "الدعاء قبل الطعام",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_070.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/69.json"
+    },
+    {
+      "ID": 70,
+      "TITLE": "الدعاء عند الفراغ من الطعام",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_071.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/70.json"
+    },
+    {
+      "ID": 71,
+      "TITLE": "دعاء الضيف لصاحب الطعام",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_072.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/71.json"
+    },
+    {
+      "ID": 72,
+      "TITLE": "التعريض بالدعاء لطلب الطعام أو الشراب",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_073.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/72.json"
+    },
+    {
+      "ID": 73,
+      "TITLE": "الدعاء إذا أفطر عند أهل بيت",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_074.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/73.json"
+    },
+    {
+      "ID": 74,
+      "TITLE": "دعاء الصائم إذا حضر الطعام ولم يفطر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_075.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/74.json"
+    },
+    {
+      "ID": 75,
+      "TITLE": "ما يقول الصائم إذا سابه أحد",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_076.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/75.json"
+    },
+    {
+      "ID": 76,
+      "TITLE": "الدعاء عند رؤية باكورة الثمر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_077.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/76.json"
+    },
+    {
+      "ID": 77,
+      "TITLE": "دعاء العطاس",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_078.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/77.json"
+    },
+    {
+      "ID": 78,
+      "TITLE": "ما يقال للكافر إذا عطس فحمد الله",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_079.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/78.json"
+    },
+    {
+      "ID": 79,
+      "TITLE": "الدعاء للمتزوج",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_080.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/79.json"
+    },
+    {
+      "ID": 80,
+      "TITLE": "دعاء المتزوج و شراء الدابة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_081.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/80.json"
+    },
+    {
+      "ID": 81,
+      "TITLE": "الدعاء قبل إتيان الزوجة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_082.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/81.json"
+    },
+    {
+      "ID": 82,
+      "TITLE": "دعاء الغضب",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_083.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/82.json"
+    },
+    {
+      "ID": 83,
+      "TITLE": "دعاء من رأى مبتلى",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_084.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/83.json"
+    },
+    {
+      "ID": 84,
+      "TITLE": "ما يقال في اﻟﻤﺠلس",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_085.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/84.json"
+    },
+    {
+      "ID": 85,
+      "TITLE": "كفارة اﻟﻤﺠلس",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_086.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/85.json"
+    },
+    {
+      "ID": 86,
+      "TITLE": "الدعاء لمن قال غفر الله لك",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_087.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/87.json"
+    },
+    {
+      "ID": 87,
+      "TITLE": "الدعاء لمن صنع إليك معروفا",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_088.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/87.json"
+    },
+    {
+      "ID": 88,
+      "TITLE": "ما يعصم الله به من الدجال",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_089.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/88.json"
+    },
+    {
+      "ID": 89,
+      "TITLE": "الدعاء لمن قال إني أحبك في الله",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_090.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/89.json"
+    },
+    {
+      "ID": 90,
+      "TITLE": "الدعاء لمن عرض عليك ماله",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/90.json"
+    },
+    {
+      "ID": 91,
+      "TITLE": "الدعاء لمن أقرض عند القضاء",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/91.json"
+    },
+    {
+      "ID": 92,
+      "TITLE": "دعاء الخوف من الشرك",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_092.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/92.json"
+    },
+    {
+      "ID": 93,
+      "TITLE": "الدعاء لمن قال بارك الله فيك",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_094.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/93.json"
+    },
+    {
+      "ID": 94,
+      "TITLE": "دعاء كراهية الطيرة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_095.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/94.json"
+    },
+    {
+      "ID": 95,
+      "TITLE": "دعاء الركوب",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_096.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/95.json"
+    },
+    {
+      "ID": 96,
+      "TITLE": "دعاء السفر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_097.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/96.json"
+    },
+    {
+      "ID": 97,
+      "TITLE": "دعاء دخول القرية أو البلدة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_098.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/97.json"
+    },
+    {
+      "ID": 98,
+      "TITLE": "دعاء دخول السوق",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_099.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/98.json"
+    },
+    {
+      "ID": 99,
+      "TITLE": "الدعاء إذا تعس المركوب",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_100.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/99.json"
+    },
+    {
+      "ID": 100,
+      "TITLE": "دعاء المسافر للمقيم",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_101.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/100.json"
+    },
+    {
+      "ID": 101,
+      "TITLE": "دعاء المقيم للمسافر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_102.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/101.json"
+    },
+    {
+      "ID": 102,
+      "TITLE": "التكبير و التسبيح في سير السفر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_103.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/102.json"
+    },
+    {
+      "ID": 103,
+      "TITLE": "دعاء المسافر إذا أسحر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_104.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/103.json"
+    },
+    {
+      "ID": 104,
+      "TITLE": "الدعاء إذا نزل مترلا في سفر أو غيره",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_105.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/104.json"
+    },
+    {
+      "ID": 105,
+      "TITLE": "ذكر الرجوع من السفر",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_106.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/105.json"
+    },
+    {
+      "ID": 106,
+      "TITLE": "ما يقول من أتاه أمر يسره أو يكرهه",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_107.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/106.json"
+    },
+    {
+      "ID": 107,
+      "TITLE": "فضل الصلاة على النبي صلى الله عليه و سلم",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_108.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/107.json"
+    },
+    {
+      "ID": 108,
+      "TITLE": "إفشاء السلام",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_109.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/108.json"
+    },
+    {
+      "ID": 109,
+      "TITLE": "كيف يرد السلام على الكافر إذا سلم",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_110.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/109.json"
+    },
+    {
+      "ID": 110,
+      "TITLE": "الدُّعاءُ عِنْدَ سَمَاعِ صِياحِ الدِّيكِ ونَهِيقِ الْحِمَارِ",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_111.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/110.json"
+    },
+    {
+      "ID": 111,
+      "TITLE": "دعاء نباح الكلاب بالليل",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_112.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/111.json"
+    },
+    {
+      "ID": 112,
+      "TITLE": "الدعاء لمن سببته",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_113.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/112.json"
+    },
+    {
+      "ID": 113,
+      "TITLE": "ما يقول المسلم إذا مدح المسلم",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_114.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/113.json"
+    },
+    {
+      "ID": 114,
+      "TITLE": "ما يقول المسلم إذا زكي ",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_115.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/114.json"
+    },
+    {
+      "ID": 115,
+      "TITLE": "كيف يلبي المحرم في الحج أو العمرة ؟",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_116.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/115.json"
+    },
+    {
+      "ID": 116,
+      "TITLE": "التكبير إذا أتى الركن الأسود",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_117.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/116.json"
+    },
+    {
+      "ID": 117,
+      "TITLE": "الدعاء بين الركن اليماني والحجر الأسود",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_118.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/117.json"
+    },
+    {
+      "ID": 118,
+      "TITLE": "دعاء الوقوف على الصفا والمروة", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_119.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/118.json"
+    },
+    {
+      "ID": 119,
+      "TITLE": "الدعاء يوم عرفة", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_120.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/119.json"
+    },
+    {
+      "ID": 120,
+      "TITLE": "الذكر عند المشعر الحرام", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_121.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/120.json"
+    },
+    {
+      "ID": 121,
+      "TITLE": "التكبير عند رمي الجمار مع كل حصاة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_122.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/121.json"
+    },
+    {
+      "ID": 122,
+      "TITLE": "دعاء التعجب والأمر السار",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_123.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/122.json"
+    },
+    {
+      "ID": 123,
+      "TITLE": "ما يفعل من أتاه أمر يسره", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_124.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/123.json"
+    },
+    {
+      "ID": 124,
+      "TITLE": "ما يقول من أحس وجعا في جسده", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_125.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/124.json"
+    },
+    {
+      "ID": 125,
+      "TITLE": "دعاء من خشي أن يصيب شيئا بعينه", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_126.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/125.json"
+    },
+    {
+      "ID": 126,
+      "TITLE": "ما يقال عند الفزع", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_127.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/126.json"
+    },
+    {
+      "ID": 127,
+      "TITLE": "ما يقول عند الذبح أو النحر", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_128.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/127.json"
+    },
+    {
+      "ID": 128,
+      "TITLE": "ما يقول لرد كيد مردة الشياطين", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_129.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/128.json"
+    },
+    {
+      "ID": 129,
+      "TITLE": "الاستغفار و التوبة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_130.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/129.json"
+    },
+    {
+      "ID": 130,
+      "TITLE": "فضل التسبيح و التحميد، و التهليل، و التكبير", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_131.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/130.json"
+    },
+    {
+      "ID": 131,
+      "TITLE": "كيف كان النبي يسبح؟", 
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_132.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/131.json"
+    },
+    {
+      "ID": 132,
+      "TITLE": "من أنواع الخير والآداب الجامعة",
+      "eng_title": "",
+      "slug": "ما يقول ويفعل من أذنب ذنبا",
+      "isFavorite": false,
+      "CATEGORY": "متنوع-الأحوال",
+      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_133.mp3",
+      "TEXT": "http://www.hisnmuslim.com/api/ar/132.json"
+    }
+  ]
+}

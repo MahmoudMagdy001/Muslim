@@ -1,18 +1,16 @@
 import 'package:equatable/equatable.dart';
+
 import '../model/prayer_times_model.dart';
+import '../models/prayer_notification_settings_model.dart';
+import '../models/prayer_type.dart';
 
-enum PrayerTimesStatus {
-  initial,
-  checkingPermissions,
-  loading,
-  success,
-  error,
-  permissionError,
-}
+/// Status of prayer times loading.
+enum RequestStatus { initial, loading, success, failure }
 
+/// Immutable state for the PrayerTimesCubit.
 class PrayerTimesState extends Equatable {
   const PrayerTimesState({
-    this.status = PrayerTimesStatus.initial,
+    this.status = RequestStatus.initial,
     this.localPrayerTimes,
     this.nextPrayer,
     this.timeLeft,
@@ -20,16 +18,18 @@ class PrayerTimesState extends Equatable {
     this.message,
     this.lastUpdated,
     this.city,
+    this.notificationSettings = const PrayerNotificationSettings(),
   });
 
-  final PrayerTimesStatus status;
+  final RequestStatus status;
   final LocalPrayerTimes? localPrayerTimes;
-  final String? nextPrayer;
+  final PrayerType? nextPrayer;
   final Duration? timeLeft;
   final DateTime? previousPrayerDateTime;
   final String? message;
   final DateTime? lastUpdated;
   final String? city;
+  final PrayerNotificationSettings notificationSettings;
 
   @override
   List<Object?> get props => [
@@ -41,17 +41,19 @@ class PrayerTimesState extends Equatable {
     message,
     lastUpdated,
     city,
+    notificationSettings,
   ];
 
   PrayerTimesState copyWith({
-    PrayerTimesStatus? status,
+    RequestStatus? status,
     LocalPrayerTimes? localPrayerTimes,
-    String? nextPrayer,
+    PrayerType? nextPrayer,
     Duration? timeLeft,
     DateTime? previousPrayerDateTime,
     String? message,
     DateTime? lastUpdated,
     String? city,
+    PrayerNotificationSettings? notificationSettings,
   }) => PrayerTimesState(
     status: status ?? this.status,
     localPrayerTimes: localPrayerTimes ?? this.localPrayerTimes,
@@ -62,5 +64,6 @@ class PrayerTimesState extends Equatable {
     message: message ?? this.message,
     lastUpdated: lastUpdated ?? this.lastUpdated,
     city: city ?? this.city,
+    notificationSettings: notificationSettings ?? this.notificationSettings,
   );
 }

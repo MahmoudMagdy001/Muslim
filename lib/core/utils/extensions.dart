@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// Context Extensions
 extension ContextExtension on BuildContext {
   /// Returns MediaQuery size
@@ -20,10 +22,11 @@ extension ContextExtension on BuildContext {
   /// Returns color scheme
   ColorScheme get colorScheme => theme.colorScheme;
 
+  /// Returns localizations
+  AppLocalizations get l10n => AppLocalizations.of(this);
+
   /// Returns if keyboard is visible
   bool get isKeyboardVisible => MediaQuery.of(this).viewInsets.bottom > 0;
-
-
 
   /// Hides keyboard
   void hideKeyboard() {

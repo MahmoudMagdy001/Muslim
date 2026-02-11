@@ -4,9 +4,12 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../../../features/prayer_times/service/work_manager_service.dart';
+import '../../../features/prayer_times/helper/notification_constants.dart';
+import '../../../features/prayer_times/services/work_manager_service.dart';
+import '../../../features/prayer_times/services/notification_channel_factory.dart';
 import '../../../features/settings/service/settings_service.dart';
 import '../../service/permissions_sevice.dart';
+import '../../utils/app_logger.dart';
 
 class AppInitializer {
   AppInitializer(this.prefs);
@@ -37,14 +40,14 @@ class AppInitializer {
   }
 
   Future<void> workManagerNotify() async {
-    debugPrint('بدأ جدولة الاشعارات ف الخلفيه');
+    AppLogger.info('بدأ جدولة الاشعارات ف الخلفيه');
 
     await Workmanager().initialize(callbackDispatcher);
     await Workmanager().registerPeriodicTask(
-      'updatePrayerTimes',
-      updatePrayerTimesTask,
-      frequency: const Duration(hours: 12),
-      initialDelay: const Duration(minutes: 15),
+      NotificationConstants.workManagerUniqueId,
+      NotificationConstants.workManagerTaskName,
+      frequency: NotificationConstants.workManagerFrequency,
+      initialDelay: NotificationConstants.workManagerInitialDelay,
       existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
   }
@@ -64,9 +67,11 @@ class AppInitializer {
     );
   }
 
+  /// Initializes notification channels using [NotificationChannelFactory]
+  /// to avoid duplication with WorkManager.
   Future<void> _initializeNotifications() async {
     await AwesomeNotifications()
-        .initialize('resource://drawable/ic_muslim_logo', [
+        .initialize(NotificationConstants.notificationIcon, [
           NotificationChannel(
             channelKey: 'quran_channel',
             channelName: 'Quran Reminders',
@@ -74,40 +79,24 @@ class AppInitializer {
             defaultColor: const Color(0xFF33A1E0),
             importance: NotificationImportance.High,
             channelShowBadge: true,
-            icon: 'resource://drawable/ic_muslim_logo',
+            icon: NotificationConstants.notificationIcon,
           ),
-          NotificationChannel(
-            channelKey: 'prayer_reminder',
-            channelName: 'تذكير الصلاة',
-            channelDescription: 'إشعارات بمواقيت الصلاة وتشغيل الأذان',
-            defaultColor: const Color(0xFF33A1E0),
-            ledColor: Colors.white,
-            importance: NotificationImportance.Max,
-            playSound: true,
-            enableVibration: true,
-            enableLights: true,
-            locked: true,
-            defaultRingtoneType: DefaultRingtoneType.Notification,
-            soundSource: 'resource://raw/azan',
-            icon: 'resource://drawable/ic_muslim_logo',
-          ),
+          NotificationChannelFactory.prayerChannel(),
         ]);
   }
 
   Future<void> _scheduleQuranReminders() async {
     final enabled = await _settingsService.getQuranNotificationsEnabled();
     if (!enabled) {
-      debugPrint('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
+      AppLogger.info('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
       await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
       return;
     }
 
     try {
-      // احذف أي إشعارات قديمة قبل جدولة الجديدة
       await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
 
       final DateTime now = DateTime.now();
-
       final DateTime firstNotification = DateTime(
         now.year,
         now.month,
@@ -128,7 +117,7 @@ class AppInitializer {
         ),
       );
     } catch (e) {
-      debugPrint('❌ خطأ أثناء جدولة الإشعارات: $e');
+      AppLogger.error('خطأ أثناء جدولة الإشعارات', e);
     }
   }
 }
