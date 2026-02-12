@@ -43,24 +43,26 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   /// Checks and requests all required permissions.
   Future<void> checkAllPermissions() async {
-    emit(state.copyWith(status: RequestStatus.loading));
+    if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
     try {
       await requestAllPermissions();
-      AppLogger.success('تم التحقق من جميع الصلاحيات بنجاح');
+      logSuccess('تم التحقق من جميع الصلاحيات بنجاح');
     } catch (error) {
-      AppLogger.error('خطأ في التحقق من الصلاحيات', error);
-      emit(
-        state.copyWith(
-          status: RequestStatus.failure,
-          message: 'يجب منح الصلاحيات المطلوبة لعرض مواقيت الصلاة',
-        ),
-      );
+      logError('خطأ في التحقق من الصلاحيات', error);
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            status: RequestStatus.failure,
+            message: 'يجب منح الصلاحيات المطلوبة لعرض مواقيت الصلاة',
+          ),
+        );
+      }
     }
   }
 
   /// Fetches prayer times for today.
   Future<void> fetchPrayerTimes({required bool isArabic}) async {
-    emit(state.copyWith(status: RequestStatus.loading));
+    if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
 
     try {
       final localPrayerTimes = await _prayerTimesRepository.getPrayerTimes(
@@ -93,7 +95,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         }
       }
     } catch (e) {
-      AppLogger.warning('تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
+      logWarning('تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
     }
 
     await _notificationRepository.scheduleNotifications(allScheduledTimes);
@@ -105,26 +107,30 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   void _updateStateWithPrayerTimes(LocalPrayerTimes times) {
     final calculation = _calculatorService.calculateNextPrayer(times);
 
-    emit(
-      state.copyWith(
-        status: RequestStatus.success,
-        localPrayerTimes: times,
-        nextPrayer: calculation.nextPrayer,
-        timeLeft: calculation.timeLeft,
-        previousPrayerDateTime: calculation.previousPrayerDateTime,
-        lastUpdated: DateTime.now(),
-        city: times.city,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: RequestStatus.success,
+          localPrayerTimes: times,
+          nextPrayer: calculation.nextPrayer,
+          timeLeft: calculation.timeLeft,
+          previousPrayerDateTime: calculation.previousPrayerDateTime,
+          lastUpdated: DateTime.now(),
+          city: times.city,
+        ),
+      );
+    }
   }
 
   void _handlePrayerTimesError(Object error) {
-    emit(
-      state.copyWith(
-        status: RequestStatus.failure,
-        message: 'من فضلك فعل الاشعارات للحصول علي مواقيت الصلاه',
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: RequestStatus.failure,
+          message: 'من فضلك فعل الاشعارات للحصول علي مواقيت الصلاه',
+        ),
+      );
+    }
   }
 
   /// Starts a per-second countdown for the next prayer.
@@ -142,16 +148,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     final calculation = _calculatorService.calculateNextPrayer(currentTimes);
 
     if (calculation.timeLeft.inSeconds <= 0) {
-      AppLogger.info('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
+      logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
       _handlePrayerTimesSuccess(currentTimes);
     } else {
-      emit(
-        state.copyWith(
-          nextPrayer: calculation.nextPrayer,
-          timeLeft: calculation.timeLeft,
-          previousPrayerDateTime: calculation.previousPrayerDateTime,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            nextPrayer: calculation.nextPrayer,
+            timeLeft: calculation.timeLeft,
+            previousPrayerDateTime: calculation.previousPrayerDateTime,
+          ),
+        );
+      }
     }
   }
 
@@ -159,9 +167,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   Future<void> loadNotificationSettings() async {
     try {
       final settings = await _notificationRepository.getSettings();
-      emit(state.copyWith(notificationSettings: settings));
+      if (!isClosed) emit(state.copyWith(notificationSettings: settings));
     } catch (e) {
-      AppLogger.warning('تعذر تحميل إعدادات الإشعارات: $e');
+      logWarning('تعذر تحميل إعدادات الإشعارات: $e');
     }
   }
 
@@ -175,7 +183,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       type,
       enabled: enabled,
     );
-    emit(state.copyWith(notificationSettings: updatedSettings));
+    if (!isClosed) emit(state.copyWith(notificationSettings: updatedSettings));
 
     // Persist and reschedule
     await _notificationRepository.setPrayerEnabled(type, enabled: enabled);
@@ -204,7 +212,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   /// Manual refresh of prayer times.
   Future<void> refreshPrayerTimes({required bool isArabic}) async {
-    AppLogger.info('🔄 تحديث يدوي لمواعيد الصلاة...');
+    logInfo('🔄 تحديث يدوي لمواعيد الصلاة...');
     await checkAllPermissions();
     await init(isArabic: isArabic);
   }

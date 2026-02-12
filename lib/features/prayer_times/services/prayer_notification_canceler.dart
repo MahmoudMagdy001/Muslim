@@ -11,9 +11,9 @@ class PrayerNotificationCanceler {
       await AwesomeNotifications().cancelSchedulesByChannelKey(
         NotificationConstants.prayerChannelKey,
       );
-      AppLogger.info('تم إلغاء جميع إشعارات الصلاة السابقة');
+      logInfo('تم إلغاء جميع إشعارات الصلاة السابقة');
     } catch (e) {
-      AppLogger.warning('حدث خطأ أثناء إلغاء الإشعارات: $e');
+      logWarning('حدث خطأ أثناء إلغاء الإشعارات: $e');
     }
   }
 }

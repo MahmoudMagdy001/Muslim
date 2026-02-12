@@ -8,6 +8,7 @@ abstract class QuranRepository {
   int? get currentIndex;
   bool get isPlaying;
   int? get currentSurah;
+  String? get currentReciter;
 
   Future<void> prepareSurahPlaylist({
     required int surahNumber,

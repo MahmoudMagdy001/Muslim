@@ -436,6 +436,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get start_calculation => 'ابدأ حساب الزكاة';
 
   @override
+  String get juzText => 'الجزء';
+
+  @override
+  String get hizbText => 'الحزب';
+
+  @override
   String get surahsText => 'السور';
 
   @override

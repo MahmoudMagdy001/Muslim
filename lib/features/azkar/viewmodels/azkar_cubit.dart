@@ -13,7 +13,7 @@ class AzkarCubit extends Cubit<AzkarState> {
   final AzkarPersistenceService _persistenceService;
 
   Future<void> loadAzkar() async {
-    emit(state.copyWith(status: RequestStatus.loading));
+    if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
     try {
       final azkar = await _repository.getAzkarList();
 
@@ -26,24 +26,33 @@ class AzkarCubit extends Cubit<AzkarState> {
         grouped[item.category]!.add(item);
       }
 
-      emit(
-        state.copyWith(
-          status: RequestStatus.success,
-          azkarList: azkar,
-          groupedAzkar: grouped,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            status: RequestStatus.success,
+            azkarList: azkar,
+            groupedAzkar: grouped,
+          ),
+        );
+      }
     } catch (e) {
-      emit(
-        state.copyWith(status: RequestStatus.failure, message: e.toString()),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(status: RequestStatus.failure, message: e.toString()),
+        );
+      }
     }
   }
 
   Future<void> loadAzkarContent(String url) async {
-    emit(
-      state.copyWith(contentStatus: RequestStatus.loading, currentContent: []),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          contentStatus: RequestStatus.loading,
+          currentContent: [],
+        ),
+      );
+    }
     try {
       await _persistenceService.clearIfNewDay();
       final content = await _repository.getAzkarContent(url);
@@ -55,20 +64,24 @@ class AzkarCubit extends Cubit<AzkarState> {
         counts[i] = savedCount ?? content[i].repeat;
       }
 
-      emit(
-        state.copyWith(
-          contentStatus: RequestStatus.success,
-          currentContent: content,
-          currentCounts: counts,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            contentStatus: RequestStatus.success,
+            currentContent: content,
+            currentCounts: counts,
+          ),
+        );
+      }
     } catch (e) {
-      emit(
-        state.copyWith(
-          contentStatus: RequestStatus.failure,
-          message: e.toString(),
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            contentStatus: RequestStatus.failure,
+            message: e.toString(),
+          ),
+        );
+      }
     }
   }
 
@@ -77,7 +90,7 @@ class AzkarCubit extends Cubit<AzkarState> {
     if (counts.containsKey(index) && counts[index]! > 0) {
       counts[index] = counts[index]! - 1;
       _persistenceService.saveCount(url, index, counts[index]!);
-      emit(state.copyWith(currentCounts: counts));
+      if (!isClosed) emit(state.copyWith(currentCounts: counts));
     }
   }
 
@@ -86,7 +99,7 @@ class AzkarCubit extends Cubit<AzkarState> {
     if (index < state.currentContent.length) {
       counts[index] = state.currentContent[index].repeat;
       _persistenceService.saveCount(url, index, counts[index]!);
-      emit(state.copyWith(currentCounts: counts));
+      if (!isClosed) emit(state.copyWith(currentCounts: counts));
     }
   }
 }

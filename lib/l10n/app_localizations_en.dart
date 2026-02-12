@@ -441,6 +441,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get start_calculation => 'Start Zakat Calculation';
 
   @override
+  String get juzText => 'Juz';
+
+  @override
+  String get hizbText => 'Hizb';
+
+  @override
   String get surahsText => 'Surahs';
 
   @override

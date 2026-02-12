@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../repository/quran_repository.dart';
@@ -34,9 +35,9 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToPosition() {
     _subscriptions.add(
-      _repository.positionStream.listen(
-        (position) => emit(state.copyWith(currentPosition: position)),
-      ),
+      _repository.positionStream.listen((position) {
+        if (!isClosed) emit(state.copyWith(currentPosition: position));
+      }),
     );
   }
 
@@ -44,7 +45,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     _subscriptions.add(
       _repository.durationStream.listen((duration) {
         if (duration != null && duration.inMilliseconds > 0) {
-          emit(state.copyWith(totalDuration: duration));
+          if (!isClosed) emit(state.copyWith(totalDuration: duration));
         }
       }),
     );
@@ -52,9 +53,9 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToPlayerState() {
     _subscriptions.add(
-      _repository.playerStateStream.listen(
-        (playerState) => emit(state.copyWith(isPlaying: playerState.playing)),
-      ),
+      _repository.playerStateStream.listen((playerState) {
+        if (!isClosed) emit(state.copyWith(isPlaying: playerState.playing));
+      }),
     );
   }
 
@@ -63,7 +64,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
       _repository.currentIndexStream.listen((index) {
         if (index != null) {
           final currentAyah = index + 1;
-          emit(state.copyWith(currentAyah: currentAyah));
+          if (!isClosed) emit(state.copyWith(currentAyah: currentAyah));
         }
       }),
     );
@@ -71,13 +72,32 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   // -------------------- Player Controls -------------------- //
 
+  Future<void> loadSurah(int surah, String reciter, {int startAyah = 1}) async {
+    await _repository.prepareSurahPlaylist(
+      surahNumber: surah,
+      reciter: reciter,
+    );
+
+    final targetIndex = startAyah - 1;
+    final isAlreadyAtTarget =
+        _repository.currentSurah == surah &&
+        _repository.currentIndex == targetIndex;
+
+    if (startAyah > 1 && !isAlreadyAtTarget) {
+      await _repository.seek(Duration.zero, index: targetIndex);
+    }
+    if (!isClosed) {
+      emit(state.copyWith(currentSurah: surah, currentAyah: startAyah));
+    }
+  }
+
   Future<void> play() => _repository.play();
 
   Future<void> pause() => _repository.pause();
 
   Future<void> seek(Duration position, {int? index, int? surah}) async {
     await _repository.seek(position, index: index);
-    if (surah != null) emit(state.copyWith(currentSurah: surah));
+    if (surah != null && !isClosed) emit(state.copyWith(currentSurah: surah));
   }
 
   Future<void> seekToNext() => _repository.seekToNext();

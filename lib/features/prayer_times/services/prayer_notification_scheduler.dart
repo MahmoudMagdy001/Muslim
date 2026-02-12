@@ -36,20 +36,18 @@ class PrayerNotificationScheduler {
   ) async {
     final now = DateTime.now();
     await _canceler.cancelAll();
-    AppLogger.info('تم مسح أي إشعارات قديمة...');
+    logInfo('تم مسح أي إشعارات قديمة...');
 
     int totalScheduled = 0;
 
     for (final times in days) {
       final date = times.date;
 
-      AppLogger.info(
-        '📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}',
-      );
+      logInfo('📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}');
 
       for (final prayer in PrayerType.values) {
         if (!settings.isEnabled(prayer)) {
-          AppLogger.info(
+          logInfo(
             '⏭️ تخطي ${prayer.arabicName} — الإشعار معطل بواسطة المستخدم',
           );
           continue;
@@ -66,9 +64,7 @@ class PrayerNotificationScheduler {
       }
     }
 
-    AppLogger.success(
-      'تم جدولة إجمالي $totalScheduled إشعار بنجاح لأيام متعددة!',
-    );
+    logSuccess('تم جدولة إجمالي $totalScheduled إشعار بنجاح لأيام متعددة!');
 
     // Schedule a fallback update reminder if nothing was scheduled
     if (totalScheduled == 0) {
@@ -114,7 +110,7 @@ class PrayerNotificationScheduler {
       ),
     );
 
-    AppLogger.success(
+    logSuccess(
       'تم جدولة ${prayer.arabicName} في ${prayerDateTime.toString()} (ID: $notificationId)',
     );
     return true;

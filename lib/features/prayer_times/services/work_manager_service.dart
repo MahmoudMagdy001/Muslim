@@ -19,14 +19,14 @@ void callbackDispatcher() {
     // Initialize notifications in the background isolate
     await AwesomeNotifications().initialize(
       NotificationConstants.notificationIcon,
-      [NotificationChannelFactory.prayerChannel()],
+      [createPrayerChannel()],
     );
 
     final now = DateTime.now();
-    AppLogger.info(
+    logInfo(
       '🕒 Timezone initialized: ${now.timeZoneName}, offset: ${now.timeZoneOffset}',
     );
-    AppLogger.info('🎯 WorkManager started! Task: $task - Time: $now');
+    logInfo('🎯 WorkManager started! Task: $task - Time: $now');
 
     try {
       final prayerService = PrayerTimesService();
@@ -38,7 +38,7 @@ void callbackDispatcher() {
 
       final cachedCoords = await prayerService.getCachedCoordinates();
       if (cachedCoords == null) {
-        AppLogger.warning('لا توجد إحداثيات محفوظة، لا يمكن جدولة الصلاة');
+        logWarning('لا توجد إحداثيات محفوظة، لا يمكن جدولة الصلاة');
         return Future.value(false);
       }
 
@@ -55,12 +55,12 @@ void callbackDispatcher() {
 
       await scheduler.scheduleAll(upcomingDaysTimes, settings);
 
-      AppLogger.success(
+      logSuccess(
         'تمت جدولة مواقيت الصلاة لـ ${NotificationConstants.scheduleDaysAhead} أيام بنجاح في الخلفية - ${DateTime.now()}',
       );
       return Future.value(true);
     } catch (e, s) {
-      AppLogger.error('خطأ في WorkManager', e, s);
+      logError('خطأ في WorkManager', e, s);
       return Future.value(false);
     }
   });

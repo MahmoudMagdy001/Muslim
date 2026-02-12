@@ -2,9 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran/quran.dart' as quran;
+
 import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/utils/format_helper.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 class MushafPageContent extends StatelessWidget {
   const MushafPageContent({

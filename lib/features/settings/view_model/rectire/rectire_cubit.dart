@@ -35,9 +35,9 @@ class ReciterCubit extends Cubit<ReciterState> {
     final savedReciter = prefs.getString(_reciterKey);
 
     if (savedReciter != null) {
-      emit(ReciterState(selectedReciter: savedReciter));
+      if (!isClosed) emit(ReciterState(selectedReciter: savedReciter));
     } else {
-      emit(const ReciterState(selectedReciter: _defaultReciter));
+      if (!isClosed) emit(const ReciterState(selectedReciter: _defaultReciter));
     }
   }
 
@@ -53,7 +53,7 @@ class ReciterCubit extends Cubit<ReciterState> {
     } catch (error) {
       debugPrint('Error saving reciter: $error');
       // Revert the change if saving fails
-      emit(previousState);
+      if (!isClosed) emit(previousState);
     }
   }
 

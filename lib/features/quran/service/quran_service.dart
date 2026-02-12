@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:audio_service/audio_service.dart';
 import '../../settings/consts/reciters_name_arabic.dart';
 
 class QuranService {
-  static final AudioPlayer _audioPlayer = AudioPlayer();
+  QuranService(this._audioPlayer);
+  final AudioPlayer _audioPlayer;
 
   // StreamController لتحديثات آخر آية تم الاستماع إليها
   final StreamController<Map<String, dynamic>?> _lastPlayedController =
@@ -134,14 +135,17 @@ class QuranService {
     _indexSubscription?.cancel();
     _currentSurah = null;
     _currentReciter = null;
-    _audioPlayer.dispose();
     _lastPlayedController.close(); // إغلاق الـ StreamController
   }
 
   // ------------------ Internal Helpers ------------------ //
 
-  bool _isSameAsCurrent(int surah, String reciter) =>
-      _currentSurah == surah && _currentReciter == reciter;
+  bool _isSameAsCurrent(int surah, String reciter) {
+    final hasQuranMetadata = _getMetadataFromPlayer('surah') != null;
+    return _currentSurah == surah &&
+        _currentReciter == reciter &&
+        hasQuranMetadata;
+  }
 
   /// يبني قائمة التشغيل لكل آيات السورة
   List<AudioSource> _buildPlaylist(int surahNumber, String reciter) {

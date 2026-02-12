@@ -1,9 +1,11 @@
 import 'package:just_audio/just_audio.dart';
-import 'quran_repository.dart';
+
 import '../service/quran_service.dart';
+import 'quran_repository.dart';
 
 class QuranRepositoryImpl implements QuranRepository {
-  final QuranService _quranService = QuranService();
+  QuranRepositoryImpl(this._quranService);
+  final QuranService _quranService;
 
   @override
   Stream<Duration> get positionStream =>
@@ -29,6 +31,9 @@ class QuranRepositoryImpl implements QuranRepository {
 
   @override
   int? get currentSurah => _quranService.currentSurah;
+
+  @override
+  String? get currentReciter => _quranService.currentReciter;
 
   @override
   Future<void> prepareSurahPlaylist({

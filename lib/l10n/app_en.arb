@@ -671,6 +671,8 @@
     "description": "",
     "type": "text"
   },
+  "juzText": "Juz",
+  "hizbText": "Hizb",
   "surahsText": "Surahs",
   "@surahsText": {
     "description": "Title for the list of Surahs",

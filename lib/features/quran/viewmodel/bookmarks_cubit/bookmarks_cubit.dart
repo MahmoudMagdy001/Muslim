@@ -14,12 +14,16 @@ class BookmarksCubit extends Cubit<BookmarksState> {
   final BookmarksService _service;
 
   Future<void> load() async {
-    emit(state.copyWith(status: BookmarksStatus.loading));
+    if (!isClosed) emit(state.copyWith(status: BookmarksStatus.loading));
     try {
       final list = await _service.loadBookmarks();
-      emit(state.copyWith(status: BookmarksStatus.ready, bookmarks: list));
+      if (!isClosed) {
+        emit(state.copyWith(status: BookmarksStatus.ready, bookmarks: list));
+      }
     } catch (e) {
-      emit(state.copyWith(status: BookmarksStatus.error, message: '$e'));
+      if (!isClosed) {
+        emit(state.copyWith(status: BookmarksStatus.error, message: '$e'));
+      }
     }
   }
 
@@ -41,7 +45,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
         )
         ..sort((a, b) => b.timestampMs.compareTo(a.timestampMs));
 
-      emit(state.copyWith(bookmarks: updated));
+      if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
     } catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
@@ -54,7 +58,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       final updated = List<AyahBookmark>.from(state.bookmarks)
         ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah);
 
-      emit(state.copyWith(bookmarks: updated));
+      if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
     } catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر

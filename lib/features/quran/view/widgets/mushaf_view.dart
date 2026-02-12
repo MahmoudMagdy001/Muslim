@@ -15,6 +15,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../repository/tafsir_repository.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
+import '../utils/quran_position_helper.dart';
 import 'create_share_tafsir.dart';
 import 'tafsir_selection_dialog.dart';
 import 'verse_options_menu.dart';
@@ -25,6 +26,9 @@ class MushafView extends StatefulWidget {
     required this.initialPage,
     required this.isArabic,
     required this.localizations,
+    this.onPartChanged,
+    this.fromPage,
+    this.toPage,
     super.key,
   });
 
@@ -32,6 +36,9 @@ class MushafView extends StatefulWidget {
   final int initialPage;
   final bool isArabic;
   final AppLocalizations localizations;
+  final void Function(int surah, int juz, int hizb)? onPartChanged;
+  final int? fromPage;
+  final int? toPage;
 
   @override
   State<MushafView> createState() => _MushafViewState();
@@ -42,27 +49,24 @@ class _MushafViewState extends State<MushafView> {
   StreamSubscription? _playerSub;
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
   final ValueNotifier<int?> currentSurahNotifier = ValueNotifier(null);
-  late int _startPage;
-  late int _endPage;
-  late int _totalPages;
   final TafsirRepository _tafsirRepository = TafsirRepository();
   final Map<String, GlobalKey> _ayahKeys = {};
 
   @override
   void initState() {
     super.initState();
-    _startPage = quran.getPageNumber(widget.surahNumber, 1);
-    _endPage = quran.getPageNumber(
-      widget.surahNumber,
-      quran.getVerseCount(widget.surahNumber),
-    );
-    _totalPages = _endPage - _startPage + 1;
+    // Use the absolute page number based on boundaries
+    // The initialPage passed from quran package is 1-based absolute (1-604)
+    // If fromPage is set, our page view maps index 0 to fromPage.
 
-    // Calculate initial index relative to the surah's start page
-    final initialIndex = widget.initialPage - _startPage;
-    _pageController = PageController(
-      initialPage: initialIndex.clamp(0, _totalPages - 1),
-    );
+    int initialIndex;
+    if (widget.fromPage != null) {
+      initialIndex = widget.initialPage - widget.fromPage!;
+    } else {
+      initialIndex = widget.initialPage - 1;
+    }
+
+    _pageController = PageController(initialPage: initialIndex);
   }
 
   @override
@@ -80,8 +84,21 @@ class _MushafViewState extends State<MushafView> {
           currentSurahNotifier.value = newSurah;
 
           if (newSurah == widget.surahNumber) {
+            // Note: We might need to handle external Surah changes better if we want to support
+            // continuous reading AND external navigation.
+            // For now, if the player moves to a verse, we jump there.
+            // But with continuous reading, `widget.surahNumber` might be just the *initial* surah.
+            // We should use currentSurahNotifier logic locally.
+
             final page = quran.getPageNumber(newSurah, newAyah);
-            final targetIndex = page - _startPage;
+            int targetIndex;
+
+            if (widget.fromPage != null) {
+              targetIndex = page - widget.fromPage!;
+            } else {
+              targetIndex = page - 1;
+            }
+
             if (_pageController.hasClients) {
               if ((_pageController.page?.round() ?? 0) != targetIndex) {
                 _pageController
@@ -113,7 +130,14 @@ class _MushafViewState extends State<MushafView> {
           playerState.currentSurah!,
           playerState.currentAyah!,
         );
-        final targetIndex = page - _startPage;
+
+        int targetIndex;
+        if (widget.fromPage != null) {
+          targetIndex = page - widget.fromPage!;
+        } else {
+          targetIndex = page - 1;
+        }
+
         if (_pageController.hasClients) {
           if ((_pageController.page?.round() ?? 0) != targetIndex) {
             _pageController.jumpToPage(targetIndex);
@@ -314,107 +338,145 @@ class _MushafViewState extends State<MushafView> {
   }
 
   @override
-  Widget build(BuildContext context) => PageView.builder(
-    controller: _pageController,
-    reverse: widget.isArabic,
-    itemCount: _totalPages,
-    itemBuilder: (context, index) {
-      final pageNumber = _startPage + index;
-      final pageData = quran.getPageData(pageNumber);
+  Widget build(BuildContext context) {
+    final int effectiveItemCount;
+    if (widget.fromPage != null && widget.toPage != null) {
+      effectiveItemCount = widget.toPage! - widget.fromPage! + 1;
+    } else {
+      effectiveItemCount = 604;
+    }
 
-      return SingleChildScrollView(
-        padding: EdgeInsetsDirectional.only(
-          start: 8.toW,
-          end: 8.toW,
-          top: 16.toH,
-          bottom: 8.toH,
-        ),
-        child: Column(
-          children: [
-            Text(
-              '${widget.isArabic ? 'صفحة' : 'Page'} ${convertToArabicNumbers(pageNumber.toString())}',
-              style: context.textTheme.labelSmall?.copyWith(
-                color: context.theme.colorScheme.onSurface,
+    return PageView.builder(
+      controller: _pageController,
+      reverse: widget.isArabic,
+      itemCount: effectiveItemCount,
+      onPageChanged: (index) {
+        final int pageNumber;
+        if (widget.fromPage != null) {
+          pageNumber = widget.fromPage! + index;
+        } else {
+          pageNumber = index + 1;
+        }
+
+        // Find which Surah this page belongs to (or predominantly belongs to)
+        // quran package doesn't have a direct "getSurahFromPage", but getPageData returns verses.
+        // We can take the first verse's surah.
+        final pageData = quran.getPageData(pageNumber);
+        if (pageData.isNotEmpty) {
+          final firstVerse = pageData.first as Map<String, dynamic>;
+          final surahNum = firstVerse['surah'] as int;
+          final startAyah = firstVerse['start'] as int;
+
+          final juzNum = getJuzForAyah(surahNum, startAyah);
+          final hizbNum = getHizbForAyah(surahNum, startAyah);
+
+          widget.onPartChanged?.call(surahNum, juzNum, hizbNum);
+        }
+      },
+      itemBuilder: (context, index) {
+        final int pageNumber;
+        if (widget.fromPage != null) {
+          pageNumber = widget.fromPage! + index;
+        } else {
+          pageNumber = index + 1;
+        }
+
+        final pageData = quran.getPageData(pageNumber);
+
+        return SingleChildScrollView(
+          padding: EdgeInsetsDirectional.only(
+            start: 8.toW,
+            end: 8.toW,
+            top: 16.toH,
+            bottom: 8.toH,
+          ),
+          child: Column(
+            children: [
+              Text(
+                '${widget.isArabic ? 'صفحة' : 'Page'} ${convertToArabicNumbers(pageNumber.toString())}',
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: context.theme.colorScheme.onSurface,
+                ),
               ),
-            ),
-            const Divider(),
-            ValueListenableBuilder<int?>(
-              valueListenable: currentAyahNotifier,
-              builder: (context, currentAyah, _) =>
-                  ValueListenableBuilder<int?>(
-                    valueListenable: currentSurahNotifier,
-                    builder: (context, currentSurah, _) => RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: GoogleFonts.amiri().copyWith(
-                          fontSize: 22.toSp,
-                          height: 2.0,
-                          color: context.textTheme.bodyLarge?.color,
+              const Divider(),
+              ValueListenableBuilder<int?>(
+                valueListenable: currentAyahNotifier,
+                builder: (context, currentAyah, _) =>
+                    ValueListenableBuilder<int?>(
+                      valueListenable: currentSurahNotifier,
+                      builder: (context, currentSurah, _) => RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: GoogleFonts.amiri().copyWith(
+                            fontSize: 22.toSp,
+                            height: 2.0,
+                            color: context.textTheme.bodyLarge?.color,
+                          ),
+                          children: pageData.map((data) {
+                            final Map<String, dynamic> rowData =
+                                data as Map<String, dynamic>;
+                            final surah = rowData['surah'] as int;
+                            final start = rowData['start'] as int;
+                            final end = rowData['end'] as int;
+                            final spans = <InlineSpan>[];
+
+                            for (int ayah = start; ayah <= end; ayah++) {
+                              final isCurrent =
+                                  ayah == currentAyah && surah == currentSurah;
+                              final text = quran.getVerse(surah, ayah);
+                              final endSymbol = quran.getVerseEndSymbol(
+                                ayah,
+                                arabicNumeral: widget.isArabic,
+                              );
+
+                              final keyString = '${surah}_$ayah';
+                              final key = _ayahKeys.putIfAbsent(
+                                keyString,
+                                () => GlobalKey(),
+                              );
+
+                              spans
+                                ..add(
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.top,
+                                    child: SizedBox(
+                                      key: key,
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                                  ),
+                                )
+                                ..add(
+                                  TextSpan(
+                                    text: '$text ',
+                                    style: TextStyle(
+                                      color: isCurrent
+                                          ? context.colorScheme.error
+                                          : null,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTapDown = (details) {
+                                        _onAyahTap(
+                                          surah,
+                                          ayah,
+                                          text,
+                                          details.globalPosition,
+                                        );
+                                      },
+                                  ),
+                                )
+                                ..add(TextSpan(text: '$endSymbol '));
+                            }
+                            return TextSpan(children: spans);
+                          }).toList(),
                         ),
-                        children: pageData.map((data) {
-                          final Map<String, dynamic> rowData =
-                              data as Map<String, dynamic>;
-                          final surah = rowData['surah'] as int;
-                          final start = rowData['start'] as int;
-                          final end = rowData['end'] as int;
-                          final spans = <InlineSpan>[];
-
-                          for (int ayah = start; ayah <= end; ayah++) {
-                            final isCurrent =
-                                ayah == currentAyah && surah == currentSurah;
-                            final text = quran.getVerse(surah, ayah);
-                            final endSymbol = quran.getVerseEndSymbol(
-                              ayah,
-                              arabicNumeral: widget.isArabic,
-                            );
-
-                            final keyString = '${surah}_$ayah';
-                            final key = _ayahKeys.putIfAbsent(
-                              keyString,
-                              () => GlobalKey(),
-                            );
-
-                            spans
-                              ..add(
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.top,
-                                  child: SizedBox(
-                                    key: key,
-                                    width: 0,
-                                    height: 0,
-                                  ),
-                                ),
-                              )
-                              ..add(
-                                TextSpan(
-                                  text: '$text ',
-                                  style: TextStyle(
-                                    color: isCurrent
-                                        ? context.colorScheme.error
-                                        : null,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTapDown = (details) {
-                                      _onAyahTap(
-                                        surah,
-                                        ayah,
-                                        text,
-                                        details.globalPosition,
-                                      );
-                                    },
-                                ),
-                              )
-                              ..add(TextSpan(text: '$endSymbol '));
-                          }
-                          return TextSpan(children: spans);
-                        }).toList(),
                       ),
                     ),
-                  ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

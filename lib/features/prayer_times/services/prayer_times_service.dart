@@ -51,7 +51,7 @@ class PrayerTimesService {
               : place.administrativeArea;
         }
       } catch (e) {
-        AppLogger.warning('فشل geocoding: $e');
+        logWarning('فشل geocoding: $e');
       }
 
       if (forMonth) {
@@ -60,7 +60,7 @@ class PrayerTimesService {
         return await _calculatePrayerTimes(coords, cityName: cityName);
       }
     } catch (error) {
-      AppLogger.error('خطأ في الحصول على مواقيت الصلاة', error);
+      logError('خطأ في الحصول على مواقيت الصلاة', error);
       return await _getDefaultPrayerTimes();
     }
   }
@@ -180,7 +180,7 @@ class PrayerTimesService {
         await _cacheCoordinates(prefs, position.latitude, position.longitude);
         return Coordinates(position.latitude, position.longitude);
       } catch (e) {
-        AppLogger.warning('فشل في الحصول على الموقع الحالي: $e');
+        logWarning('فشل في الحصول على الموقع الحالي: $e');
       }
     }
 

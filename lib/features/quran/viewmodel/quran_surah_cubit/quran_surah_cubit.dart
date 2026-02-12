@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -27,12 +28,14 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
       return;
     }
 
-    emit(
-      state.copyWith(
-        status: QuranSurahStatus.loading,
-        surahNumber: surahNumber,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QuranSurahStatus.loading,
+          surahNumber: surahNumber,
+        ),
+      );
+    }
 
     try {
       await _prepareAndEmitLoaded(surahNumber, reciter, startAyah);
@@ -58,14 +61,16 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
 
     _updateLastLoadedInfo(surahNumber, reciter);
 
-    emit(
-      state.copyWith(
-        status: QuranSurahStatus.loaded,
-        surahNumber: surahNumber,
-        ayahCount: quran.getVerseCount(surahNumber),
-        startAyah: startAyah,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QuranSurahStatus.loaded,
+          surahNumber: surahNumber,
+          ayahCount: quran.getVerseCount(surahNumber),
+          startAyah: startAyah,
+        ),
+      );
+    }
 
     await _seekToAyahIfNeeded(startAyah);
   }
@@ -77,22 +82,26 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
   }
 
   void _emitAlreadyLoaded(int surahNumber) {
-    emit(
-      state.copyWith(
-        status: QuranSurahStatus.alreadyLoaded,
-        surahNumber: state.surahNumber ?? surahNumber,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QuranSurahStatus.alreadyLoaded,
+          surahNumber: state.surahNumber ?? surahNumber,
+        ),
+      );
+    }
   }
 
   void _emitError(int surahNumber, Object error) {
-    emit(
-      state.copyWith(
-        status: QuranSurahStatus.error,
-        message: error.toString(),
-        surahNumber: surahNumber,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QuranSurahStatus.error,
+          message: error.toString(),
+          surahNumber: surahNumber,
+        ),
+      );
+    }
   }
 
   void _updateLastLoadedInfo(int surahNumber, String reciter) {

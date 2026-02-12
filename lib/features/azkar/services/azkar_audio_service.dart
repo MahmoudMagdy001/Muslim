@@ -16,10 +16,10 @@ class AzkarAudioState {
 }
 
 class AzkarAudioService {
-  AzkarAudioService() {
+  AzkarAudioService(this._audioPlayer) {
     _init();
   }
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer;
   final StreamController<AzkarAudioState> _stateController =
       StreamController<AzkarAudioState>.broadcast();
 
@@ -36,17 +36,19 @@ class AzkarAudioService {
         _updateState(status: AzkarAudioStatus.stopped);
       } else if (processingState == ProcessingState.loading ||
           processingState == ProcessingState.buffering) {
-        _updateState(status: AzkarAudioStatus.loading);
+        if (_state.status != AzkarAudioStatus.stopped) {
+          _updateState(status: AzkarAudioStatus.loading);
+        }
       } else if (processingState == ProcessingState.ready &&
           _audioPlayer.playing) {
-        _updateState(status: AzkarAudioStatus.playing);
+        if (_state.status != AzkarAudioStatus.stopped) {
+          _updateState(status: AzkarAudioStatus.playing);
+        }
       }
     });
 
     _audioPlayer.playingStream.listen((playing) {
-      if (playing) {
-        _updateState(status: AzkarAudioStatus.playing);
-      } else if (_state.status == AzkarAudioStatus.playing) {
+      if (!playing && _state.status == AzkarAudioStatus.playing) {
         _updateState(status: AzkarAudioStatus.stopped);
       }
     });
@@ -54,12 +56,19 @@ class AzkarAudioService {
 
   void _updateState({AzkarAudioStatus? status, String? url}) {
     _state = _state.copyWith(status: status, url: url);
-    _stateController.add(_state);
+    if (!_stateController.isClosed) {
+      _stateController.add(_state);
+    }
   }
 
   Future<void> play(String url, {String? title}) async {
     try {
-      if (_state.url == url && _state.status == AzkarAudioStatus.playing) {
+      final currentService = _getMetadataFromPlayer('service');
+      final isOurService = currentService == 'azkar';
+
+      if (isOurService &&
+          _state.url == url &&
+          _state.status == AzkarAudioStatus.playing) {
         await stop();
         return;
       }
@@ -71,7 +80,12 @@ class AzkarAudioService {
 
       final source = AudioSource.uri(
         Uri.parse(secureUrl),
-        tag: MediaItem(id: url, album: 'الأذكار', title: title ?? 'الذكر'),
+        tag: MediaItem(
+          id: url,
+          album: 'الأذكار',
+          title: title ?? 'الذكر',
+          extras: {'service': 'azkar'},
+        ),
       );
 
       await _audioPlayer.setAudioSource(source);
@@ -82,13 +96,22 @@ class AzkarAudioService {
     }
   }
 
+  dynamic _getMetadataFromPlayer(String key) {
+    final tag = _audioPlayer.sequenceState.currentSource?.tag;
+    if (tag is MediaItem) {
+      return tag.extras?[key];
+    }
+    return null;
+  }
+
   Future<void> stop() async {
-    await _audioPlayer.stop();
+    if (_audioPlayer.playing) {
+      await _audioPlayer.stop();
+    }
     _updateState(status: AzkarAudioStatus.stopped);
   }
 
   void dispose() {
-    _audioPlayer.dispose();
     _stateController.close();
   }
 }

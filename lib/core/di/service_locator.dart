@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../features/azkar/repositories/azkar_repository.dart';
 import '../../features/azkar/services/azkar_audio_service.dart';
@@ -15,6 +16,7 @@ import '../../features/prayer_times/services/prayer_calculator_service.dart';
 import '../../features/prayer_times/services/prayer_notification_canceler.dart';
 import '../../features/prayer_times/services/prayer_notification_scheduler.dart';
 import '../../features/prayer_times/services/prayer_times_service.dart';
+import '../../features/quran/repository/quran_repository.dart';
 import '../../features/quran/repository/quran_repository_impl.dart';
 import '../../features/quran/repository/tafsir_repository.dart';
 import '../../features/quran/service/bookmarks_service.dart';
@@ -28,17 +30,23 @@ final getIt = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
   // ── Core Services ──────────────────────────────────────────────────
+
   getIt
     ..registerLazySingleton<SettingsService>(() => SettingsService())
-    ..registerLazySingleton<QuranService>(() => QuranService())
+    ..registerLazySingleton<AudioPlayer>(() => AudioPlayer())
+    ..registerLazySingleton<QuranService>(
+      () => QuranService(getIt<AudioPlayer>()),
+    )
     ..registerLazySingleton<BookmarksService>(() => BookmarksService())
     ..registerLazySingleton<QuranSearchService>(() => QuranSearchService())
     ..registerLazySingleton<HadithService>(() => HadithService())
     ..registerLazySingleton<HadithStorageService>(() => HadithStorageService())
     ..registerLazySingleton<AzkarService>(() => AzkarService())
-    ..registerLazySingleton<AzkarAudioService>(() => AzkarAudioService())
     ..registerLazySingleton<AzkarPersistenceService>(
       () => AzkarPersistenceService(),
+    )
+    ..registerLazySingleton<AzkarAudioService>(
+      () => AzkarAudioService(getIt<AudioPlayer>()),
     )
     // ── Prayer Times Services ──────────────────────────────────────────
     ..registerLazySingleton<PrayerTimesService>(() => PrayerTimesService())
@@ -62,7 +70,9 @@ Future<void> setupServiceLocator() async {
         settingsService: getIt<SettingsService>(),
       ),
     )
-    ..registerLazySingleton<QuranRepositoryImpl>(() => QuranRepositoryImpl())
+    ..registerLazySingleton<QuranRepository>(
+      () => QuranRepositoryImpl(getIt<QuranService>()),
+    )
     ..registerLazySingleton<TafsirRepository>(() => TafsirRepository())
     ..registerLazySingleton<SurahsListRepository>(
       () => SurahsListRepositoryImpl(),

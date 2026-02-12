@@ -11,18 +11,39 @@ class PlayerControlsWidget extends StatelessWidget {
   const PlayerControlsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(horizontal: 10.toW, vertical: 10.toH),
-    padding: EdgeInsets.only(left: 14.toW, right: 14.toW, bottom: 12.toH),
-    decoration: BoxDecoration(
-      color: context.theme.primaryColor,
-      borderRadius: BorderRadius.circular(30.toR),
-    ),
-    child: const Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [_PlayerSlider(), _PlayerButtons()],
-    ),
-  );
+  Widget build(BuildContext context) =>
+      BlocBuilder<QuranPlayerCubit, QuranPlayerState>(
+        buildWhen: (previous, current) =>
+            previous.isPlaying != current.isPlaying,
+        builder: (context, state) {
+          final isPlaying = state.isPlaying;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            margin: EdgeInsets.symmetric(
+              horizontal: 10.toW,
+              vertical: isPlaying ? 10.toH : 5.toH,
+            ),
+            padding: EdgeInsets.only(
+              left: 14.toW,
+              right: 14.toW,
+              bottom: isPlaying ? 12.toH : 4.toH,
+              top: isPlaying ? 0 : 4.toH,
+            ),
+            decoration: BoxDecoration(
+              color: context.theme.primaryColor,
+              borderRadius: BorderRadius.circular(isPlaying ? 30.toR : 40.toR),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isPlaying) const _PlayerSlider(),
+                _PlayerButtons(isPlaying: isPlaying),
+              ],
+            ),
+          );
+        },
+      );
 }
 
 class _PlayerSlider extends StatelessWidget {
@@ -87,55 +108,52 @@ class _PlayerSlider extends StatelessWidget {
 }
 
 class _PlayerButtons extends StatelessWidget {
-  const _PlayerButtons();
+  const _PlayerButtons({required this.isPlaying});
+  final bool isPlaying;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocSelector<QuranPlayerCubit, QuranPlayerState, bool>(
-        selector: (state) => state.isPlaying,
-        builder: (context, isPlaying) => Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () =>
-                  context.read<QuranPlayerCubit>().seekToPrevious(),
-              icon: Icon(
-                Icons.skip_previous_rounded,
-                color: Colors.white,
-                size: 36.toW,
-              ),
-              tooltip: 'السابق',
-            ),
-            const SizedBox(width: 24),
-            _buildPlayPauseButton(context, isPlaying),
-            const SizedBox(width: 24),
-            IconButton(
-              onPressed: () => context.read<QuranPlayerCubit>().seekToNext(),
-              icon: Icon(
-                Icons.skip_next_rounded,
-                color: Colors.white,
-                size: 36.toW,
-              ),
-              tooltip: 'التالي',
-            ),
-          ],
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      IconButton(
+        onPressed: () => context.read<QuranPlayerCubit>().seekToPrevious(),
+        icon: Icon(
+          Icons.skip_previous_rounded,
+          color: Colors.white,
+          size: isPlaying ? 36.toW : 28.toW,
         ),
-      );
+        tooltip: 'السابق',
+      ),
+      SizedBox(width: isPlaying ? 24 : 16),
+      _buildPlayPauseButton(context, isPlaying),
+      SizedBox(width: isPlaying ? 24 : 16),
+      IconButton(
+        onPressed: () => context.read<QuranPlayerCubit>().seekToNext(),
+        icon: Icon(
+          Icons.skip_next_rounded,
+          color: Colors.white,
+          size: isPlaying ? 36.toW : 28.toW,
+        ),
+        tooltip: 'التالي',
+      ),
+    ],
+  );
 
   Widget _buildPlayPauseButton(BuildContext context, bool isPlaying) => InkWell(
     onTap: isPlaying
         ? () => context.read<QuranPlayerCubit>().pause()
         : () => context.read<QuranPlayerCubit>().play(),
-    child: Container(
-      width: 60.toW,
-      height: 60.toH,
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: isPlaying ? 60.toW : 48.toW,
+      height: isPlaying ? 60.toH : 48.toH,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
       ),
       child: Icon(
         isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-        size: 38.toW,
+        size: isPlaying ? 38.toW : 30.toW,
         color: context.theme.primaryColor,
       ),
     ),

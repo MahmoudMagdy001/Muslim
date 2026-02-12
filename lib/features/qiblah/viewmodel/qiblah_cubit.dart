@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:geolocator/geolocator.dart';
@@ -36,9 +36,11 @@ class QiblahCubit extends Cubit<QiblahState> {
     if (_isInitialized) return;
     _isInitialized = true;
 
-    emit(
-      state.copyWith(status: QiblahStatus.loading),
-    ); // Set loading state immediately
+    if (!isClosed) {
+      emit(
+        state.copyWith(status: QiblahStatus.loading),
+      ); // Set loading state immediately
+    }
 
     _setupLocationServiceListener();
     await _startIfGranted(context);
@@ -55,24 +57,28 @@ class QiblahCubit extends Cubit<QiblahState> {
         }
       },
       onError: (error) {
-        emit(
-          state.copyWith(
-            status: QiblahStatus.error,
-            message: 'خطأ في خدمة الموقع: $error',
-          ),
-        );
+        if (!isClosed) {
+          emit(
+            state.copyWith(
+              status: QiblahStatus.error,
+              message: 'خطأ في خدمة الموقع: $error',
+            ),
+          );
+        }
       },
     );
   }
 
   Future<void> _handleLocationServiceDisabled() async {
     await _qiblahSubscription?.cancel();
-    emit(
-      state.copyWith(
-        status: QiblahStatus.error,
-        message: 'من فضلك شغل خدمة الموقع لاستخدام البوصلة',
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QiblahStatus.error,
+          message: 'من فضلك شغل خدمة الموقع لاستخدام البوصلة',
+        ),
+      );
+    }
   }
 
   // ✅ Start if permissions are granted
@@ -83,20 +89,24 @@ class QiblahCubit extends Cubit<QiblahState> {
       if (status.isGranted) {
         await _startQiblahCompass();
       } else {
+        if (!isClosed) {
+          emit(
+            state.copyWith(
+              status: QiblahStatus.error,
+              message: 'الموقع مش متفعل أو الصلاحية مرفوضة',
+            ),
+          );
+        }
+      }
+    } catch (error) {
+      if (!isClosed) {
         emit(
           state.copyWith(
             status: QiblahStatus.error,
-            message: 'الموقع مش متفعل أو الصلاحية مرفوضة',
+            message: 'خطأ في التحقق من حالة الموقع: $error',
           ),
         );
       }
-    } catch (error) {
-      emit(
-        state.copyWith(
-          status: QiblahStatus.error,
-          message: 'خطأ في التحقق من حالة الموقع: $error',
-        ),
-      );
     }
   }
 
@@ -104,7 +114,7 @@ class QiblahCubit extends Cubit<QiblahState> {
   Future<void> _startQiblahCompass() async {
     // Don't emit loading again if already in loading state
     if (state.status != QiblahStatus.loading) {
-      emit(state.copyWith(status: QiblahStatus.loading));
+      if (!isClosed) emit(state.copyWith(status: QiblahStatus.loading));
     }
 
     await _qiblahSubscription?.cancel();
@@ -119,12 +129,16 @@ class QiblahCubit extends Cubit<QiblahState> {
         )
         .listen(
           _handleQiblahData,
-          onError: (error) => emit(
-            state.copyWith(
-              status: QiblahStatus.error,
-              message: 'خطأ في بوصلة القبلة: $error',
-            ),
-          ),
+          onError: (error) {
+            if (!isClosed) {
+              emit(
+                state.copyWith(
+                  status: QiblahStatus.error,
+                  message: 'خطأ في بوصلة القبلة: $error',
+                ),
+              );
+            }
+          },
         );
   }
 
@@ -136,14 +150,16 @@ class QiblahCubit extends Cubit<QiblahState> {
 
     _triggerHapticFeedback(isAligned);
 
-    emit(
-      state.copyWith(
-        status: QiblahStatus.success,
-        qiblahAngle: qiblahAngle,
-        headingAngle: headingAngle,
-        isAligned: isAligned,
-      ),
-    );
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          status: QiblahStatus.success,
+          qiblahAngle: qiblahAngle,
+          headingAngle: headingAngle,
+          isAligned: isAligned,
+        ),
+      );
+    }
   }
 
   double _validateAndConvertAngle(double angle) {

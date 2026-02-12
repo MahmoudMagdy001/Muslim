@@ -671,6 +671,8 @@
     "description": "",
     "type": "text"
   },
+  "juzText": "الجزء",
+  "hizbText": "الحزب",
   "surahsText": "السور",
   "@surahsText": {
     "description": "عنوان قائمة السور في شاشة القرآن",

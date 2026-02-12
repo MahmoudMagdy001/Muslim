@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../core/di/service_locator.dart';
 import '../../model/hadith_model.dart';
 import '../../service/hadith/hadith_service.dart';
-import 'hadith_state.dart';
 import '../../service/hadith/hadith_storage_service.dart';
+import 'hadith_state.dart';
 
 class HadithCubit extends Cubit<HadithState> {
   HadithCubit({
@@ -33,7 +34,7 @@ class HadithCubit extends Cubit<HadithState> {
       _hadithSavedMap[hadithId];
 
   Future<void> initializeData() async {
-    emit(state.copyWith(status: HadithStatus.loading));
+    if (!isClosed) emit(state.copyWith(status: HadithStatus.loading));
 
     try {
       // تحميل البيانات المحفوظة أولاً
@@ -53,21 +54,25 @@ class HadithCubit extends Cubit<HadithState> {
       // إعداد الـ keys والـ notifiers بشكل غير متزامن
       await _prepareHadithData(hadiths);
 
-      emit(
-        state.copyWith(
-          status: HadithStatus.success,
-          hadiths: hadiths,
-          savedHadiths: savedHadiths,
-          dataLoaded: true,
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            status: HadithStatus.success,
+            hadiths: hadiths,
+            savedHadiths: savedHadiths,
+            dataLoaded: true,
+          ),
+        );
+      }
     } catch (e) {
-      emit(
-        state.copyWith(
-          status: HadithStatus.error,
-          message: 'Failed to load hadiths: $e',
-        ),
-      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            status: HadithStatus.error,
+            message: 'Failed to load hadiths: $e',
+          ),
+        );
+      }
     }
   }
 

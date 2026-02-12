@@ -148,6 +148,32 @@ class AzkarItemCard extends StatelessWidget {
                   },
                 ),
 
+                //     return IconButton(
+                //       onPressed: () {
+                //         HapticFeedback.lightImpact();
+                //         getIt<AzkarAudioService>().play(
+                //           content.audio,
+                //           title: content.arabicText,
+                //         );
+                //       },
+                //       icon: isLoading
+                //           ? SizedBox(
+                //               width: 24.r,
+                //               height: 24.r,
+                //               child: CircularProgressIndicator(
+                //                 strokeWidth: 2.r,
+                //                 color: Colors.white,
+                //               ),
+                //             )
+                //           : Icon(
+                //               isPlaying ? Icons.stop_circle : Icons.play_circle,
+                //               color: Colors.white,
+                //             ),
+                //       iconSize: 32.r,
+                //       tooltip: isPlaying ? 'إيقاف' : 'تشغيل',
+                //     );
+                //   },
+                // ),
                 SizedBox(width: 4.w),
 
                 // زر الإعادة - في النص

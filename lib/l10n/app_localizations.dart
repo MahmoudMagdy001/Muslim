@@ -916,6 +916,18 @@ abstract class AppLocalizations {
   /// **'Start Zakat Calculation'**
   String get start_calculation;
 
+  /// No description provided for @juzText.
+  ///
+  /// In en, this message translates to:
+  /// **'Juz'**
+  String get juzText;
+
+  /// No description provided for @hizbText.
+  ///
+  /// In en, this message translates to:
+  /// **'Hizb'**
+  String get hizbText;
+
   /// Title for the list of Surahs
   ///
   /// In en, this message translates to:
