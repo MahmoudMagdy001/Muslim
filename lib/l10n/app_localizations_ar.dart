@@ -131,9 +131,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String crops_zakat_description(
-    Object machine_rate,
-    Object natural_rate,
-    Object nisab_kg,
+    String nisab_kg,
+    String natural_rate,
+    String machine_rate,
   ) {
     return 'تجب الزكاة إذا بلغ المحصول $nisab_kg كجم تقريبًا.\n\n$natural_rate% إن كانت تُسقى بماء المطر أو الأنهار\n$machine_rate% إن كانت بالآلات (مكلفة السقي)';
   }
@@ -206,13 +206,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get gold => 'الذهب';
 
   @override
-  String get gold_price_error => 'تعذر تحميل سعر الذهب';
+  String get gold_price_error =>
+      'فشل في جلب سعر الذهب. يرجى التحقق من اتصالك بالإنترنت أو إدخال السعر يدوياً.';
 
   @override
   String gold_zakat_description(
-    Object current_price,
-    Object nisab_grams,
-    Object percentage,
+    String nisab_grams,
+    String percentage,
+    String current_price,
   ) {
     return 'النصاب في الذهب هو $nisab_grams جرام.\nالنسبة: $percentage% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: $current_price جنيه';
   }
@@ -272,7 +273,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get machine_irrigation_subtitle => 'السقي بالآلات أو بتكاليف';
 
   @override
-  String machine_irrigation_title(Object rate) {
+  String machine_irrigation_title(String rate) {
     return '⚙️ آلة أو مكلف ($rate%)';
   }
 
@@ -280,7 +281,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get money => 'المال';
 
   @override
-  String money_zakat_description(Object nisab, Object percentage) {
+  String money_zakat_description(String nisab, String percentage) {
     return 'تجب الزكاة في المال إذا بلغ النصاب ($nisab جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: $percentage% من إجمالي المال المدخر';
   }
 
@@ -303,7 +304,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get natural_irrigation_subtitle => 'السقي الطبيعي بدون تكاليف';
 
   @override
-  String natural_irrigation_title(Object rate) {
+  String natural_irrigation_title(String rate) {
     return '💧 مطر أو أنهار ($rate%)';
   }
 
@@ -460,7 +461,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trade => 'التجارة';
 
   @override
-  String trade_zakat_description(Object nisab, Object percentage) {
+  String trade_zakat_description(String percentage, String nisab) {
     return 'تحسب الزكاة على: (قيمة البضائع + النقد - الديون) × $percentage%\n\nتجب بعد مرور الحول.\nالنصاب: $nisab جنيه';
   }
 
@@ -578,4 +579,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get goalMustBePositive => 'الهدف يجب أن يكون أكبر من صفر';
+
+  @override
+  String get updateAvailableTitle => 'تحديث جديد متاح';
+
+  @override
+  String get updateAvailableMessage =>
+      'تم إصدار نسخة جديدة من تطبيق المسلم.\nهل ترغب في التحديث الآن لتحصل على أحدث المزايا والتحسينات؟';
+
+  @override
+  String get updateNowButton => 'تحديث الآن';
+
+  @override
+  String get laterButton => 'لاحقًا';
+
+  @override
+  String get rateAppMessage => '🌟 شكراً لتقييمك!';
+
+  @override
+  String get rateAppSuccess => 'تم التقييم بنجاح';
+
+  @override
+  String get rateAppButton => 'قيّم التطبيق';
+
+  @override
+  String get enterGoldPriceManually => 'من فضلك ادخل سعر الذهب الحالي';
+
+  @override
+  String get goldPricePerGram => 'سعر الجرام (عيار 24)';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get cancel => 'إلغاء';
 }

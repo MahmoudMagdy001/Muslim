@@ -31,25 +31,29 @@ class AzkarAudioService {
   AzkarAudioState get currentState => _state;
 
   void _init() {
-    _audioPlayer.processingStateStream.listen((processingState) {
-      if (processingState == ProcessingState.completed) {
+    _audioPlayer.playerStateStream.listen((playerState) {
+      final processingState = playerState.processingState;
+      final playing = playerState.playing;
+
+      if (processingState == ProcessingState.completed ||
+          processingState == ProcessingState.idle) {
         _updateState(status: AzkarAudioStatus.stopped);
       } else if (processingState == ProcessingState.loading ||
           processingState == ProcessingState.buffering) {
+        // Only show loading if we are not explicitly stopped
+        // (to avoid loading flash when stopping)
         if (_state.status != AzkarAudioStatus.stopped) {
           _updateState(status: AzkarAudioStatus.loading);
         }
-      } else if (processingState == ProcessingState.ready &&
-          _audioPlayer.playing) {
-        if (_state.status != AzkarAudioStatus.stopped) {
+      } else if (processingState == ProcessingState.ready) {
+        if (playing) {
           _updateState(status: AzkarAudioStatus.playing);
+        } else {
+          // If we were playing and receive ready+!playing, it implies paused/stopped
+          if (_state.status == AzkarAudioStatus.playing) {
+            _updateState(status: AzkarAudioStatus.stopped);
+          }
         }
-      }
-    });
-
-    _audioPlayer.playingStream.listen((playing) {
-      if (!playing && _state.status == AzkarAudioStatus.playing) {
-        _updateState(status: AzkarAudioStatus.stopped);
       }
     });
   }

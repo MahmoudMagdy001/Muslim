@@ -343,9 +343,9 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zakat is due if the crop reaches approximately {nisab_kg} kg.\n\n{natural_rate}% if irrigated by rain or rivers\n{machine_rate}% if irrigated by machines (costly irrigation)'**
   String crops_zakat_description(
-    Object machine_rate,
-    Object natural_rate,
-    Object nisab_kg,
+    String nisab_kg,
+    String natural_rate,
+    String machine_rate,
   );
 
   ///
@@ -491,9 +491,9 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The nisab for gold is {nisab_grams} grams.\nRate: {percentage}% of the market value of gold.\n\nCurrent price per gram: {current_price} EGP'**
   String gold_zakat_description(
-    Object current_price,
-    Object nisab_grams,
-    Object percentage,
+    String nisab_grams,
+    String percentage,
+    String current_price,
   );
 
   ///
@@ -520,7 +520,7 @@ abstract class AppLocalizations {
   /// **'Hadith Books'**
   String get hadithBooks;
 
-  /// No description provided for @hadithSources.
+  /// Title for Hadith sources
   ///
   /// In en, this message translates to:
   /// **'Hadith Sources'**
@@ -608,7 +608,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'⚙️ Machine or costly ({rate}%)'**
-  String machine_irrigation_title(Object rate);
+  String machine_irrigation_title(String rate);
 
   ///
   ///
@@ -620,7 +620,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Zakat is due on money if it reaches the nisab ({nisab} EGP approximately) and a full lunar year has passed.\n\nRate: {percentage}% of total saved money'**
-  String money_zakat_description(Object nisab, Object percentage);
+  String money_zakat_description(String nisab, String percentage);
 
   ///
   ///
@@ -662,7 +662,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'💧 Rain or rivers ({rate}%)'**
-  String natural_irrigation_title(Object rate);
+  String natural_irrigation_title(String rate);
 
   ///
   ///
@@ -916,13 +916,13 @@ abstract class AppLocalizations {
   /// **'Start Zakat Calculation'**
   String get start_calculation;
 
-  /// No description provided for @juzText.
+  /// Word Juz
   ///
   /// In en, this message translates to:
   /// **'Juz'**
   String get juzText;
 
-  /// No description provided for @hizbText.
+  /// Word Hizb
   ///
   /// In en, this message translates to:
   /// **'Hizb'**
@@ -968,7 +968,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Zakat is calculated on: (Goods value + Cash - Debts) × {percentage}%\n\nDue after a full year.\nNisab: {nisab} EGP'**
-  String trade_zakat_description(Object nisab, Object percentage);
+  String trade_zakat_description(String percentage, String nisab);
 
   ///
   ///
@@ -1060,67 +1060,67 @@ abstract class AppLocalizations {
   /// **'Start calculating your Zakat and remember its great reward'**
   String get zakatStart;
 
-  /// No description provided for @aboutUs.
+  /// About Us screen title
   ///
   /// In en, this message translates to:
   /// **'About Us'**
   String get aboutUs;
 
-  /// No description provided for @appNotifications.
+  /// App Notifications setting title
   ///
   /// In en, this message translates to:
   /// **'App Notifications'**
   String get appNotifications;
 
-  /// No description provided for @enablePrayerNotifications.
+  /// Option to enable prayer notifications
   ///
   /// In en, this message translates to:
   /// **'Enable Prayer Notifications'**
   String get enablePrayerNotifications;
 
-  /// No description provided for @enableQuranReminders.
+  /// Option to enable Quran reminders
   ///
   /// In en, this message translates to:
   /// **'Enable Quran Reminders'**
   String get enableQuranReminders;
 
-  /// No description provided for @prayerNotificationsEnabled.
+  /// Message when prayer notifications are enabled
   ///
   /// In en, this message translates to:
   /// **'Prayer notifications enabled'**
   String get prayerNotificationsEnabled;
 
-  /// No description provided for @prayerNotificationsDisabled.
+  /// Message when prayer notifications are disabled
   ///
   /// In en, this message translates to:
   /// **'Prayer notifications disabled'**
   String get prayerNotificationsDisabled;
 
-  /// No description provided for @quranRemindersEnabled.
+  /// Message when Quran reminders are enabled
   ///
   /// In en, this message translates to:
   /// **'Quran reminders enabled'**
   String get quranRemindersEnabled;
 
-  /// No description provided for @quranRemindersDisabled.
+  /// Message when Quran reminders are disabled
   ///
   /// In en, this message translates to:
   /// **'Quran reminders disabled'**
   String get quranRemindersDisabled;
 
-  /// No description provided for @quranReminderTitle.
+  /// Title for Quran reminder notification
   ///
   /// In en, this message translates to:
   /// **'📖 Quran Reading Reminder'**
   String get quranReminderTitle;
 
-  /// No description provided for @quranReminderBody.
+  /// Body text for Quran reminder notification
   ///
   /// In en, this message translates to:
   /// **'Don\'t forget your daily Quran reading 🌿'**
   String get quranReminderBody;
 
-  /// No description provided for @allServices.
+  /// All Services section title
   ///
   /// In en, this message translates to:
   /// **'All Services'**
@@ -1197,6 +1197,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Goal must be greater than zero'**
   String get goalMustBePositive;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'New Update Available'**
+  String get updateAvailableTitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of the Muslim app is available.\nDo you want to update now to get the latest features and improvements?'**
+  String get updateAvailableMessage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateNowButton;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get laterButton;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'🌟 Thanks for rating!'**
+  String get rateAppMessage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Rated successfully'**
+  String get rateAppSuccess;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Rate App'**
+  String get rateAppButton;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Gold Price Manually'**
+  String get enterGoldPriceManually;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Gram (24K)'**
+  String get goldPricePerGram;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

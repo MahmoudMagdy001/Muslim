@@ -1,4 +1,5 @@
 import 'package:quran/quran.dart' as quran;
+
 import '../model/search_model.dart';
 
 class QuranSearchService {
@@ -68,7 +69,15 @@ class QuranSearchService {
         }
       }
     }
-
     return results;
   }
+}
+
+/// Top-level function for isolate
+List<SearchResult> searchQuranBackground(Map<String, dynamic> args) {
+  final service = QuranSearchService();
+  return service.search(
+    args['keyword'] as String,
+    partial: args['partial'] as bool,
+  );
 }

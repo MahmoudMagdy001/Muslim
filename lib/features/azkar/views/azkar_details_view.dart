@@ -26,50 +26,72 @@ class AzkarDetailsView extends StatelessWidget {
           noInternetScreen: const NoInternetScreen(),
           onRestoreInternetConnection: () =>
               context.read<AzkarCubit>().loadAzkarContent(azkar.textUrl),
-          child: BlocBuilder<AzkarCubit, AzkarState>(
-            builder: (context, state) {
-              if (state.contentStatus == RequestStatus.loading) {
-                return Center(
-                  child: CustomLoadingIndicator(
-                    text: context.l10n.azkarLoadingText,
-                  ),
-                );
-              }
+          child:
+              BlocSelector<
+                AzkarCubit,
+                AzkarState,
+                (RequestStatus, List<AzkarContentModel>)
+              >(
+                selector: (state) =>
+                    (state.contentStatus, state.currentContent),
+                builder: (context, stateRecord) {
+                  final status = stateRecord.$1;
+                  final contentList = stateRecord.$2;
 
-              if (state.contentStatus == RequestStatus.failure) {
-                return Center(
-                  child: Text(
-                    state.message ?? context.l10n.azkarError,
-                    style: context.textTheme.bodyLarge,
-                  ),
-                );
-              }
+                  if (status == RequestStatus.loading) {
+                    return Center(
+                      child: CustomLoadingIndicator(
+                        text: context.l10n.azkarLoadingText,
+                      ),
+                    );
+                  }
 
-              if (state.currentContent.isEmpty) {
-                return Center(child: Text(context.l10n.azkarError));
-              }
+                  if (status == RequestStatus.failure) {
+                    return Center(
+                      child: Text(
+                        // We can't easily get the message here with just the tuple selector
+                        // unless we include it. But usually failure message is stable.
+                        // Let's access cubit state directly for message if needed or expand selector
+                        context.read<AzkarCubit>().state.message ??
+                            context.l10n.azkarError,
+                        style: context.textTheme.bodyLarge,
+                      ),
+                    );
+                  }
 
-              return ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 12.h),
-                itemCount: state.currentContent.length,
-                separatorBuilder: (context, index) => SizedBox(height: 12.h),
-                itemBuilder: (context, index) {
-                  final content = state.currentContent[index];
-                  return AzkarItemCard(
-                    content: content,
-                    currentCount: state.currentCounts[index] ?? content.repeat,
-                    onIncrement: () => context
-                        .read<AzkarCubit>()
-                        .decrementCount(azkar.textUrl, index),
-                    onReset: () => context.read<AzkarCubit>().resetCount(
-                      azkar.textUrl,
-                      index,
+                  if (contentList.isEmpty) {
+                    return Center(child: Text(context.l10n.azkarError));
+                  }
+
+                  return ListView.separated(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 6.w,
+                      vertical: 12.h,
                     ),
+                    itemCount: contentList.length,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 12.h),
+                    itemBuilder: (context, index) {
+                      final content = contentList[index];
+                      return BlocSelector<AzkarCubit, AzkarState, int>(
+                        selector: (state) =>
+                            state.currentCounts[index] ?? content.repeat,
+                        builder: (context, count) => AzkarItemCard(
+                          content: content,
+                          currentCount: count,
+                          onIncrement: () => context
+                              .read<AzkarCubit>()
+                              .decrementCount(azkar.textUrl, index),
+                          onReset: () => context.read<AzkarCubit>().resetCount(
+                            azkar.textUrl,
+                            index,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
+              ),
         ),
       ),
     ),

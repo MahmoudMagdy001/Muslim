@@ -1,100 +1,45 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/utils/custom_loading_indicator.dart';
-import '../../../core/utils/format_helper.dart';
-import '../../../l10n/app_localizations.dart';
-import 'widgets/crops_zakat_tab.dart';
 import '../../../core/utils/extensions.dart';
+import '../../../core/utils/format_helper.dart';
+import '../../../core/utils/responsive_helper.dart';
+import '../../../l10n/app_localizations.dart';
+import '../viewmodels/zakat_cubit.dart';
+import '../viewmodels/zakat_state.dart';
+import 'widgets/crops_zakat_tab.dart';
 import 'widgets/zakat_card.dart';
 import 'widgets/zakat_error_view.dart';
 
-class ZakatView extends StatefulWidget {
+class ZakatView extends StatelessWidget {
   const ZakatView({super.key});
 
   @override
-  State<ZakatView> createState() => _ZakatViewState();
+  Widget build(BuildContext context) => BlocProvider(
+    create: (context) => ZakatCubit(),
+    child: const _ZakatViewBody(),
+  );
 }
 
-class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
+class _ZakatViewBody extends StatefulWidget {
+  const _ZakatViewBody();
+
+  @override
+  State<_ZakatViewBody> createState() => _ZakatViewBodyState();
+}
+
+class _ZakatViewBodyState extends State<_ZakatViewBody>
+    with SingleTickerProviderStateMixin {
   late final TabController _tabController = TabController(
     length: 4,
     vsync: this,
   );
 
-  final ValueNotifier<double?> goldPriceNotifier = ValueNotifier(null);
-  final ValueNotifier<bool> isLoadingNotifier = ValueNotifier(true);
-  final ValueNotifier<String?> errorMessageNotifier = ValueNotifier(null);
-
-  @override
-  void initState() {
-    super.initState();
-    fetchGoldPrice();
-  }
-
   @override
   void dispose() {
     _tabController.dispose();
-    goldPriceNotifier.dispose();
-    isLoadingNotifier.dispose();
-    errorMessageNotifier.dispose();
     super.dispose();
-  }
-
-  Future<void> fetchGoldPrice() async {
-    const goldApiUrl = 'https://api.gold-api.com/price/XAU';
-    const exchangeApiUrl =
-        'https://v6.exchangerate-api.com/v6/1ee47c1bb5322848794692ee/latest/USD';
-
-    try {
-      isLoadingNotifier.value = true;
-      errorMessageNotifier.value = null;
-
-      // --- 1️⃣ جلب سعر الذهب بالدولار ---
-      final goldResponse = await http
-          .get(Uri.parse(goldApiUrl))
-          .timeout(const Duration(seconds: 10));
-
-      if (goldResponse.statusCode != 200) {
-        throw Exception('فشل في جلب سعر الذهب');
-      }
-
-      final goldData = json.decode(goldResponse.body) as Map<String, dynamic>;
-      final pricePerOunceUSD = (goldData['price'] as num?)?.toDouble() ?? 0.0;
-
-      // --- 2️⃣ جلب سعر الدولار مقابل الجنيه ---
-      final exchangeResponse = await http
-          .get(Uri.parse(exchangeApiUrl))
-          .timeout(const Duration(seconds: 10));
-
-      if (exchangeResponse.statusCode != 200) {
-        throw Exception('فشل في جلب سعر الدولار مقابل الجنيه');
-      }
-
-      final exchangeData =
-          json.decode(exchangeResponse.body) as Map<String, dynamic>;
-      final conversionRates =
-          exchangeData['conversion_rates'] as Map<String, dynamic>?;
-      final usdToEgp = (conversionRates?['EGP'] as num?)?.toDouble() ?? 0.0;
-
-      debugPrint('USD → EGP = $usdToEgp');
-
-      // --- 3️⃣ تحويل السعر من أونصة إلى جرام ---
-      const ounceToGram = 31.1035;
-      final pricePerGramUSD = pricePerOunceUSD / ounceToGram;
-      final pricePerGramEGP = pricePerGramUSD * usdToEgp;
-
-      debugPrint('Gold price per gram in EGP: $pricePerGramEGP');
-
-      goldPriceNotifier.value = pricePerGramEGP;
-      isLoadingNotifier.value = false;
-    } catch (e) {
-      isLoadingNotifier.value = false;
-      errorMessageNotifier.value =
-          'حدث خطأ أثناء جلب البيانات. تأكد من اتصالك بالإنترنت.';
-      debugPrint('Error: $e');
-    }
   }
 
   @override
@@ -104,67 +49,67 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
     final localizations = AppLocalizations.of(context);
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return ValueListenableBuilder<bool>(
-      valueListenable: isLoadingNotifier,
-      builder: (context, isLoading, child) {
-        if (isLoading) {
+    return BlocBuilder<ZakatCubit, ZakatState>(
+      builder: (context, state) {
+        if (state.status == ZakatRequestStatus.loading) {
           return Scaffold(
-            appBar: _buildAppBar(textTheme, theme, localizations),
+            appBar: _buildAppBar(textTheme, theme, localizations, context),
             body: CustomLoadingIndicator(
               text: localizations.loading_gold_price,
             ),
           );
         }
 
-        return ValueListenableBuilder<String?>(
-          valueListenable: errorMessageNotifier,
-          builder: (context, errorMessage, child) =>
-              ValueListenableBuilder<double?>(
-                valueListenable: goldPriceNotifier,
-                builder: (context, goldPricePerGram, child) {
-                  if (errorMessage != null ||
-                      goldPricePerGram == null ||
-                      goldPricePerGram == 0) {
-                    return Scaffold(
-                      appBar: _buildAppBar(textTheme, theme, localizations),
-                      body: ZakatErrorView(
-                        errorMessage: errorMessage,
-                        onRetry: fetchGoldPrice,
-                        localizations: localizations,
-                      ),
-                    );
-                  }
+        if (state.status == ZakatRequestStatus.error) {
+          return Scaffold(
+            appBar: _buildAppBar(textTheme, theme, localizations, context),
+            body: ZakatErrorView(
+              errorMessage: state.errorMessage,
+              onRetry: () => _showManualPriceDialog(context, localizations),
+              onManualEntry: () =>
+                  _showManualPriceDialog(context, localizations),
+              localizations: localizations,
+            ),
+          );
+        }
 
-                  const nisabGoldGrams = 85;
-                  final nisabMoney = nisabGoldGrams * goldPricePerGram;
+        final goldPricePerGram = state.goldPricePerGram;
+        final nisabMoney = state.nisabInEgp;
 
-                  return Scaffold(
-                    appBar: _buildAppBar(textTheme, theme, localizations),
-                    body: TabBarView(
-                      controller: _tabController,
+        if (goldPricePerGram == 0) {
+          return Scaffold(
+            appBar: _buildAppBar(textTheme, theme, localizations, context),
+            body: _GoldPriceInputView(
+              localizations: localizations,
+              onConfirm: (price) =>
+                  context.read<ZakatCubit>().setManualGoldPrice(price),
+            ),
+          );
+        }
 
-                      children: [
-                        MoneyZakatTab(
-                          nisabMoney: nisabMoney,
-                          localizations: localizations,
-                          isArabic: isArabic,
-                        ),
-                        GoldZakatTab(
-                          goldPricePerGram: goldPricePerGram,
-                          localizations: localizations,
-                          isArabic: isArabic,
-                        ),
-                        TradeZakatTab(
-                          nisabMoney: nisabMoney,
-                          localizations: localizations,
-                          isArabic: isArabic,
-                        ),
-                        CropsZakatTab(localizations: localizations),
-                      ],
-                    ),
-                  );
-                },
+        return Scaffold(
+          appBar: _buildAppBar(textTheme, theme, localizations, context),
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              MoneyZakatTab(
+                nisabMoney: nisabMoney,
+                localizations: localizations,
+                isArabic: isArabic,
               ),
+              GoldZakatTab(
+                goldPricePerGram: goldPricePerGram,
+                localizations: localizations,
+                isArabic: isArabic,
+              ),
+              TradeZakatTab(
+                nisabMoney: nisabMoney,
+                localizations: localizations,
+                isArabic: isArabic,
+              ),
+              CropsZakatTab(localizations: localizations),
+            ],
+          ),
         );
       },
     );
@@ -174,13 +119,14 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
     TextTheme textTheme,
     ThemeData theme,
     AppLocalizations localizations,
+    BuildContext context,
   ) => AppBar(
     title: Text(localizations.my_zakat),
     actions: [
       IconButton(
-        onPressed: fetchGoldPrice,
-        icon: const Icon(Icons.refresh),
-        tooltip: localizations.refresh_gold_price,
+        onPressed: () => _showManualPriceDialog(context, localizations),
+        icon: const Icon(Icons.edit),
+        tooltip: localizations.enterGoldPriceManually,
       ),
     ],
     bottom: TabBar(
@@ -195,6 +141,48 @@ class _ZakatViewState extends State<ZakatView> with TickerProviderStateMixin {
       ],
     ),
   );
+
+  Future<void> _showManualPriceDialog(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) async {
+    final controller = TextEditingController();
+    final cubit = context
+        .read<ZakatCubit>(); // Capture Cubit here using parent context
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        // Rename inner context to avoid confusion
+        title: Text(localizations.enterGoldPriceManually),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: localizations.goldPricePerGram,
+            hintText: 'e.g. 3500',
+            suffixText: 'EGP',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(localizations.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              final price = double.tryParse(controller.text);
+              if (price != null && price > 0) {
+                Navigator.pop(dialogContext);
+                cubit.setManualGoldPrice(price); // Use captured cubit
+              }
+            },
+            child: Text(localizations.confirm),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+  }
 }
 
 // ==================== Tabs Implementations ====================
@@ -282,4 +270,164 @@ class TradeZakatTab extends StatelessWidget {
     calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
     localizations: localizations,
   );
+}
+
+class _ManualPriceDialog extends StatefulWidget {
+  const _ManualPriceDialog({
+    required this.localizations,
+    required this.onConfirm,
+  });
+
+  final AppLocalizations localizations;
+  final ValueChanged<double> onConfirm;
+
+  @override
+  State<_ManualPriceDialog> createState() => _ManualPriceDialogState();
+}
+
+class _ManualPriceDialogState extends State<_ManualPriceDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.localizations.enterGoldPriceManually),
+    content: TextField(
+      controller: _controller,
+      keyboardType: TextInputType.number,
+      autofocus: true,
+      decoration: InputDecoration(
+        labelText: widget.localizations.goldPricePerGram,
+        hintText: 'e.g. 3500',
+        suffixText: 'EGP',
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: Text(widget.localizations.cancel),
+      ),
+      FilledButton(
+        onPressed: () {
+          final price = double.tryParse(_controller.text);
+          if (price != null && price > 0) {
+            Navigator.pop(context);
+            widget.onConfirm(price);
+          }
+        },
+        child: Text(widget.localizations.confirm),
+      ),
+    ],
+  );
+}
+
+class _GoldPriceInputView extends StatefulWidget {
+  const _GoldPriceInputView({
+    required this.localizations,
+    required this.onConfirm,
+  });
+
+  final AppLocalizations localizations;
+  final ValueChanged<double> onConfirm;
+
+  @override
+  State<_GoldPriceInputView> createState() => _GoldPriceInputViewState();
+}
+
+class _GoldPriceInputViewState extends State<_GoldPriceInputView> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: EdgeInsets.all(24.toR),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.monetization_on_outlined,
+            size: 80.toSp,
+            color: context.theme.colorScheme.primary,
+          ),
+          SizedBox(height: 24.toH),
+          Text(
+            widget.localizations.enterGoldPriceManually,
+            style: context.textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+
+          SizedBox(height: 32.toH),
+          TextField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            style: context.textTheme.headlineMedium,
+            decoration: InputDecoration(
+              labelText: widget.localizations.goldPricePerGram,
+              hintText: 'e.g. 3500',
+              suffixText: 'EGP',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16.toR),
+              ),
+              filled: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 24.toW,
+                vertical: 16.toH,
+              ),
+            ),
+            onSubmitted: (_) => _submit(),
+          ),
+          SizedBox(height: 24.toH),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _submit,
+              style: FilledButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16.toH),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.toR),
+                ),
+              ),
+              child: Text(
+                widget.localizations.confirm,
+                style: context.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  void _submit() {
+    final price = double.tryParse(_controller.text);
+    if (price != null && price > 0) {
+      widget.onConfirm(price);
+    }
+  }
 }

@@ -41,6 +41,14 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     await fetchPrayerTimes(isArabic: isArabic);
   }
 
+  /// Checks if data is loaded, if not, initializes it.
+  /// Call this in the UI (e.g., BlocBuilder or onInit of the view)
+  Future<void> checkInitialData({required bool isArabic}) async {
+    if (state.status == RequestStatus.initial) {
+      await init(isArabic: isArabic);
+    }
+  }
+
   /// Checks and requests all required permissions.
   Future<void> checkAllPermissions() async {
     if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));

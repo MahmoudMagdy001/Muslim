@@ -7,22 +7,28 @@ import '../model/zikr_model.dart';
 class SebhaStorageService {
   static const String _customAzkarKey = 'custom_azkar';
 
-  /// Get all custom azkar from storage
+  List<ZikrModel>? _cache;
+
+  /// Get all custom azkar from storage (using cache if available)
   Future<List<ZikrModel>> getCustomAzkar() async {
+    if (_cache != null) return _cache!;
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final jsonString = prefs.getString(_customAzkarKey);
 
       if (jsonString == null || jsonString.isEmpty) {
+        _cache = [];
         return [];
       }
 
       final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
-      return jsonList
+      _cache = jsonList
           .map((json) => ZikrModel.fromJson(json as Map<String, dynamic>))
           .toList();
+      return _cache!;
     } catch (e) {
-      // If there's an error, return empty list
+      _cache = [];
       return [];
     }
   }
@@ -32,6 +38,7 @@ class SebhaStorageService {
     try {
       final customAzkar = await getCustomAzkar();
       customAzkar.add(zikr);
+      _cache = customAzkar; // Update cache
       return await _saveAllCustomAzkar(customAzkar);
     } catch (e) {
       return false;
@@ -49,6 +56,7 @@ class SebhaStorageService {
       }
 
       customAzkar[index] = zikr;
+      _cache = customAzkar; // Update cache
       return await _saveAllCustomAzkar(customAzkar);
     } catch (e) {
       return false;
@@ -60,6 +68,7 @@ class SebhaStorageService {
     try {
       final customAzkar = await getCustomAzkar();
       customAzkar.removeWhere((z) => z.id == id);
+      _cache = customAzkar; // Update cache
       return await _saveAllCustomAzkar(customAzkar);
     } catch (e) {
       return false;

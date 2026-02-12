@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../../../core/service/in_app_rate.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'app_info_section.dart';
 import 'font_size_section.dart';
+import 'location_section.dart';
 import 'notification_switch.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
-import 'location_section.dart';
 
 class SettingsContent extends StatefulWidget {
   const SettingsContent({
@@ -118,10 +119,10 @@ class _RateAppButton extends StatelessWidget {
     ),
     icon: Icon(Icons.star_rate_rounded, color: theme.colorScheme.onPrimary),
     label: Text(
-      isArabic ? 'قيّم التطبيق' : 'Rate App',
+      AppLocalizations.of(context).rateAppButton,
       style: theme.textTheme.labelLarge?.copyWith(
         color: theme.colorScheme.onPrimary,
-        fontSize: 16.toSp,
+        fontSize: 16.0,
       ),
     ),
   );

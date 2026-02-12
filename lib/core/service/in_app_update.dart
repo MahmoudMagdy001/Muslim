@@ -1,12 +1,18 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../l10n/app_localizations.dart';
 import '../widgets/base_app_dialog.dart';
 
 class AppUpdateService {
   static Future<void> checkForUpdate(BuildContext context) async {
+    if (!Platform.isAndroid) return;
+
     try {
       final info = await InAppUpdate.checkForUpdate();
 
@@ -21,16 +27,16 @@ class AppUpdateService {
   }
 
   static Future<void> _showUpdateDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     BaseAppDialog.show(
       context,
-      title: 'تحديث جديد متاح',
-      contentText:
-          'تم إصدار نسخة جديدة من تطبيق المسلم.\nهل ترغب في التحديث الآن لتحصل على أحدث المزايا والتحسينات؟',
+      title: l10n.updateAvailableTitle,
+      contentText: l10n.updateAvailableMessage,
       barrierDismissible: false,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('لاحقًا'),
+          child: Text(l10n.laterButton),
         ),
         FilledButton(
           onPressed: () async {
@@ -38,8 +44,9 @@ class AppUpdateService {
             try {
               await InAppUpdate.performImmediateUpdate();
             } catch (_) {
+              const packageName = 'com.mahmoud.muslim';
               const url =
-                  'https://play.google.com/store/apps/details?id=com.mahmoud.muslim';
+                  'https://play.google.com/store/apps/details?id=$packageName';
 
               if (await canLaunchUrl(Uri.parse(url))) {
                 await launchUrl(
@@ -49,7 +56,7 @@ class AppUpdateService {
               }
             }
           },
-          child: const Text('تحديث الآن'),
+          child: Text(l10n.updateNowButton),
         ),
       ],
     );

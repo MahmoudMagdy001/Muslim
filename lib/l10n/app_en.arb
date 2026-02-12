@@ -203,7 +203,18 @@
   "crops_zakat_description": "Zakat is due if the crop reaches approximately {nisab_kg} kg.\n\n{natural_rate}% if irrigated by rain or rivers\n{machine_rate}% if irrigated by machines (costly irrigation)",
   "@crops_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab_kg": {
+        "type": "String"
+      },
+      "natural_rate": {
+        "type": "String"
+      },
+      "machine_rate": {
+        "type": "String"
+      }
+    }
   },
   "crops_zakat_hint": "Enter crop quantity in kilograms",
   "@crops_zakat_hint": {
@@ -323,7 +334,18 @@
   "gold_zakat_description": "The nisab for gold is {nisab_grams} grams.\nRate: {percentage}% of the market value of gold.\n\nCurrent price per gram: {current_price} EGP",
   "@gold_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab_grams": {
+        "type": "String"
+      },
+      "percentage": {
+        "type": "String"
+      },
+      "current_price": {
+        "type": "String"
+      }
+    }
   },
   "gold_zakat_hint": "Enter gold weight in grams",
   "@gold_zakat_hint": {
@@ -341,9 +363,13 @@
     "type": "text"
   },
   "hadithBooks": "Hadith Books",
-  "hadithSources": "Hadith Sources",
   "@hadithBooks": {
     "description": "Title of the Hadith books list screen",
+    "type": "text"
+  },
+  "hadithSources": "Hadith Sources",
+  "@hadithSources": {
+    "description": "Title for Hadith sources",
     "type": "text"
   },
   "hadithBooksEmpty": "No books available",
@@ -414,7 +440,12 @@
   "machine_irrigation_title": "⚙️ Machine or costly ({rate}%)",
   "@machine_irrigation_title": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
   },
   "money": "Money",
   "@money": {
@@ -424,7 +455,15 @@
   "money_zakat_description": "Zakat is due on money if it reaches the nisab ({nisab} EGP approximately) and a full lunar year has passed.\n\nRate: {percentage}% of total saved money",
   "@money_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab": {
+        "type": "String"
+      },
+      "percentage": {
+        "type": "String"
+      }
+    }
   },
   "money_zakat_hint": "Enter total saved money in EGP",
   "@money_zakat_hint": {
@@ -459,7 +498,12 @@
   "natural_irrigation_title": "💧 Rain or rivers ({rate}%)",
   "@natural_irrigation_title": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
   },
   "needy": "The needy",
   "@needy": {
@@ -672,7 +716,15 @@
     "type": "text"
   },
   "juzText": "Juz",
+  "@juzText": {
+    "description": "Word Juz",
+    "type": "text"
+  },
   "hizbText": "Hizb",
+  "@hizbText": {
+    "description": "Word Hizb",
+    "type": "text"
+  },
   "surahsText": "Surahs",
   "@surahsText": {
     "description": "Title for the list of Surahs",
@@ -706,7 +758,15 @@
   "trade_zakat_description": "Zakat is calculated on: (Goods value + Cash - Debts) × {percentage}%\n\nDue after a full year.\nNisab: {nisab} EGP",
   "@trade_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "nisab": {
+        "type": "String"
+      }
+    }
   },
   "trade_zakat_hint": "Enter net trade assets in EGP",
   "@trade_zakat_hint": {
@@ -784,16 +844,60 @@
     "type": "text"
   },
   "aboutUs": "About Us",
+  "@aboutUs": {
+    "description": "About Us screen title",
+    "type": "text"
+  },
   "appNotifications": "App Notifications",
+  "@appNotifications": {
+    "description": "App Notifications setting title",
+    "type": "text"
+  },
   "enablePrayerNotifications": "Enable Prayer Notifications",
+  "@enablePrayerNotifications": {
+    "description": "Option to enable prayer notifications",
+    "type": "text"
+  },
   "enableQuranReminders": "Enable Quran Reminders",
+  "@enableQuranReminders": {
+    "description": "Option to enable Quran reminders",
+    "type": "text"
+  },
   "prayerNotificationsEnabled": "Prayer notifications enabled",
+  "@prayerNotificationsEnabled": {
+    "description": "Message when prayer notifications are enabled",
+    "type": "text"
+  },
   "prayerNotificationsDisabled": "Prayer notifications disabled",
+  "@prayerNotificationsDisabled": {
+    "description": "Message when prayer notifications are disabled",
+    "type": "text"
+  },
   "quranRemindersEnabled": "Quran reminders enabled",
+  "@quranRemindersEnabled": {
+    "description": "Message when Quran reminders are enabled",
+    "type": "text"
+  },
   "quranRemindersDisabled": "Quran reminders disabled",
+  "@quranRemindersDisabled": {
+    "description": "Message when Quran reminders are disabled",
+    "type": "text"
+  },
   "quranReminderTitle": "📖 Quran Reading Reminder",
+  "@quranReminderTitle": {
+    "description": "Title for Quran reminder notification",
+    "type": "text"
+  },
   "quranReminderBody": "Don't forget your daily Quran reading 🌿",
+  "@quranReminderBody": {
+    "description": "Body text for Quran reminder notification",
+    "type": "text"
+  },
   "allServices": "All Services",
+  "@allServices": {
+    "description": "All Services section title",
+    "type": "text"
+  },
   "addCustomTasbih": "Add Custom Tasbih",
   "@addCustomTasbih": {
     "description": "Button to add a new custom tasbih",
@@ -852,6 +956,61 @@
   "goalMustBePositive": "Goal must be greater than zero",
   "@goalMustBePositive": {
     "description": "Error message when goal is zero or negative",
+    "type": "text"
+  },
+  "updateAvailableTitle": "New Update Available",
+  "@updateAvailableTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "updateAvailableMessage": "A new version of the Muslim app is available.\nDo you want to update now to get the latest features and improvements?",
+  "@updateAvailableMessage": {
+    "description": "",
+    "type": "text"
+  },
+  "updateNowButton": "Update Now",
+  "@updateNowButton": {
+    "description": "",
+    "type": "text"
+  },
+  "laterButton": "Later",
+  "@laterButton": {
+    "description": "",
+    "type": "text"
+  },
+  "rateAppMessage": "🌟 Thanks for rating!",
+  "@rateAppMessage": {
+    "description": "",
+    "type": "text"
+  },
+  "rateAppSuccess": "Rated successfully",
+  "@rateAppSuccess": {
+    "description": "",
+    "type": "text"
+  },
+  "rateAppButton": "Rate App",
+  "@rateAppButton": {
+    "description": "",
+    "type": "text"
+  },
+  "enterGoldPriceManually": "Enter Gold Price Manually",
+  "@enterGoldPriceManually": {
+    "description": "",
+    "type": "text"
+  },
+  "goldPricePerGram": "Price per Gram (24K)",
+  "@goldPricePerGram": {
+    "description": "",
+    "type": "text"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "",
+    "type": "text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "",
     "type": "text"
   }
 }

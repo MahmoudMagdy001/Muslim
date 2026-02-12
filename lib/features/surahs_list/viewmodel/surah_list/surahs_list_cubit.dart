@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -87,10 +87,24 @@ class SurahListCubit extends Cubit<SurahsListState> {
     }
   }
 
-  void searchInQuran(String keyword, {required bool partial}) {
-    final results = searchService.search(keyword, partial: partial);
-    if (!isClosed) {
-      emit(state.copyWith(searchText: keyword, searchResults: results));
+  Future<void> searchInQuran(String keyword, {required bool partial}) async {
+    if (keyword.trim().isEmpty) {
+      if (!isClosed) {
+        emit(state.copyWith(searchText: keyword, searchResults: []));
+      }
+      return;
+    }
+
+    try {
+      final results = await compute(searchQuranBackground, {
+        'keyword': keyword,
+        'partial': partial,
+      });
+      if (!isClosed) {
+        emit(state.copyWith(searchText: keyword, searchResults: results));
+      }
+    } catch (e) {
+      debugPrint('Search error: $e');
     }
   }
 
@@ -102,7 +116,6 @@ class SurahListCubit extends Cubit<SurahsListState> {
     try {
       await surahRepository.saveLastSurah(surah, lastAyah: lastAyah);
     } catch (e) {
-      // يمكن إضافة حالة خطأ إذا لزم الأمر
       debugPrint('Error saving last surah: $e');
     }
   }

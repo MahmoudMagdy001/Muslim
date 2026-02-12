@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/di/service_locator.dart';
 import 'core/main/main_content/app_content.dart';
 import 'core/main/main_content/app_initializer.dart';
-import 'core/di/service_locator.dart';
 import 'features/prayer_times/viewmodel/prayer_times_cubit.dart';
 import 'features/quran/service/bookmarks_service.dart';
 import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';

@@ -5,7 +5,7 @@ import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../zakat/view/widgets/zakat_calculator.dart';
+import '../../../zakat/view/zakat_view.dart';
 
 class ZakatCardWidget extends StatelessWidget {
   const ZakatCardWidget({required this.localizations, super.key});
@@ -23,7 +23,7 @@ class ZakatCardWidget extends StatelessWidget {
       ),
     ),
     child: InkWell(
-      onTap: () => navigateWithTransition(context, const ZakatCalculator()),
+      onTap: () => navigateWithTransition(context, const ZakatView()),
       borderRadius: BorderRadius.circular(24.toR),
       child: Padding(
         padding: .symmetric(horizontal: 16.toW, vertical: 16.toH),

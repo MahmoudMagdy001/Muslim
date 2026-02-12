@@ -1,17 +1,25 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class RateAppHelper {
   static const String _launchCountKey = 'app_launch_count';
   static const String _hasRatedKey = 'has_rated';
+  static const String _packageName = 'com.mahmoud.muslim';
 
   static final InAppReview _inAppReview = InAppReview.instance;
 
   /// 📱 استدعِها في أول شاشة من التطبيق (مثلاً Splash أو Home)
   static Future<void> handleAppLaunch(BuildContext context) async {
+    // In-app review is only available on Android and iOS
+    if (!Platform.isAndroid && !Platform.isIOS) return;
+
     final prefs = await SharedPreferences.getInstance();
     int launchCount = prefs.getInt(_launchCountKey) ?? 0;
     final bool hasRated = prefs.getBool(_hasRatedKey) ?? false;
@@ -34,20 +42,19 @@ class RateAppHelper {
       if (await _inAppReview.isAvailable()) {
         await _inAppReview.requestReview();
       } else {
-        await _inAppReview.openStoreListing(
-          appStoreId: 'com.mahmoud.muslim', // غيّرها إلى Package name بتاعك
-        );
+        await _inAppReview.openStoreListing(appStoreId: _packageName);
       }
 
       await prefs.setBool(_hasRatedKey, true);
 
       // إظهار SnackBar بعد التقييم
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🌟 شكراً لتقييمك!'),
+          SnackBar(
+            content: Text(l10n.rateAppMessage),
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -59,14 +66,15 @@ class RateAppHelper {
   /// 🖱️ زر يدوي للتقييم (مثلاً في الإعدادات)
   static Future<void> rateNow(BuildContext context) async {
     try {
-      await _inAppReview.openStoreListing(appStoreId: 'com.mahmoud.muslim');
+      await _inAppReview.openStoreListing(appStoreId: _packageName);
 
       if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🌟 شكراً لتقييمك!'),
+          SnackBar(
+            content: Text(l10n.rateAppMessage),
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }

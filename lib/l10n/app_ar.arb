@@ -203,7 +203,18 @@
   "crops_zakat_description": "تجب الزكاة إذا بلغ المحصول {nisab_kg} كجم تقريبًا.\n\n{natural_rate}% إن كانت تُسقى بماء المطر أو الأنهار\n{machine_rate}% إن كانت بالآلات (مكلفة السقي)",
   "@crops_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab_kg": {
+        "type": "String"
+      },
+      "natural_rate": {
+        "type": "String"
+      },
+      "machine_rate": {
+        "type": "String"
+      }
+    }
   },
   "crops_zakat_hint": "أدخل كمية المحصول بالكيلوجرام",
   "@crops_zakat_hint": {
@@ -315,15 +326,21 @@
     "description": "",
     "type": "text"
   },
-  "gold_price_error": "تعذر تحميل سعر الذهب",
-  "@gold_price_error": {
-    "description": "",
-    "type": "text"
-  },
   "gold_zakat_description": "النصاب في الذهب هو {nisab_grams} جرام.\nالنسبة: {percentage}% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: {current_price} جنيه",
   "@gold_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab_grams": {
+        "type": "String"
+      },
+      "percentage": {
+        "type": "String"
+      },
+      "current_price": {
+        "type": "String"
+      }
+    }
   },
   "gold_zakat_hint": "أدخل وزن الذهب بالجرام",
   "@gold_zakat_hint": {
@@ -341,9 +358,13 @@
     "type": "text"
   },
   "hadithBooks": "كتب الحديث",
-  "hadithSources": "مصادر الأحاديث",
   "@hadithBooks": {
     "description": "عنوان شاشة قائمة كتب الحديث",
+    "type": "text"
+  },
+  "hadithSources": "مصادر الأحاديث",
+  "@hadithSources": {
+    "description": "عنوان يظهر لمصادر الحديث",
     "type": "text"
   },
   "hadithBooksEmpty": "لا توجد كتب متاحة",
@@ -414,7 +435,12 @@
   "machine_irrigation_title": "⚙️ آلة أو مكلف ({rate}%)",
   "@machine_irrigation_title": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
   },
   "money": "المال",
   "@money": {
@@ -424,7 +450,15 @@
   "money_zakat_description": "تجب الزكاة في المال إذا بلغ النصاب ({nisab} جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: {percentage}% من إجمالي المال المدخر",
   "@money_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "nisab": {
+        "type": "String"
+      },
+      "percentage": {
+        "type": "String"
+      }
+    }
   },
   "money_zakat_hint": "أدخل إجمالي المال المدخر بالجنيه",
   "@money_zakat_hint": {
@@ -459,7 +493,12 @@
   "natural_irrigation_title": "💧 مطر أو أنهار ({rate}%)",
   "@natural_irrigation_title": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
   },
   "needy": "المساكين",
   "@needy": {
@@ -672,7 +711,15 @@
     "type": "text"
   },
   "juzText": "الجزء",
+  "@juzText": {
+    "description": "كلمة الجزء",
+    "type": "text"
+  },
   "hizbText": "الحزب",
+  "@hizbText": {
+    "description": "كلمة الحزب",
+    "type": "text"
+  },
   "surahsText": "السور",
   "@surahsText": {
     "description": "عنوان قائمة السور في شاشة القرآن",
@@ -706,7 +753,15 @@
   "trade_zakat_description": "تحسب الزكاة على: (قيمة البضائع + النقد - الديون) × {percentage}%\n\nتجب بعد مرور الحول.\nالنصاب: {nisab} جنيه",
   "@trade_zakat_description": {
     "description": "",
-    "type": "text"
+    "type": "text",
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "nisab": {
+        "type": "String"
+      }
+    }
   },
   "trade_zakat_hint": "أدخل صافي أصول التجارة بالجنيه",
   "@trade_zakat_hint": {
@@ -778,28 +833,128 @@
     "description": "حديث نبوي يُعرض في شاشة الزكاة",
     "type": "text"
   },
+  "gold_price_error": "فشل في جلب سعر الذهب. يرجى التحقق من اتصالك بالإنترنت أو إدخال السعر يدوياً.",
   "zakatStart": "ابدأ الآن بحساب زكاتك وتذكّر فضلها العظيم",
   "@zakatStart": {
     "description": "نص تحفيزي لبدء حساب الزكاة",
     "type": "text"
   },
   "aboutUs": "من نحن",
+  "@aboutUs": {
+    "description": "عنوان صفحة من نحن",
+    "type": "text"
+  },
   "appNotifications": "إشعارات التطبيق",
+  "@appNotifications": {
+    "description": "عنوان قسم إشعارات التطبيق في الإعدادات",
+    "type": "text"
+  },
   "enablePrayerNotifications": "تفعيل إشعارات الأذان",
+  "@enablePrayerNotifications": {
+    "description": "خيار تفعيل إشعارات الصلاة",
+    "type": "text"
+  },
   "enableQuranReminders": "تفعيل إشعارات تذكير القرآن",
+  "@enableQuranReminders": {
+    "description": "خيار تفعيل تذكير قراءة القرآن",
+    "type": "text"
+  },
   "prayerNotificationsEnabled": "تم تفعيل إشعارات الأذان",
+  "@prayerNotificationsEnabled": {
+    "description": "رسالة تأكيد تفعيل إشعارات الصلاة",
+    "type": "text"
+  },
   "prayerNotificationsDisabled": "تم تعطيل إشعارات الأذان",
+  "@prayerNotificationsDisabled": {
+    "description": "رسالة تأكيد تعطيل إشعارات الصلاة",
+    "type": "text"
+  },
   "quranRemindersEnabled": "تم تفعيل إشعارات تذكير القرآن",
+  "@quranRemindersEnabled": {
+    "description": "رسالة تأكيد تفعيل تذكير القرآن",
+    "type": "text"
+  },
   "quranRemindersDisabled": "تم تعطيل إشعارات تذكير القرآن",
+  "@quranRemindersDisabled": {
+    "description": "رسالة تأكيد تعطيل تذكير القرآن",
+    "type": "text"
+  },
   "quranReminderTitle": "📖 تذكير بقراءة القرآن",
+  "@quranReminderTitle": {
+    "description": "عنوان إشعار تذكير القرآن",
+    "type": "text"
+  },
   "quranReminderBody": "لا تنس وردك من القرآن الكريم 🌿",
+  "@quranReminderBody": {
+    "description": "نص إشعار تذكير القرآن",
+    "type": "text"
+  },
   "allServices": "كل الخدمات",
+  "@allServices": {
+    "description": "عنوان قسم كل الخدمات",
+    "type": "text"
+  },
   "addCustomTasbih": "إضافة تسبيح خاص",
   "@addCustomTasbih": {
     "description": "زر لإضافة تسبيح مخصص جديد",
     "type": "text"
   },
+  "updateAvailableTitle": "تحديث جديد متاح",
+  "@updateAvailableTitle": {
+    "description": "عنوان نافذة التحديث المتاح",
+    "type": "text"
+  },
+  "updateAvailableMessage": "تم إصدار نسخة جديدة من تطبيق المسلم.\nهل ترغب في التحديث الآن لتحصل على أحدث المزايا والتحسينات؟",
+  "@updateAvailableMessage": {
+    "description": "رسالة نافذة التحديث المتاح",
+    "type": "text"
+  },
+  "updateNowButton": "تحديث الآن",
+  "@updateNowButton": {
+    "description": "زر التحديث الآن",
+    "type": "text"
+  },
+  "laterButton": "لاحقًا",
+  "@laterButton": {
+    "description": "زر التحديث لاحقاً",
+    "type": "text"
+  },
+  "rateAppMessage": "🌟 شكراً لتقييمك!",
+  "@rateAppMessage": {
+    "description": "رسالة شكر على التقييم",
+    "type": "text"
+  },
+  "rateAppSuccess": "تم التقييم بنجاح",
+  "@rateAppSuccess": {
+    "description": "رسالة نجاح التقييم",
+    "type": "text"
+  },
+  "rateAppButton": "قيّم التطبيق",
+  "@rateAppButton": {
+    "description": "زر تقييم التطبيق",
+    "type": "text"
+  },
   "editTasbih": "تعديل التسبيح",
+  "enterGoldPriceManually": "من فضلك ادخل سعر الذهب الحالي",
+  "@enterGoldPriceManually": {
+    "description": "نص يطلب من المستخدم إدخال سعر الذهب يدوياً",
+    "type": "text"
+  },
+  "goldPricePerGram": "سعر الجرام (عيار 24)",
+  "@goldPricePerGram": {
+    "description": "تسمية حقل إدخال سعر جرام الذهب",
+    "type": "text"
+  },
+  "confirm": "تأكيد",
+  "@confirm": {
+    "description": "زر تأكيد",
+    "type": "text"
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "description": "زر إلغاء",
+    "type": "text"
+  },
   "@editTasbih": {
     "description": "عنوان حوار تعديل التسبيح",
     "type": "text"

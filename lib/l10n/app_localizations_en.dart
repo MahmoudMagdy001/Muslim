@@ -133,9 +133,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String crops_zakat_description(
-    Object machine_rate,
-    Object natural_rate,
-    Object nisab_kg,
+    String nisab_kg,
+    String natural_rate,
+    String machine_rate,
   ) {
     return 'Zakat is due if the crop reaches approximately $nisab_kg kg.\n\n$natural_rate% if irrigated by rain or rivers\n$machine_rate% if irrigated by machines (costly irrigation)';
   }
@@ -213,9 +213,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String gold_zakat_description(
-    Object current_price,
-    Object nisab_grams,
-    Object percentage,
+    String nisab_grams,
+    String percentage,
+    String current_price,
   ) {
     return 'The nisab for gold is $nisab_grams grams.\nRate: $percentage% of the market value of gold.\n\nCurrent price per gram: $current_price EGP';
   }
@@ -277,7 +277,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Irrigation by machines or with costs';
 
   @override
-  String machine_irrigation_title(Object rate) {
+  String machine_irrigation_title(String rate) {
     return '⚙️ Machine or costly ($rate%)';
   }
 
@@ -285,7 +285,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get money => 'Money';
 
   @override
-  String money_zakat_description(Object nisab, Object percentage) {
+  String money_zakat_description(String nisab, String percentage) {
     return 'Zakat is due on money if it reaches the nisab ($nisab EGP approximately) and a full lunar year has passed.\n\nRate: $percentage% of total saved money';
   }
 
@@ -308,7 +308,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get natural_irrigation_subtitle => 'Natural irrigation without costs';
 
   @override
-  String natural_irrigation_title(Object rate) {
+  String natural_irrigation_title(String rate) {
     return '💧 Rain or rivers ($rate%)';
   }
 
@@ -465,7 +465,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trade => 'Trade';
 
   @override
-  String trade_zakat_description(Object nisab, Object percentage) {
+  String trade_zakat_description(String percentage, String nisab) {
     return 'Zakat is calculated on: (Goods value + Cash - Debts) × $percentage%\n\nDue after a full year.\nNisab: $nisab EGP';
   }
 
@@ -586,4 +586,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goalMustBePositive => 'Goal must be greater than zero';
+
+  @override
+  String get updateAvailableTitle => 'New Update Available';
+
+  @override
+  String get updateAvailableMessage =>
+      'A new version of the Muslim app is available.\nDo you want to update now to get the latest features and improvements?';
+
+  @override
+  String get updateNowButton => 'Update Now';
+
+  @override
+  String get laterButton => 'Later';
+
+  @override
+  String get rateAppMessage => '🌟 Thanks for rating!';
+
+  @override
+  String get rateAppSuccess => 'Rated successfully';
+
+  @override
+  String get rateAppButton => 'Rate App';
+
+  @override
+  String get enterGoldPriceManually => 'Enter Gold Price Manually';
+
+  @override
+  String get goldPricePerGram => 'Price per Gram (24K)';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
 }

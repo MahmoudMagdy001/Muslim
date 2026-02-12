@@ -19,11 +19,27 @@ class AppInitializer {
   final SharedPreferences prefs;
 
   Future<void> initialize() async {
+    // Critical initialization
     await requestAllPermissions();
-    await _initializeNotifications();
-    await workManagerNotify();
-    await _initializeAudioBackground();
-    await _scheduleQuranReminders();
+
+    // Non-critical initialization (Fire and forget, or handle errors silently)
+    // executed after the first frame to not block startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeBackgroundTasks();
+    });
+  }
+
+  Future<void> _initializeBackgroundTasks() async {
+    try {
+      await Future.wait([
+        _initializeNotifications(),
+        workManagerNotify(),
+        _initializeAudioBackground(),
+        _scheduleQuranReminders(),
+      ]);
+    } catch (e) {
+      logError('Background initialization error', e);
+    }
   }
 
   double getInitialFontSize() => prefs.getDouble('fontSize') ?? 18.0;

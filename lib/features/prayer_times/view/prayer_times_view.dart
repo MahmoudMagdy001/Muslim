@@ -11,7 +11,7 @@ import '../viewmodel/prayer_times_cubit.dart';
 import '../viewmodel/prayer_times_state.dart';
 import 'widgets/current_prayer_card_widget.dart';
 
-class PrayerTimesView extends StatelessWidget {
+class PrayerTimesView extends StatefulWidget {
   const PrayerTimesView({
     required this.scaffoldContext,
     required this.localizations,
@@ -20,6 +20,18 @@ class PrayerTimesView extends StatelessWidget {
 
   final BuildContext scaffoldContext;
   final AppLocalizations localizations;
+
+  @override
+  State<PrayerTimesView> createState() => _PrayerTimesViewState();
+}
+
+class _PrayerTimesViewState extends State<PrayerTimesView> {
+  @override
+  void initState() {
+    super.initState();
+    final isArabic = widget.localizations.localeName == 'ar';
+    context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +44,17 @@ class PrayerTimesView extends StatelessWidget {
         if (status == RequestStatus.failure) {
           final message = context.select(
             (PrayerTimesCubit cubit) =>
-                cubit.state.message ?? localizations.errorMain,
+                cubit.state.message ?? widget.localizations.errorMain,
           );
           return _PrayerErrorSliver(
             message: message,
-            localizations: localizations,
+            localizations: widget.localizations,
             isArabic: isArabic,
           );
         }
 
         return _PrayerSuccessSliver(
-          localizations: localizations,
+          localizations: widget.localizations,
           isArabic: isArabic,
         );
       },
