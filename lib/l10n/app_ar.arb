@@ -326,7 +326,7 @@
     "description": "",
     "type": "text"
   },
-  "gold_zakat_description": "النصاب في الذهب هو {nisab_grams} جرام.\nالنسبة: {percentage}% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: {current_price} جنيه",
+  "gold_zakat_description": "النصاب في الذهب هو {nisab_grams} جرام.\nالنسبه: {percentage}% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: {current_price} جنيه",
   "@gold_zakat_description": {
     "description": "",
     "type": "text",
@@ -447,7 +447,7 @@
     "description": "",
     "type": "text"
   },
-  "money_zakat_description": "تجب الزكاة في المال إذا بلغ النصاب ({nisab} جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: {percentage}% من إجمالي المال المدخر",
+  "money_zakat_description": "تجب الزكاة في المال إذا بلغ النصاب ({nisab} جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبه: {percentage}% من إجمالي المال المدخر",
   "@money_zakat_description": {
     "description": "",
     "type": "text",

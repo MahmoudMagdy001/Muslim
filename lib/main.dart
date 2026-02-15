@@ -21,10 +21,7 @@ Future<void> main() async {
   await setupServiceLocator();
   await InternetStateManagerInitializer.initialize();
 
-  await SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-    overlays: [SystemUiOverlay.top],
-  );
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   try {
     final prefs = await SharedPreferences.getInstance();

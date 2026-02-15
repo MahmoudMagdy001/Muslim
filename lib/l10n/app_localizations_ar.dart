@@ -215,7 +215,7 @@ class AppLocalizationsAr extends AppLocalizations {
     String percentage,
     String current_price,
   ) {
-    return 'النصاب في الذهب هو $nisab_grams جرام.\nالنسبة: $percentage% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: $current_price جنيه';
+    return 'النصاب في الذهب هو $nisab_grams جرام.\nالنسبه: $percentage% من القيمة السوقية للذهب.\n\nسعر الجرام الحالي: $current_price جنيه';
   }
 
   @override
@@ -282,7 +282,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String money_zakat_description(String nisab, String percentage) {
-    return 'تجب الزكاة في المال إذا بلغ النصاب ($nisab جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبة: $percentage% من إجمالي المال المدخر';
+    return 'تجب الزكاة في المال إذا بلغ النصاب ($nisab جنيه تقريبًا) ومر عليه حول قمري كامل.\n\nالنسبه: $percentage% من إجمالي المال المدخر';
   }
 
   @override

@@ -7,11 +7,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.ryanheise.audioservice.AudioServiceActivity
+import androidx.core.view.WindowCompat
+import android.graphics.Color
+
 
 class MainActivity : AudioServiceActivity() {
     private val CHANNEL = "com.mahmoud.muslim/notification_click"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         handleIntent(intent)
     }

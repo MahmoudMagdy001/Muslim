@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../view_model/hadith/hadith_cubit.dart';
 import '../../../../../../core/utils/extensions.dart';
+import '../../../../view_model/hadith/hadith_cubit.dart';
 
 class HadithCardHeader extends StatelessWidget {
   const HadithCardHeader({

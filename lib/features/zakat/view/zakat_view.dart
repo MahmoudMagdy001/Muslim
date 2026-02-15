@@ -226,11 +226,11 @@ class GoldZakatTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final descriptionText = localizations.gold_zakat_description(
+      isArabic ? convertToArabicNumbers('85') : '85',
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
       isArabic
           ? convertToArabicNumbers(goldPricePerGram.toStringAsFixed(2))
           : goldPricePerGram.toStringAsFixed(2),
-      isArabic ? convertToArabicNumbers('85') : '85',
-      isArabic ? convertToArabicNumbers('2.5') : '2.5',
     );
 
     return ZakatCard(
@@ -261,10 +261,10 @@ class TradeZakatTab extends StatelessWidget {
   Widget build(BuildContext context) => ZakatCard(
     title: localizations.trade_zakat_title,
     description: localizations.trade_zakat_description(
+      isArabic ? convertToArabicNumbers('2.5') : '2.5',
       isArabic
           ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
           : nisabMoney.toStringAsFixed(0),
-      isArabic ? convertToArabicNumbers('2.5') : '2.5',
     ),
     hintText: localizations.trade_zakat_hint,
     calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,

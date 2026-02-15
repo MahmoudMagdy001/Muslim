@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran/quran.dart' as quran;
 
+import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../quran/repository/quran_repository.dart';
@@ -106,16 +107,21 @@ class _SurahListTabState extends State<SurahListTab> {
     length: 3,
     child: Column(
       children: [
-        TabBar(
-          onTap: (index) {
-            final viewType = QuranViewType.values[index];
-            context.read<SurahListCubit>().changeViewType(viewType);
-          },
-          tabs: [
-            Tab(text: widget.localizations.surahsText),
-            Tab(text: widget.localizations.juzText),
-            Tab(text: widget.localizations.hizbText),
-          ],
+        Material(
+          color: context.theme.primaryColor,
+          child: TabBar(
+            labelColor: context.theme.colorScheme.secondary,
+            unselectedLabelColor: Colors.white,
+            onTap: (index) {
+              final viewType = QuranViewType.values[index];
+              context.read<SurahListCubit>().changeViewType(viewType);
+            },
+            tabs: [
+              Tab(text: widget.localizations.surahsText),
+              Tab(text: widget.localizations.juzText),
+              Tab(text: widget.localizations.hizbText),
+            ],
+          ),
         ),
         Expanded(
           child: Scrollbar(

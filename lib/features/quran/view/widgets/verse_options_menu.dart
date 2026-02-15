@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:flutter/material.dart';
+
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/utils/extensions.dart';
 
 class VerseOptionsMenu {
   static Future<String?> show(
@@ -27,10 +27,7 @@ class VerseOptionsMenu {
           value: 'play',
           child: Row(
             children: [
-              Icon(
-                Icons.play_arrow_rounded,
-                color: context.theme.colorScheme.primary,
-              ),
+              const Icon(Icons.play_arrow_rounded),
               const SizedBox(width: 12),
               Text(localizations.playVerseSound),
             ],
@@ -40,10 +37,7 @@ class VerseOptionsMenu {
           value: 'bookmark',
           child: Row(
             children: [
-              Icon(
-                Icons.bookmark_border_rounded,
-                color: context.theme.colorScheme.primary,
-              ),
+              const Icon(Icons.bookmark_border_rounded),
               const SizedBox(width: 12),
               Text(localizations.bookmarkVerse),
             ],
@@ -53,10 +47,7 @@ class VerseOptionsMenu {
           value: 'tafseer',
           child: Row(
             children: [
-              Icon(
-                Icons.menu_book_rounded,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              const Icon(Icons.menu_book_rounded),
               const SizedBox(width: 12),
               Text(localizations.tafsirVerse),
             ],
