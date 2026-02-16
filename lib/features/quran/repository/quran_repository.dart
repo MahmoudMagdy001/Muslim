@@ -14,6 +14,12 @@ abstract class QuranRepository {
     required int surahNumber,
     required String reciter,
   });
+  Future<void> prepareRangePlaylist({
+    required int fromPage,
+    required int toPage,
+    required String reciter,
+  });
+  ({int surah, int ayah})? getAyahAtIndex(int index);
   Future<void> play();
   Future<void> pause();
   Future<void> seek(Duration position, {int? index});

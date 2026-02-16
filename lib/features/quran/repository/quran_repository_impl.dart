@@ -45,6 +45,21 @@ class QuranRepositoryImpl implements QuranRepository {
   );
 
   @override
+  Future<void> prepareRangePlaylist({
+    required int fromPage,
+    required int toPage,
+    required String reciter,
+  }) async => await _quranService.prepareRangePlaylist(
+    fromPage: fromPage,
+    toPage: toPage,
+    reciter: reciter,
+  );
+
+  @override
+  ({int surah, int ayah})? getAyahAtIndex(int index) =>
+      _quranService.getAyahAtIndex(index);
+
+  @override
   Future<void> play() async => await _quranService.play();
 
   @override

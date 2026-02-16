@@ -32,6 +32,17 @@ class QuranService {
   int? _currentSurah;
   String? _currentReciter;
 
+  /// Maps playlist index → (surah, ayah) for range-based playlists
+  List<({int surah, int ayah})> _rangeAyahMap = [];
+
+  /// Returns the (surah, ayah) at a given playlist index, if a range playlist is active
+  ({int surah, int ayah})? getAyahAtIndex(int index) {
+    if (index >= 0 && index < _rangeAyahMap.length) {
+      return _rangeAyahMap[index];
+    }
+    return null;
+  }
+
   dynamic _getMetadataFromPlayer(String key) {
     final tag = _audioPlayer.sequenceState.currentSource?.tag;
     if (tag is MediaItem) {
@@ -67,13 +78,14 @@ class QuranService {
 
     _currentSurah = surahNumber;
     _currentReciter = reciter;
+    _rangeAyahMap = []; // Clear range map for single-surah mode
 
     final playlist = _buildPlaylist(surahNumber, reciter);
 
     await _audioPlayer.stop();
     await _audioPlayer.setAudioSources(playlist);
 
-    _indexSubscription?.cancel(); // إلغاء القديم
+    _indexSubscription?.cancel();
     _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
       if (index != null) {
         final prefs = await SharedPreferences.getInstance();
@@ -81,10 +93,75 @@ class QuranService {
         await prefs.setInt('lastVerse', index + 1);
         await prefs.setString('lastReciter', reciter);
 
-        // إرسال البيانات عبر الـ Stream
         _lastPlayedController.add({
           'surah': surahNumber,
           'verse': index + 1,
+          'reciter': reciter,
+        });
+      }
+    });
+  }
+
+  /// تحضير قائمة تشغيل لنطاق صفحات (للأحزاب والأجزاء)
+  Future<void> prepareRangePlaylist({
+    required int fromPage,
+    required int toPage,
+    required String reciter,
+  }) async {
+    _currentReciter = reciter;
+
+    // Build the ayah map and playlist from page range
+    final ayahMap = <({int surah, int ayah})>[];
+    final audioSources = <AudioSource>[];
+    final seen = <String>{}; // Avoid duplicates across page boundaries
+
+    for (int page = fromPage; page <= toPage; page++) {
+      final pageData = quran.getPageData(page);
+      for (final data in pageData) {
+        final rowData = data as Map<String, dynamic>;
+        final surah = rowData['surah'] as int;
+        final start = rowData['start'] as int;
+        final end = rowData['end'] as int;
+
+        for (int ayah = start; ayah <= end; ayah++) {
+          final key = '${surah}_$ayah';
+          if (seen.contains(key)) continue;
+          seen.add(key);
+
+          ayahMap.add((surah: surah, ayah: ayah));
+          audioSources.add(
+            _createAudioSourceForVerse(
+              surahNumber: surah,
+              verseNumber: ayah,
+              reciter: reciter,
+            ),
+          );
+        }
+      }
+    }
+
+    _rangeAyahMap = ayahMap;
+    if (ayahMap.isNotEmpty) {
+      _currentSurah = ayahMap.first.surah;
+    }
+
+    await _audioPlayer.stop();
+    await _audioPlayer.setAudioSources(audioSources);
+
+    _indexSubscription?.cancel();
+    _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
+      if (index != null && index < _rangeAyahMap.length) {
+        final entry = _rangeAyahMap[index];
+        _currentSurah = entry.surah;
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('lastSurah', entry.surah);
+        await prefs.setInt('lastVerse', entry.ayah);
+        await prefs.setString('lastReciter', reciter);
+
+        _lastPlayedController.add({
+          'surah': entry.surah,
+          'verse': entry.ayah,
           'reciter': reciter,
         });
       }

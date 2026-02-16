@@ -21,6 +21,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   final QuranRepository _repository;
   final List<StreamSubscription> _subscriptions = [];
+  bool _isRangeMode = false;
 
   // -------------------- Initialization -------------------- //
 
@@ -63,8 +64,21 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     _subscriptions.add(
       _repository.currentIndexStream.listen((index) {
         if (index != null) {
-          final currentAyah = index + 1;
-          if (!isClosed) emit(state.copyWith(currentAyah: currentAyah));
+          if (_isRangeMode) {
+            // In range mode, resolve the actual surah/ayah from the map
+            final entry = _repository.getAyahAtIndex(index);
+            if (entry != null && !isClosed) {
+              emit(
+                state.copyWith(
+                  currentSurah: entry.surah,
+                  currentAyah: entry.ayah,
+                ),
+              );
+            }
+          } else {
+            final currentAyah = index + 1;
+            if (!isClosed) emit(state.copyWith(currentAyah: currentAyah));
+          }
         }
       }),
     );
@@ -73,6 +87,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   // -------------------- Player Controls -------------------- //
 
   Future<void> loadSurah(int surah, String reciter, {int startAyah = 1}) async {
+    _isRangeMode = false;
     await _repository.prepareSurahPlaylist(
       surahNumber: surah,
       reciter: reciter,
@@ -88,6 +103,40 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     }
     if (!isClosed) {
       emit(state.copyWith(currentSurah: surah, currentAyah: startAyah));
+    }
+  }
+
+  Future<void> loadRange({
+    required int fromPage,
+    required int toPage,
+    required String reciter,
+    required int startSurah,
+    required int startAyah,
+  }) async {
+    _isRangeMode = true;
+    await _repository.prepareRangePlaylist(
+      fromPage: fromPage,
+      toPage: toPage,
+      reciter: reciter,
+    );
+
+    // Find the index in the range playlist that matches the start surah/ayah
+    int targetIndex = 0;
+    for (int i = 0; ; i++) {
+      final entry = _repository.getAyahAtIndex(i);
+      if (entry == null) break;
+      if (entry.surah == startSurah && entry.ayah == startAyah) {
+        targetIndex = i;
+        break;
+      }
+    }
+
+    if (targetIndex > 0) {
+      await _repository.seek(Duration.zero, index: targetIndex);
+    }
+
+    if (!isClosed) {
+      emit(state.copyWith(currentSurah: startSurah, currentAyah: startAyah));
     }
   }
 

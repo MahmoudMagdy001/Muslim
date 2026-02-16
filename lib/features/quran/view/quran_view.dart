@@ -79,11 +79,23 @@ class _QuranViewContentState extends State<QuranViewContent> {
     _currentHizb = getHizbForAyah(widget.surahNumber, widget.startAyah);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<QuranPlayerCubit>().loadSurah(
-        widget.surahNumber,
-        widget.reciter,
-        startAyah: widget.startAyah,
-      );
+      if (widget.fromPage != null && widget.toPage != null) {
+        // Range mode: Hizb/Juz - build playlist spanning all surahs
+        context.read<QuranPlayerCubit>().loadRange(
+          fromPage: widget.fromPage!,
+          toPage: widget.toPage!,
+          reciter: widget.reciter,
+          startSurah: widget.surahNumber,
+          startAyah: widget.startAyah,
+        );
+      } else {
+        // Single surah mode
+        context.read<QuranPlayerCubit>().loadSurah(
+          widget.surahNumber,
+          widget.reciter,
+          startAyah: widget.startAyah,
+        );
+      }
     });
   }
 

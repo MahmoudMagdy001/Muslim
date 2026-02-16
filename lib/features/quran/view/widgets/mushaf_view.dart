@@ -83,22 +83,20 @@ class _MushafViewState extends State<MushafView> {
           currentAyahNotifier.value = newAyah;
           currentSurahNotifier.value = newSurah;
 
-          if (newSurah == widget.surahNumber) {
-            // Note: We might need to handle external Surah changes better if we want to support
-            // continuous reading AND external navigation.
-            // For now, if the player moves to a verse, we jump there.
-            // But with continuous reading, `widget.surahNumber` might be just the *initial* surah.
-            // We should use currentSurahNotifier logic locally.
+          final page = quran.getPageNumber(newSurah, newAyah);
+          int targetIndex;
 
-            final page = quran.getPageNumber(newSurah, newAyah);
-            int targetIndex;
+          if (widget.fromPage != null) {
+            targetIndex = page - widget.fromPage!;
+          } else {
+            targetIndex = page - 1;
+          }
 
-            if (widget.fromPage != null) {
-              targetIndex = page - widget.fromPage!;
-            } else {
-              targetIndex = page - 1;
-            }
-
+          // Only follow if the page is within our range
+          final maxIndex = widget.fromPage != null && widget.toPage != null
+              ? widget.toPage! - widget.fromPage!
+              : 603;
+          if (targetIndex >= 0 && targetIndex <= maxIndex) {
             if (_pageController.hasClients) {
               if ((_pageController.page?.round() ?? 0) != targetIndex) {
                 _pageController
@@ -120,8 +118,12 @@ class _MushafViewState extends State<MushafView> {
     });
 
     final playerState = context.read<QuranPlayerCubit>().state;
-    if (playerState.currentSurah == widget.surahNumber &&
-        playerState.currentAyah != null) {
+    // Only use player state for initial positioning if it's relevant to this view
+    final isRelevantState =
+        playerState.currentSurah != null &&
+        playerState.currentAyah != null &&
+        playerState.currentSurah == widget.surahNumber;
+    if (isRelevantState) {
       currentAyahNotifier.value = playerState.currentAyah;
       currentSurahNotifier.value = playerState.currentSurah;
 

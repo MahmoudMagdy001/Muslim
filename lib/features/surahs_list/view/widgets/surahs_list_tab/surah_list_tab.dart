@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../quran/repository/quran_repository.dart';
@@ -24,12 +23,14 @@ class SurahListTab extends StatefulWidget {
     required this.selectedReciter,
     required this.isArabic,
     required this.localizations,
+    this.forceViewType,
     super.key,
   });
 
   final String selectedReciter;
   final bool isArabic;
   final AppLocalizations localizations;
+  final QuranViewType? forceViewType;
 
   @override
   State<SurahListTab> createState() => _SurahListTabState();
@@ -103,165 +104,139 @@ class _SurahListTabState extends State<SurahListTab> {
   }
 
   @override
-  Widget build(BuildContext context) => DefaultTabController(
-    length: 3,
-    child: Column(
-      children: [
-        Material(
-          color: context.theme.primaryColor,
-          child: TabBar(
-            labelColor: context.theme.colorScheme.secondary,
-            unselectedLabelColor: Colors.white,
-            onTap: (index) {
-              final viewType = QuranViewType.values[index];
-              context.read<SurahListCubit>().changeViewType(viewType);
-            },
-            tabs: [
-              Tab(text: widget.localizations.surahsText),
-              Tab(text: widget.localizations.juzText),
-              Tab(text: widget.localizations.hizbText),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Scrollbar(
-            controller: _scrollController,
-            child: BlocBuilder<SurahListCubit, SurahsListState>(
-              builder: (context, state) => CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  if (state.currentViewType == QuranViewType.surah) ...[
-                    ValueListenableBuilder<bool>(
-                      valueListenable: exactSearchNotifier,
-                      builder: (context, exactSearch, child) => SearchSection(
-                        controller: _searchController,
-                        exactSearch: exactSearch,
-                        onSearchChanged: _onSearchChanged,
-                        toggleExactSearch: _toggleExactSearch,
-                        clearSearch: _clearSearch,
-                      ),
-                    ),
-                    if (state.searchText.isNotEmpty)
-                      ResultsCount(
-                        searchText: state.searchText,
-                        resultsCount: state.searchResults.length,
-                      ),
-                    if (state.searchText.isNotEmpty)
-                      SearchResultsList(
-                        searchResults: state.searchResults,
-                        navigateToResult: _navigateTo,
-                      )
-                    else
-                      SurahList(
-                        surahs: state.filteredSurahs,
-                        isArabic: widget.isArabic,
-                        navigateToSurah:
-                            ({required int surah, required int ayah}) async {
-                              // For Surah, we restrict to the pages of that Surah
-                              final startPage = quran.getPageNumber(surah, 1);
-                              final endPage = quran.getPageNumber(
-                                surah,
-                                quran.getVerseCount(surah),
-                              );
-                              await _navigateTo(
-                                surah: surah,
-                                ayah: ayah,
-                                fromPage: startPage,
-                                toPage: endPage,
-                              );
-                            },
-                      ),
-                  ] else if (state.currentViewType == QuranViewType.juz) ...[
-                    JuzListView(
-                      juzs: state.juzs,
-                      isArabic: widget.isArabic,
-                      navigateToJuz:
-                          ({required int surah, required int ayah}) async {
-                            // For Juz, we restrict to the pages of that Juz.
-                            final juzModel = state.juzs.firstWhere(
-                              (j) =>
-                                  j.startSurah == surah && j.startAyah == ayah,
-                            );
-                            final juzNumber = juzModel.number;
-
-                            // Calculate start page of this Juz
-                            final startPage = quran.getPageNumber(surah, ayah);
-
-                            // Calculate end page (start of next Juz - 1, or 604 for last Juz)
-                            int endPage;
-                            if (juzNumber == 30) {
-                              endPage = 604;
-                            } else {
-                              final nextJuzIndex =
-                                  juzNumber; // juzNumber is 1-based
-                              if (nextJuzIndex < state.juzs.length) {
-                                final nextJuz = state.juzs[nextJuzIndex];
-                                endPage =
-                                    quran.getPageNumber(
-                                      nextJuz.startSurah,
-                                      nextJuz.startAyah,
-                                    ) -
-                                    1;
-                              } else {
-                                endPage = 604;
-                              }
-                            }
-
-                            await _navigateTo(
-                              surah: surah,
-                              ayah: ayah,
-                              fromPage: startPage,
-                              toPage: endPage,
-                            );
-                          },
-                    ),
-                  ] else if (state.currentViewType == QuranViewType.hizb) ...[
-                    HizbListView(
-                      hizbs: state.hizbs,
-                      isArabic: widget.isArabic,
-                      navigateToHizb:
-                          ({required int surah, required int ayah}) async {
-                            final hizbModel = state.hizbs.firstWhere(
-                              (h) =>
-                                  h.startSurah == surah && h.startAyah == ayah,
-                            );
-                            final hizbNumber = hizbModel.number;
-
-                            final startPage = quran.getPageNumber(surah, ayah);
-                            int endPage;
-
-                            if (hizbNumber == 60) {
-                              endPage = 604;
-                            } else {
-                              final nextHizbIndex = hizbNumber;
-                              if (nextHizbIndex < state.hizbs.length) {
-                                final nextHizb = state.hizbs[nextHizbIndex];
-                                endPage =
-                                    quran.getPageNumber(
-                                      nextHizb.startSurah,
-                                      nextHizb.startAyah,
-                                    ) -
-                                    1;
-                              } else {
-                                endPage = 604;
-                              }
-                            }
-
-                            await _navigateTo(
-                              surah: surah,
-                              ayah: ayah,
-                              fromPage: startPage,
-                              toPage: endPage,
-                            );
-                          },
-                    ),
-                  ],
-                ],
+  Widget build(BuildContext context) => Scrollbar(
+    controller: _scrollController,
+    child: BlocBuilder<SurahListCubit, SurahsListState>(
+      builder: (context, state) {
+        final currentViewType = widget.forceViewType ?? state.currentViewType;
+        return CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            if (currentViewType == QuranViewType.surah) ...[
+              ValueListenableBuilder<bool>(
+                valueListenable: exactSearchNotifier,
+                builder: (context, exactSearch, child) => SearchSection(
+                  controller: _searchController,
+                  exactSearch: exactSearch,
+                  onSearchChanged: _onSearchChanged,
+                  toggleExactSearch: _toggleExactSearch,
+                  clearSearch: _clearSearch,
+                ),
               ),
-            ),
-          ),
-        ),
-      ],
+              if (state.searchText.isNotEmpty)
+                ResultsCount(
+                  searchText: state.searchText,
+                  resultsCount: state.searchResults.length,
+                ),
+              if (state.searchText.isNotEmpty)
+                SearchResultsList(
+                  searchResults: state.searchResults,
+                  navigateToResult: _navigateTo,
+                )
+              else
+                SurahList(
+                  surahs: state.filteredSurahs,
+                  isArabic: widget.isArabic,
+                  navigateToSurah:
+                      ({required int surah, required int ayah}) async {
+                        // For Surah, we restrict to the pages of that Surah
+                        final startPage = quran.getPageNumber(surah, 1);
+                        final endPage = quran.getPageNumber(
+                          surah,
+                          quran.getVerseCount(surah),
+                        );
+                        await _navigateTo(
+                          surah: surah,
+                          ayah: ayah,
+                          fromPage: startPage,
+                          toPage: endPage,
+                        );
+                      },
+                ),
+            ] else if (currentViewType == QuranViewType.juz) ...[
+              JuzListView(
+                juzs: state.juzs,
+                isArabic: widget.isArabic,
+                navigateToJuz: ({required int surah, required int ayah}) async {
+                  // For Juz, we restrict to the pages of that Juz.
+                  final juzModel = state.juzs.firstWhere(
+                    (j) => j.startSurah == surah && j.startAyah == ayah,
+                  );
+                  final juzNumber = juzModel.number;
+
+                  // Calculate start page of this Juz
+                  final startPage = quran.getPageNumber(surah, ayah);
+
+                  // Calculate end page (start of next Juz - 1, or 604 for last Juz)
+                  int endPage;
+                  if (juzNumber == 30) {
+                    endPage = 604;
+                  } else {
+                    final nextJuzIndex = juzNumber; // juzNumber is 1-based
+                    if (nextJuzIndex < state.juzs.length) {
+                      final nextJuz = state.juzs[nextJuzIndex];
+                      endPage =
+                          quran.getPageNumber(
+                            nextJuz.startSurah,
+                            nextJuz.startAyah,
+                          ) -
+                          1;
+                    } else {
+                      endPage = 604;
+                    }
+                  }
+
+                  await _navigateTo(
+                    surah: surah,
+                    ayah: ayah,
+                    fromPage: startPage,
+                    toPage: endPage,
+                  );
+                },
+              ),
+            ] else if (currentViewType == QuranViewType.hizb) ...[
+              HizbListView(
+                hizbs: state.hizbs,
+                isArabic: widget.isArabic,
+                navigateToHizb:
+                    ({required int surah, required int ayah}) async {
+                      final hizbModel = state.hizbs.firstWhere(
+                        (h) => h.startSurah == surah && h.startAyah == ayah,
+                      );
+                      final hizbNumber = hizbModel.number;
+
+                      final startPage = quran.getPageNumber(surah, ayah);
+                      int endPage;
+
+                      if (hizbNumber == 60) {
+                        endPage = 604;
+                      } else {
+                        final nextHizbIndex = hizbNumber;
+                        if (nextHizbIndex < state.hizbs.length) {
+                          final nextHizb = state.hizbs[nextHizbIndex];
+                          endPage =
+                              quran.getPageNumber(
+                                nextHizb.startSurah,
+                                nextHizb.startAyah,
+                              ) -
+                              1;
+                        } else {
+                          endPage = 604;
+                        }
+                      }
+
+                      await _navigateTo(
+                        surah: surah,
+                        ayah: ayah,
+                        fromPage: startPage,
+                        toPage: endPage,
+                      );
+                    },
+              ),
+            ],
+          ],
+        );
+      },
     ),
   );
 }
