@@ -1,444 +1,337 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../l10n/app_localizations.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/extensions.dart';
+import '../../../core/widgets/base_app_dialog.dart';
 import '../model/zikr_model.dart';
-import '../service/sebha_storage_service.dart';
+import '../viewmodels/sebha_cubit.dart';
+import '../viewmodels/sebha_state.dart';
+import 'widgets/azkar_selector.dart';
 import 'widgets/custom_zikr_dialog.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/widgets/base_app_dialog.dart';
 import 'widgets/sebha_button.dart';
+import 'widgets/sebha_controls.dart';
 
-class SebhaView extends StatefulWidget {
-  const SebhaView({
-    required this.localizations,
-    required this.isArabic,
-    super.key,
-  });
-  final AppLocalizations localizations;
-  final bool isArabic;
+class SebhaView extends StatelessWidget {
+  const SebhaView({super.key});
 
   @override
-  State<SebhaView> createState() => _SebhaViewState();
-}
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isDark = context.theme.brightness == Brightness.dark;
 
-class _SebhaViewState extends State<SebhaView> {
-  final ValueNotifier<int> counterNotifier = ValueNotifier(0);
-  final ValueNotifier<int?> customGoalNotifier = ValueNotifier(null);
-  final ValueNotifier<List<ZikrModel>> customAzkarNotifier = ValueNotifier([]);
-  final ValueNotifier<int> currentIndexNotifier = ValueNotifier(0);
+    return BlocListener<SebhaCubit, SebhaState>(
+      listenWhen: (previous, current) =>
+          current.goalReached && !previous.goalReached,
+      listener: (context, state) {
+        _showCompleteDialog(context, state.customGoal ?? 0);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.sebhaTitle),
+          elevation: 0,
+          actions: [
+            IconButton(
+              onPressed: () => _showAddCustomZikrDialog(context),
+              icon: const Icon(Icons.add_rounded),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Azkar selector at the top
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: BlocSelector<SebhaCubit, SebhaState, _AzkarSelectorData>(
+                  selector: (state) => _AzkarSelectorData(
+                    allAzkar: state.allAzkar,
+                    currentIndex: state.currentIndex,
+                  ),
+                  builder: (context, data) => Column(
+                    children: [
+                      AzkarSelector(
+                        azkar: data.allAzkar,
+                        currentIndex: data.currentIndex,
+                        isArabic: isArabic,
+                        onSelect: context.read<SebhaCubit>().selectZikr,
+                        onLongPress: (zikr) => _showZikrOptions(context, zikr),
+                      ),
+                      const SizedBox(height: 24),
+                      // Current zikr text with animated transitions
+                      if (data.currentIndex < data.allAzkar.length)
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          switchInCurve: Curves.easeOutCubic,
+                          switchOutCurve: Curves.easeInCubic,
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0, 0.15),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              ),
+                          child: Text(
+                            isArabic
+                                ? data.allAzkar[data.currentIndex].textAr
+                                : data.allAzkar[data.currentIndex].textEn,
+                            key: ValueKey(data.allAzkar[data.currentIndex].id),
+                            textAlign: TextAlign.center,
+                            style: context.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : AppColors.primary,
+                              letterSpacing: isArabic ? 0 : 0.5,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
 
-  final _storageService = SebhaStorageService();
+              // Center: Button takes the remaining space
+              Expanded(
+                child: Center(
+                  child: BlocSelector<SebhaCubit, SebhaState, _CounterData>(
+                    selector: (state) => _CounterData(
+                      counter: state.counter,
+                      goal: state.customGoal,
+                    ),
+                    builder: (context, data) => SebhaButton(
+                      onPressed: context.read<SebhaCubit>().increment,
+                      counter: data.counter,
+                      goal: data.goal,
+                    ),
+                  ),
+                ),
+              ),
 
-  final List<ZikrModel> _defaultAzkar = [
-    ZikrModel(
-      id: 'default_1',
-      textAr: 'سبحان الله',
-      textEn: 'Subhan Allah',
-      count: 33,
-    ),
-    ZikrModel(
-      id: 'default_2',
-      textAr: 'الحمد لله',
-      textEn: 'Alhamdulillah',
-      count: 33,
-    ),
-    ZikrModel(
-      id: 'default_3',
-      textAr: 'الله أكبر',
-      textEn: 'Allahu Akbar',
-      count: 34,
-    ),
-    ZikrModel(
-      id: 'default_4',
-      textAr: 'لا إله إلا الله',
-      textEn: 'La ilaha illallah',
-      count: 100,
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCustomAzkar();
-    // Initialize goal with the first zikr's count
-    customGoalNotifier.value = _defaultAzkar[0].count;
+              // Controls at the bottom
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: SebhaControls(
+                  onReset: context.read<SebhaCubit>().reset,
+                  onSetGoal: () => _showGoalDialog(context),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  void dispose() {
-    counterNotifier.dispose();
-    customGoalNotifier.dispose();
-    customAzkarNotifier.dispose();
-    currentIndexNotifier.dispose();
-    super.dispose();
-  }
+  void _showCompleteDialog(BuildContext context, int maxCount) {
+    final l10n = context.l10n;
 
-  Future<void> _loadCustomAzkar() async {
-    final customAzkar = await _storageService.getCustomAzkar();
-    customAzkarNotifier.value = customAzkar;
-  }
-
-  void increment() {
-    counterNotifier.value++;
-
-    final currentGoal = customGoalNotifier.value;
-    if (currentGoal != null && counterNotifier.value == currentGoal) {
-      Future.delayed(Duration.zero, () {
-        if (mounted) _showCompleteDialog(currentGoal);
-      });
-    }
-  }
-
-  void reset() {
-    counterNotifier.value = 0;
-  }
-
-  void selectZikr(int index) {
-    currentIndexNotifier.value = index;
-    counterNotifier.value = 0;
-
-    // Use current updated list logic
-    final allAzkar = [..._defaultAzkar, ...customAzkarNotifier.value];
-    if (index < allAzkar.length) {
-      customGoalNotifier.value = allAzkar[index].count;
-    }
-  }
-
-  void _showCompleteDialog(int maxCount) {
     BaseAppDialog.show(
       context,
-      title: '${widget.localizations.congrates} 🎉',
-      contentText:
-          '${widget.localizations.completeTasbeh} $maxCount\n ${widget.localizations.tasbehQuestion}',
+      title: '${l10n.congrates} 🎉',
+      contentText: '${l10n.completeTasbeh} $maxCount\n ${l10n.tasbehQuestion}',
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            reset();
+            context.read<SebhaCubit>().reset();
           },
-          child: Text(widget.localizations.resetTasbeh),
+          child: Text(l10n.resetTasbeh),
         ),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(widget.localizations.continueTasbeh),
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.continueTasbeh),
         ),
       ],
     );
   }
 
-  void _showGoalDialog() {
+  void _showGoalDialog(BuildContext context) {
+    final l10n = context.l10n;
     final controller = TextEditingController();
 
     BaseAppDialog.show(
       context,
-      title: widget.localizations.chooseGoal,
+      title: l10n.chooseGoal,
       content: TextField(
         controller: controller,
         keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: widget.localizations.goalExample,
-        ),
+        decoration: InputDecoration(labelText: l10n.goalExample),
       ),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            customGoalNotifier.value = null;
+            context.read<SebhaCubit>().setGoal(null);
           },
-          child: Text(widget.localizations.clear),
+          child: Text(l10n.clear),
         ),
         TextButton(
           onPressed: () {
             if (controller.text.isNotEmpty) {
               final value = int.tryParse(controller.text);
               if (value != null && value > 0) {
-                customGoalNotifier.value = value;
+                context.read<SebhaCubit>().setGoal(value);
               }
             }
             Navigator.pop(context);
           },
-          child: Text(widget.localizations.save),
+          child: Text(l10n.save),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(widget.localizations.cancelButton),
+          child: Text(l10n.cancelButton),
         ),
       ],
     );
   }
 
-  Future<void> _showAddCustomZikrDialog() async {
+  Future<void> _showAddCustomZikrDialog(BuildContext context) async {
     final result = await showDialog<ZikrModel>(
       context: context,
-      builder: (context) =>
-          CustomZikrDialog(localizations: widget.localizations),
+      builder: (context) => const CustomZikrDialog(),
     );
 
-    if (result != null) {
-      final success = await _storageService.saveCustomZikr(result);
-      if (success && mounted) {
-        await _loadCustomAzkar();
-      }
+    if (result != null && context.mounted) {
+      await context.read<SebhaCubit>().addCustomZikr(result);
     }
   }
 
-  Future<void> _showEditZikrDialog(ZikrModel zikr) async {
+  Future<void> _showEditZikrDialog(BuildContext context, ZikrModel zikr) async {
     final result = await showDialog<ZikrModel>(
       context: context,
-      builder: (context) =>
-          CustomZikrDialog(localizations: widget.localizations, zikr: zikr),
+      builder: (context) => CustomZikrDialog(zikr: zikr),
     );
 
-    if (result != null) {
-      final success = await _storageService.updateCustomZikr(result);
-      if (success && mounted) {
-        await _loadCustomAzkar();
-        // If the edited zikr was selected, update the goal
-        final allAzkar = [..._defaultAzkar, ...customAzkarNotifier.value];
-        final currentIndex = currentIndexNotifier.value;
-        if (currentIndex < allAzkar.length &&
-            allAzkar[currentIndex].id == result.id) {
-          customGoalNotifier.value = result.count;
-        }
-      }
+    if (result != null && context.mounted) {
+      await context.read<SebhaCubit>().editCustomZikr(result);
     }
   }
 
-  Future<void> _showDeleteZikrDialog(ZikrModel zikr) async {
+  Future<void> _showDeleteZikrDialog(
+    BuildContext context,
+    ZikrModel zikr,
+  ) async {
+    final l10n = context.l10n;
+
     final confirmed = await BaseAppDialog.show<bool>(
       context,
-      title: widget.localizations.deleteTasbih,
-      contentText: widget.localizations.deleteTasbihConfirm,
+      title: l10n.deleteTasbih,
+      contentText: l10n.deleteTasbihConfirm,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(widget.localizations.cancelButton),
+          child: Text(l10n.cancelButton),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
           style: TextButton.styleFrom(
             foregroundColor: context.colorScheme.error,
           ),
-          child: Text(widget.localizations.deleteButton),
+          child: Text(l10n.deleteButton),
         ),
       ],
     );
 
-    if (confirmed == true) {
-      final success = await _storageService.deleteCustomZikr(zikr.id);
-      if (success && mounted) {
-        final allAzkar = [..._defaultAzkar, ...customAzkarNotifier.value];
-        final currentIndex = currentIndexNotifier.value;
-        // If the deleted zikr was selected, switch to first zikr
-        if (currentIndex < allAzkar.length &&
-            allAzkar[currentIndex].id == zikr.id) {
-          currentIndexNotifier.value = 0;
-          counterNotifier.value = 0;
-          customGoalNotifier.value = _defaultAzkar[0].count;
-        }
-        await _loadCustomAzkar();
-      }
+    if (confirmed == true && context.mounted) {
+      await context.read<SebhaCubit>().deleteCustomZikr(zikr.id);
     }
   }
 
-  void _showZikrOptions(ZikrModel zikr) {
-    if (!zikr.isCustom) return; // Only show options for custom zikr
+  void _showZikrOptions(BuildContext context, ZikrModel zikr) {
+    if (!zikr.isCustom) return;
+
+    final l10n = context.l10n;
+    final isDark = context.theme.brightness == Brightness.dark;
 
     showModalBottomSheet<void>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: Text(widget.localizations.editTasbih),
-              onTap: () {
-                Navigator.pop(context);
-                _showEditZikrDialog(zikr);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.delete, color: context.colorScheme.error),
-              title: Text(
-                widget.localizations.deleteTasbih,
-                style: TextStyle(color: context.colorScheme.error),
+      backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (bottomSheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withAlpha(40)
+                      : Colors.black.withAlpha(25),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-              onTap: () {
-                Navigator.pop(context);
-                _showDeleteZikrDialog(zikr);
-              },
-            ),
-          ],
+              ListTile(
+                leading: Icon(
+                  Icons.edit_rounded,
+                  color: isDark ? Colors.white70 : AppColors.primary,
+                ),
+                title: Text(l10n.editTasbih),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                onTap: () {
+                  Navigator.pop(bottomSheetContext);
+                  _showEditZikrDialog(context, zikr);
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.delete_rounded,
+                  color: context.colorScheme.error,
+                ),
+                title: Text(
+                  l10n.deleteTasbih,
+                  style: TextStyle(color: context.colorScheme.error),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                onTap: () {
+                  Navigator.pop(bottomSheetContext);
+                  _showDeleteZikrDialog(context, zikr);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(widget.localizations.sebhaTitle)),
-    floatingActionButton: FloatingActionButton(
-      onPressed: _showAddCustomZikrDialog,
-      child: const Icon(Icons.add),
-    ),
-    body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ValueListenableBuilder<List<ZikrModel>>(
-              valueListenable: customAzkarNotifier,
-              builder: (context, customAzkar, child) {
-                final allAzkar = [..._defaultAzkar, ...customAzkar];
-                return ValueListenableBuilder<int>(
-                  valueListenable: currentIndexNotifier,
-                  builder: (context, currentIndex, child) => Column(
-                    children: [
-                      _AzkarSelector(
-                        azkar: allAzkar,
-                        currentIndex: currentIndex,
-                        isArabic: widget.isArabic,
-                        onSelect: selectZikr,
-                        onLongPress: _showZikrOptions,
-                      ),
-                      const SizedBox(height: 40),
-                      if (currentIndex < allAzkar.length)
-                        Text(
-                          widget.isArabic
-                              ? allAzkar[currentIndex].textAr
-                              : allAzkar[currentIndex].textEn,
-                          style: context.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.onSurface,
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 25),
-            ValueListenableBuilder<int>(
-              valueListenable: counterNotifier,
-              builder: (context, counter, child) =>
-                  ValueListenableBuilder<int?>(
-                    valueListenable: customGoalNotifier,
-                    builder: (context, goal, child) => SebhaButton(
-                      onPressed: increment,
-                      counter: counter,
-                      goal: goal,
-                      localizations: widget.localizations,
-                    ),
-                  ),
-            ),
-            const SizedBox(height: 30),
-            _SebhaControls(
-              onReset: reset,
-              onSetGoal: _showGoalDialog,
-              localizations: widget.localizations,
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
 }
 
-class _AzkarSelector extends StatelessWidget {
-  const _AzkarSelector({
-    required this.azkar,
+/// Data class for BlocSelector to minimize rebuilds on the azkar selector.
+class _AzkarSelectorData extends Equatable {
+  const _AzkarSelectorData({
+    required this.allAzkar,
     required this.currentIndex,
-    required this.isArabic,
-    required this.onSelect,
-    required this.onLongPress,
   });
 
-  final List<ZikrModel> azkar;
+  final List<ZikrModel> allAzkar;
   final int currentIndex;
-  final bool isArabic;
-  final ValueChanged<int> onSelect;
-  final ValueChanged<ZikrModel> onLongPress;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 60,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: azkar.length,
-      itemBuilder: (context, index) {
-        final text = isArabic ? azkar[index].textAr : azkar[index].textEn;
-        final isSelected = currentIndex == index;
-
-        return GestureDetector(
-          onTap: () => onSelect(index),
-          onLongPress: () => onLongPress(azkar[index]),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                color: isSelected
-                    ? context.colorScheme.secondary
-                    : Colors.transparent,
-                width: isSelected ? 2 : 0,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Center(
-                child: Text(
-                  text,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    color: isSelected ? context.colorScheme.secondary : null,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ),
-  );
+  List<Object?> get props => [allAzkar, currentIndex];
 }
 
-class _SebhaControls extends StatelessWidget {
-  const _SebhaControls({
-    required this.onReset,
-    required this.onSetGoal,
-    required this.localizations,
-  });
+/// Data class for BlocSelector to minimize rebuilds on the counter button.
+class _CounterData extends Equatable {
+  const _CounterData({required this.counter, required this.goal});
 
-  final VoidCallback onReset;
-  final VoidCallback onSetGoal;
-  final AppLocalizations localizations;
+  final int counter;
+  final int? goal;
 
   @override
-  Widget build(BuildContext context) => Card(
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          TextButton.icon(
-            onPressed: onReset,
-            icon: const Icon(Icons.restart_alt),
-            label: Text(localizations.resetTasbeh),
-            style: TextButton.styleFrom(
-              foregroundColor: context.colorScheme.onSurface,
-            ),
-          ),
-          TextButton.icon(
-            onPressed: onSetGoal,
-            icon: const Icon(Icons.flag),
-            label: Text(localizations.goal),
-            style: TextButton.styleFrom(
-              foregroundColor: context.colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+  List<Object?> get props => [counter, goal];
 }

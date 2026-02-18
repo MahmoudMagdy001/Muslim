@@ -29,59 +29,61 @@ class SurahsListView extends StatelessWidget {
         ),
         BlocProvider(create: (context) => LastPlayedCubit()..initialize()),
       ],
-      child: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(localizations.quranText),
-            actions: [
-              IconButton(
-                onPressed: () => navigateWithTransition(
-                  type: TransitionType.fade,
-                  context,
-                  BookmarksView(reciter: selectedReciter, isArabic: isArabic),
+      child: Builder(
+        builder: (context) => DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(localizations.quranText),
+              actions: [
+                IconButton(
+                  onPressed: () => navigateWithTransition(
+                    type: TransitionType.fade,
+                    context,
+                    BookmarksView(reciter: selectedReciter, isArabic: isArabic),
+                  ),
+                  icon: const Icon(Icons.bookmarks_rounded),
+                  tooltip: localizations.bookmarksText,
                 ),
-                icon: const Icon(Icons.bookmarks_rounded),
-                tooltip: localizations.bookmarksText,
+                SizedBox(width: 8.toW),
+              ],
+              bottom: TabBar(
+                labelColor: context.theme.colorScheme.secondary,
+                unselectedLabelColor: Colors.white,
+                onTap: (index) {
+                  final viewType = QuranViewType.values[index];
+                  context.read<SurahListCubit>().changeViewType(viewType);
+                },
+                tabs: [
+                  Tab(text: localizations.surahsText),
+                  Tab(text: localizations.juzText),
+                  Tab(text: localizations.hizbText),
+                ],
               ),
-              SizedBox(width: 8.toW),
-            ],
-            bottom: TabBar(
-              labelColor: context.theme.colorScheme.secondary,
-              unselectedLabelColor: Colors.white,
-              onTap: (index) {
-                final viewType = QuranViewType.values[index];
-                context.read<SurahListCubit>().changeViewType(viewType);
-              },
-              tabs: [
-                Tab(text: localizations.surahsText),
-                Tab(text: localizations.juzText),
-                Tab(text: localizations.hizbText),
-              ],
             ),
-          ),
-          body: SafeArea(
-            child: TabBarView(
-              children: [
-                SurahListTab(
-                  selectedReciter: selectedReciter,
-                  isArabic: isArabic,
-                  localizations: localizations,
-                  forceViewType: QuranViewType.surah,
-                ),
-                SurahListTab(
-                  selectedReciter: selectedReciter,
-                  isArabic: isArabic,
-                  localizations: localizations,
-                  forceViewType: QuranViewType.juz,
-                ),
-                SurahListTab(
-                  selectedReciter: selectedReciter,
-                  isArabic: isArabic,
-                  localizations: localizations,
-                  forceViewType: QuranViewType.hizb,
-                ),
-              ],
+            body: SafeArea(
+              child: TabBarView(
+                children: [
+                  SurahListTab(
+                    selectedReciter: selectedReciter,
+                    isArabic: isArabic,
+                    localizations: localizations,
+                    forceViewType: QuranViewType.surah,
+                  ),
+                  SurahListTab(
+                    selectedReciter: selectedReciter,
+                    isArabic: isArabic,
+                    localizations: localizations,
+                    forceViewType: QuranViewType.juz,
+                  ),
+                  SurahListTab(
+                    selectedReciter: selectedReciter,
+                    isArabic: isArabic,
+                    localizations: localizations,
+                    forceViewType: QuranViewType.hizb,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

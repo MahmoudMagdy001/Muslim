@@ -12,7 +12,9 @@ import '../../../names_of_allah/view/names_of_allah_screen.dart';
 import '../../../qiblah/service/qiblah_service.dart';
 import '../../../qiblah/view/qiblah_view.dart';
 import '../../../qiblah/viewmodel/qiblah_cubit.dart';
+import '../../../sebha/repositories/sebha_repository.dart';
 import '../../../sebha/view/sebha_view.dart';
+import '../../../sebha/viewmodels/sebha_cubit.dart';
 import '../../../settings/view_model/rectire/rectire_cubit.dart';
 import '../../../surahs_list/view/surahs_list_view.dart';
 import '../../model/dashboard_item_model.dart';
@@ -26,7 +28,6 @@ class DashboardGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reciterCubit = context.watch<ReciterCubit>();
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     final List<DashboardItemModel> items = [
       DashboardItemModel(
@@ -71,7 +72,11 @@ class DashboardGrid extends StatelessWidget {
         label: localizations.sebha,
         color: const Color(0xFFC2EFE1),
         darkColor: const Color(0xFF386E5D),
-        route: SebhaView(localizations: localizations, isArabic: isArabic),
+        route: BlocProvider(
+          create: (_) =>
+              SebhaCubit(repository: SebhaRepository())..loadCustomAzkar(),
+          child: const SebhaView(),
+        ),
       ),
       DashboardItemModel(
         image: 'assets/home/allah_Names.png',

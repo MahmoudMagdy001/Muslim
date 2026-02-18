@@ -1,9 +1,11 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/utils/custom_loading_indicator.dart';
-import '../../../../l10n/app_localizations.dart';
-import 'arrow_painter.dart';
 import '../../../../core/utils/extensions.dart';
+import 'arrow_painter.dart';
 import 'compass_background_painter.dart';
 
 class CompassWidget extends StatelessWidget {
@@ -12,7 +14,6 @@ class CompassWidget extends StatelessWidget {
     required this.qiblahAngle,
     required this.isAligned,
     required this.isLoading,
-    required this.localizations,
     super.key,
   });
 
@@ -20,7 +21,6 @@ class CompassWidget extends StatelessWidget {
   final double qiblahAngle;
   final bool isAligned;
   final bool isLoading;
-  final AppLocalizations localizations;
 
   static const _compassDiameterFactor = 0.8;
   static const _maxCompassDiameter = 300.0;
@@ -50,7 +50,7 @@ class CompassWidget extends StatelessWidget {
         children: [
           if (isLoading) ...[
             // Loading indicator with message
-            CustomLoadingIndicator(text: localizations.compassLoading),
+            CustomLoadingIndicator(text: context.l10n.compassLoading),
           ] else ...[
             Stack(
               alignment: Alignment.center,
@@ -58,7 +58,7 @@ class CompassWidget extends StatelessWidget {
               children: [
                 _buildMainCircle(compassSize, theme, isDark, context),
                 _buildFixedArrow(theme, isDark),
-                if (isAligned) _buildAlignedText(theme, isDark),
+                if (isAligned) _buildAlignedText(theme, isDark, context),
                 _buildKaabaIcon(),
               ],
             ),
@@ -135,13 +135,17 @@ class CompassWidget extends StatelessWidget {
     ),
   );
 
-  Widget _buildAlignedText(ThemeData theme, bool isDark) => Positioned(
+  Widget _buildAlignedText(
+    ThemeData theme,
+    bool isDark,
+    BuildContext context,
+  ) => Positioned(
     bottom: _alignedTextBottomPosition,
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withAlpha(76),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isDark
               ? Colors.white30
@@ -149,7 +153,7 @@ class CompassWidget extends StatelessWidget {
         ),
       ),
       child: Text(
-        localizations.salahDirection,
+        context.l10n.salahDirection,
         style: TextStyle(
           color: isDark ? Colors.white : theme.colorScheme.onPrimary,
           fontWeight: FontWeight.bold,

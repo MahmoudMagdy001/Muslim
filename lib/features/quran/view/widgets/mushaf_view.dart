@@ -282,7 +282,6 @@ class _MushafViewState extends State<MushafView> {
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20.toH),
@@ -295,7 +294,6 @@ class _MushafViewState extends State<MushafView> {
                     fontSize: 22.toSp,
                     height: 2.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
                   ),
                 ),
               ),
@@ -318,15 +316,61 @@ class _MushafViewState extends State<MushafView> {
                   height: 52.toH,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await createAndShareTafsirImage(
-                        surahName: surahName,
-                        ayahNumber: ayah,
-                        ayahText: text,
-                        tafsirTitle: selectedTafsirName,
-                        tafsirText: tafsirText ?? '',
-                        isArabic: widget.isArabic,
-                        context: context,
+                      BaseAppDialog.showLoading(
+                        context,
+                        message: widget.isArabic
+                            ? 'جاري إنشاء الصور...'
+                            : 'Creating images...',
                       );
+
+                      try {
+                        final result = await TafsirShareService()
+                            .createAndShare(
+                              surahName: surahName,
+                              ayahNumber: ayah,
+                              ayahText: text,
+                              tafsirTitle: selectedTafsirName,
+                              tafsirText: tafsirText ?? '',
+                              isArabic: widget.isArabic,
+                              context: context,
+                            );
+
+                        if (context.mounted) Navigator.pop(context);
+
+                        if (!result.success && context.mounted) {
+                          BaseAppDialog.show(
+                            context,
+                            title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
+                            contentText: result.errorMessage ?? '',
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(widget.isArabic ? 'موافق' : 'OK'),
+                              ),
+                            ],
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted && Navigator.canPop(context)) {
+                          Navigator.of(context).pop();
+                        }
+                        if (context.mounted) {
+                          BaseAppDialog.show(
+                            context,
+                            title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
+                            contentText: e.toString().replaceAll(
+                              'Exception: ',
+                              '',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(widget.isArabic ? 'موافق' : 'OK'),
+                              ),
+                            ],
+                          );
+                        }
+                      }
                     },
                     child: Text(widget.localizations.shareTafsir),
                   ),
