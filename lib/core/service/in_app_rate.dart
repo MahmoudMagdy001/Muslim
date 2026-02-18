@@ -6,80 +6,143 @@ import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../l10n/app_localizations.dart';
-
 class RateAppHelper {
   static const String _launchCountKey = 'app_launch_count';
-  static const String _hasRatedKey = 'has_rated';
+  static const String _lastReviewRequestKey = 'last_review_request';
   static const String _packageName = 'com.mahmoud.muslim';
+
+  static const int _minLaunchesForReview = 5;
+  static const int _daysBetweenRequests = 30;
 
   static final InAppReview _inAppReview = InAppReview.instance;
 
-  /// 📱 استدعِها في أول شاشة من التطبيق (مثلاً Splash أو Home)
+  /// 📱 استدعِها في أول شاشة من التطبيق
   static Future<void> handleAppLaunch(BuildContext context) async {
-    // In-app review is only available on Android and iOS
-    if (!Platform.isAndroid && !Platform.isIOS) return;
+    if (!Platform.isAndroid) return;
 
     final prefs = await SharedPreferences.getInstance();
-    int launchCount = prefs.getInt(_launchCountKey) ?? 0;
-    final bool hasRated = prefs.getBool(_hasRatedKey) ?? false;
 
-    launchCount++;
-    await prefs.setInt(_launchCountKey, launchCount);
+    if (!context.mounted) return;
 
-    // بعد 5 مرات تشغيل، نطلب التقييم مرة واحدة فقط
-    if (launchCount >= 5 && !hasRated && context.mounted) {
+    await _incrementLaunchCount(prefs);
+
+    if (await _shouldRequestReview(prefs) && context.mounted) {
       await _requestReview(context, prefs);
     }
   }
 
-  /// ⭐ يفتح شاشة التقييم داخل التطبيق أو في المتجر
+  static Future<void> _incrementLaunchCount(SharedPreferences prefs) async {
+    int launchCount = prefs.getInt(_launchCountKey) ?? 0;
+    launchCount++;
+    await prefs.setInt(_launchCountKey, launchCount);
+    debugPrint('📱 App launch count: $launchCount');
+  }
+
+  static Future<bool> _shouldRequestReview(SharedPreferences prefs) async {
+    final launchCount = prefs.getInt(_launchCountKey) ?? 0;
+    final lastRequest = prefs.getInt(_lastReviewRequestKey) ?? 0;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final daysSinceLastRequest = (now - lastRequest) ~/ (1000 * 60 * 60 * 24);
+
+    final shouldRequest =
+        launchCount >= _minLaunchesForReview &&
+        daysSinceLastRequest >= _daysBetweenRequests;
+
+    debugPrint('''
+📊 Review Check:
+   - Launch count: $launchCount (min: $_minLaunchesForReview)
+   - Days since last: $daysSinceLastRequest (min: $_daysBetweenRequests)
+   - Should request: $shouldRequest
+''');
+
+    return shouldRequest;
+  }
+
   static Future<void> _requestReview(
     BuildContext context,
     SharedPreferences prefs,
   ) async {
     try {
-      if (await _inAppReview.isAvailable()) {
+      final isAvailable = await _inAppReview.isAvailable();
+      debugPrint('📱 In-app review available: $isAvailable');
+
+      if (isAvailable) {
         await _inAppReview.requestReview();
+        await _recordReviewRequest(prefs);
       } else {
-        await _inAppReview.openStoreListing(appStoreId: _packageName);
+        // ✅ fallback للـ Play Store
+        await _openPlayStore();
       }
-
-      await prefs.setBool(_hasRatedKey, true);
-
-      // إظهار SnackBar بعد التقييم
-      if (context.mounted) {
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.rateAppMessage),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('Error requesting review: $e');
+    } on Exception catch (e) {
+      debugPrint('❌ Error requesting review: $e');
+      await _openPlayStore();
     }
   }
 
-  /// 🖱️ زر يدوي للتقييم (مثلاً في الإعدادات)
+  static Future<void> _recordReviewRequest(SharedPreferences prefs) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    await prefs.setInt(_lastReviewRequestKey, now);
+    // ✅ نرجع الـ launch count للصفر عشان ننتظر تاني
+    await prefs.setInt(_launchCountKey, 0);
+  }
+
+  /// 🖱️ زر يدوي للتقييم (في الإعدادات مثلاً)
   static Future<void> rateNow(BuildContext context) async {
     try {
-      await _inAppReview.openStoreListing(appStoreId: _packageName);
+      await _openPlayStore();
 
       if (context.mounted) {
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.rateAppMessage),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        _showSnackBar(context, 'تم فتح المتجر', Colors.green);
       }
-    } catch (e) {
-      debugPrint('Error opening store listing: $e');
+    } on Exception catch (e) {
+      debugPrint('❌ Error opening store: $e');
+      if (context.mounted) {
+        _showSnackBar(context, 'حدث خطأ', Colors.red);
+      }
     }
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────
+
+  static void _showSnackBar(
+    BuildContext context,
+    String message,
+    Color backgroundColor,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: backgroundColor,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  static Future<void> _openPlayStore() async {
+    await _inAppReview.openStoreListing(appStoreId: _packageName);
+  }
+
+  /// 🧹 Reset للتست (استدعيها من Debug Menu)
+  static Future<void> resetReviewState() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_launchCountKey);
+    await prefs.remove(_lastReviewRequestKey);
+    debugPrint('🔄 Review state reset');
+  }
+
+  /// 📊 جلب حالة التقييم للـ Debug
+  static Future<Map<String, dynamic>> getDebugInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastRequest = prefs.getInt(_lastReviewRequestKey) ?? 0;
+
+    return {
+      'launchCount': prefs.getInt(_launchCountKey) ?? 0,
+      'lastRequest': lastRequest != 0
+          ? DateTime.fromMillisecondsSinceEpoch(lastRequest).toIso8601String()
+          : 'Never',
+      'isAvailable': await _inAppReview.isAvailable(),
+    };
   }
 }
