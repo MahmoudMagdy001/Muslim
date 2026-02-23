@@ -78,6 +78,10 @@ class _MushafViewState extends State<MushafView> {
       final newSurah = state.currentSurah;
 
       if (newAyah != null && newSurah != null) {
+        // Validate that the ayah is within the valid range for this surah
+        final verseCount = quran.getVerseCount(newSurah);
+        if (newAyah < 1 || newAyah > verseCount) return;
+
         if (newAyah != currentAyahNotifier.value ||
             newSurah != currentSurahNotifier.value) {
           currentAyahNotifier.value = newAyah;
@@ -122,7 +126,10 @@ class _MushafViewState extends State<MushafView> {
     final isRelevantState =
         playerState.currentSurah != null &&
         playerState.currentAyah != null &&
-        playerState.currentSurah == widget.surahNumber;
+        playerState.currentSurah == widget.surahNumber &&
+        playerState.currentAyah! >= 1 &&
+        playerState.currentAyah! <=
+            quran.getVerseCount(playerState.currentSurah!);
     if (isRelevantState) {
       currentAyahNotifier.value = playerState.currentAyah;
       currentSurahNotifier.value = playerState.currentSurah;
@@ -209,11 +216,7 @@ class _MushafViewState extends State<MushafView> {
 
   void _handlePlay(int surah, int ayah) {
     if (mounted) {
-      context.read<QuranPlayerCubit>().seek(
-        Duration.zero,
-        index: ayah - 1,
-        surah: surah,
-      );
+      context.read<QuranPlayerCubit>().seekToAyah(surah, ayah);
       context.read<QuranPlayerCubit>().play();
     }
   }

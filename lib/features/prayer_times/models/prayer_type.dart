@@ -1,14 +1,20 @@
-/// Strongly-typed enum representing the five daily prayers.
+/// Strongly-typed enum representing the daily prayers.
 ///
 /// Replaces raw string prayer names throughout the prayer_times feature.
 enum PrayerType {
   fajr('Fajr', 'الفجر', 1),
+  sunrise('Sunrise', 'الشروق', 6, hasAzan: false),
   dhuhr('Dhuhr', 'الظهر', 2),
   asr('Asr', 'العصر', 3),
   maghrib('Maghrib', 'المغرب', 4),
   isha('Isha', 'العشاء', 5);
 
-  const PrayerType(this.id, this.arabicName, this.notificationIndex);
+  const PrayerType(
+    this.id,
+    this.arabicName,
+    this.notificationIndex, {
+    this.hasAzan = true,
+  });
 
   /// English identifier used in maps and persistence (e.g. 'Fajr').
   final String id;
@@ -16,8 +22,13 @@ enum PrayerType {
   /// Arabic display name (e.g. 'الفجر').
   final String arabicName;
 
-  /// Unique index (1-5) used for notification ID generation.
+  /// Unique index used for notification ID generation.
   final int notificationIndex;
+
+  /// Whether this prayer has an azan (call to prayer).
+  ///
+  /// Sunrise does not have an azan and should not trigger notifications.
+  final bool hasAzan;
 
   /// Resolve a [PrayerType] from its [id] string.
   /// Returns `null` if no match is found.

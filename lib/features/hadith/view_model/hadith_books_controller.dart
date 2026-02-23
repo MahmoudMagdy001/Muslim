@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
-import '../model/hadith_book_model.dart';
+
 import '../helper/hadith_helper.dart';
+import '../model/hadith_book_model.dart';
 import '../service/hadith/hadith_service.dart';
 
 class HadithBooksController extends ChangeNotifier {
@@ -12,8 +13,6 @@ class HadithBooksController extends ChangeNotifier {
     refreshRandomHadith(); // Set the initial random hadith
   }
   final HadithService _hadithService = HadithService();
-  final String _apiKey =
-      r'$2y$10$VRw6B1T2t5Mt7lIpICLevZU4Cn7iSFAeQLDd0FMtbH33KIf9Ge';
 
   late Future<List<HadithBookModel>> _booksFuture;
   Future<List<HadithBookModel>> get booksFuture => _booksFuture;
@@ -62,21 +61,10 @@ class HadithBooksController extends ChangeNotifier {
 
   Future<List<HadithBookModel>> _fetchBooks() async {
     try {
-      final url = Uri.parse('https://hadithapi.com/api/books?apiKey=$_apiKey');
-      final response = await http.get(url).timeout(const Duration(seconds: 15));
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data =
-            json.decode(response.body) as Map<String, dynamic>;
-        final List<dynamic> booksJson = data['books'] as List<dynamic>? ?? [];
-        return booksJson
-            .map(
-              (json) => HadithBookModel.fromJson(json as Map<String, dynamic>),
-            )
-            .toList();
-      } else {
-        throw Exception('فشل في جلب الكتب: ${response.statusCode}');
-      }
+      final List booksJson = await _hadithService.fetchBooks();
+      return booksJson
+          .map((json) => HadithBookModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       if (e is http.ClientException ||
           e.toString().contains('SocketException') ||

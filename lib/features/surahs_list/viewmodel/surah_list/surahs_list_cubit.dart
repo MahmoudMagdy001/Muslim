@@ -38,6 +38,25 @@ class SurahListCubit extends Cubit<SurahsListState> {
         final int startSurahNumber = startInfo['surah'];
         final int startAyahNumber = startInfo['ayah'];
 
+        // Calculate end ayah/surah
+        late final int endSurahNumber;
+        late final int endAyahNumber;
+        if (index < JuzModel.starts.length - 1) {
+          final nextStart = JuzModel.starts[index + 1];
+          final int nextSurah = nextStart['surah'];
+          final int nextAyah = nextStart['ayah'];
+          if (nextAyah == 1) {
+            endSurahNumber = nextSurah - 1;
+            endAyahNumber = quran.getVerseCount(endSurahNumber);
+          } else {
+            endSurahNumber = nextSurah;
+            endAyahNumber = nextAyah - 1;
+          }
+        } else {
+          endSurahNumber = 114;
+          endAyahNumber = quran.getVerseCount(114);
+        }
+
         return JuzModel(
           number: juzNumber,
           startSurah: startSurahNumber,
@@ -45,6 +64,11 @@ class SurahListCubit extends Cubit<SurahsListState> {
           startSurahName: isArabic
               ? quran.getSurahNameArabic(startSurahNumber)
               : quran.getSurahName(startSurahNumber),
+          endSurah: endSurahNumber,
+          endAyah: endAyahNumber,
+          endSurahName: isArabic
+              ? quran.getSurahNameArabic(endSurahNumber)
+              : quran.getSurahName(endSurahNumber),
         );
       });
 
@@ -55,6 +79,25 @@ class SurahListCubit extends Cubit<SurahsListState> {
         final int startSurahNumber = startInfo['surah'];
         final int startAyahNumber = startInfo['ayah'];
 
+        // Calculate end ayah/surah
+        late final int endSurahNumber;
+        late final int endAyahNumber;
+        if (index < HizbModel.starts.length - 1) {
+          final nextStart = HizbModel.starts[index + 1];
+          final int nextSurah = nextStart['surah'];
+          final int nextAyah = nextStart['ayah'];
+          if (nextAyah == 1) {
+            endSurahNumber = nextSurah - 1;
+            endAyahNumber = quran.getVerseCount(endSurahNumber);
+          } else {
+            endSurahNumber = nextSurah;
+            endAyahNumber = nextAyah - 1;
+          }
+        } else {
+          endSurahNumber = 114;
+          endAyahNumber = quran.getVerseCount(114);
+        }
+
         return HizbModel(
           number: hizbNumber,
           startSurah: startSurahNumber,
@@ -62,6 +105,11 @@ class SurahListCubit extends Cubit<SurahsListState> {
           startSurahName: isArabic
               ? quran.getSurahNameArabic(startSurahNumber)
               : quran.getSurahName(startSurahNumber),
+          endSurah: endSurahNumber,
+          endAyah: endAyahNumber,
+          endSurahName: isArabic
+              ? quran.getSurahNameArabic(endSurahNumber)
+              : quran.getSurahName(endSurahNumber),
         );
       });
 

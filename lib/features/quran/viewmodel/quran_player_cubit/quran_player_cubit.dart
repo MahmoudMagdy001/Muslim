@@ -149,6 +149,31 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     if (surah != null && !isClosed) emit(state.copyWith(currentSurah: surah));
   }
 
+  /// Seeks to a specific surah and ayah, resolving the correct playlist index
+  /// in both range mode and single-surah mode.
+  Future<void> seekToAyah(int surah, int ayah) async {
+    if (_isRangeMode) {
+      // Find the index in the range playlist that matches the surah/ayah
+      for (int i = 0; ; i++) {
+        final entry = _repository.getAyahAtIndex(i);
+        if (entry == null) break;
+        if (entry.surah == surah && entry.ayah == ayah) {
+          await _repository.seek(Duration.zero, index: i);
+          if (!isClosed) {
+            emit(state.copyWith(currentSurah: surah, currentAyah: ayah));
+          }
+          return;
+        }
+      }
+    } else {
+      // Single surah mode: index is ayah - 1
+      await _repository.seek(Duration.zero, index: ayah - 1);
+      if (!isClosed) {
+        emit(state.copyWith(currentSurah: surah, currentAyah: ayah));
+      }
+    }
+  }
+
   Future<void> seekToNext() => _repository.seekToNext();
 
   Future<void> seekToPrevious() => _repository.seekToPrevious();

@@ -25,6 +25,12 @@ const Map<PrayerType, PrayerVisualData> prayerVisuals = {
     color: Colors.yellow,
     assetPath: 'assets/home/fagr.png',
   ),
+  PrayerType.sunrise: PrayerVisualData(
+    type: PrayerType.sunrise,
+    icon: Icons.wb_twilight,
+    color: Colors.amber,
+    assetPath: 'assets/home/fagr.png',
+  ),
   PrayerType.dhuhr: PrayerVisualData(
     type: PrayerType.dhuhr,
     icon: Icons.brightness_high,

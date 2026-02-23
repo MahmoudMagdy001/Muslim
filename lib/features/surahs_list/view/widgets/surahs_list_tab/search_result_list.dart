@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../model/search_model.dart';

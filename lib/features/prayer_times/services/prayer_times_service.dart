@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/service/location_service.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../settings/service/settings_service.dart';
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 
 /// Service responsible for calculating and providing prayer times.
 ///
@@ -90,6 +90,7 @@ class PrayerTimesService {
 
     return LocalPrayerTimes(
       fajr: _formatTime(prayerTimes.fajr),
+      sunrise: _formatTime(prayerTimes.sunrise),
       dhuhr: _formatTime(prayerTimes.dhuhr),
       asr: _formatTime(prayerTimes.asr),
       maghrib: _formatTime(prayerTimes.maghrib),
@@ -121,6 +122,7 @@ class PrayerTimesService {
       monthlyTimes.add(
         LocalPrayerTimes(
           fajr: _formatTime(prayerTimes.fajr),
+          sunrise: _formatTime(prayerTimes.sunrise),
           dhuhr: _formatTime(prayerTimes.dhuhr),
           asr: _formatTime(prayerTimes.asr),
           maghrib: _formatTime(prayerTimes.maghrib),
@@ -160,6 +162,7 @@ class PrayerTimesService {
 
     return LocalPrayerTimes(
       fajr: _formatTime(prayerTimes.fajr),
+      sunrise: _formatTime(prayerTimes.sunrise),
       dhuhr: _formatTime(prayerTimes.dhuhr),
       asr: _formatTime(prayerTimes.asr),
       maghrib: _formatTime(prayerTimes.maghrib),

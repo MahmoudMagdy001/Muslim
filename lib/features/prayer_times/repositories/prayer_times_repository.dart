@@ -1,6 +1,6 @@
 import 'package:adhan/adhan.dart';
 
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 
 /// Abstract repository for prayer times data operations.
 abstract class PrayerTimesRepository {

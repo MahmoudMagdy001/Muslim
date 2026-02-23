@@ -52,8 +52,10 @@ class TafsirShareService {
       );
     }
 
-    final titleLargeStyle = Theme.of(context).textTheme.titleLarge;
-    final titleMediumStyle = Theme.of(context).textTheme.titleMedium;
+    final themeData = Theme.of(context);
+    final mediaQueryData = MediaQuery.of(context);
+    final titleLargeStyle = themeData.textTheme.titleLarge;
+    final titleMediumStyle = themeData.textTheme.titleMedium;
     final textDirection = isArabic ? TextDirection.rtl : TextDirection.ltr;
 
     final tafsirParts = _splitText(tafsirText);
@@ -86,7 +88,8 @@ class TafsirShareService {
     final firstFile = await _captureWidget(
       widget: firstPage,
       textDirection: textDirection,
-      context: context,
+      themeData: themeData,
+      mediaQueryData: mediaQueryData,
       path: '${dir.path}/tafsir_${safeName}_${ayahNumber}_0_$timestamp.png',
     );
     imageFiles.add(firstFile);
@@ -103,7 +106,8 @@ class TafsirShareService {
       final file = await _captureWidget(
         widget: page,
         textDirection: textDirection,
-        context: context,
+        themeData: themeData,
+        mediaQueryData: mediaQueryData,
         path:
             '${dir.path}/tafsir_${safeName}_${ayahNumber}_${i + 1}_$timestamp.png',
       );
@@ -136,20 +140,23 @@ class TafsirShareService {
   Future<File> _captureWidget({
     required Widget widget,
     required TextDirection textDirection,
-    required BuildContext context,
+    required ThemeData themeData,
+    required MediaQueryData mediaQueryData,
     required String path,
   }) async {
     final bytes = await _screenshotController.captureFromWidget(
-      MediaQuery(
-        data: const MediaQueryData(),
-        child: Directionality(
-          textDirection: textDirection,
-          child: Scaffold(backgroundColor: Colors.white, body: widget),
+      Theme(
+        data: themeData,
+        child: MediaQuery(
+          data: mediaQueryData,
+          child: Directionality(
+            textDirection: textDirection,
+            child: Scaffold(backgroundColor: Colors.white, body: widget),
+          ),
         ),
       ),
       delay: const Duration(milliseconds: 50),
       pixelRatio: 2.0,
-      context: context,
     );
 
     final file = File(path);

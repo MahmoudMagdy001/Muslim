@@ -518,7 +518,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appNotifications => 'إشعارات التطبيق';
 
   @override
-  String get enablePrayerNotifications => 'تفعيل إشعارات الأذان';
+  String get enablePrayerNotifications => 'إشعارات الأذان';
 
   @override
   String get enableQuranReminders => 'تفعيل إشعارات تذكير القرآن';

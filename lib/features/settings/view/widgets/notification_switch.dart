@@ -7,11 +7,17 @@ import '../../../../core/service/permissions_sevice.dart';
 import '../../../../core/utils/custom_modal_sheet.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../prayer_times/helper/prayer_consts.dart';
 import '../../../prayer_times/models/prayer_notification_settings_model.dart';
 import '../../../prayer_times/models/prayer_type.dart';
 import '../../../prayer_times/viewmodel/prayer_times_cubit.dart';
 import '../../../prayer_times/viewmodel/prayer_times_state.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PUBLIC API
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A settings section widget for managing app notifications.
 class NotificationSection extends StatefulWidget {
   const NotificationSection({
     required this.isArabic,
@@ -26,59 +32,39 @@ class NotificationSection extends StatefulWidget {
   State<NotificationSection> createState() => _NotificationSectionState();
 }
 
-class _NotificationSectionState extends State<NotificationSection> {
-  final _NotificationSettingsManager _settingsManager =
-      _NotificationSettingsManager();
-  final _QuranNotificationService _quranNotificationService =
-      _QuranNotificationService();
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
 
-  final ValueNotifier<_NotificationSettings> settingsNotifier = ValueNotifier(
-    const _NotificationSettings(),
-  );
+class _NotificationSectionState extends State<NotificationSection> {
+  late final NotificationSettingsController _controller;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    _controller = NotificationSettingsController(
+      onSettingsChanged: _handleSettingsChange,
+    );
+    _controller.loadSettings();
   }
 
   @override
   void dispose() {
-    settingsNotifier.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _loadSettings() async {
-    final settings = await _settingsManager.loadSettings();
-    settingsNotifier.value = settings;
-  }
-
-  Future<void> _toggleQuranNotifications(bool value) async {
-    await _settingsManager.saveQuranNotifications(value);
-
-    settingsNotifier.value = settingsNotifier.value.copyWith(
-      quranNotifications: value,
-    );
-
-    if (!value) {
-      await _quranNotificationService.cancelAllNotifications();
-    } else {
-      if (mounted) {
-        await _quranNotificationService.scheduleDailyReminder(context);
-      }
-    }
-
+  void _handleSettingsChange(NotificationSettings settings) {
     if (!mounted) return;
-    _showSnackBar(
-      value
-          ? AppLocalizations.of(context).quranRemindersEnabled
-          : AppLocalizations.of(context).quranRemindersDisabled,
-    );
+
+    final message = settings.quranNotifications
+        ? AppLocalizations.of(context).quranRemindersEnabled
+        : AppLocalizations.of(context).quranRemindersDisabled;
+
+    _showSnackBar(message);
   }
 
   void _showSnackBar(String message) {
-    if (!mounted) return;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
     );
@@ -87,6 +73,7 @@ class _NotificationSectionState extends State<NotificationSection> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+
     return ListTile(
       leading: const Icon(Icons.notifications_rounded),
       title: Text(
@@ -101,70 +88,69 @@ class _NotificationSectionState extends State<NotificationSection> {
   void _showNotificationSettingsModal(AppLocalizations localizations) {
     showCustomModalBottomSheet(
       context: context,
-      builder: (context) => ValueListenableBuilder<_NotificationSettings>(
-        valueListenable: settingsNotifier,
-        builder: (context, settings, child) => _NotificationSettingsModal(
-          theme: widget.theme,
-          localizations: localizations,
-          isArabic: widget.isArabic,
-          settings: settings,
-          onQuranNotificationsChanged: _toggleQuranNotifications,
-        ),
+      builder: (context) => NotificationSettingsModal(
+        theme: widget.theme,
+        localizations: localizations,
+        isArabic: widget.isArabic,
+        controller: _controller,
       ),
     );
   }
 }
 
-class _NotificationSettingsModal extends StatelessWidget {
-  const _NotificationSettingsModal({
+// ─────────────────────────────────────────────────────────────────────────────
+// MODAL WIDGET
+// ─────────────────────────────────────────────────────────────────────────────
+
+class NotificationSettingsModal extends StatelessWidget {
+  const NotificationSettingsModal({
     required this.theme,
     required this.localizations,
     required this.isArabic,
-    required this.settings,
-    required this.onQuranNotificationsChanged,
+    required this.controller,
+    super.key,
   });
 
   final ThemeData theme;
   final AppLocalizations localizations;
   final bool isArabic;
-  final _NotificationSettings settings;
-  final ValueChanged<bool> onQuranNotificationsChanged;
+  final NotificationSettingsController controller;
 
   @override
-  Widget build(BuildContext context) => Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      // Prayer Notifications Header
-      ListTile(
-        leading: Icon(Icons.mosque_rounded, color: theme.colorScheme.primary),
-        title: Text(
-          localizations.enablePrayerNotifications,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: controller,
+    builder: (context, child) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildPrayerNotificationsHeader(),
+        _PerPrayerSettingsSection(theme: theme, isArabic: isArabic),
+        Divider(height: 24.toH, indent: 16.toW, endIndent: 16.toW),
+        _buildQuranNotificationTile(),
+        SizedBox(height: 12.toH),
+      ],
+    ),
+  );
 
-      // Per-prayer toggles
-      _PerPrayerSettingsSection(theme: theme, isArabic: isArabic),
+  Widget _buildPrayerNotificationsHeader() => ListTile(
+    title: Text(
+      localizations.enablePrayerNotifications,
+      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    ),
+  );
 
-      Divider(height: 24.toH, indent: 16.toW, endIndent: 16.toW),
-
-      _NotificationSwitchTile(
-        icon: Icons.auto_stories_rounded,
-        title: localizations.enableQuranReminders,
-        value: settings.quranNotifications,
-        onChanged: onQuranNotificationsChanged,
-        theme: theme,
-      ),
-      SizedBox(height: 12.toH),
-    ],
+  Widget _buildQuranNotificationTile() => NotificationSwitchTile(
+    icon: Icons.auto_stories_rounded,
+    title: localizations.enableQuranReminders,
+    value: controller.settings.quranNotifications,
+    onChanged: controller.toggleQuranNotifications,
+    theme: theme,
   );
 }
 
-/// Per-prayer notification toggles section.
-///
-/// Uses [BlocBuilder] to read notification settings from [PrayerTimesCubit].
+// ─────────────────────────────────────────────────────────────────────────────
+// PER-PRAYER SETTINGS
+// ─────────────────────────────────────────────────────────────────────────────
+
 class _PerPrayerSettingsSection extends StatelessWidget {
   const _PerPrayerSettingsSection({
     required this.theme,
@@ -185,42 +171,65 @@ class _PerPrayerSettingsSection extends StatelessWidget {
         builder: (context, notificationSettings) => Padding(
           padding: EdgeInsets.only(left: 24.toW),
           child: Column(
-            children: PrayerType.values.map((prayer) {
-              final enabled = notificationSettings.isEnabled(prayer);
-              return _NotificationSwitchTile(
-                icon: Icons.notifications_active_rounded,
-                title: prayer.displayName(isArabic: isArabic),
-                value: enabled,
-                onChanged: (value) async {
-                  // Request permissions if enabling a notification
-                  if (value) {
-                    await requestAllPermissions();
-                  }
-
-                  if (context.mounted) {
-                    context.read<PrayerTimesCubit>().togglePrayerNotification(
-                      prayer,
-                      enabled: value,
-                    );
-                  }
-                },
-                theme: theme,
-                dense: true,
-              );
-            }).toList(),
+            children: PrayerType.values
+                .where((prayer) => prayer.hasAzan)
+                .map(
+                  (prayer) =>
+                      _buildPrayerTile(context, prayer, notificationSettings),
+                )
+                .toList(),
           ),
         ),
       );
+
+  Widget _buildPrayerTile(
+    BuildContext context,
+    PrayerType prayer,
+    PrayerNotificationSettings settings,
+  ) {
+    final visual = prayerVisuals[prayer]!;
+    final enabled = settings.isEnabled(prayer);
+
+    return NotificationSwitchTile(
+      icon: visual.icon,
+      title: prayer.displayName(isArabic: isArabic),
+      value: enabled,
+      onChanged: (value) => _handlePrayerToggle(context, prayer, value),
+      theme: theme,
+    );
+  }
+
+  Future<void> _handlePrayerToggle(
+    BuildContext context,
+    PrayerType prayer,
+    bool value,
+  ) async {
+    if (value) {
+      await requestAllPermissions();
+    }
+
+    if (context.mounted) {
+      context.read<PrayerTimesCubit>().togglePrayerNotification(
+        prayer,
+        enabled: value,
+      );
+    }
+  }
 }
 
-class _NotificationSwitchTile extends StatelessWidget {
-  const _NotificationSwitchTile({
+// ─────────────────────────────────────────────────────────────────────────────
+// REUSABLE UI COMPONENTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+class NotificationSwitchTile extends StatelessWidget {
+  const NotificationSwitchTile({
     required this.icon,
     required this.title,
     required this.value,
     required this.onChanged,
     required this.theme,
     this.dense = false,
+    super.key,
   });
 
   final IconData icon;
@@ -242,24 +251,62 @@ class _NotificationSwitchTile extends StatelessWidget {
   );
 }
 
-// ── Private helpers (kept in this file for settings UI scope) ──────────
+// ─────────────────────────────────────────────────────────────────────────────
+// CONTROLLER (Business Logic)
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _NotificationSettings {
-  const _NotificationSettings({this.quranNotifications = true});
-  final bool quranNotifications;
+/// Controls notification settings state and persistence.
+class NotificationSettingsController extends ChangeNotifier {
+  NotificationSettingsController({
+    required this.onSettingsChanged,
+    NotificationRepository? repository,
+    QuranNotificationService? quranService,
+  }) : _repository = repository ?? NotificationRepository(),
+       _quranService = quranService ?? QuranNotificationService();
 
-  _NotificationSettings copyWith({bool? quranNotifications}) =>
-      _NotificationSettings(
-        quranNotifications: quranNotifications ?? this.quranNotifications,
-      );
+  final NotificationRepository _repository;
+  final QuranNotificationService _quranService;
+  final void Function(NotificationSettings settings) onSettingsChanged;
+
+  NotificationSettings _settings = const NotificationSettings();
+
+  NotificationSettings get settings => _settings;
+
+  Future<void> loadSettings() async {
+    _settings = await _repository.loadSettings();
+    notifyListeners();
+  }
+
+  Future<void> toggleQuranNotifications(bool value) async {
+    await _repository.saveQuranNotifications(value);
+
+    _settings = _settings.copyWith(quranNotifications: value);
+    notifyListeners();
+
+    await _applyQuranNotificationState(value);
+    onSettingsChanged(_settings);
+  }
+
+  Future<void> _applyQuranNotificationState(bool enabled) async {
+    if (enabled) {
+      await _quranService.scheduleDailyReminder();
+    } else {
+      await _quranService.cancelAllNotifications();
+    }
+  }
 }
 
-class _NotificationSettingsManager {
+// ─────────────────────────────────────────────────────────────────────────────
+// REPOSITORY (Data Layer)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Handles persistence of notification preferences.
+class NotificationRepository {
   static const String _quranNotificationsKey = 'quran_notifications';
 
-  Future<_NotificationSettings> loadSettings() async {
+  Future<NotificationSettings> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    return _NotificationSettings(
+    return NotificationSettings(
       quranNotifications: prefs.getBool(_quranNotificationsKey) ?? true,
     );
   }
@@ -270,48 +317,86 @@ class _NotificationSettingsManager {
   }
 }
 
-class _QuranNotificationService {
+// ─────────────────────────────────────────────────────────────────────────────
+// SERVICE (Notification Scheduling)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Manages Quran notification scheduling using Awesome Notifications.
+class QuranNotificationService {
   static const String _channelKey = 'quran_channel';
 
   Future<void> cancelAllNotifications() async {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
       debugPrint('تم إلغاء جميع إشعارات القرآن');
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint('⚠️ حدث خطأ أثناء إلغاء إشعارات القرآن: $e');
+      debugPrint(stackTrace.toString());
     }
   }
 
-  Future<void> scheduleDailyReminder(BuildContext context) async {
+  Future<void> scheduleDailyReminder() async {
     try {
-      await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
-      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
-
-      final DateTime now = DateTime.now();
-      final DateTime firstNotification = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        now.hour + 1,
-      );
-
-      if (!context.mounted) return;
-      final localizations = AppLocalizations.of(context);
-
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'quran_channel',
-          title: localizations.quranReminderTitle,
-          body: localizations.quranReminderBody,
-        ),
-        schedule: NotificationAndroidCrontab.hourly(
-          referenceDateTime: firstNotification,
-          allowWhileIdle: true,
-        ),
-      );
-    } catch (e) {
+      await _clearExistingSchedules();
+      await _createHourlyReminder();
+    } catch (e, stackTrace) {
       debugPrint('❌ خطأ أثناء جدولة إشعار القرآن: $e');
+      debugPrint(stackTrace.toString());
     }
   }
+
+  Future<void> _clearExistingSchedules() async {
+    await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
+  }
+
+  Future<void> _createHourlyReminder() async {
+    final now = DateTime.now();
+    final firstNotification = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour + 1,
+    );
+
+    // Note: This requires context for localization - consider injecting localizations
+    // or using a different approach to avoid BuildContext dependency
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 1,
+        channelKey: _channelKey,
+        title: 'Quran Reminder',
+        body: 'Time to read Quran',
+      ),
+      schedule: NotificationAndroidCrontab.hourly(
+        referenceDateTime: firstNotification,
+        allowWhileIdle: true,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────────────────────────────────────────
+
+@immutable
+class NotificationSettings {
+  const NotificationSettings({this.quranNotifications = true});
+
+  final bool quranNotifications;
+
+  NotificationSettings copyWith({bool? quranNotifications}) =>
+      NotificationSettings(
+        quranNotifications: quranNotifications ?? this.quranNotifications,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NotificationSettings &&
+          runtimeType == other.runtimeType &&
+          quranNotifications == other.quranNotifications;
+
+  @override
+  int get hashCode => quranNotifications.hashCode;
 }

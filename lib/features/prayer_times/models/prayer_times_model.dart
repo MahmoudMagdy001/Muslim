@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../models/prayer_type.dart';
+import 'prayer_type.dart';
 
 /// Local prayer times for a single day.
 ///
@@ -8,6 +8,7 @@ import '../models/prayer_type.dart';
 class LocalPrayerTimes extends Equatable {
   const LocalPrayerTimes({
     required this.fajr,
+    required this.sunrise,
     required this.dhuhr,
     required this.asr,
     required this.maghrib,
@@ -17,6 +18,7 @@ class LocalPrayerTimes extends Equatable {
   });
 
   final String fajr;
+  final String sunrise;
   final String dhuhr;
   final String asr;
   final String maghrib;
@@ -27,6 +29,7 @@ class LocalPrayerTimes extends Equatable {
   /// Get the time string for a specific [PrayerType].
   String timeForPrayer(PrayerType type) => switch (type) {
     PrayerType.fajr => fajr,
+    PrayerType.sunrise => sunrise,
     PrayerType.dhuhr => dhuhr,
     PrayerType.asr => asr,
     PrayerType.maghrib => maghrib,
@@ -38,6 +41,7 @@ class LocalPrayerTimes extends Equatable {
   /// Kept for backward compatibility with existing UI code.
   Map<String, String> toMap() => {
     PrayerType.fajr.id: fajr,
+    PrayerType.sunrise.id: sunrise,
     PrayerType.dhuhr.id: dhuhr,
     PrayerType.asr.id: asr,
     PrayerType.maghrib.id: maghrib,
@@ -47,5 +51,14 @@ class LocalPrayerTimes extends Equatable {
   };
 
   @override
-  List<Object?> get props => [fajr, dhuhr, asr, maghrib, isha, city, date];
+  List<Object?> get props => [
+    fajr,
+    sunrise,
+    dhuhr,
+    asr,
+    maghrib,
+    isha,
+    city,
+    date,
+  ];
 }

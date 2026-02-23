@@ -123,7 +123,7 @@ class CurrentPrayerCard extends StatelessWidget {
                       Padding(
                         padding: .only(bottom: 12.toH),
                         child: Padding(
-                          padding: .symmetric(horizontal: 10.toW),
+                          padding: .symmetric(horizontal: 2.toW),
                           child: Row(
                             children: PrayerType.values.map((prayer) {
                               final isNext = prayer == next;
@@ -178,7 +178,7 @@ class _PrayerSmallCard extends StatelessWidget {
       color: isNext
           ? theme.colorScheme.secondary.withAlpha((0.2 * 255).toInt())
           : Colors.transparent,
-      borderRadius: .circular(12.toR),
+      borderRadius: .circular(16.toR),
       border: .all(
         color: isNext ? theme.colorScheme.secondary : Colors.white24,
         width: 1.toW,

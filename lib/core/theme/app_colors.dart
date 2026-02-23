@@ -31,6 +31,10 @@ class AppColors {
   static const Color lightInactiveTrack = Color(0xFFE2E8F0);
   static const Color lightCard = Color(0xFFFFFFFF);
 
+  // ================== Text Colors ==================
+  static const Color textPrimary = Color(0xFF2D3436);
+  static const Color textSecondary = Color(0xFF636E72);
+
   // ================== Private Gradients ==================
   static const List<Color> _cardGradientLight = [
     Color(0xff7C6FB3),

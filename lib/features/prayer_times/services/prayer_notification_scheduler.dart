@@ -2,8 +2,8 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 import '../../../core/utils/app_logger.dart';
 import '../helper/notification_constants.dart';
-import '../model/prayer_times_model.dart';
 import '../models/prayer_notification_settings_model.dart';
+import '../models/prayer_times_model.dart';
 import '../models/prayer_type.dart';
 import 'prayer_notification_canceler.dart';
 import 'prayer_notification_id_generator.dart';
@@ -46,6 +46,9 @@ class PrayerNotificationScheduler {
       logInfo('📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}');
 
       for (final prayer in PrayerType.values) {
+        // Skip prayers that don't have an azan (e.g., sunrise)
+        if (!prayer.hasAzan) continue;
+
         if (!settings.isEnabled(prayer)) {
           logInfo(
             '⏭️ تخطي ${prayer.arabicName} — الإشعار معطل بواسطة المستخدم',

@@ -71,7 +71,9 @@ class HizbListTile extends StatelessWidget {
                   ),
                   SizedBox(height: 4.toH),
                   Text(
-                    '${hizb.startSurahName} - ${isArabic ? convertToArabicNumbers(hizb.startAyah.toString()) : hizb.startAyah.toString()}',
+                    isArabic
+                        ? '${hizb.startSurahName}: ${convertToArabicNumbers(hizb.startAyah.toString())} - ${hizb.endSurahName}: ${convertToArabicNumbers(hizb.endAyah.toString())}'
+                        : '${hizb.startSurahName}: ${hizb.startAyah} - ${hizb.endSurahName}: ${hizb.endAyah}',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onPrimary.withAlpha(180),
                     ),

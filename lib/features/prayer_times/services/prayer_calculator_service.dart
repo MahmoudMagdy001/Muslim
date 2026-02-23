@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
-import '../model/prayer_calculation_result_model.dart';
-import '../model/prayer_times_model.dart';
+import '../models/prayer_calculation_result_model.dart';
+import '../models/prayer_times_model.dart';
 import '../models/prayer_type.dart';
 
 /// Service for calculating the next/previous prayer and time remaining.

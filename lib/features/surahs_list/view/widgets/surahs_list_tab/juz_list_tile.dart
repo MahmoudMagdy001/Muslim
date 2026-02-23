@@ -71,7 +71,9 @@ class JuzListTile extends StatelessWidget {
                   ),
                   SizedBox(height: 4.toH),
                   Text(
-                    '${juz.startSurahName} - ${isArabic ? convertToArabicNumbers(juz.startAyah.toString()) : juz.startAyah.toString()}',
+                    isArabic
+                        ? '${juz.startSurahName}: ${convertToArabicNumbers(juz.startAyah.toString())} - ${juz.endSurahName}: ${convertToArabicNumbers(juz.endAyah.toString())}'
+                        : '${juz.startSurahName}: ${juz.startAyah} - ${juz.endSurahName}: ${juz.endAyah}',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onPrimary.withAlpha(180),
                     ),

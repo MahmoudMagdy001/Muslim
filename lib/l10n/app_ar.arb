@@ -849,7 +849,7 @@
     "description": "عنوان قسم إشعارات التطبيق في الإعدادات",
     "type": "text"
   },
-  "enablePrayerNotifications": "تفعيل إشعارات الأذان",
+  "enablePrayerNotifications": "إشعارات الأذان",
   "@enablePrayerNotifications": {
     "description": "خيار تفعيل إشعارات الصلاة",
     "type": "text"

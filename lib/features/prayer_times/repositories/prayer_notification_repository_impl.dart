@@ -1,5 +1,5 @@
 import '../../settings/service/settings_service.dart';
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 import '../models/prayer_notification_settings_model.dart';
 import '../models/prayer_type.dart';
 import '../services/prayer_notification_canceler.dart';

@@ -6,15 +6,29 @@ class JuzModel extends Equatable {
     required this.startSurah,
     required this.startAyah,
     required this.startSurahName,
+    required this.endSurah,
+    required this.endAyah,
+    required this.endSurahName,
   });
 
   final int number;
   final int startSurah;
   final int startAyah;
   final String startSurahName;
+  final int endSurah;
+  final int endAyah;
+  final String endSurahName;
 
   @override
-  List<Object?> get props => [number, startSurah, startAyah, startSurahName];
+  List<Object?> get props => [
+    number,
+    startSurah,
+    startAyah,
+    startSurahName,
+    endSurah,
+    endAyah,
+    endSurahName,
+  ];
 
   static const List<Map<String, dynamic>> starts = [
     {'surah': 1, 'ayah': 1}, // 1

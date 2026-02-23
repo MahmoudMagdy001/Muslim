@@ -24,6 +24,7 @@ class PrayerNotificationSettings extends Equatable {
   /// Check whether notifications are enabled for the given [type].
   bool isEnabled(PrayerType type) => switch (type) {
     PrayerType.fajr => fajrEnabled,
+    PrayerType.sunrise => false, // Sunrise has no azan
     PrayerType.dhuhr => dhuhrEnabled,
     PrayerType.asr => asrEnabled,
     PrayerType.maghrib => maghribEnabled,
@@ -36,6 +37,7 @@ class PrayerNotificationSettings extends Equatable {
     required bool enabled,
   }) => switch (type) {
     PrayerType.fajr => copyWith(fajrEnabled: enabled),
+    PrayerType.sunrise => this, // Sunrise has no azan — no-op
     PrayerType.dhuhr => copyWith(dhuhrEnabled: enabled),
     PrayerType.asr => copyWith(asrEnabled: enabled),
     PrayerType.maghrib => copyWith(maghribEnabled: enabled),

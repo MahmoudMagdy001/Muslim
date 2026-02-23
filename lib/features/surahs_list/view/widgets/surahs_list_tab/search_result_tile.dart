@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
@@ -20,7 +21,12 @@ class SearchResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(vertical: 6.toH, horizontal: 16.toW),
+    margin: EdgeInsetsDirectional.only(
+      start: 6.toW,
+      end: 16.toW,
+      top: 6.toH,
+      bottom: 6.toH,
+    ),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: AppColors.cardGradient(context),
@@ -60,12 +66,27 @@ class SearchResultTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    result.surahName,
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        result.surahName,
+                        style: context.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      if (result.verseNumber != 0) ...[
+                        Text(
+                          isArabic
+                              ? '- الآية رقم ${convertToArabicNumbers(result.verseNumber.toString())}'
+                              : 'Verse ${result.verseNumber}',
+                          style: context.textTheme.labelMedium?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   if (!result.isSurah) ...[
                     SizedBox(height: 4.toH),
@@ -78,19 +99,12 @@ class SearchResultTile extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4.toH),
-                    Text(
-                      isArabic
-                          ? 'الآية ${convertToArabicNumbers(result.verseNumber.toString())}'
-                          : 'Verse ${result.verseNumber}',
-                      style: context.textTheme.labelSmall?.copyWith(
-                        color: context.theme.primaryColor,
-                      ),
-                    ),
                   ] else ...[
                     SizedBox(height: 4.toH),
                     Text(
-                      isArabic ? 'سورة' : 'Surah',
+                      isArabic
+                          ? 'سورة رقم ${convertToArabicNumbers(result.surahNumber.toString())}'
+                          : 'Surah ${result.surahNumber}',
                       style: context.textTheme.bodyMedium?.copyWith(
                         color: const Color(0xFFC0C0C0),
                       ),

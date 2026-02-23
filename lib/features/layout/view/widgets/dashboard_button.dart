@@ -27,7 +27,7 @@ class DashboardButton extends StatelessWidget {
         children: [
           Text(
             item.label,
-            style: context.textTheme.titleMedium?.copyWith(
+            style: context.textTheme.titleSmall?.copyWith(
               fontWeight: .bold,
               color: context.theme.brightness == Brightness.dark
                   ? Colors.white

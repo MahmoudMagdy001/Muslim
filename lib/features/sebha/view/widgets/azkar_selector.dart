@@ -30,7 +30,7 @@ class AzkarSelector extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         itemCount: azkar.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
           final text = isArabic ? azkar[index].textAr : azkar[index].textEn;
           final isSelected = currentIndex == index;

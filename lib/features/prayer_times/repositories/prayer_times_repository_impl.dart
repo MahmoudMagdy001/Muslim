@@ -1,6 +1,6 @@
 import 'package:adhan/adhan.dart';
 
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 import '../services/prayer_times_service.dart';
 import 'prayer_times_repository.dart';
 

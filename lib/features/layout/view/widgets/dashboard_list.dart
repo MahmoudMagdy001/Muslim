@@ -107,10 +107,10 @@ class DashboardGrid extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16.toW,
-            mainAxisSpacing: 16.toH,
-            childAspectRatio: 0.85,
+            crossAxisCount: 3,
+            crossAxisSpacing: 6.toW,
+            mainAxisSpacing: 6.toH,
+            childAspectRatio: 0.90,
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {

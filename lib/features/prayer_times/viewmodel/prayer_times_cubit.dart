@@ -6,7 +6,7 @@ import '../../../core/di/service_locator.dart';
 import '../../../core/service/permissions_sevice.dart';
 import '../../../core/utils/app_logger.dart';
 import '../helper/notification_constants.dart';
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 import '../models/prayer_type.dart';
 import '../repositories/prayer_notification_repository.dart';
 import '../repositories/prayer_times_repository.dart';

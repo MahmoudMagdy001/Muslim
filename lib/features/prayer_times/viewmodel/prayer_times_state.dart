@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 import '../models/prayer_notification_settings_model.dart';
 import '../models/prayer_type.dart';
 

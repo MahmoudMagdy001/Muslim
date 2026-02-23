@@ -5,7 +5,7 @@ import 'package:workmanager/workmanager.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../settings/service/settings_service.dart';
 import '../helper/notification_constants.dart';
-import '../model/prayer_times_model.dart';
+import '../models/prayer_times_model.dart';
 import 'notification_channel_factory.dart';
 import 'prayer_notification_scheduler.dart';
 import 'prayer_times_service.dart';
