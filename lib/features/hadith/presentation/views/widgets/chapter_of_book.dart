@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../../../core/di/service_locator.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/utils/custom_loading_indicator.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
+import '../../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../domain/entities/chapter_of_book_entity.dart';
 import '../../cubit/chapter_of_book_cubit.dart';
@@ -241,7 +240,7 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
       margin: EdgeInsets.symmetric(vertical: 6.toH),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: AppColors.cardGradient(context),
+          colors: context.cardGradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

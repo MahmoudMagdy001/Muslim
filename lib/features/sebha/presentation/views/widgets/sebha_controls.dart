@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 
 class SebhaControls extends StatelessWidget {
@@ -23,11 +22,11 @@ class SebhaControls extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         color: isDark
             ? Colors.white.withAlpha(10)
-            : AppColors.primary.withAlpha(10),
+            : context.colorScheme.primary.withAlpha(10),
         border: Border.all(
           color: isDark
               ? Colors.white.withAlpha(15)
-              : AppColors.primary.withAlpha(20),
+              : context.colorScheme.primary.withAlpha(20),
         ),
       ),
       child: Row(
@@ -44,7 +43,7 @@ class SebhaControls extends StatelessWidget {
             height: 28,
             color: isDark
                 ? Colors.white.withAlpha(20)
-                : AppColors.primary.withAlpha(30),
+                : context.colorScheme.primary.withAlpha(30),
           ),
           _ControlButton(
             onPressed: onSetGoal,
@@ -77,7 +76,7 @@ class _ControlButton extends StatelessWidget {
     icon: Icon(icon, size: 20),
     label: Text(label),
     style: TextButton.styleFrom(
-      foregroundColor: isDark ? Colors.white70 : AppColors.primary,
+      foregroundColor: isDark ? Colors.white70 : context.colorScheme.primary,
       textStyle: context.textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w500,
       ),

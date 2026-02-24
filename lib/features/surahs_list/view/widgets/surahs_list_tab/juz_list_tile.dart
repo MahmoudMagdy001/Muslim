@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
@@ -23,7 +22,7 @@ class JuzListTile extends StatelessWidget {
     margin: EdgeInsets.symmetric(vertical: 6.toH),
     decoration: BoxDecoration(
       gradient: LinearGradient(
-        colors: AppColors.cardGradient(context),
+        colors: context.cardGradient,
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../core/utils/extensions.dart';
 import 'arrow_painter.dart';
 import 'compass_background_painter.dart';

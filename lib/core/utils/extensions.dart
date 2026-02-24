@@ -32,4 +32,12 @@ extension ContextExtension on BuildContext {
   void hideKeyboard() {
     FocusScope.of(this).unfocus();
   }
+
+  /// Returns theme-aware card gradient colors
+  List<Color> get cardGradient {
+    final isDark = theme.brightness == Brightness.dark;
+    return isDark
+        ? [const Color(0xff4C406F), const Color(0xff2A2342)]
+        : [const Color(0xff7C6FB3), const Color(0xff4C406F)];
+  }
 }

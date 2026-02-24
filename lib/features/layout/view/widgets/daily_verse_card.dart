@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';
@@ -86,7 +85,7 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
         gradient: LinearGradient(
           begin: AlignmentDirectional.topCenter,
           end: AlignmentDirectional.bottomCenter,
-          colors: AppColors.cardGradient(context),
+          colors: context.cardGradient,
         ),
       ),
       child: InkWell(

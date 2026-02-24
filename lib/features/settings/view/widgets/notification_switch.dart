@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/service/permissions_sevice.dart';
-import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../prayer_times/helper/prayer_consts.dart';

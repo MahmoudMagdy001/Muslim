@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../../../core/di/service_locator.dart';
-import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/utils/extensions.dart';
 import '../../../../../../core/utils/navigation_helper.dart';
 import '../../../../../../l10n/app_localizations.dart';
@@ -59,7 +58,7 @@ class HadithOfTheDayCard extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: AppColors.cardGradient(context),
+            colors: context.cardGradient,
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

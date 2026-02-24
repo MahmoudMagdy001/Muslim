@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+part of 'app_theme.dart';
 
 /// App text styles with responsive sizing
 class AppTextStyles {

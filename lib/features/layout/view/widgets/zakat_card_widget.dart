@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
@@ -19,7 +18,7 @@ class ZakatCardWidget extends StatelessWidget {
       gradient: LinearGradient(
         begin: AlignmentDirectional.topCenter,
         end: AlignmentDirectional.bottomCenter,
-        colors: AppColors.cardGradient(context),
+        colors: context.cardGradient,
       ),
     ),
     child: InkWell(

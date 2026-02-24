@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/widgets/base_app_dialog.dart';
 import '../../domain/entities/zikr_entity.dart';
@@ -86,7 +85,9 @@ class SebhaView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: context.textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: isDark ? Colors.white : AppColors.primary,
+                              color: isDark
+                                  ? Colors.white
+                                  : context.colorScheme.primary,
                               letterSpacing: isArabic ? 0 : 0.5,
                             ),
                           ),
@@ -254,7 +255,7 @@ class SebhaView extends StatelessWidget {
 
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+      backgroundColor: isDark ? context.colorScheme.surface : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -279,7 +280,7 @@ class SebhaView extends StatelessWidget {
               ListTile(
                 leading: Icon(
                   Icons.edit_rounded,
-                  color: isDark ? Colors.white70 : AppColors.primary,
+                  color: isDark ? Colors.white70 : context.colorScheme.primary,
                 ),
                 title: Text(l10n.editTasbih),
                 shape: RoundedRectangleBorder(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../utils/location_disclosure_dialog.dart';
+import '../widgets/location_disclosure_dialog.dart';
 
 class LocationService {
   Stream<ServiceStatus> get serviceStatusStream =>

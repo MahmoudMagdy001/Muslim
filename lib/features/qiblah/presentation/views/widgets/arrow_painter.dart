@@ -1,7 +1,7 @@
 // --- Professional Arrow Painter (Refactored) ---
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
+import '../../../../../core/utils/extensions.dart';
 
 class ProfessionalArrowPainter extends CustomPainter {
   ProfessionalArrowPainter({required this.context, required this.theme});
@@ -33,7 +33,7 @@ class ProfessionalArrowPainter extends CustomPainter {
     Color primaryColorDark,
   ) {
     final gradient = LinearGradient(
-      colors: AppColors.cardGradient(context),
+      colors: context.cardGradient,
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     );

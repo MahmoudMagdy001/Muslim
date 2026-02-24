@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../../../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../../../l10n/app_localizations.dart';
 import '../../../../cubit/hadith_cubit.dart';
 import '../../../../cubit/hadith_state.dart';

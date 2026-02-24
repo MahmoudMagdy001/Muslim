@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/navigation_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';

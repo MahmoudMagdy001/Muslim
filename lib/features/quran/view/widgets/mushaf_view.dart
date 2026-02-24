@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';

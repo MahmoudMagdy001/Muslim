@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
@@ -45,7 +43,7 @@ class BookmarkCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 6.toH, horizontal: 8.toW),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: AppColors.cardGradient(context),
+          colors: context.cardGradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

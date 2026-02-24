@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../../core/di/service_locator.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/navigation_helper.dart';

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../../core/utils/custom_loading_indicator.dart';
+import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../../l10n/app_localizations.dart';

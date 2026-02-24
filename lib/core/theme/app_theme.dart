@@ -1,8 +1,13 @@
+library;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 
-import 'app_colors.dart' show AppColors;
-import 'app_text_style.dart' show AppTextStyles;
+import '../utils/extensions.dart';
+
+part 'app_colors.dart';
+part 'app_text_style.dart';
 
 /// App theme configurations
 class AppThemeFactory {

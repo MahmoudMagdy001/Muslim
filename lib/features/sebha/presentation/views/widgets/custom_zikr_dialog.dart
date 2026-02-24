@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/widgets/base_app_dialog.dart';
 import '../../../domain/entities/zikr_entity.dart';
@@ -72,7 +71,7 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
     final l10n = context.l10n;
     final isEditing = widget.zikr != null;
     final isDark = context.theme.brightness == Brightness.dark;
-    final primaryColor = isDark ? AppColors.primaryDark : AppColors.primary;
+    final primaryColor = context.colorScheme.primary;
 
     return BaseAppDialog(
       titleWidget: Row(
@@ -199,7 +198,9 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
         TextButton(
           onPressed: () => Navigator.pop(context),
           style: TextButton.styleFrom(
-            foregroundColor: isDark ? Colors.white60 : AppColors.primary,
+            foregroundColor: isDark
+                ? Colors.white60
+                : context.colorScheme.primary,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/service_locator.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -95,7 +94,7 @@ class DashboardGrid extends StatelessWidget {
             style: context.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: context.theme.brightness == Brightness.dark
-                  ? AppColors.white
+                  ? Colors.white
                   : const Color(0xff4C406F),
             ),
           ),

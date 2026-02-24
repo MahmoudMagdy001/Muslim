@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../utils/extensions.dart';
+part of 'app_theme.dart';
 
 /// App color palette
 class AppColors {

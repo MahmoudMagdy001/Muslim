@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
@@ -24,7 +23,7 @@ class LastPlayedCard extends StatelessWidget {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20.toR),
       gradient: LinearGradient(
-        colors: AppColors.cardGradient(context),
+        colors: context.cardGradient,
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ),

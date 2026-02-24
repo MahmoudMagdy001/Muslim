@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
@@ -29,7 +28,7 @@ class SearchResultTile extends StatelessWidget {
     ),
     decoration: BoxDecoration(
       gradient: LinearGradient(
-        colors: AppColors.cardGradient(context),
+        colors: context.cardGradient,
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),

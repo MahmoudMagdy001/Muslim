@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/utils/custom_modal_sheet.dart';
+import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../view_model/font_size/font_size_cubit.dart';
 

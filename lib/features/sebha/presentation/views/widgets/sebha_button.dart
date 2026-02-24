@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/utils/extensions.dart';
 import '../../../../../core/utils/format_helper.dart';
 
@@ -97,7 +96,9 @@ class _SebhaButtonState extends State<SebhaButton>
                 boxShadow: [
                   BoxShadow(
                     color:
-                        (isDark ? AppColors.secondaryDark : AppColors.primary)
+                        (isDark
+                                ? context.colorScheme.secondary
+                                : context.colorScheme.primary)
                             .withAlpha((_glowAnimation.value * 80).toInt()),
                     blurRadius: 30,
                     spreadRadius: 5,
@@ -115,7 +116,9 @@ class _SebhaButtonState extends State<SebhaButton>
                   shape: BoxShape.circle,
                   border: Border.all(
                     color:
-                        (isDark ? AppColors.secondaryDark : AppColors.primary)
+                        (isDark
+                                ? context.colorScheme.secondary
+                                : context.colorScheme.primary)
                             .withAlpha((_rippleOpacity.value * 255).toInt()),
                     width: 2,
                   ),
@@ -130,6 +133,8 @@ class _SebhaButtonState extends State<SebhaButton>
                 painter: _ProgressRingPainter(
                   progress: progressValue,
                   isDark: isDark,
+                  primaryColor: context.colorScheme.primary,
+                  secondaryColor: context.colorScheme.secondary,
                 ),
               ),
             ),
@@ -157,11 +162,11 @@ class _SebhaButtonState extends State<SebhaButton>
             end: Alignment.bottomRight,
             colors: isDark
                 ? [const Color(0xFF3D2E6B), const Color(0xFF251A45)]
-                : [const Color(0xFF7C6FB3), AppColors.primary],
+                : [const Color(0xFF7C6FB3), context.colorScheme.primary],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withAlpha(80),
+              color: context.colorScheme.primary.withAlpha(80),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -218,10 +223,17 @@ class _SebhaButtonState extends State<SebhaButton>
 }
 
 class _ProgressRingPainter extends CustomPainter {
-  _ProgressRingPainter({required this.progress, required this.isDark});
+  _ProgressRingPainter({
+    required this.progress,
+    required this.isDark,
+    required this.primaryColor,
+    required this.secondaryColor,
+  });
 
   final double progress;
   final bool isDark;
+  final Color primaryColor;
+  final Color secondaryColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -231,7 +243,7 @@ class _ProgressRingPainter extends CustomPainter {
 
     // Track
     final trackPaint = Paint()
-      ..color = (isDark ? Colors.white : AppColors.primary).withAlpha(30)
+      ..color = (isDark ? Colors.white : primaryColor).withAlpha(30)
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -249,11 +261,11 @@ class _ProgressRingPainter extends CustomPainter {
         transform: const GradientRotation(-pi / 2),
         colors: isDark
             ? [
-                AppColors.secondaryDark,
-                AppColors.secondaryDark.withAlpha(180),
+                secondaryColor,
+                secondaryColor.withAlpha(180),
                 const Color(0xFF7C6FB3),
               ]
-            : [AppColors.primary, const Color(0xFF7C6FB3), AppColors.secondary],
+            : [primaryColor, const Color(0xFF7C6FB3), secondaryColor],
       ).createShader(rect);
 
     canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, progressPaint);
@@ -267,13 +279,12 @@ class _ProgressRingPainter extends CustomPainter {
       );
 
       final dotGlow = Paint()
-        ..color = (isDark ? AppColors.secondaryDark : AppColors.secondary)
-            .withAlpha(100)
+        ..color = (isDark ? secondaryColor : secondaryColor).withAlpha(100)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
       canvas.drawCircle(dotCenter, 6, dotGlow);
 
       final dotPaint = Paint()
-        ..color = isDark ? AppColors.secondaryDark : AppColors.secondary;
+        ..color = isDark ? secondaryColor : secondaryColor;
       canvas.drawCircle(dotCenter, 3, dotPaint);
     }
   }
