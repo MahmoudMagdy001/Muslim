@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/di/service_locator.dart';
 import 'core/main/main_content/app_content.dart';
 import 'core/main/main_content/app_initializer.dart';
-import 'features/prayer_times/viewmodel/prayer_times_cubit.dart';
+import 'features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import 'features/quran/service/bookmarks_service.dart';
 import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'features/settings/view_model/font_size/font_size_cubit.dart';

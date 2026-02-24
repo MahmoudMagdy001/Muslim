@@ -10,10 +10,8 @@ import '../../features/azkar/data/datasources/azkar_remote_data_source.dart';
 import '../../features/hadith/data/datasources/hadith_local_data_source.dart';
 import '../../features/hadith/data/datasources/hadith_remote_data_source.dart';
 import '../../features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
-import '../../features/prayer_times/services/prayer_calculator_service.dart';
-import '../../features/prayer_times/services/prayer_notification_canceler.dart';
-import '../../features/prayer_times/services/prayer_notification_scheduler.dart';
-import '../../features/prayer_times/services/prayer_times_service.dart';
+import '../../features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
+import '../../features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
 import '../../features/qiblah/data/datasources/qiblah_local_data_source.dart';
 import '../../features/quran/service/bookmarks_service.dart';
 import '../../features/quran/service/quran_service.dart';
@@ -63,14 +61,10 @@ void registerDataSources(GetIt getIt) {
       () => const NamesOfAllahLocalDataSourceImpl(),
     )
     // ── Prayer Times Services ──────────────────────────────────────────
-    ..registerLazySingleton<PrayerTimesService>(() => PrayerTimesService())
-    ..registerLazySingleton<PrayerCalculatorService>(
-      () => PrayerCalculatorService(),
+    ..registerLazySingleton<PrayerTimesLocalDataSource>(
+      () => PrayerTimesLocalDataSourceImpl(),
     )
-    ..registerLazySingleton<PrayerNotificationScheduler>(
-      () => PrayerNotificationScheduler(),
-    )
-    ..registerLazySingleton<PrayerNotificationCanceler>(
-      () => PrayerNotificationCanceler(),
+    ..registerLazySingleton<PrayerNotificationLocalDataSource>(
+      () => PrayerNotificationLocalDataSourceImpl(),
     );
 }

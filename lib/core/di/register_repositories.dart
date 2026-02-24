@@ -12,13 +12,12 @@ import '../../features/hadith/domain/repositories/hadith_repository.dart';
 import '../../features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
 import '../../features/names_of_allah/data/repositories/names_of_allah_repository_impl.dart';
 import '../../features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
-import '../../features/prayer_times/repositories/prayer_notification_repository.dart';
-import '../../features/prayer_times/repositories/prayer_notification_repository_impl.dart';
-import '../../features/prayer_times/repositories/prayer_times_repository.dart';
-import '../../features/prayer_times/repositories/prayer_times_repository_impl.dart';
-import '../../features/prayer_times/services/prayer_notification_canceler.dart';
-import '../../features/prayer_times/services/prayer_notification_scheduler.dart';
-import '../../features/prayer_times/services/prayer_times_service.dart';
+import '../../features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
+import '../../features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
+import '../../features/prayer_times/data/repositories/prayer_notification_repository_impl.dart';
+import '../../features/prayer_times/data/repositories/prayer_times_repository_impl.dart';
+import '../../features/prayer_times/domain/repositories/prayer_notification_repository.dart';
+import '../../features/prayer_times/domain/repositories/prayer_times_repository.dart';
 import '../../features/qiblah/data/datasources/qiblah_local_data_source.dart';
 import '../../features/qiblah/data/repositories/qiblah_repository_impl.dart';
 import '../../features/qiblah/domain/repositories/qiblah_repository.dart';
@@ -39,12 +38,13 @@ import '../../features/zakat/domain/repositories/zakat_repository.dart';
 void registerRepositories(GetIt getIt) {
   getIt
     ..registerLazySingleton<PrayerTimesRepository>(
-      () => PrayerTimesRepositoryImpl(service: getIt<PrayerTimesService>()),
+      () => PrayerTimesRepositoryImpl(
+        dataSource: getIt<PrayerTimesLocalDataSource>(),
+      ),
     )
     ..registerLazySingleton<PrayerNotificationRepository>(
       () => PrayerNotificationRepositoryImpl(
-        scheduler: getIt<PrayerNotificationScheduler>(),
-        canceler: getIt<PrayerNotificationCanceler>(),
+        localDataSource: getIt<PrayerNotificationLocalDataSource>(),
         settingsService: getIt<SettingsService>(),
       ),
     )

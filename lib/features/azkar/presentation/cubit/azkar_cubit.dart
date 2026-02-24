@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/usecases/usecase.dart';
-import '../../../prayer_times/viewmodel/prayer_times_state.dart';
+import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
 import '../../domain/entities/azkar_entity.dart';
 import '../../domain/usecases/clear_azkar_count_usecase.dart';
 import '../../domain/usecases/get_azkar_content_usecase.dart';

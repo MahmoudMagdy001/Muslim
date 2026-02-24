@@ -4,9 +4,9 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../../../features/prayer_times/helper/notification_constants.dart';
-import '../../../features/prayer_times/services/notification_channel_factory.dart';
-import '../../../features/prayer_times/services/work_manager_service.dart';
+import '../../../features/prayer_times/data/datasources/prayer_work_manager_data_source.dart';
+import '../../../features/prayer_times/presentation/helper/notification_channel_factory.dart';
+import '../../../features/prayer_times/presentation/helper/notification_constants.dart';
 import '../../../features/settings/service/settings_service.dart';
 import '../../service/permissions_sevice.dart';
 import '../../utils/app_logger.dart';

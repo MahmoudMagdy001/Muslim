@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 
 import '../../../../core/di/service_locator.dart';
-import '../../../../core/widgets/custom_loading_indicator.dart';
 import '../../../../core/utils/extensions.dart';
-import '../../../prayer_times/viewmodel/prayer_times_state.dart';
+import '../../../../core/widgets/custom_loading_indicator.dart';
+import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
 import '../cubit/azkar_cubit.dart';
 import '../cubit/azkar_state.dart';
 import 'widgets/azkar_category_card.dart';

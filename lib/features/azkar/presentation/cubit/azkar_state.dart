@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../prayer_times/viewmodel/prayer_times_state.dart';
+import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
 import '../../domain/entities/azkar_entity.dart';
 
 class AzkarState extends Equatable {

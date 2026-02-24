@@ -19,6 +19,16 @@ import '../../features/hadith/domain/usecases/get_saved_hadiths_use_case.dart';
 import '../../features/hadith/domain/usecases/toggle_save_hadith_use_case.dart';
 import '../../features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
 import '../../features/names_of_allah/domain/usecases/get_names_of_allah_use_case.dart';
+import '../../features/prayer_times/domain/repositories/prayer_notification_repository.dart';
+import '../../features/prayer_times/domain/repositories/prayer_times_repository.dart';
+import '../../features/prayer_times/domain/usecases/calculate_next_prayer_usecase.dart';
+import '../../features/prayer_times/domain/usecases/cancel_all_notifications_usecase.dart';
+import '../../features/prayer_times/domain/usecases/get_cached_coordinates_usecase.dart';
+import '../../features/prayer_times/domain/usecases/get_notification_settings_usecase.dart';
+import '../../features/prayer_times/domain/usecases/get_prayer_times_for_date_usecase.dart';
+import '../../features/prayer_times/domain/usecases/get_prayer_times_usecase.dart';
+import '../../features/prayer_times/domain/usecases/schedule_notifications_usecase.dart';
+import '../../features/prayer_times/domain/usecases/set_prayer_enabled_usecase.dart';
 import '../../features/qiblah/domain/repositories/qiblah_repository.dart';
 import '../../features/qiblah/domain/usecases/get_qiblah_stream_usecase.dart';
 import '../../features/sebha/domain/repositories/sebha_repository.dart';
@@ -100,5 +110,32 @@ void registerUseCases(GetIt getIt) {
     )
     ..registerLazySingleton<GetNamesOfAllahUseCase>(
       () => GetNamesOfAllahUseCase(getIt<NamesOfAllahRepository>()),
+    )
+    // ── Prayer Times Use Cases ─────────────────────────────────────────
+    ..registerLazySingleton<GetPrayerTimesUseCase>(
+      () => GetPrayerTimesUseCase(getIt<PrayerTimesRepository>()),
+    )
+    ..registerLazySingleton<GetPrayerTimesForDateUseCase>(
+      () => GetPrayerTimesForDateUseCase(getIt<PrayerTimesRepository>()),
+    )
+    ..registerLazySingleton<GetCachedCoordinatesUseCase>(
+      () => GetCachedCoordinatesUseCase(getIt<PrayerTimesRepository>()),
+    )
+    ..registerLazySingleton<CalculateNextPrayerUseCase>(
+      () => CalculateNextPrayerUseCase(),
+    )
+    ..registerLazySingleton<ScheduleNotificationsUseCase>(
+      () => ScheduleNotificationsUseCase(getIt<PrayerNotificationRepository>()),
+    )
+    ..registerLazySingleton<CancelAllNotificationsUseCase>(
+      () =>
+          CancelAllNotificationsUseCase(getIt<PrayerNotificationRepository>()),
+    )
+    ..registerLazySingleton<GetNotificationSettingsUseCase>(
+      () =>
+          GetNotificationSettingsUseCase(getIt<PrayerNotificationRepository>()),
+    )
+    ..registerLazySingleton<SetPrayerEnabledUseCase>(
+      () => SetPrayerEnabledUseCase(getIt<PrayerNotificationRepository>()),
     );
 }

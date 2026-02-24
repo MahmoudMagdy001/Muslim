@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../prayer_times/models/prayer_notification_settings_model.dart';
-import '../../prayer_times/models/prayer_type.dart';
+import '../../prayer_times/domain/entities/prayer_notification_settings.dart';
+import '../../prayer_times/domain/entities/prayer_type.dart';
 
 /// Centralized settings service for app-wide and prayer-specific settings.
 ///
@@ -51,6 +51,8 @@ class SettingsService {
       maghribEnabled:
           prefs.getBool(_prayerEnabledKey(PrayerType.maghrib)) ?? true,
       ishaEnabled: prefs.getBool(_prayerEnabledKey(PrayerType.isha)) ?? true,
+      jumuahEnabled:
+          prefs.getBool(_prayerEnabledKey(PrayerType.jumuah)) ?? true,
     );
   }
 

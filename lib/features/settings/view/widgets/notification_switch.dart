@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/service/permissions_sevice.dart';
-import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../prayer_times/helper/prayer_consts.dart';
-import '../../../prayer_times/models/prayer_notification_settings_model.dart';
-import '../../../prayer_times/models/prayer_type.dart';
-import '../../../prayer_times/viewmodel/prayer_times_cubit.dart';
-import '../../../prayer_times/viewmodel/prayer_times_state.dart';
+import '../../../prayer_times/domain/entities/prayer_notification_settings.dart';
+import '../../../prayer_times/domain/entities/prayer_type.dart';
+import '../../../prayer_times/presentation/helper/prayer_consts.dart';
+import '../../../prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PUBLIC API
