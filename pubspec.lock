@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
+  dartz:
+    dependency: "direct main"
+    description:
+      name: dartz
+      sha256: e6acf34ad2e31b1eb00948692468c30ab48ac8250e0f0df661e29f12dd252168
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1"
   dbus:
     dependency: transitive
     description:
@@ -1022,18 +1030,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "9156e78f47576d576c99b52fb895e67518745e8e2cc35272aa1fa738fa0f0b1e"
+      sha256: a7cc6eaed797806890de86b208b2094e66f61e278457867677a29b040ed56879
       url: "https://pub.dev"
     source: hosted
-    version: "32.2.5"
+    version: "32.2.7"
   syncfusion_flutter_sliders:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_sliders
-      sha256: ca480f018d67cb2d70494bd1774956b7a7f9964e0cf31b71e767b67d18816d36
+      sha256: ce49d43e6e144b2ca9a8e1df7a939a8b1d088cf0398f0ee0af247f3adc99b60b
       url: "https://pub.dev"
     source: hosted
-    version: "32.2.5"
+    version: "32.2.7"
   synchronized:
     dependency: transitive
     description:

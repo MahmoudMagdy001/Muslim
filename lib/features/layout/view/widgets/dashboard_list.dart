@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/service/location_service.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../azkar/views/azkar_view.dart';
-import '../../../hadith/view/hadith_books_view.dart';
-import '../../../names_of_allah/view/names_of_allah_screen.dart';
-import '../../../qiblah/service/qiblah_service.dart';
-import '../../../qiblah/view/qiblah_view.dart';
-import '../../../qiblah/viewmodel/qiblah_cubit.dart';
-import '../../../sebha/repositories/sebha_repository.dart';
-import '../../../sebha/view/sebha_view.dart';
-import '../../../sebha/viewmodels/sebha_cubit.dart';
+import '../../../azkar/presentation/views/azkar_view.dart';
+import '../../../hadith/presentation/views/hadith_books_view.dart';
+import '../../../names_of_allah/presentation/cubit/names_of_allah_cubit.dart';
+import '../../../names_of_allah/presentation/views/names_of_allah_screen.dart';
+import '../../../qiblah/presentation/cubit/qiblah_cubit.dart';
+import '../../../qiblah/presentation/views/qiblah_view.dart';
+import '../../../sebha/presentation/cubit/sebha_cubit.dart';
+import '../../../sebha/presentation/views/sebha_view.dart';
 import '../../../settings/view_model/rectire/rectire_cubit.dart';
 import '../../../surahs_list/view/surahs_list_view.dart';
 import '../../model/dashboard_item_model.dart';
@@ -60,10 +59,7 @@ class DashboardGrid extends StatelessWidget {
         color: const Color(0xFFCEB6F6),
         darkColor: const Color(0xFF5D4E75),
         route: BlocProvider(
-          create: (_) => QiblahCubit(
-            service: QiblahService(),
-            locationService: LocationService(),
-          )..init(),
+          create: (_) => getIt<QiblahCubit>()..init(),
           child: const QiblahView(),
         ),
       ),
@@ -73,8 +69,7 @@ class DashboardGrid extends StatelessWidget {
         color: const Color(0xFFC2EFE1),
         darkColor: const Color(0xFF386E5D),
         route: BlocProvider(
-          create: (_) =>
-              SebhaCubit(repository: SebhaRepository())..loadCustomAzkar(),
+          create: (_) => getIt<SebhaCubit>()..loadCustomAzkar(),
           child: const SebhaView(),
         ),
       ),
@@ -83,7 +78,10 @@ class DashboardGrid extends StatelessWidget {
         label: localizations.namesOfAllah,
         color: const Color(0xFFE0E0E0),
         darkColor: const Color(0xFF424242),
-        route: const NamesOfAllahScreen(),
+        route: BlocProvider(
+          create: (_) => getIt<NamesOfAllahCubit>(),
+          child: const NamesOfAllahScreen(),
+        ),
       ),
     ];
 
@@ -103,7 +101,7 @@ class DashboardGrid extends StatelessWidget {
           ),
         ),
         GridView.builder(
-          padding: .symmetric(horizontal: 16.toW, vertical: 8.toH),
+          padding: .symmetric(horizontal: 6.toW, vertical: 8.toH),
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

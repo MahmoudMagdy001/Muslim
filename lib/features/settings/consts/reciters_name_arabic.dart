@@ -94,4 +94,3 @@ String getReciterName(String reciterId, {bool isArabic = true}) {
         : 'Abdul Basit Abdus Samad (Murattal)';
   }
 }
-

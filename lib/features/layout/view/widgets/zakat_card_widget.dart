@@ -5,7 +5,7 @@ import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/navigation_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../zakat/view/zakat_view.dart';
+import '../../../zakat/presentation/views/zakat_view.dart';
 
 class ZakatCardWidget extends StatelessWidget {
   const ZakatCardWidget({required this.localizations, super.key});

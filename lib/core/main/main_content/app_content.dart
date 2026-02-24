@@ -82,7 +82,9 @@ class _AppContentState extends State<AppContent> {
         ? quranService.audioPlayer.currentIndex! + 1
         : 1;
 
-    debugPrint('NotificationNav: Surah: $surah, Reciter: $reciter, Ayah: $ayah');
+    debugPrint(
+      'NotificationNav: Surah: $surah, Reciter: $reciter, Ayah: $ayah',
+    );
 
     if (surah != null && reciter != null) {
       debugPrint('NotificationNav: Navigating to QuranView');
