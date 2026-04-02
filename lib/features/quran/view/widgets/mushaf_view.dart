@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quran/quran.dart' as quran;
 
-import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../../core/utils/format_helper.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/widgets/base_app_dialog.dart';
+import '../../../../core/widgets/custom_modal_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../repository/tafsir_repository.dart';
 import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
@@ -468,15 +468,16 @@ class MushafPage extends StatefulWidget {
 class _MushafPageState extends State<MushafPage> {
   late final List<dynamic> _pageData;
   final Map<String, TapGestureRecognizer> _recognizers = {};
+  final Map<String, String> _verseTexts = {};
 
   @override
   void initState() {
     super.initState();
     _pageData = quran.getPageData(widget.pageNumber);
-    _initRecognizers();
+    _initData();
   }
 
-  void _initRecognizers() {
+  void _initData() {
     for (var data in _pageData) {
       final rowData = data as Map<String, dynamic>;
       final surah = rowData['surah'] as int;
@@ -487,6 +488,7 @@ class _MushafPageState extends State<MushafPage> {
         final keyString = '${surah}_$ayah';
         if (!_recognizers.containsKey(keyString)) {
           final text = quran.getVerse(surah, ayah);
+          _verseTexts[keyString] = text;
           _recognizers[keyString] = TapGestureRecognizer()
             ..onTapDown = (details) {
               widget.onAyahTap(surah, ayah, text, details.globalPosition);
@@ -521,31 +523,71 @@ class _MushafPageState extends State<MushafPage> {
           ),
         ),
         const Divider(),
-        ValueListenableBuilder<int?>(
-          valueListenable: widget.currentAyahNotifier,
-          builder: (context, currentAyah, _) => ValueListenableBuilder<int?>(
-            valueListenable: widget.currentSurahNotifier,
-            builder: (context, currentSurah, _) => RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: GoogleFonts.amiri().copyWith(
-                  fontSize: 22.toSp,
-                  height: 2.0,
-                  color: context.textTheme.bodyLarge?.color,
-                ),
-                children: _buildTextSpans(currentSurah, currentAyah),
-              ),
-            ),
-          ),
+        // Optimized: Build static text spans once, only highlight widgets rebuild
+        _OptimizedMushafText(
+          pageData: _pageData,
+          isArabic: widget.isArabic,
+          recognizers: _recognizers,
+          verseTexts: _verseTexts,
+          ayahKeys: widget.ayahKeys,
+          currentAyahNotifier: widget.currentAyahNotifier,
+          currentSurahNotifier: widget.currentSurahNotifier,
         ),
       ],
     ),
   );
+}
 
-  List<InlineSpan> _buildTextSpans(int? currentSurah, int? currentAyah) {
+// Optimized widget that only rebuilds highlighting, not the entire text
+class _OptimizedMushafText extends StatelessWidget {
+  const _OptimizedMushafText({
+    required this.pageData,
+    required this.isArabic,
+    required this.recognizers,
+    required this.verseTexts,
+    required this.ayahKeys,
+    required this.currentAyahNotifier,
+    required this.currentSurahNotifier,
+  });
+
+  final List<dynamic> pageData;
+  final bool isArabic;
+  final Map<String, TapGestureRecognizer> recognizers;
+  final Map<String, String> verseTexts;
+  final Map<String, GlobalKey> ayahKeys;
+  final ValueNotifier<int?> currentAyahNotifier;
+  final ValueNotifier<int?> currentSurahNotifier;
+
+  @override
+  Widget build(BuildContext context) => ValueListenableBuilder<int?>(
+    valueListenable: currentAyahNotifier,
+    builder: (context, currentAyah, _) => ValueListenableBuilder<int?>(
+      valueListenable: currentSurahNotifier,
+      builder: (context, currentSurah, _) {
+        final spans = _buildSpans(context, currentSurah, currentAyah);
+        return RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: GoogleFonts.amiri().copyWith(
+              fontSize: 22.toSp,
+              height: 2.0,
+              color: context.textTheme.bodyLarge?.color,
+            ),
+            children: spans,
+          ),
+        );
+      },
+    ),
+  );
+
+  List<InlineSpan> _buildSpans(
+    BuildContext context,
+    int? currentSurah,
+    int? currentAyah,
+  ) {
     final spans = <InlineSpan>[];
 
-    for (var data in _pageData) {
+    for (var data in pageData) {
       final rowData = data as Map<String, dynamic>;
       final surah = rowData['surah'] as int;
       final start = rowData['start'] as int;
@@ -553,16 +595,15 @@ class _MushafPageState extends State<MushafPage> {
 
       for (int ayah = start; ayah <= end; ayah++) {
         final isCurrent = ayah == currentAyah && surah == currentSurah;
-        final text = quran.getVerse(surah, ayah);
+        final keyString = '${surah}_$ayah';
+        final text = verseTexts[keyString] ?? '';
         final endSymbol = quran.getVerseEndSymbol(
           ayah,
-          arabicNumeral: widget.isArabic,
+          arabicNumeral: isArabic,
         );
 
-        final keyString = '${surah}_$ayah';
-
-        // Ensure key exists (might be used for scrolling)
-        final key = widget.ayahKeys.putIfAbsent(keyString, () => GlobalKey());
+        // Ensure key exists for scrolling
+        final key = ayahKeys.putIfAbsent(keyString, () => GlobalKey());
 
         spans
           ..add(
@@ -576,8 +617,11 @@ class _MushafPageState extends State<MushafPage> {
               text: '$text ',
               style: TextStyle(
                 color: isCurrent ? context.colorScheme.error : null,
+                backgroundColor: isCurrent
+                    ? context.colorScheme.error.withValues(alpha: 0.1)
+                    : null,
               ),
-              recognizer: _recognizers[keyString],
+              recognizer: recognizers[keyString],
             ),
           )
           ..add(TextSpan(text: '$endSymbol '));

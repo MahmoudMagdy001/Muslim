@@ -10,6 +10,8 @@ import '../../prayer_times/domain/entities/prayer_type.dart';
 class SettingsService {
   static const _quranNotificationsKey = 'quran_notifications';
   static const _autoLocationKey = 'auto_location_enabled';
+  static const _periodicReminderEnabledKey = 'periodic_reminder_enabled';
+  static const _periodicReminderIntervalKey = 'periodic_reminder_interval';
 
   // Per-prayer notification keys
   static String _prayerEnabledKey(PrayerType type) =>
@@ -69,5 +71,27 @@ class SettingsService {
   Future<bool> isPrayerEnabled(PrayerType type) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_prayerEnabledKey(type)) ?? true;
+  }
+
+  // ── Periodic reminder settings ───────────────────────────────────
+
+  Future<void> setPeriodicReminderEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_periodicReminderEnabledKey, enabled);
+  }
+
+  Future<bool> getPeriodicReminderEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_periodicReminderEnabledKey) ?? false;
+  }
+
+  Future<void> setPeriodicReminderInterval(int minutes) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_periodicReminderIntervalKey, minutes);
+  }
+
+  Future<int> getPeriodicReminderInterval() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_periodicReminderIntervalKey) ?? 15;
   }
 }

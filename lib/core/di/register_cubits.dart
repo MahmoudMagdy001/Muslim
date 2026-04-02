@@ -30,6 +30,7 @@ import '../../features/sebha/domain/usecases/get_custom_azkar_use_case.dart';
 import '../../features/sebha/domain/usecases/save_custom_zikr_use_case.dart';
 import '../../features/sebha/domain/usecases/update_custom_zikr_use_case.dart';
 import '../../features/sebha/presentation/cubit/sebha_cubit.dart';
+import '../../features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
 import '../../features/zakat/domain/usecases/get_gold_price_use_case.dart';
 import '../../features/zakat/presentation/cubit/zakat_cubit.dart';
 
@@ -89,5 +90,8 @@ void registerCubits(GetIt getIt) {
       () => NamesOfAllahCubit(
         getNamesOfAllahUseCase: getIt<GetNamesOfAllahUseCase>(),
       ),
+    )
+    ..registerLazySingleton<PeriodicReminderCubit>(
+      () => PeriodicReminderCubit(),
     );
 }

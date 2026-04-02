@@ -57,6 +57,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   final CalculateNextPrayerUseCase _calculateNextPrayer;
 
   Timer? _timer;
+  Timer? _initialDelayTimer;
   Timer? _midnightTimer;
 
   /// Initializes prayer times and loads notification settings.
@@ -174,6 +175,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// Starts a per-second countdown for the next prayer.
   void _startCountdown() {
     _timer?.cancel();
+    _initialDelayTimer?.cancel();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       _updateCountdown();
     });
@@ -185,19 +188,22 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     final calculation = _calculateNextPrayer.calculateSync(currentTimes);
 
+    // Only emit state if there's a significant change or prayer time reached
+    final shouldEmit =
+        calculation.timeLeft.inSeconds <= 0 ||
+        (state.timeLeft?.inSeconds != calculation.timeLeft.inSeconds);
+
     if (calculation.timeLeft.inSeconds <= 0) {
       logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
       _handlePrayerTimesSuccess(currentTimes);
-    } else {
-      if (!isClosed) {
-        emit(
-          state.copyWith(
-            nextPrayer: calculation.nextPrayer,
-            timeLeft: calculation.timeLeft,
-            previousPrayerDateTime: calculation.previousPrayerDateTime,
-          ),
-        );
-      }
+    } else if (shouldEmit && !isClosed) {
+      emit(
+        state.copyWith(
+          nextPrayer: calculation.nextPrayer,
+          timeLeft: calculation.timeLeft,
+          previousPrayerDateTime: calculation.previousPrayerDateTime,
+        ),
+      );
     }
   }
 
@@ -268,6 +274,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   @override
   Future<void> close() {
     _timer?.cancel();
+    _initialDelayTimer?.cancel();
     _midnightTimer?.cancel();
     return super.close();
   }

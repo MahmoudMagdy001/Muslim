@@ -96,22 +96,28 @@ class AzkarCubit extends Cubit<AzkarState> {
         }
       },
       (content) async {
-        // Initialize counts based on repetition or saved progress
+        // Optimized: Load all counts in parallel instead of sequential awaits
         final Map<int, int> counts = {};
+        final List<Future<void>> countFutures = [];
+
         for (int i = 0; i < content.length; i++) {
-          final countResult = await _getAzkarCountUseCase(
-            GetAzkarCountParams(sourceUrl: url, index: i),
+          countFutures.add(
+            _getAzkarCountUseCase(
+              GetAzkarCountParams(sourceUrl: url, index: i),
+            ).then((countResult) {
+              int savedCount = content[i].repeat;
+              countResult.fold((l) => null, (r) {
+                if (r != null) {
+                  savedCount = r;
+                }
+              });
+              counts[i] = savedCount;
+            }),
           );
-
-          int savedCount = content[i].repeat;
-          countResult.fold((l) => null, (r) {
-            if (r != null) {
-              savedCount = r;
-            }
-          });
-
-          counts[i] = savedCount;
         }
+
+        // Wait for all count queries to complete in parallel
+        await Future.wait(countFutures);
 
         if (!isClosed) {
           emit(

@@ -8,6 +8,9 @@ import '../../../features/prayer_times/data/datasources/prayer_work_manager_data
 import '../../../features/prayer_times/presentation/helper/notification_channel_factory.dart';
 import '../../../features/prayer_times/presentation/helper/notification_constants.dart';
 import '../../../features/settings/service/settings_service.dart';
+import '../../service/periodic_reminder_channel_factory.dart';
+import '../../service/periodic_reminder_constants.dart';
+import '../../service/periodic_reminder_work_manager.dart';
 import '../../service/permissions_sevice.dart';
 import '../../utils/app_logger.dart';
 
@@ -66,6 +69,18 @@ class AppInitializer {
       initialDelay: NotificationConstants.workManagerInitialDelay,
       existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
+
+    // Register periodic reminder background task with separate dispatcher
+    await Workmanager().initialize(periodicReminderCallbackDispatcher);
+    await Workmanager().registerPeriodicTask(
+      PeriodicReminderConstants.workManagerUniqueId,
+      PeriodicReminderConstants.workManagerTaskName,
+      frequency: const Duration(
+        minutes: 15,
+      ), // Check and reschedule every 15 minutes
+      initialDelay: const Duration(seconds: 30),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+    );
   }
 
   Locale getInitialLanguage() {
@@ -98,6 +113,7 @@ class AppInitializer {
             icon: NotificationConstants.notificationIcon,
           ),
           createPrayerChannel(),
+          createPeriodicReminderChannel(),
         ]);
   }
 

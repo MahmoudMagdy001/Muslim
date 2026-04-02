@@ -8,6 +8,7 @@ import 'app_info_section.dart';
 import 'font_size_section.dart';
 import 'location_section.dart';
 import 'notification_switch.dart';
+import 'periodic_reminder_section.dart';
 import 'rectire_section.dart';
 import 'theme_section.dart';
 
@@ -80,6 +81,11 @@ class _SettingsContentState extends State<SettingsContent> {
           divider,
 
           NotificationSection(isArabic: widget.isArabic, theme: widget.theme),
+          divider,
+          PeriodicReminderSection(
+            isArabic: widget.isArabic,
+            theme: widget.theme,
+          ),
           divider,
           LocationSection(isArabic: widget.isArabic, theme: widget.theme),
           divider,

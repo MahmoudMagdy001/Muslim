@@ -18,8 +18,6 @@ class RateAppHelper {
 
   /// 📱 استدعِها في أول شاشة من التطبيق
   static Future<void> handleAppLaunch(BuildContext context) async {
-    if (!Platform.isAndroid) return;
-
     final prefs = await SharedPreferences.getInstance();
 
     if (!context.mounted) return;
@@ -121,7 +119,11 @@ class RateAppHelper {
   }
 
   static Future<void> _openPlayStore() async {
-    await _inAppReview.openStoreListing(appStoreId: _packageName);
+    if (Platform.isIOS) {
+      await _inAppReview.openStoreListing(appStoreId: _packageName);
+    } else {
+      await _inAppReview.openStoreListing();
+    }
   }
 
   /// 🧹 Reset للتست (استدعيها من Debug Menu)

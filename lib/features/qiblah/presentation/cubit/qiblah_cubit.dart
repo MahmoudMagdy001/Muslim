@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/service/location_service.dart';
@@ -113,7 +114,7 @@ class QiblahCubit extends Cubit<QiblahState> {
     }
   }
 
-  // ✅ Start compass stream
+  // ✅ Start compass stream with throttling for better performance
   Future<void> _startQiblahCompass() async {
     // Don't emit loading again if already in loading state
     if (state.status != QiblahStatus.loading) {
@@ -123,12 +124,13 @@ class QiblahCubit extends Cubit<QiblahState> {
     await _qiblahSubscription?.cancel();
     _hasTriggeredFeedback = false;
 
-    // نضيف buffer لتقليل التحديثات السريعة
+    // Throttled stream: max 10 updates/sec, min 1 degree change
     _qiblahSubscription = getQiblahStreamUseCase()
+        .throttleTime(const Duration(milliseconds: 100))
         .distinct(
           (prev, curr) =>
-              (prev.direction - curr.direction).abs() < 0.5 &&
-              (prev.qiblah - curr.qiblah).abs() < 0.5,
+              (prev.direction - curr.direction).abs() < 1.0 &&
+              (prev.qiblah - curr.qiblah).abs() < 1.0,
         )
         .listen(
           _handleQiblahData,

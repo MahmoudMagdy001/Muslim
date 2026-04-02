@@ -13,6 +13,7 @@ import '../../../viewmodel/surah_list/surahs_list_cubit.dart';
 import '../../../viewmodel/surah_list/surahs_list_state.dart';
 import 'hizb_list_view.dart';
 import 'juz_list_view.dart';
+import 'last_played_section.dart';
 import 'seach_result_count.dart';
 import 'search_result_list.dart';
 import 'search_section.dart';
@@ -113,6 +114,22 @@ class _SurahListTabState extends State<SurahListTab> {
           controller: _scrollController,
           slivers: [
             if (currentViewType == QuranViewType.surah) ...[
+              LastPlayedSection(
+                navigateToSurah:
+                    ({required int surah, required int ayah}) async {
+                      final startPage = quran.getPageNumber(surah, 1);
+                      final endPage = quran.getPageNumber(
+                        surah,
+                        quran.getVerseCount(surah),
+                      );
+                      await _navigateTo(
+                        surah: surah,
+                        ayah: ayah,
+                        fromPage: startPage,
+                        toPage: endPage,
+                      );
+                    },
+              ),
               ValueListenableBuilder<bool>(
                 valueListenable: exactSearchNotifier,
                 builder: (context, exactSearch, child) => SearchSection(

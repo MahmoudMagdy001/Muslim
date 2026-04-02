@@ -92,13 +92,10 @@ class HadithCubit extends Cubit<HadithState> {
   }
 
   Future<void> _prepareHadithData(List<HadithEntity> hadiths) async {
-    for (var i = 0; i < hadiths.length; i++) {
-      final hadith = hadiths[i];
-      if (!_hadithSavedMap.containsKey(hadith.id)) {
-        _hadithSavedMap[hadith.id] = ValueNotifier(false);
-      }
-      if (i % 10 == 0) {
-        await Future.delayed(const Duration(milliseconds: 1));
+    for (var hadith in hadiths) {
+      final id = hadith.id;
+      if (!_hadithSavedMap.containsKey(id)) {
+        _hadithSavedMap[id] = ValueNotifier(false);
       }
     }
   }

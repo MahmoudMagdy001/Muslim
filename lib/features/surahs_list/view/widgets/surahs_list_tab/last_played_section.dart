@@ -15,7 +15,11 @@ class LastPlayedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SliverToBoxAdapter(
     child: Padding(
-      padding: EdgeInsetsDirectional.only(start: 6.toW, end: 18.toW),
+      padding: EdgeInsetsDirectional.only(
+        start: 6.toW,
+        end: 18.toW,
+        top: 12.toH,
+      ),
       child:
           BlocSelector<LastPlayedCubit, LastPlayedState, Map<String, dynamic>?>(
             selector: (state) => state.lastPlayed,
