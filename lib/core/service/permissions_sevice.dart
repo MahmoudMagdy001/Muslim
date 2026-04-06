@@ -2,13 +2,15 @@ import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<void> requestAllPermissions() async {
+Future<bool> requestAllPermissions() async {
   try {
     await checkNotificationPermission();
-    await checkLocationPermission();
+    final locationGranted = await checkLocationPermission();
     await checkBatteryOptimization();
+    return locationGranted;
   } catch (e) {
     debugPrint('Permission request error: $e');
+    return false;
   }
 }
 
@@ -22,14 +24,17 @@ Future<void> checkNotificationPermission() async {
   }
 }
 
-Future<void> checkLocationPermission() async {
+Future<bool> checkLocationPermission() async {
   final status = await Permission.locationWhenInUse.status;
   if (status.isDenied) {
-    await Permission.locationWhenInUse.request();
+    final result = await Permission.locationWhenInUse.request();
+    return result.isGranted;
   }
   if (status.isPermanentlyDenied) {
     await openAppSettings();
+    return false;
   }
+  return status.isGranted;
 }
 
 Future<void> checkBatteryOptimization() async {

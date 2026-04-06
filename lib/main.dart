@@ -9,6 +9,7 @@ import 'core/di/service_locator.dart';
 import 'core/main/main_content/app_content.dart';
 import 'core/main/main_content/app_initializer.dart';
 import 'core/service/periodic_reminder_channel_factory.dart';
+import 'core/service/permissions_sevice.dart';
 import 'features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import 'features/prayer_times/presentation/helper/notification_channel_factory.dart';
 import 'features/prayer_times/presentation/helper/notification_constants.dart';
@@ -37,11 +38,16 @@ Future<void> main() async {
   final initialMode = _getThemeFromPrefs(prefs);
   final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
 
+  // Request permissions BEFORE running app - wait for user response
+  final locationGranted = await requestAllPermissions();
+
   runApp(
     InternetStateManagerInitializer(
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => PrayerTimesCubit()),
+          BlocProvider(
+            create: (_) => PrayerTimesCubit(locationGranted: locationGranted),
+          ),
           BlocProvider(create: (_) => FontSizeCubit(initialFontSize)),
           BlocProvider(create: (_) => ThemeCubit(initialMode)),
           BlocProvider(create: (_) => ReciterCubit()),

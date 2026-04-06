@@ -10,7 +10,6 @@ import '../../../features/prayer_times/presentation/helper/notification_constant
 import '../../../features/settings/service/settings_service.dart';
 import '../../service/periodic_reminder_channel_factory.dart';
 import '../../service/periodic_reminder_constants.dart';
-import '../../service/periodic_reminder_work_manager.dart';
 import '../../service/permissions_sevice.dart';
 import '../../utils/app_logger.dart';
 
@@ -21,15 +20,17 @@ class AppInitializer {
 
   final SharedPreferences prefs;
 
-  Future<void> initialize() async {
-    // Critical initialization
-    await requestAllPermissions();
+  Future<bool> initialize() async {
+    // Request permissions and wait for user response
+    final locationGranted = await requestAllPermissions();
 
     // Non-critical initialization (Fire and forget, or handle errors silently)
     // executed after the first frame to not block startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeBackgroundTasks();
     });
+
+    return locationGranted;
   }
 
   Future<void> _initializeBackgroundTasks() async {
@@ -61,7 +62,10 @@ class AppInitializer {
   Future<void> workManagerNotify() async {
     logInfo('بدأ جدولة الاشعارات ف الخلفيه');
 
+    // Initialize WorkManager once with the main callback dispatcher
     await Workmanager().initialize(callbackDispatcher);
+
+    // Register prayer times periodic task
     await Workmanager().registerPeriodicTask(
       NotificationConstants.workManagerUniqueId,
       NotificationConstants.workManagerTaskName,
@@ -70,14 +74,11 @@ class AppInitializer {
       existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );
 
-    // Register periodic reminder background task with separate dispatcher
-    await Workmanager().initialize(periodicReminderCallbackDispatcher);
+    // Register periodic reminder task with same dispatcher - different unique ID
     await Workmanager().registerPeriodicTask(
       PeriodicReminderConstants.workManagerUniqueId,
       PeriodicReminderConstants.workManagerTaskName,
-      frequency: const Duration(
-        minutes: 15,
-      ), // Check and reschedule every 15 minutes
+      frequency: const Duration(minutes: 15),
       initialDelay: const Duration(seconds: 30),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );

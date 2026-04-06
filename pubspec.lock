@@ -681,10 +681,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: f69da0d3189a4b4ceaeb1a3defb0f329b3b352517f52bed4290f83d4f06bc08d
+      sha256: "468c26b4254ab01979fa5e4a98cb343ea3631b9acee6f21028997419a80e1a20"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.1"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -881,10 +881,10 @@ packages:
     dependency: "direct main"
     description:
       name: share_plus
-      sha256: "14c8860d4de93d3a7e53af51bff479598c4e999605290756bbbe45cf65b37840"
+      sha256: "223873d106614442ea6f20db5a038685cc5b32a2fba81cdecaefbbae0523f7fa"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.1"
+    version: "12.0.2"
   share_plus_platform_interface:
     dependency: transitive
     description:
@@ -897,10 +897,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "2939ae520c9024cb197fc20dee269cd8cdbf564c8b5746374ec6cacdc5169e64"
+      sha256: c3025c5534b01739267eb7d76959bbc25a6d10f6988e1c2a3036940133dd10bf
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.4"
+    version: "2.5.5"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1046,18 +1046,18 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: a7cc6eaed797806890de86b208b2094e66f61e278457867677a29b040ed56879
+      sha256: "6d2505a8a8f9fcc6a070e07715d7fab06868725bb15b5eaf9432ece807ccd93b"
       url: "https://pub.dev"
     source: hosted
-    version: "32.2.7"
+    version: "33.1.46"
   syncfusion_flutter_sliders:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_sliders
-      sha256: ce49d43e6e144b2ca9a8e1df7a939a8b1d088cf0398f0ee0af247f3adc99b60b
+      sha256: b10a86c170d497b16c32258bc42ed40fcbe0e76b9d1ccbd9b6b0d8e25697becc
       url: "https://pub.dev"
     source: hosted
-    version: "32.2.7"
+    version: "33.1.46"
   synchronized:
     dependency: transitive
     description:

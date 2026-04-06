@@ -14,6 +14,7 @@ abstract class PrayerTimesLocalDataSource {
   Future<dynamic> getPrayerTimes({
     required bool isArabic,
     bool forMonth = false,
+    bool useLocation = true,
     Coordinates? coordinates,
   });
 
@@ -37,12 +38,16 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   Future<dynamic> getPrayerTimes({
     required bool isArabic,
     bool forMonth = false,
+    bool useLocation = true,
     Coordinates? coordinates,
   }) async {
     try {
-      final coords =
-          coordinates ??
-          await _getCachedOrCurrentCoordinates(coordinates == null);
+      // If location permission not granted, skip location fetching and use default
+      final coords = useLocation
+          ? (coordinates ??
+                await _getCachedOrCurrentCoordinates(coordinates == null))
+          : null;
+
       if (coords == null) return await _getDefaultPrayerTimes();
 
       String? cityName;
@@ -145,8 +150,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   CalculationParameters _getCalculationParameters() =>
       CalculationMethod.egyptian.getParameters()..madhab = Madhab.shafi;
 
-  String _formatTime(DateTime dateTime) =>
-      _timeFormatter.format(dateTime.toLocal());
+  String _formatTime(DateTime dateTime) => _timeFormatter.format(dateTime);
 
   Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
     final cairoCoordinates = Coordinates(30.0444, 31.2357);

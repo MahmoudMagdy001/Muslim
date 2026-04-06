@@ -18,10 +18,14 @@ import '../../domain/usecases/set_prayer_enabled_usecase.dart';
 import '../helper/notification_constants.dart';
 import 'prayer_times_state.dart';
 
+export '../../domain/usecases/get_prayer_times_usecase.dart'
+    show GetPrayerTimesParams;
+
 /// Cubit managing prayer times state, notification scheduling,
 /// and per-prayer notification settings.
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   PrayerTimesCubit({
+    this.locationGranted = false,
     GetPrayerTimesUseCase? getPrayerTimesUseCase,
     GetPrayerTimesForDateUseCase? getPrayerTimesForDateUseCase,
     GetCachedCoordinatesUseCase? getCachedCoordinatesUseCase,
@@ -47,6 +51,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
        _calculateNextPrayer =
            calculateNextPrayerUseCase ?? getIt<CalculateNextPrayerUseCase>(),
        super(const PrayerTimesState());
+
+  final bool locationGranted;
 
   final GetPrayerTimesUseCase _getPrayerTimes;
   final GetPrayerTimesForDateUseCase _getPrayerTimesForDate;
@@ -93,11 +99,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     }
   }
 
-  /// Fetches prayer times for today.
+  /// Fetches prayer times for today. Only fetches location-based times if permission was granted.
   Future<void> fetchPrayerTimes({required bool isArabic}) async {
     if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
 
-    final result = await _getPrayerTimes(isArabic);
+    final result = await _getPrayerTimes(
+      GetPrayerTimesParams(isArabic: isArabic, useLocation: locationGranted),
+    );
 
     result.fold(
       (failure) => _handlePrayerTimesError(failure.message),

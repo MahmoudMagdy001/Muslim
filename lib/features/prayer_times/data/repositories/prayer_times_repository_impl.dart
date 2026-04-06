@@ -14,8 +14,14 @@ class PrayerTimesRepositoryImpl implements PrayerTimesRepository {
   final PrayerTimesLocalDataSource _dataSource;
 
   @override
-  Future<LocalPrayerTimes> getPrayerTimes({required bool isArabic}) async {
-    final result = await _dataSource.getPrayerTimes(isArabic: isArabic);
+  Future<LocalPrayerTimes> getPrayerTimes({
+    required bool isArabic,
+    bool useLocation = true,
+  }) async {
+    final result = await _dataSource.getPrayerTimes(
+      isArabic: isArabic,
+      useLocation: useLocation,
+    );
     return result as LocalPrayerTimes;
   }
 
