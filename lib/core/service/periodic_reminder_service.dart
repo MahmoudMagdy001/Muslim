@@ -4,6 +4,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../../core/utils/app_logger.dart';
+import 'periodic_reminder_channel_factory.dart';
 import 'periodic_reminder_constants.dart';
 
 /// Service for managing periodic Islamic reminder notifications.
@@ -23,6 +24,12 @@ class PeriodicReminderService {
     try {
       // Cancel any existing periodic reminders first
       await cancelReminder();
+
+      // Ensure notification channel is initialized before creating notification
+      await AwesomeNotifications().initialize(
+        PeriodicReminderConstants.notificationIcon,
+        [createPeriodicReminderChannel()],
+      );
 
       final now = DateTime.now();
       final firstNotificationTime = now.add(Duration(minutes: intervalMinutes));

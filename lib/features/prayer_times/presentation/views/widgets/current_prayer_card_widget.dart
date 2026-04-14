@@ -7,10 +7,10 @@ import '../../../../../core/utils/format_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../domain/entities/prayer_type.dart';
-import '../../helper/prayer_consts.dart';
-import '../../helper/time_left_format.dart';
 import '../../cubit/prayer_times_cubit.dart';
 import '../../cubit/prayer_times_state.dart';
+import '../../helper/prayer_consts.dart';
+import '../../helper/time_left_format.dart';
 
 class CurrentPrayerCard extends StatelessWidget {
   const CurrentPrayerCard({

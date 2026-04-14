@@ -100,15 +100,30 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       calculationParams,
     );
 
+    // Ensure prayer times are in local timezone to avoid DST issues
+    final fajrLocal = prayerTimes.fajr.toLocal();
+    final sunriseLocal = prayerTimes.sunrise.toLocal();
+    final dhuhrLocal = prayerTimes.dhuhr.toLocal();
+    final asrLocal = prayerTimes.asr.toLocal();
+    final maghribLocal = prayerTimes.maghrib.toLocal();
+    final ishaLocal = prayerTimes.isha.toLocal();
+
     return LocalPrayerTimes(
-      fajr: _formatTime(prayerTimes.fajr),
-      sunrise: _formatTime(prayerTimes.sunrise),
-      dhuhr: _formatTime(prayerTimes.dhuhr),
-      asr: _formatTime(prayerTimes.asr),
-      maghrib: _formatTime(prayerTimes.maghrib),
-      isha: _formatTime(prayerTimes.isha),
+      fajr: _formatTime(fajrLocal),
+      sunrise: _formatTime(sunriseLocal),
+      dhuhr: _formatTime(dhuhrLocal),
+      asr: _formatTime(asrLocal),
+      maghrib: _formatTime(maghribLocal),
+      isha: _formatTime(ishaLocal),
       city: cityName ?? 'غير معروف',
       date: targetDate,
+      // Store DateTime objects for accurate timezone-aware scheduling
+      fajrDateTime: fajrLocal,
+      sunriseDateTime: sunriseLocal,
+      dhuhrDateTime: dhuhrLocal,
+      asrDateTime: asrLocal,
+      maghribDateTime: maghribLocal,
+      ishaDateTime: ishaLocal,
     );
   }
 
@@ -130,16 +145,31 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         calculationParams,
       );
 
+      // Ensure prayer times are in local timezone to avoid DST issues
+      final fajrLocal = prayerTimes.fajr.toLocal();
+      final sunriseLocal = prayerTimes.sunrise.toLocal();
+      final dhuhrLocal = prayerTimes.dhuhr.toLocal();
+      final asrLocal = prayerTimes.asr.toLocal();
+      final maghribLocal = prayerTimes.maghrib.toLocal();
+      final ishaLocal = prayerTimes.isha.toLocal();
+
       monthlyTimes.add(
         LocalPrayerTimes(
-          fajr: _formatTime(prayerTimes.fajr),
-          sunrise: _formatTime(prayerTimes.sunrise),
-          dhuhr: _formatTime(prayerTimes.dhuhr),
-          asr: _formatTime(prayerTimes.asr),
-          maghrib: _formatTime(prayerTimes.maghrib),
-          isha: _formatTime(prayerTimes.isha),
+          fajr: _formatTime(fajrLocal),
+          sunrise: _formatTime(sunriseLocal),
+          dhuhr: _formatTime(dhuhrLocal),
+          asr: _formatTime(asrLocal),
+          maghrib: _formatTime(maghribLocal),
+          isha: _formatTime(ishaLocal),
           city: cityName ?? 'غير معروف',
           date: date,
+          // Store DateTime objects for accurate timezone-aware scheduling
+          fajrDateTime: fajrLocal,
+          sunriseDateTime: sunriseLocal,
+          dhuhrDateTime: dhuhrLocal,
+          asrDateTime: asrLocal,
+          maghribDateTime: maghribLocal,
+          ishaDateTime: ishaLocal,
         ),
       );
     }
@@ -150,7 +180,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   CalculationParameters _getCalculationParameters() =>
       CalculationMethod.egyptian.getParameters()..madhab = Madhab.shafi;
 
-  String _formatTime(DateTime dateTime) => _timeFormatter.format(dateTime);
+  String _formatTime(DateTime dateTime) =>
+      _timeFormatter.format(dateTime.toLocal());
 
   Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
     final cairoCoordinates = Coordinates(30.0444, 31.2357);
@@ -169,15 +200,30 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       cairoCoordinates.longitude,
     );
 
+    // Ensure prayer times are in local timezone to avoid DST issues
+    final fajrLocal = prayerTimes.fajr.toLocal();
+    final sunriseLocal = prayerTimes.sunrise.toLocal();
+    final dhuhrLocal = prayerTimes.dhuhr.toLocal();
+    final asrLocal = prayerTimes.asr.toLocal();
+    final maghribLocal = prayerTimes.maghrib.toLocal();
+    final ishaLocal = prayerTimes.isha.toLocal();
+
     return LocalPrayerTimes(
-      fajr: _formatTime(prayerTimes.fajr),
-      sunrise: _formatTime(prayerTimes.sunrise),
-      dhuhr: _formatTime(prayerTimes.dhuhr),
-      asr: _formatTime(prayerTimes.asr),
-      maghrib: _formatTime(prayerTimes.maghrib),
-      isha: _formatTime(prayerTimes.isha),
+      fajr: _formatTime(fajrLocal),
+      sunrise: _formatTime(sunriseLocal),
+      dhuhr: _formatTime(dhuhrLocal),
+      asr: _formatTime(asrLocal),
+      maghrib: _formatTime(maghribLocal),
+      isha: _formatTime(ishaLocal),
       city: 'القاهرة',
       date: now,
+      // Store DateTime objects for accurate timezone-aware scheduling
+      fajrDateTime: fajrLocal,
+      sunriseDateTime: sunriseLocal,
+      dhuhrDateTime: dhuhrLocal,
+      asrDateTime: asrLocal,
+      maghribDateTime: maghribLocal,
+      ishaDateTime: ishaLocal,
     );
   }
 

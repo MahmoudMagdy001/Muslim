@@ -1,7 +1,7 @@
 name: muslim
 description: "Quran Reader & Player"
 publish_to: "none"
-version: 0.2.3+6
+version: 0.3.0+8
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -31,9 +31,9 @@ dependencies:
   skeletonizer: ^2.1.3
   latlong2: ^0.9.1
   workmanager: ^0.9.0+3
-  syncfusion_flutter_sliders: ^33.1.46
+  syncfusion_flutter_sliders: ^33.1.47
   url_launcher: ^6.3.2
-  package_info_plus: ^9.0.1
+  package_info_plus: ^9.0.0
   path_provider: ^2.1.5
   screenshot: ^3.0.0
   in_app_review: ^2.0.11
@@ -45,7 +45,7 @@ dependencies:
   quran: ^1.4.1
   dartz: ^0.10.1
   rxdart: ^0.28.0
-  upgrader: ^12.5.0
+  upgrader: ^13.0.0
 
 dev_dependencies:
   flutter_test:

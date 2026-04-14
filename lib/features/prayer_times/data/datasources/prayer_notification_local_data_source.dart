@@ -45,11 +45,13 @@ class PrayerNotificationLocalDataSourceImpl
         }
 
         final timeStr = times.timeForPrayer(prayer);
+        final prayerDateTimeObj = times.dateTimeForPrayer(prayer);
         final scheduled = await _scheduleSinglePrayer(
           prayer,
           timeStr,
           date,
           now,
+          prayerDateTimeObj,
         );
         if (scheduled) totalScheduled++;
       }
@@ -80,8 +82,15 @@ class PrayerNotificationLocalDataSourceImpl
     String timeStr,
     DateTime date,
     DateTime now,
+    DateTime? prayerDateTimeObj,
   ) async {
-    final prayerDateTime = _parsePrayerTime(timeStr, date);
+    // Use the DateTime object if available (accurate timezone), otherwise parse from string
+    DateTime? prayerDateTime;
+    if (prayerDateTimeObj != null) {
+      prayerDateTime = prayerDateTimeObj;
+    } else {
+      prayerDateTime = _parsePrayerTime(timeStr, date);
+    }
     if (prayerDateTime == null) return false;
 
     if (prayerDateTime.isBefore(now)) return false;
@@ -152,7 +161,16 @@ class PrayerNotificationLocalDataSourceImpl
     final minute = int.tryParse(parts[1]);
     if (hour == null || minute == null) return null;
 
-    return DateTime(date.year, date.month, date.day, hour, minute);
+    // Create in local timezone to avoid DST offset issues
+    // Use date.toLocal() to ensure we're working with local timezone
+    final localDate = date.toLocal();
+    return DateTime(
+      localDate.year,
+      localDate.month,
+      localDate.day,
+      hour,
+      minute,
+    );
   }
 
   int _generateNotificationId(DateTime date, PrayerType prayer) {

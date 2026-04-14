@@ -19,24 +19,51 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 
 ---
 
-## ✨ Key Features
+## ✨ Features
 
-### 📖 Holy Quran Center
-*   **Immersive Reading**: Clean, readable interface with adjustable typography.
-*   **Global Reciters**: Crystal-clear audio from world-renowned Qaris (e.g., Mishary Rashid Alafasy).
-*   **Active Playback**: Background audio support with lock-screen controls.
-*   **Smart Search**: Instantly find Surahs or Ayahs with bookmarks for your favorites.
+### 📖 Holy Quran
+*   **Complete Quran**: Full Quran with all 114 Surahs in a clean, readable interface.
+*   **Audio Recitation**: Crystal-clear audio from world-renowned Qaris (e.g., Mishary Rashid Alafasy).
+*   **Surah Browser**: Browse and search through all Surahs with detailed information.
+*   **Background Playback**: Continue listening with lock-screen controls and background audio support.
 
-### 🕌 Prayer & Spiritual Tools
+### 🕌 Prayer Times
 *   **Precision Adhan**: Location-aware prayer times using the industry-standard `adhan` package.
 *   **Visual Notifications**: Beautiful, custom-designed Adhan alerts via `awesome_notifications`.
-*   **Live Qibla**: Real-time direction finding using advanced device sensors and GPS integration.
-*   **Digital Tasbih**: A minimalist and haptic-responsive Sebha counter.
+*   **Daily Schedule**: View all five daily prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) with accurate timings.
 
-### 💰 Essential Utilities
-*   **Zakat Calculator**: Intelligent calculations based on current wealth and assets.
+### 🧭 Qibla Finder
+*   **Live Qibla**: Real-time direction finding using advanced device sensors and GPS integration.
+*   **Visual Compass**: Animated compass pointing toward the Kaaba in Mecca.
+*   **Location Awareness**: Automatically adjusts based on your current location.
+
+### 📿 Azkar (Morning & Evening)
+*   **Daily Supplications**: Complete collection of morning and evening remembrance (Athkar).
+*   **Offline Access**: All Azkar available without internet connection.
+*   **Categorized**: Organized by time of day for easy access.
+
+### 📚 Hadith Collection
+*   **Curated Hadith**: Authentic Hadith collections for daily reading.
+*   **Offline Library**: Full access to Hadith without requiring internet.
+
+### 🌟 99 Names of Allah
+*   **Asma ul-Husna**: Complete list of Allah's beautiful names with meanings.
+*   **Offline Access**: Available anytime, anywhere without connectivity.
+
+### 📿 Digital Sebha (Tasbih)
+*   **Minimalist Counter**: Simple and elegant digital prayer beads counter.
+*   **Haptic Feedback**: Responsive tactile feedback on each count.
+*   **Reset Functionality**: Easy reset to start new dhikr sessions.
+
+### 💰 Zakat Calculator
+*   **Intelligent Calculations**: Calculate Zakat based on current wealth, gold, silver, and assets.
 *   **Gold Rate Integration**: Real-time gold price fetching via API for accurate Zakat values.
-*   **Offline Daily Content**: Azkar (Morning/Evening), 99 Names of Allah, and curated Hadith collections—all accessible without an internet connection.
+*   **Nisab Threshold**: Automatic calculation of minimum wealth requirements.
+
+### ⚙️ Settings
+*   **Localization**: Multi-language support (Arabic & English).
+*   **Notifications**: Configure prayer time alerts and reminders.
+*   **App Preferences**: Customize app behavior and appearance.
 
 ---
 
@@ -74,12 +101,16 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 ### Built With
 | Category | Technology |
 | :--- | :--- |
-| **Framework** | [Flutter](https://flutter.dev/) |
-| **State Management** | [BLoC / Cubit](https://pub.dev/packages/flutter_bloc) |
-| **Audio Engine** | [just_audio](https://pub.dev/packages/just_audio) |
-| **Calculations** | [adhan](https://pub.dev/packages/adhan) |
+| **Framework** | [Flutter](https://flutter.dev/) v3.10+ |
+| **State Management** | [flutter_bloc](https://pub.dev/packages/flutter_bloc) (BLoC/Cubit) |
+| **Audio Engine** | [just_audio](https://pub.dev/packages/just_audio) + [audio_service](https://pub.dev/packages/audio_service) |
+| **Prayer Times** | [adhan](https://pub.dev/packages/adhan) + [hijri](https://pub.dev/packages/hijri) |
+| **Location & Qibla** | [geolocator](https://pub.dev/packages/geolocator) + [flutter_qiblah](https://pub.dev/packages/flutter_qiblah) |
+| **Notifications** | [awesome_notifications](https://pub.dev/packages/awesome_notifications) |
+| **DI & Architecture** | [get_it](https://pub.dev/packages/get_it) + [dartz](https://pub.dev/packages/dartz) (Either pattern) |
 | **Persistence** | [shared_preferences](https://pub.dev/packages/shared_preferences) |
-| **UI Enhancement** | Google Fonts, Skeletonizer, ScreenUtil |
+| **UI Enhancement** | [google_fonts](https://pub.dev/packages/google_fonts), [skeletonizer](https://pub.dev/packages/skeletonizer), [flutter_screenutil](https://pub.dev/packages/flutter_screenutil) |
+| **Utilities** | [url_launcher](https://pub.dev/packages/url_launcher), [share_plus](https://pub.dev/packages/share_plus), [in_app_review](https://pub.dev/packages/in_app_review) |
 
 ### Architecture Highlights
 - **Clean Architecture**: Separation of concerns between UI, Business Logic (BLoC), and Data layers.

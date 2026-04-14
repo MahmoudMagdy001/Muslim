@@ -76,7 +76,9 @@ class CalculateNextPrayerUseCase
       final timeStr = times.timeForPrayer(prayer);
       if (timeStr == '--:--') continue;
 
-      final prayerDateTime = _parsePrayerTime(timeStr, now);
+      // Use DateTime from entity if available (accurate timezone), otherwise parse
+      final prayerDateTime =
+          times.dateTimeForPrayer(prayer) ?? _parsePrayerTime(timeStr, now);
       if (prayerDateTime.isAfter(now)) return prayer;
     }
 
@@ -86,10 +88,15 @@ class CalculateNextPrayerUseCase
   /// Gets the previous prayer type based on current time.
   PrayerType _getPreviousPrayerType(LocalPrayerTimes times, DateTime now) {
     for (final prayer in PrayerType.values.reversed) {
+      // Skip prayers that don't have an azan (sunrise and jumuah)
+      if (!prayer.hasAzan) continue;
+
       final timeStr = times.timeForPrayer(prayer);
       if (timeStr == '--:--') continue;
 
-      final prayerDateTime = _parsePrayerTime(timeStr, now);
+      // Use DateTime from entity if available (accurate timezone), otherwise parse
+      final prayerDateTime =
+          times.dateTimeForPrayer(prayer) ?? _parsePrayerTime(timeStr, now);
       if (prayerDateTime.isBefore(now)) return prayer;
     }
 
@@ -105,6 +112,24 @@ class CalculateNextPrayerUseCase
     final timeStr = times.timeForPrayer(prayer);
     final areAllFinished = _areAllPrayersFinished(times, now);
 
+    // Use DateTime from entity if available (accurate timezone), otherwise parse
+    final prayerDateTime = times.dateTimeForPrayer(prayer);
+    if (prayerDateTime != null) {
+      if (prayer == PrayerType.fajr && areAllFinished) {
+        // For fajr when all prayers finished, use tomorrow's date
+        return DateTime(
+          now.year,
+          now.month,
+          now.day + 1,
+          prayerDateTime.hour,
+          prayerDateTime.minute,
+          prayerDateTime.second,
+        );
+      }
+      return prayerDateTime;
+    }
+
+    // Fallback to parsing from string
     if (prayer == PrayerType.fajr && areAllFinished) {
       final parsedTime = _timeFormat.parse(timeStr);
       return DateTime(
@@ -136,6 +161,24 @@ class CalculateNextPrayerUseCase
     final isFajrNext = _getNextPrayerType(times, now) == PrayerType.fajr;
     final areAllFinished = _areAllPrayersFinished(times, now);
 
+    // Use DateTime from entity if available (accurate timezone), otherwise parse
+    final prayerDateTime = times.dateTimeForPrayer(prayer);
+    if (prayerDateTime != null) {
+      if (prayer == PrayerType.isha && isFajrNext && !areAllFinished) {
+        // For isha when fajr is next and not all finished, use yesterday's date
+        return DateTime(
+          now.year,
+          now.month,
+          now.day - 1,
+          prayerDateTime.hour,
+          prayerDateTime.minute,
+          prayerDateTime.second,
+        );
+      }
+      return prayerDateTime;
+    }
+
+    // Fallback to parsing from string
     if (prayer == PrayerType.isha && isFajrNext && !areAllFinished) {
       final parsedTime = _timeFormat.parse(timeStr);
       return DateTime(
@@ -163,7 +206,9 @@ class CalculateNextPrayerUseCase
       final timeStr = times.timeForPrayer(prayer);
       if (timeStr == '--:--') continue;
 
-      final prayerDateTime = _parsePrayerTime(timeStr, now);
+      // Use DateTime from entity if available (accurate timezone), otherwise parse
+      final prayerDateTime =
+          times.dateTimeForPrayer(prayer) ?? _parsePrayerTime(timeStr, now);
       if (prayerDateTime.isAfter(now)) return false;
     }
     return true;
