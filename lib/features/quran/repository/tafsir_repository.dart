@@ -24,7 +24,7 @@ class TafsirRepository {
         return 'حدث خطأ أثناء تحميل التفسير (${response.statusCode}).';
       }
 
-      final List<dynamic> data = jsonDecode(response.body);
+      final data = jsonDecode(response.body) as List<dynamic>;
 
       if (data.isEmpty) {
         return 'لم يتم العثور على تفسير لهذه الآية.';
@@ -35,7 +35,7 @@ class TafsirRepository {
       // ignore: avoid_dynamic_calls
       final text = tafsir['text']?.toString().trim() ?? '';
       return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('===========> $e');
       return 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.';
     }

@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../repositories/azkar_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
 
 class SaveAzkarCountUseCase implements UseCase<void, SaveAzkarCountParams> {
   SaveAzkarCountUseCase(this.repository);

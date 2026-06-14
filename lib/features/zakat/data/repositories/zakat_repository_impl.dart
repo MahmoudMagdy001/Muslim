@@ -1,9 +1,8 @@
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/repositories/zakat_repository.dart';
-import '../datasources/zakat_remote_data_source.dart';
+import 'package:muslim/core/error/exceptions.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/zakat/data/datasources/zakat_remote_data_source.dart';
+import 'package:muslim/features/zakat/domain/repositories/zakat_repository.dart';
 
 class ZakatRepositoryImpl implements ZakatRepository {
   ZakatRepositoryImpl({required this.remoteDataSource});
@@ -31,7 +30,7 @@ class ZakatRepositoryImpl implements ZakatRepository {
       return Right(pricePerGramEgp);
     } on ServerException {
       return const Left(ServerFailure());
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(ServerFailure());
     }
   }

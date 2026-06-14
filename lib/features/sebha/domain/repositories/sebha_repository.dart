@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../entities/zikr_entity.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
 abstract class SebhaRepository {
   Future<Either<Failure, List<ZikrEntity>>> getCustomAzkar();

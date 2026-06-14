@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/responsive_helper.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
 
 class SearchSection extends StatelessWidget {
   const SearchSection({

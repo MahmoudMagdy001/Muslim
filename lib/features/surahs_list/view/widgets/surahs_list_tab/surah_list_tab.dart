@@ -1,23 +1,23 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/view/quran_view.dart';
+import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played.dart';
+import 'package:muslim/features/surahs_list/model/quran_view_type.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/hizb_list_view.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/juz_list_view.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/last_played_section.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/seach_result_count.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/search_result_list.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/search_section.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/surah_list.dart';
+import 'package:muslim/features/surahs_list/viewmodel/surah_list/surahs_list_cubit.dart';
+import 'package:muslim/features/surahs_list/viewmodel/surah_list/surahs_list_state.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../../../../core/utils/navigation_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../../../quran/repository/quran_repository.dart';
-import '../../../../quran/view/quran_view.dart';
-import '../../../../quran/viewmodel/last_played_cubit/last_played.dart';
-import '../../../model/quran_view_type.dart';
-import '../../../viewmodel/surah_list/surahs_list_cubit.dart';
-import '../../../viewmodel/surah_list/surahs_list_state.dart';
-import 'hizb_list_view.dart';
-import 'juz_list_view.dart';
-import 'last_played_section.dart';
-import 'seach_result_count.dart';
-import 'search_result_list.dart';
-import 'search_section.dart';
-import 'surah_list.dart';
 
 class SurahListTab extends StatefulWidget {
   const SurahListTab({
@@ -56,9 +56,11 @@ class _SurahListTabState extends State<SurahListTab> {
   }
 
   void _onSearchChanged(String value) {
-    context.read<SurahListCubit>().searchInQuran(
-      value,
-      partial: !exactSearchNotifier.value,
+    unawaited(
+      context.read<SurahListCubit>().searchInQuran(
+            value,
+            partial: !exactSearchNotifier.value,
+          ),
     );
   }
 
@@ -79,7 +81,7 @@ class _SurahListTabState extends State<SurahListTab> {
     int? toPage,
   }) async {
     final repository = GetIt.instance<QuranRepository>();
-    int targetAyah = ayah;
+    var targetAyah = ayah;
 
     // Smart Resume: If opening from list (ayah == 1) and same surah/reciter is playing, resume from current ayah
     if (ayah == 1 &&
@@ -88,7 +90,7 @@ class _SurahListTabState extends State<SurahListTab> {
       targetAyah = (repository.currentIndex ?? 0) + 1;
     }
 
-    await navigateWithTransition(
+    await navigateWithTransition<void>(
       type: TransitionType.fade,
       context,
       QuranView(
@@ -100,7 +102,7 @@ class _SurahListTabState extends State<SurahListTab> {
       ),
     );
     if (mounted) {
-      context.read<LastPlayedCubit>().initialize();
+      await context.read<LastPlayedCubit>().initialize();
     }
   }
 
@@ -116,7 +118,7 @@ class _SurahListTabState extends State<SurahListTab> {
             if (currentViewType == QuranViewType.surah) ...[
               LastPlayedSection(
                 navigateToSurah:
-                    ({required int surah, required int ayah}) async {
+                    ({required surah, required ayah}) async {
                       final startPage = quran.getPageNumber(surah, 1);
                       final endPage = quran.getPageNumber(
                         surah,
@@ -155,7 +157,7 @@ class _SurahListTabState extends State<SurahListTab> {
                   surahs: state.filteredSurahs,
                   isArabic: widget.isArabic,
                   navigateToSurah:
-                      ({required int surah, required int ayah}) async {
+                      ({required surah, required ayah}) async {
                         // For Surah, we restrict to the pages of that Surah
                         final startPage = quran.getPageNumber(surah, 1);
                         final endPage = quran.getPageNumber(
@@ -174,7 +176,7 @@ class _SurahListTabState extends State<SurahListTab> {
               JuzListView(
                 juzs: state.juzs,
                 isArabic: widget.isArabic,
-                navigateToJuz: ({required int surah, required int ayah}) async {
+                navigateToJuz: ({required surah, required ayah}) async {
                   // For Juz, we restrict to the pages of that Juz.
                   final juzModel = state.juzs.firstWhere(
                     (j) => j.startSurah == surah && j.startAyah == ayah,
@@ -216,7 +218,7 @@ class _SurahListTabState extends State<SurahListTab> {
                 hizbs: state.hizbs,
                 isArabic: widget.isArabic,
                 navigateToHizb:
-                    ({required int surah, required int ayah}) async {
+                    ({required surah, required ayah}) async {
                       final hizbModel = state.hizbs.firstWhere(
                         (h) => h.startSurah == surah && h.startAyah == ayah,
                       );

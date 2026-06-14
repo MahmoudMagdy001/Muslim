@@ -2,17 +2,16 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 import 'package:workmanager/workmanager.dart';
-
-import '../../../../core/service/periodic_reminder_channel_factory.dart';
-import '../../../../core/service/periodic_reminder_constants.dart';
-import '../../../../core/utils/app_logger.dart';
-import '../../../settings/service/settings_service.dart';
-import '../../domain/entities/local_prayer_times.dart';
-import '../../presentation/helper/notification_channel_factory.dart';
-import '../../presentation/helper/notification_constants.dart';
-import 'prayer_notification_local_data_source.dart';
-import 'prayer_times_local_data_source.dart';
 
 /// WorkManager callback dispatcher for background prayer time updates.
 @pragma('vm:entry-point')
@@ -25,9 +24,9 @@ void callbackDispatcher() {
 
     // Route to appropriate handler based on task name
     if (task == PeriodicReminderConstants.workManagerTaskName) {
-      return await _handlePeriodicReminderTask();
+      return _handlePeriodicReminderTask();
     } else {
-      return await _handlePrayerTimesTask();
+      return _handlePrayerTimesTask();
     }
   });
 }
@@ -58,9 +57,9 @@ Future<bool> _handlePrayerTimesTask() async {
       return false;
     }
 
-    final List<LocalPrayerTimes> upcomingDaysTimes = [];
+    final upcomingDaysTimes = <LocalPrayerTimes>[];
 
-    for (int i = 0; i < NotificationConstants.scheduleDaysAhead; i++) {
+    for (var i = 0; i < NotificationConstants.scheduleDaysAhead; i++) {
       final date = now.add(Duration(days: i));
       final times = await prayerDataSource.getPrayerTimesForDate(
         cachedCoords,
@@ -75,7 +74,7 @@ Future<bool> _handlePrayerTimesTask() async {
       'تمت جدولة مواقيت الصلاة لـ ${NotificationConstants.scheduleDaysAhead} أيام بنجاح في الخلفية - ${DateTime.now()}',
     );
     return true;
-  } catch (e, s) {
+  } on Object catch (e, s) {
     logError('خطأ في WorkManager prayer task', e, s);
     return false;
   }
@@ -132,7 +131,7 @@ Future<bool> _handlePeriodicReminderTask() async {
       '✅ Periodic reminder rescheduled: every $intervalMinutes minutes',
     );
     return true;
-  } catch (e, s) {
+  } on Object catch (e, s) {
     logError('❌ Error in Periodic Reminder WorkManager', e, s);
     return false;
   }

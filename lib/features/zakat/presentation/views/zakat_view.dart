@@ -1,24 +1,28 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../cubit/zakat_cubit.dart';
-import '../cubit/zakat_state.dart';
-import 'widgets/crops_zakat_tab.dart';
-import 'widgets/zakat_card.dart';
-import 'widgets/zakat_error_view.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/zakat/presentation/cubit/zakat_cubit.dart';
+import 'package:muslim/features/zakat/presentation/cubit/zakat_state.dart';
+import 'package:muslim/features/zakat/presentation/views/widgets/crops_zakat_tab.dart';
+import 'package:muslim/features/zakat/presentation/views/widgets/zakat_card.dart';
+import 'package:muslim/features/zakat/presentation/views/widgets/zakat_error_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ZakatView extends StatelessWidget {
   const ZakatView({super.key});
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => getIt<ZakatCubit>()..loadGoldPrice(),
+    create: (context) {
+      final cubit = getIt<ZakatCubit>();
+      unawaited(cubit.loadGoldPrice());
+      return cubit;
+    },
     child: const _ZakatViewBody(),
   );
 }
@@ -150,7 +154,7 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
     final controller = TextEditingController();
     final cubit = context
         .read<ZakatCubit>(); // Capture Cubit here using parent context
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         // Rename inner context to avoid confusion

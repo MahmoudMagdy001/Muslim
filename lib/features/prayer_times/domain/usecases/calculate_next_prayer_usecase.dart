@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/local_prayer_times.dart';
-import '../entities/prayer_calculation_result.dart';
-import '../entities/prayer_type.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_calculation_result.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
 /// UseCase for calculating the next/previous prayer and time remaining.
 class CalculateNextPrayerUseCase
@@ -43,7 +43,7 @@ class CalculateNextPrayerUseCase
           areAllPrayersFinished: _areAllPrayersFinished(params, now),
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

@@ -1,17 +1,17 @@
+import 'dart:async';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_work_manager_data_source.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
-
-import '../../../features/prayer_times/data/datasources/prayer_work_manager_data_source.dart';
-import '../../../features/prayer_times/presentation/helper/notification_channel_factory.dart';
-import '../../../features/prayer_times/presentation/helper/notification_constants.dart';
-import '../../../features/settings/service/settings_service.dart';
-import '../../service/periodic_reminder_channel_factory.dart';
-import '../../service/periodic_reminder_constants.dart';
-import '../../service/permissions_sevice.dart';
-import '../../utils/app_logger.dart';
 
 class AppInitializer {
   AppInitializer(this.prefs);
@@ -27,7 +27,7 @@ class AppInitializer {
     // Non-critical initialization (Fire and forget, or handle errors silently)
     // executed after the first frame to not block startup
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeBackgroundTasks();
+      unawaited(_initializeBackgroundTasks());
     });
 
     return locationGranted;
@@ -41,7 +41,7 @@ class AppInitializer {
         _initializeAudioBackground(),
         _scheduleQuranReminders(),
       ]);
-    } catch (e) {
+    } on Object catch (e) {
       logError('Background initialization error', e);
     }
   }
@@ -129,8 +129,8 @@ class AppInitializer {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
 
-      final DateTime now = DateTime.now();
-      final DateTime firstNotification = DateTime(
+      final now = DateTime.now();
+      final firstNotification = DateTime(
         now.year,
         now.month,
         now.day,
@@ -149,7 +149,7 @@ class AppInitializer {
           allowWhileIdle: true,
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       logError('خطأ أثناء جدولة الإشعارات', e);
     }
   }

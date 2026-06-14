@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../quran/viewmodel/last_played_cubit/last_played.dart';
-import '../../../../quran/viewmodel/last_played_cubit/last_played_state.dart';
-import 'last_played_card.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played.dart';
+import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played_state.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/last_played_card.dart';
 
 class LastPlayedSection extends StatelessWidget {
   const LastPlayedSection({required this.navigateToSurah, super.key});

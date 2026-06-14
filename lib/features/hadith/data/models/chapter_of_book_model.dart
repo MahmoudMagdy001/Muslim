@@ -1,4 +1,4 @@
-import '../../domain/entities/chapter_of_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
 
 class ChapterOfBookModel extends ChapterOfBookEntity {
   const ChapterOfBookModel({

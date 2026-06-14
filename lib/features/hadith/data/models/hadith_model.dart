@@ -1,4 +1,4 @@
-import '../../domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
 
 class HadithModel extends HadithEntity {
   const HadithModel({

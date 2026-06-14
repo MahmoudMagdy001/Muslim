@@ -1,10 +1,9 @@
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/name_of_allah_entity.dart';
-import '../../domain/repositories/names_of_allah_repository.dart';
-import '../datasources/names_of_allah_local_data_source.dart';
+import 'package:muslim/core/error/exceptions.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
 
 class NamesOfAllahRepositoryImpl implements NamesOfAllahRepository {
   const NamesOfAllahRepositoryImpl({required this.localDataSource});

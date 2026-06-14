@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
 /// Visual metadata (icon, color) for each [PrayerType].
 class PrayerVisualData {

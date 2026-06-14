@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../zakat_view.dart';
+import 'package:muslim/features/zakat/presentation/views/zakat_view.dart';
 
 @Deprecated('Use ZakatView instead')
 class ZakatCalculator extends StatelessWidget {

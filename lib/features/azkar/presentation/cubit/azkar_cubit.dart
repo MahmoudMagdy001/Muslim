@@ -1,14 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/usecases/usecase.dart';
-import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
-import '../../domain/entities/azkar_entity.dart';
-import '../../domain/usecases/clear_azkar_count_usecase.dart';
-import '../../domain/usecases/get_azkar_content_usecase.dart';
-import '../../domain/usecases/get_azkar_count_usecase.dart';
-import '../../domain/usecases/get_azkar_list_usecase.dart';
-import '../../domain/usecases/save_azkar_count_usecase.dart';
-import 'azkar_state.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
+import 'package:muslim/features/azkar/domain/usecases/clear_azkar_count_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/get_azkar_content_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/get_azkar_count_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/get_azkar_list_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/save_azkar_count_usecase.dart';
+import 'package:muslim/features/azkar/presentation/cubit/azkar_state.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 
 class AzkarCubit extends Cubit<AzkarState> {
   AzkarCubit(
@@ -45,8 +44,8 @@ class AzkarCubit extends Cubit<AzkarState> {
       },
       (azkar) {
         // Group by category
-        final Map<String, List<AzkarEntity>> grouped = {};
-        for (var item in azkar) {
+        final grouped = <String, List<AzkarEntity>>{};
+        for (final item in azkar) {
           if (!grouped.containsKey(item.category)) {
             grouped[item.category] = [];
           }
@@ -82,7 +81,7 @@ class AzkarCubit extends Cubit<AzkarState> {
       GetAzkarContentParams(url: url),
     );
 
-    result.fold(
+    await result.fold(
       (failure) {
         if (!isClosed) {
           emit(
@@ -97,15 +96,15 @@ class AzkarCubit extends Cubit<AzkarState> {
       },
       (content) async {
         // Optimized: Load all counts in parallel instead of sequential awaits
-        final Map<int, int> counts = {};
-        final List<Future<void>> countFutures = [];
+        final counts = <int, int>{};
+        final countFutures = <Future<void>>[];
 
-        for (int i = 0; i < content.length; i++) {
+        for (var i = 0; i < content.length; i++) {
           countFutures.add(
             _getAzkarCountUseCase(
               GetAzkarCountParams(sourceUrl: url, index: i),
             ).then((countResult) {
-              int savedCount = content[i].repeat;
+              var savedCount = content[i].repeat;
               countResult.fold((l) => null, (r) {
                 if (r != null) {
                   savedCount = r;

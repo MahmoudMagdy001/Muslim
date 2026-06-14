@@ -33,7 +33,7 @@ class ThemeCubit extends Cubit<ThemeState> {
 
     try {
       await _saveTheme(themeMode);
-    } catch (error) {
+    } on Object catch (error) {
       debugPrint('Error saving theme: $error');
 
       if (!isClosed) emit(previousState);

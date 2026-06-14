@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/service/periodic_reminder_constants.dart';
-import '../../../../core/service/periodic_reminder_service.dart';
-import '../../service/periodic_reminder_repository.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/service/periodic_reminder_service.dart';
+import 'package:muslim/features/settings/service/periodic_reminder_repository.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATE
@@ -49,7 +50,7 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
   }) : _repository = repository ?? PeriodicReminderRepository(),
        _service = service ?? PeriodicReminderService(),
        super(const PeriodicReminderState()) {
-    _loadSettings();
+    unawaited(_loadSettings());
   }
 
   final PeriodicReminderRepository _repository;
@@ -74,7 +75,7 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
           intervalMinutes: settings.intervalMinutes,
         );
       }
-    } catch (e) {
+    } on Object catch (e) {
       emit(
         state.copyWith(
           isLoading: false,
@@ -85,14 +86,14 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
   }
 
   /// Toggles the reminder on/off.
-  Future<void> toggleEnabled(bool enabled) async {
+  Future<void> toggleEnabled({required bool enabled}) async {
     if (enabled == state.enabled) return;
 
     final previousState = state;
     emit(state.copyWith(enabled: enabled, isLoading: true));
 
     try {
-      await _repository.setEnabled(enabled);
+      await _repository.setEnabled(enabled: enabled);
 
       if (enabled) {
         await _service.scheduleReminder(intervalMinutes: state.intervalMinutes);
@@ -101,7 +102,7 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
       }
 
       emit(state.copyWith(isLoading: false));
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error toggling periodic reminder: $e');
       emit(previousState.copyWith(error: 'Failed to update reminder: $e'));
     }
@@ -126,7 +127,7 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
       }
 
       emit(state.copyWith(isLoading: false));
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error changing reminder interval: $e');
       emit(previousState.copyWith(error: 'Failed to update interval: $e'));
     }
@@ -142,7 +143,7 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
       if (!isScheduled) {
         await _service.scheduleReminder(intervalMinutes: state.intervalMinutes);
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error rescheduling periodic reminder: $e');
     }
   }
@@ -151,9 +152,9 @@ class PeriodicReminderCubit extends Cubit<PeriodicReminderState> {
   Future<void> cancelAndReset() async {
     try {
       await _service.cancelReminder();
-      await _repository.setEnabled(false);
+      await _repository.setEnabled(enabled: false);
       emit(const PeriodicReminderState());
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error cancelling periodic reminder: $e');
       emit(state.copyWith(error: 'Failed to cancel reminder: $e'));
     }

@@ -1,19 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/hadith_view.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/saved_hadiths_view/widgets/saved_hadith_card.dart';
+import 'package:muslim/features/surahs_list/view/widgets/bookmark_tab/empty_bookmarks_state.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../../../core/di/service_locator.dart';
-import '../../../../../../core/utils/extensions.dart';
-import '../../../../../../core/utils/format_helper.dart';
-import '../../../../../../core/utils/navigation_helper.dart';
-import '../../../../../../core/widgets/base_app_dialog.dart';
-import '../../../../../../l10n/app_localizations.dart';
-import '../../../../../surahs_list/view/widgets/bookmark_tab/empty_bookmarks_state.dart';
-import '../../../cubit/hadith_cubit.dart';
-import '../hadith_view/hadith_view.dart';
-import 'widgets/saved_hadith_card.dart';
 
 class SavedHadithView extends StatefulWidget {
   const SavedHadithView({super.key});
@@ -29,7 +30,7 @@ class _SavedHadithViewState extends State<SavedHadithView> {
   @override
   void initState() {
     super.initState();
-    _loadSavedHadiths();
+    unawaited(_loadSavedHadiths());
   }
 
   @override
@@ -42,9 +43,11 @@ class _SavedHadithViewState extends State<SavedHadithView> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString('saved_hadiths');
     if (saved != null) {
-      savedHadithsNotifier.value = List<Map<String, dynamic>>.from(
-        json.decode(saved),
-      );
+      final decoded = json.decode(saved);
+      if (decoded is Iterable) {
+        savedHadithsNotifier.value =
+            decoded.map((dynamic e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
     }
   }
 
@@ -68,25 +71,30 @@ class _SavedHadithViewState extends State<SavedHadithView> {
     final hadithId = int.tryParse(hadith['id'].toString());
     if (hadithId == null) return;
 
-    navigateWithTransition(
-      context,
-      BlocProvider(
-        create: (context) => getIt<HadithCubit>()
-          ..initializeData(
-            hadith['bookSlug'],
-            hadith['chapterNumber'],
-            hadith['chapterName'],
+    unawaited(
+      navigateWithTransition<void>(
+        context,
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<HadithCubit>();
+            unawaited(cubit.initializeData(
+              hadith['bookSlug'] as String,
+              hadith['chapterNumber'] as String,
+              hadith['chapterName'] as String,
+            ));
+            return cubit;
+          },
+          child: HadithView(
+            bookSlug: hadith['bookSlug'] as String,
+            chapterNumber: hadith['chapterNumber'] as String,
+            chapterName: hadith['chapterName'] as String,
+            localizations: AppLocalizations.of(context),
+            scrollToHadithId: hadithId,
           ),
-        child: HadithView(
-          bookSlug: hadith['bookSlug'],
-          chapterNumber: hadith['chapterNumber'],
-          chapterName: hadith['chapterName'],
-          localizations: AppLocalizations.of(context),
-          scrollToHadithId: hadithId,
         ),
-      ),
-      type: TransitionType.fade,
-    ).then((value) => _loadSavedHadiths());
+        type: TransitionType.fade,
+      ).then((_) => _loadSavedHadiths()),
+    );
   }
 
   @override
@@ -102,7 +110,7 @@ class _SavedHadithViewState extends State<SavedHadithView> {
             )
           : SafeArea(
               child: ListView.builder(
-                cacheExtent: context.screenHeight * 0.9,
+                scrollCacheExtent: ScrollCacheExtent.pixels(context.screenHeight * 0.9),
                 itemCount: savedHadiths.length,
                 itemBuilder: (context, index) {
                   final hadith = savedHadiths[index];
@@ -119,11 +127,11 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
                     confirmDismiss: (direction) async =>
-                        await BaseAppDialog.show<bool>(
+                        BaseAppDialog.show<bool>(
                           context,
                           title: 'تأكيد الحذف',
                           contentText:
-                              'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                              'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟',
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),
@@ -140,7 +148,7 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                             ),
                           ],
                         ),
-                    onDismissed: (direction) => _removeHadith(index),
+                    onDismissed: (direction) => unawaited(_removeHadith(index)),
                     child: SavedHadithCard(
                       hadith: hadith,
                       onTap: () => _navigateToHadith(hadith),
@@ -149,7 +157,7 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                           context,
                           title: 'تأكيد الحذف',
                           contentText:
-                              'هل انت متاكد من حذف رقم ${convertToArabicNumbers(hadith['id'])} من المحفوظات؟',
+                              'هل انت متاكد من حذف رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟',
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),
@@ -166,8 +174,8 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                             ),
                           ],
                         );
-                        if (confirm == true) {
-                          _removeHadith(index);
+                        if (confirm ?? false) {
+                          await _removeHadith(index);
                         }
                       },
                     ),

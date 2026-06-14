@@ -1,22 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/service/permissions_sevice.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../../../core/utils/app_logger.dart';
-import '../../domain/entities/local_prayer_times.dart';
-import '../../domain/entities/prayer_type.dart';
-import '../../domain/usecases/calculate_next_prayer_usecase.dart';
-import '../../domain/usecases/get_cached_coordinates_usecase.dart';
-import '../../domain/usecases/get_notification_settings_usecase.dart';
-import '../../domain/usecases/get_prayer_times_for_date_usecase.dart';
-import '../../domain/usecases/get_prayer_times_usecase.dart';
-import '../../domain/usecases/schedule_notifications_usecase.dart';
-import '../../domain/usecases/set_prayer_enabled_usecase.dart';
-import '../helper/notification_constants.dart';
-import 'prayer_times_state.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/calculate_next_prayer_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/get_cached_coordinates_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/get_notification_settings_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/get_prayer_times_for_date_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/get_prayer_times_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/schedule_notifications_usecase.dart';
+import 'package:muslim/features/prayer_times/domain/usecases/set_prayer_enabled_usecase.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 
 export '../../domain/usecases/get_prayer_times_usecase.dart'
     show GetPrayerTimesParams;
@@ -86,7 +85,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     try {
       await requestAllPermissions();
       logSuccess('تم التحقق من جميع الصلاحيات بنجاح');
-    } catch (error) {
+    } on Object catch (error) {
       logError('خطأ في التحقق من الصلاحيات', error);
       if (!isClosed) {
         emit(
@@ -109,21 +108,21 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     result.fold(
       (failure) => _handlePrayerTimesError(failure.message),
-      (localPrayerTimes) => _handlePrayerTimesSuccess(localPrayerTimes),
+      _handlePrayerTimesSuccess,
     );
   }
 
   /// Handles successful prayer times fetch — schedules notifications
   /// and updates state.
   Future<void> _handlePrayerTimesSuccess(LocalPrayerTimes times) async {
-    final List<LocalPrayerTimes> allScheduledTimes = [times];
+    final allScheduledTimes = <LocalPrayerTimes>[times];
 
     try {
       final coordinatesResult = await _getCachedCoordinates(NoParams());
-      coordinatesResult.fold((failure) => null, (coordinates) async {
+      await coordinatesResult.fold((failure) => null, (coordinates) async {
         if (coordinates != null) {
           final now = DateTime.now();
-          for (int i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
+          for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
             final nextDate = now.add(Duration(days: i));
             final nextDayTimesResult = await _getPrayerTimesForDate(
               GetPrayerTimesForDateParams(
@@ -135,12 +134,12 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
             nextDayTimesResult.fold(
               (failure) => null,
-              (nextDayTimes) => allScheduledTimes.add(nextDayTimes),
+              allScheduledTimes.add,
             );
           }
         }
       });
-    } catch (e) {
+    } on Object catch (e) {
       logWarning('تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
     }
 
@@ -203,7 +202,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     if (calculation.timeLeft.inSeconds <= 0) {
       logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
-      _handlePrayerTimesSuccess(currentTimes);
+      unawaited(_handlePrayerTimesSuccess(currentTimes));
     } else if (shouldEmit && !isClosed) {
       emit(
         state.copyWith(
@@ -245,13 +244,13 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     );
 
     if (state.localPrayerTimes != null) {
-      final List<LocalPrayerTimes> times = [state.localPrayerTimes!];
+      final times = <LocalPrayerTimes>[state.localPrayerTimes!];
       try {
         final coordinatesResult = await _getCachedCoordinates(NoParams());
-        coordinatesResult.fold((failure) => null, (coordinates) async {
+        await coordinatesResult.fold((failure) => null, (coordinates) async {
           if (coordinates != null) {
             final now = DateTime.now();
-            for (int i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
+            for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
               final date = now.add(Duration(days: i));
               final result = await _getPrayerTimesForDate(
                 GetPrayerTimesForDateParams(
@@ -262,12 +261,12 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
               );
               result.fold(
                 (failure) => null,
-                (timesResult) => times.add(timesResult),
+                times.add,
               );
             }
           }
         });
-      } catch (_) {}
+      } on Object catch (_) {}
       await _scheduleNotifications(times);
     }
   }

@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/usecases/get_gold_price_use_case.dart';
-import 'zakat_state.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/zakat/domain/usecases/get_gold_price_use_case.dart';
+import 'package:muslim/features/zakat/presentation/cubit/zakat_state.dart';
 
 class ZakatCubit extends Cubit<ZakatState> {
   ZakatCubit({required this.getGoldPriceUseCase}) : super(const ZakatState());

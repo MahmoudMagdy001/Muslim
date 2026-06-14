@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/di/service_locator.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../domain/entities/azkar_audio_state.dart';
-import '../../../domain/entities/azkar_entity.dart';
-import '../../cubit/azkar_audio_cubit.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
+import 'package:muslim/features/azkar/presentation/cubit/azkar_audio_cubit.dart';
 
-class AzkarItemCard extends StatelessWidget {
+class AzkarItemCard extends StatefulWidget {
   const AzkarItemCard({
     required this.content,
     required this.currentCount,
@@ -24,10 +24,23 @@ class AzkarItemCard extends StatelessWidget {
   final VoidCallback onReset;
 
   @override
+  State<AzkarItemCard> createState() => _AzkarItemCardState();
+}
+
+class _AzkarItemCardState extends State<AzkarItemCard> {
+  // Resolved once in initState to avoid a service-locator lookup on every build.
+  late final AzkarAudioCubit _audioCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioCubit = getIt<AzkarAudioCubit>();
+  }
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-    final isFinished = currentCount <= 0;
-    final totalCount = content.repeat;
+    final isFinished = widget.currentCount <= 0;
+    final totalCount = widget.content.repeat;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -47,7 +60,7 @@ class AzkarItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  content.arabicText,
+                  widget.content.arabicText,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleLarge?.copyWith(
                     height: 1.8,
@@ -56,10 +69,10 @@ class AzkarItemCard extends StatelessWidget {
                   ),
                   textDirection: TextDirection.rtl,
                 ),
-                if (content.translatedText.isNotEmpty) ...[
+                if (widget.content.translatedText.isNotEmpty) ...[
                   SizedBox(height: 16.h),
                   Text(
-                    content.translatedText,
+                    widget.content.translatedText,
                     textAlign: TextAlign.justify,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
@@ -82,9 +95,9 @@ class AzkarItemCard extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: isFinished
                           ? null
-                          : () {
-                              HapticFeedback.mediumImpact();
-                              onIncrement();
+                          : () async {
+                              await HapticFeedback.mediumImpact();
+                              widget.onIncrement();
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.secondary,
@@ -112,9 +125,9 @@ class AzkarItemCard extends StatelessWidget {
 
                 // زر الصوت
                 BlocBuilder<AzkarAudioCubit, AzkarAudioState>(
-                  bloc: getIt<AzkarAudioCubit>(),
+                  bloc: _audioCubit,
                   builder: (context, audioState) {
-                    final isThisPlaying = audioState.url == content.audio;
+                    final isThisPlaying = audioState.url == widget.content.audio;
                     final isLoading =
                         isThisPlaying &&
                         audioState.status == AzkarAudioStatus.loading;
@@ -123,14 +136,14 @@ class AzkarItemCard extends StatelessWidget {
                         audioState.status == AzkarAudioStatus.playing;
 
                     return IconButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
+                      onPressed: () async {
+                        await HapticFeedback.lightImpact();
                         if (isPlaying) {
-                          getIt<AzkarAudioCubit>().stopAudio();
+                          await _audioCubit.stopAudio();
                         } else {
-                          getIt<AzkarAudioCubit>().playAudio(
-                            content.audio,
-                            title: content.arabicText,
+                          await _audioCubit.playAudio(
+                            widget.content.audio,
+                            title: widget.content.arabicText,
                           );
                         }
                       },
@@ -156,9 +169,9 @@ class AzkarItemCard extends StatelessWidget {
 
                 // زر الإعادة - في النص
                 IconButton(
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    onReset();
+                  onPressed: () async {
+                    await HapticFeedback.lightImpact();
+                    widget.onReset();
                   },
                   icon: const Icon(Icons.refresh, color: Colors.white),
                   iconSize: 28.r,
@@ -171,7 +184,7 @@ class AzkarItemCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      currentCount.toString(),
+                      widget.currentCount.toString(),
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

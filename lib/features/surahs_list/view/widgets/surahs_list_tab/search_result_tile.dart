@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../model/search_model.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/search_model.dart';
 
 class SearchResultTile extends StatelessWidget {
   const SearchResultTile({

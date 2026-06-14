@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../settings/view/settings_view.dart';
-import 'widgets/layout_content.dart';
+import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/features/layout/view/widgets/layout_content.dart';
+import 'package:muslim/features/settings/view/settings_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class LayoutView extends StatelessWidget {
   const LayoutView({super.key});
@@ -20,7 +21,7 @@ class LayoutView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () =>
-                navigateWithTransition(context, const SettingsView()),
+                unawaited(navigateWithTransition<void>(context, const SettingsView())),
             icon: const Icon(Icons.settings_rounded),
             tooltip: localization.settingsButton,
           ),

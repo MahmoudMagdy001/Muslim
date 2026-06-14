@@ -30,7 +30,7 @@ class RateAppHelper {
   }
 
   static Future<void> _incrementLaunchCount(SharedPreferences prefs) async {
-    int launchCount = prefs.getInt(_launchCountKey) ?? 0;
+    var launchCount = prefs.getInt(_launchCountKey) ?? 0;
     launchCount++;
     await prefs.setInt(_launchCountKey, launchCount);
     debugPrint('📱 App launch count: $launchCount');

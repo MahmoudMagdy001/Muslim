@@ -1,9 +1,8 @@
 import 'dart:convert';
 
+import 'package:muslim/core/error/exceptions.dart';
+import 'package:muslim/features/sebha/data/models/zikr_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/error/exceptions.dart';
-import '../models/zikr_model.dart';
 
 abstract class SebhaLocalDataSource {
   Future<List<ZikrModel>> getCustomAzkar();
@@ -30,12 +29,12 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
         return [];
       }
 
-      final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+      final jsonList = json.decode(jsonString) as List<dynamic>;
       _cache = jsonList
           .map((json) => ZikrModel.fromJson(json as Map<String, dynamic>))
           .toList();
       return _cache!;
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }
@@ -47,7 +46,7 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
       customAzkar.add(zikr);
       _cache = customAzkar;
       return await _saveAllCustomAzkar(customAzkar);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }
@@ -65,7 +64,7 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
       customAzkar[index] = zikr;
       _cache = customAzkar;
       return await _saveAllCustomAzkar(customAzkar);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }
@@ -77,7 +76,7 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
       customAzkar.removeWhere((z) => z.id == id);
       _cache = customAzkar;
       return await _saveAllCustomAzkar(customAzkar);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }
@@ -88,7 +87,7 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
       final jsonList = azkar.map((z) => z.toJson()).toList();
       final jsonString = json.encode(jsonList);
       return await prefs.setString(_customAzkarKey, jsonString);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }

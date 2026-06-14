@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../repository/quran_repository.dart';
-import 'quran_player_state.dart';
+import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_state.dart';
 
 class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   QuranPlayerCubit(this._repository, {int? initialSurah})
@@ -20,7 +20,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   }
 
   final QuranRepository _repository;
-  final List<StreamSubscription> _subscriptions = [];
+  final List<StreamSubscription<dynamic>> _subscriptions = [];
   bool _isRangeMode = false;
 
   // -------------------- Initialization -------------------- //
@@ -121,8 +121,8 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     );
 
     // Find the index in the range playlist that matches the start surah/ayah
-    int targetIndex = 0;
-    for (int i = 0; ; i++) {
+    var targetIndex = 0;
+    for (var i = 0; ; i++) {
       final entry = _repository.getAyahAtIndex(i);
       if (entry == null) break;
       if (entry.surah == startSurah && entry.ayah == startAyah) {
@@ -154,7 +154,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   Future<void> seekToAyah(int surah, int ayah) async {
     if (_isRangeMode) {
       // Find the index in the range playlist that matches the surah/ayah
-      for (int i = 0; ; i++) {
+      for (var i = 0; ; i++) {
         final entry = _repository.getAyahAtIndex(i);
         if (entry == null) break;
         if (entry.surah == surah && entry.ayah == ayah) {

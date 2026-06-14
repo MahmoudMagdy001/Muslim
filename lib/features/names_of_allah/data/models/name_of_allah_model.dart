@@ -1,4 +1,4 @@
-import '../../domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
 
 class NameOfAllahModel extends NameOfAllahEntity {
   const NameOfAllahModel({

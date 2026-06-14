@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../repositories/zakat_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/zakat/domain/repositories/zakat_repository.dart';
 
 class GetGoldPriceUseCase implements UseCase<double, NoParams> {
   GetGoldPriceUseCase(this.repository);
@@ -10,5 +10,5 @@ class GetGoldPriceUseCase implements UseCase<double, NoParams> {
 
   @override
   Future<Either<Failure, double>> call(NoParams params) async =>
-      await repository.getGoldPricePerGramInEgp();
+      repository.getGoldPricePerGramInEgp();
 }

@@ -1,9 +1,9 @@
-import '../../../settings/service/settings_service.dart';
-import '../../domain/entities/local_prayer_times.dart';
-import '../../domain/entities/prayer_notification_settings.dart';
-import '../../domain/entities/prayer_type.dart';
-import '../../domain/repositories/prayer_notification_repository.dart';
-import '../datasources/prayer_notification_local_data_source.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_notification_repository.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 
 /// Concrete implementation of [PrayerNotificationRepository].
 class PrayerNotificationRepositoryImpl implements PrayerNotificationRepository {
@@ -50,8 +50,7 @@ class PrayerNotificationRepositoryImpl implements PrayerNotificationRepository {
     // I will actually replace SettingsService's dependency on the old PrayerType with the new one.
     // So for now I will leave this error and fix the import in SettingsService.
     await _settingsService.setPrayerEnabled(
-      type
-          as dynamic, // Temp bypass to let typechecker pass here while we fix SettingsService next
+      type,
       enabled: enabled,
     );
   }

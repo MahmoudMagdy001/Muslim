@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../model/search_model.dart';
-import 'search_result_tile.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/search_model.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/search_result_tile.dart';
 
 class SearchResultsList extends StatelessWidget {
   const SearchResultsList({

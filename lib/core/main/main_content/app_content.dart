@@ -1,21 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../features/layout/view/layout_view.dart';
-import '../../../features/settings/view_model/theme/theme_cubit.dart';
-import '../../../features/settings/view_model/font_size/font_size_cubit.dart';
-import '../../service/in_app_rate.dart';
-import '../../service/in_app_update.dart';
-import '../../theme/app_theme.dart';
-import '../../../features/settings/view_model/language/language_cubit.dart';
-import '../../../features/settings/view_model/language/language_state.dart';
-import '../../../features/quran/service/quran_service.dart';
-import '../../../features/quran/view/quran_view.dart';
-import '../../../core/utils/navigation_helper.dart';
-import '../../di/service_locator.dart';
-import 'package:flutter/services.dart';
-import '../../service/navigation_service.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/service/in_app_rate.dart';
+import 'package:muslim/core/service/in_app_update.dart';
+import 'package:muslim/core/service/navigation_service.dart';
+import 'package:muslim/core/theme/app_theme.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/features/layout/view/layout_view.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
+import 'package:muslim/features/quran/view/quran_view.dart';
+import 'package:muslim/features/settings/view_model/font_size/font_size_cubit.dart';
+import 'package:muslim/features/settings/view_model/language/language_cubit.dart';
+import 'package:muslim/features/settings/view_model/language/language_state.dart';
+import 'package:muslim/features/settings/view_model/theme/theme_cubit.dart';
 
 class AppContent extends StatefulWidget {
   const AppContent({
@@ -36,8 +37,8 @@ class _AppContentState extends State<AppContent> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppUpdateService.checkForUpdate(context);
-      RateAppHelper.handleAppLaunch(context);
+      unawaited(AppUpdateService.checkForUpdate(context));
+      unawaited(RateAppHelper.handleAppLaunch(context));
       _setupNotificationClickChannel();
       _listenToNotificationClick();
       _checkPendingNotificationClick();
@@ -65,7 +66,7 @@ class _AppContentState extends State<AppContent> {
   }
 
   void _listenToNotificationClick() {
-    getIt<QuranService>().notificationClickStream.listen((bool clicked) {
+    getIt<QuranService>().notificationClickStream.listen((clicked) {
       debugPrint('NotificationNav: notificationClickStream received: $clicked');
       if (clicked) {
         _handleDeepLink();
@@ -88,10 +89,12 @@ class _AppContentState extends State<AppContent> {
 
     if (surah != null && reciter != null) {
       debugPrint('NotificationNav: Navigating to QuranView');
-      navigateWithTransition(
-        NavigationService.context!,
-        QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
-        type: TransitionType.fade,
+      unawaited(
+        navigateWithTransition<void>(
+          NavigationService.context!,
+          QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
+          type: TransitionType.fade,
+        ),
       );
     } else {
       debugPrint('NotificationNav: Surah or Reciter is NULL, cannot navigate');

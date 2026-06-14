@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../core/utils/extensions.dart';
+import 'package:muslim/core/utils/extensions.dart';
 
 class HadithText extends StatelessWidget {
   const HadithText({required this.text, required this.isArabic, super.key});

@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
 
 class SebhaButton extends StatefulWidget {
   const SebhaButton({
@@ -51,7 +52,8 @@ class _SebhaButtonState extends State<SebhaButton>
     _glowController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
+    );
+    unawaited(_glowController.repeat(reverse: true));
     _glowAnimation = Tween<double>(begin: 0.3, end: 0.7).animate(
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
@@ -59,9 +61,9 @@ class _SebhaButtonState extends State<SebhaButton>
 
   Future<void> _onTap() async {
     widget.onPressed();
-    HapticFeedback.mediumImpact();
+    await HapticFeedback.mediumImpact();
 
-    _rippleController.forward(from: 0.0);
+    await _rippleController.forward(from: 0.0);
   }
 
   @override

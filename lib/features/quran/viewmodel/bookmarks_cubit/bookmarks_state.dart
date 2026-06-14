@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../model/bookmark_model.dart';
+import 'package:muslim/features/quran/model/bookmark_model.dart';
 
 enum BookmarksStatus { initial, loading, ready, error }
 

@@ -204,13 +204,13 @@ class TafsirShareService {
 
   int _findBestCutIndex(String text, int start, int end) {
     // Prefer sentence-ending punctuation
-    final sentenceEnd = text.lastIndexOf(RegExp(r'[.؟!]'), end);
+    final sentenceEnd = text.lastIndexOf(RegExp('[.؟!]'), end);
     if (sentenceEnd > start && (end - sentenceEnd) < 100) {
       return sentenceEnd + 1;
     }
 
     // Then commas / semicolons
-    final commaEnd = text.lastIndexOf(RegExp(r'[،,;]'), end);
+    final commaEnd = text.lastIndexOf(RegExp('[،,;]'), end);
     if (commaEnd > start && (end - commaEnd) < 100) {
       return commaEnd + 1;
     }
@@ -262,12 +262,12 @@ class TafsirShareService {
         if (entity is File && entity.path.contains('tafsir_')) {
           try {
             await entity.delete();
-          } catch (_) {
+          } on Object catch (_) {
             // Best-effort cleanup
           }
         }
       }
-    } catch (_) {
+    } on Object catch (_) {
       // Best-effort cleanup
     }
   }

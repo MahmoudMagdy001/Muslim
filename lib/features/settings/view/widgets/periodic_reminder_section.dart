@@ -1,12 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/service/periodic_reminder_constants.dart';
-import '../../../../core/service/permissions_sevice.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../view_model/periodic_reminder/periodic_reminder_cubit.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 /// Settings section widget for managing periodic Islamic reminders.
 class PeriodicReminderSection extends StatelessWidget {
@@ -59,7 +59,7 @@ class PeriodicReminderSection extends StatelessWidget {
       await requestAllPermissions();
     }
     if (context.mounted) {
-      context.read<PeriodicReminderCubit>().toggleEnabled(value);
+      await context.read<PeriodicReminderCubit>().toggleEnabled(enabled: value);
     }
   }
 
@@ -68,16 +68,20 @@ class PeriodicReminderSection extends StatelessWidget {
     AppLocalizations localizations,
     PeriodicReminderState state,
   ) {
-    showCustomModalBottomSheet(
-      context: context,
-      builder: (context) => _IntervalSelectionModal(
-        theme: theme,
-        isArabic: isArabic,
-        currentInterval: state.intervalMinutes,
-        onIntervalSelected: (minutes) {
-          context.read<PeriodicReminderCubit>().setInterval(minutes);
-          Navigator.of(context).pop();
-        },
+    unawaited(
+      showCustomModalBottomSheet<void>(
+        context: context,
+        builder: (context) => _IntervalSelectionModal(
+          theme: theme,
+          isArabic: isArabic,
+          currentInterval: state.intervalMinutes,
+          onIntervalSelected: (minutes) async {
+            await context.read<PeriodicReminderCubit>().setInterval(minutes);
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
       ),
     );
   }

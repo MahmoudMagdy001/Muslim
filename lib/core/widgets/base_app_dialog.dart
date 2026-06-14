@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/extensions.dart';
+import 'package:muslim/core/utils/extensions.dart';
 
 class BaseAppDialog extends StatelessWidget {
   const BaseAppDialog({

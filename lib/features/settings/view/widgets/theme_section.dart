@@ -1,11 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../view_model/theme/theme_cubit.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/settings/view_model/theme/theme_cubit.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ThemeSection extends StatelessWidget {
   const ThemeSection({
@@ -40,37 +40,41 @@ class ThemeSection extends StatelessWidget {
         onTap: () {
           final cubit = context.read<ThemeCubit>();
 
-          showCustomModalBottomSheet(
-            context: context,
-            builder: (context) => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  localizations.selectTheme,
-                  style: theme.textTheme.titleMedium,
-                ),
-                ...[ThemeMode.light, ThemeMode.dark, ThemeMode.system].map(
-                  (mode) => RadioListTile<ThemeMode>(
-                    title: Text(
-                      mode == ThemeMode.light
-                          ? localizations.lightMode
-                          : mode == ThemeMode.dark
-                          ? localizations.darkMode
-                          : localizations.systemMode,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    value: mode,
-                    groupValue: currentMode,
-                    onChanged: (value) {
-                      if (value != null) {
-                        cubit.setThemeMode(value);
-                        Navigator.pop(context);
-                      }
-                    },
+          unawaited(
+            showCustomModalBottomSheet<void>(
+              context: context,
+              builder: (context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    localizations.selectTheme,
+                    style: theme.textTheme.titleMedium,
                   ),
-                ),
-                const SizedBox(height: 12),
-              ],
+                  ...[ThemeMode.light, ThemeMode.dark, ThemeMode.system].map(
+                    (mode) => RadioListTile<ThemeMode>(
+                      title: Text(
+                        mode == ThemeMode.light
+                            ? localizations.lightMode
+                            : mode == ThemeMode.dark
+                            ? localizations.darkMode
+                            : localizations.systemMode,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      value: mode,
+                      groupValue: currentMode,
+                      onChanged: (value) async {
+                        if (value != null) {
+                          await cubit.setThemeMode(value);
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ),
             ),
           );
         },

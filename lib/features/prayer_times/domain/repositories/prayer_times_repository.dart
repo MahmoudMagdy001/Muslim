@@ -1,6 +1,6 @@
 import 'package:adhan/adhan.dart';
 
-import '../entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
 
 /// Abstract repository for prayer times data operations.
 abstract class PrayerTimesRepository {

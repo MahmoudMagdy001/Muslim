@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/utils/extensions.dart';
-import '../cubit/qiblah_cubit.dart';
-import '../cubit/qiblah_state.dart';
-import 'widgets/qiblah_error_widget.dart';
-import 'widgets/qiblah_success_widget.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
+import 'package:muslim/features/qiblah/presentation/cubit/qiblah_state.dart';
+import 'package:muslim/features/qiblah/presentation/views/widgets/qiblah_error_widget.dart';
+import 'package:muslim/features/qiblah/presentation/views/widgets/qiblah_success_widget.dart';
 
 class QiblahView extends StatelessWidget {
   const QiblahView({super.key});

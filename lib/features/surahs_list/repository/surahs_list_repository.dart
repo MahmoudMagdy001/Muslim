@@ -1,4 +1,4 @@
-import '../model/surahs_list_model.dart';
+import 'package:muslim/features/surahs_list/model/surahs_list_model.dart';
 
 abstract class SurahsListRepository {
   Future<List<SurahsListModel>> getAllSurahs({required bool isArabic});

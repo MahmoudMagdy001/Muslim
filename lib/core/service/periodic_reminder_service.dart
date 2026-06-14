@@ -1,11 +1,10 @@
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/utils/app_logger.dart';
 import 'package:workmanager/workmanager.dart';
-
-import '../../core/utils/app_logger.dart';
-import 'periodic_reminder_channel_factory.dart';
-import 'periodic_reminder_constants.dart';
 
 /// Service for managing periodic Islamic reminder notifications.
 /// Uses native scheduling (NotificationAndroidCrontab) for battery efficiency.
@@ -56,9 +55,9 @@ class PeriodicReminderService {
       await _registerWorkManagerTask();
 
       logSuccess(
-        '✅ Periodic reminder scheduled: every $intervalMinutes minutes starting at ${firstNotificationTime.toString()}',
+        '✅ Periodic reminder scheduled: every $intervalMinutes minutes starting at $firstNotificationTime',
       );
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logError('❌ Error scheduling periodic reminder', e, stackTrace);
       rethrow;
     }
@@ -76,7 +75,7 @@ class PeriodicReminderService {
         existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
       );
       logInfo('🔄 WorkManager task registered for periodic reminders');
-    } catch (e) {
+    } on Object catch (e) {
       logWarning('⚠️ Could not register WorkManager task: $e');
     }
   }
@@ -93,7 +92,7 @@ class PeriodicReminderService {
         PeriodicReminderConstants.workManagerUniqueId,
       );
       logInfo('🗑️ Periodic reminder and WorkManager task cancelled');
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       logError('⚠️ Error cancelling periodic reminder', e, stackTrace);
     }
   }
@@ -114,7 +113,7 @@ class PeriodicReminderService {
             schedule.content?.id ==
             PeriodicReminderConstants.periodicReminderNotificationId,
       );
-    } catch (e) {
+    } on Object catch (e) {
       logWarning('⚠️ Error checking reminder status: $e');
       return false;
     }
@@ -143,7 +142,7 @@ class PeriodicReminderService {
         }
       }
       return null;
-    } catch (e) {
+    } on Object catch (e) {
       logWarning('⚠️ Error getting next scheduled time: $e');
       return null;
     }

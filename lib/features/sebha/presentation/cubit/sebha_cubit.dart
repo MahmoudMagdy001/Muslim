@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../data/models/zikr_model.dart';
-import '../../domain/entities/zikr_entity.dart';
-import '../../domain/usecases/delete_custom_zikr_use_case.dart';
-import '../../domain/usecases/get_custom_azkar_use_case.dart';
-import '../../domain/usecases/save_custom_zikr_use_case.dart';
-import '../../domain/usecases/update_custom_zikr_use_case.dart';
-import 'sebha_state.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/sebha/data/models/zikr_model.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
+import 'package:muslim/features/sebha/domain/usecases/delete_custom_zikr_use_case.dart';
+import 'package:muslim/features/sebha/domain/usecases/get_custom_azkar_use_case.dart';
+import 'package:muslim/features/sebha/domain/usecases/save_custom_zikr_use_case.dart';
+import 'package:muslim/features/sebha/domain/usecases/update_custom_zikr_use_case.dart';
+import 'package:muslim/features/sebha/presentation/cubit/sebha_state.dart';
 
 class SebhaCubit extends Cubit<SebhaState> {
   SebhaCubit({
@@ -72,7 +72,7 @@ class SebhaCubit extends Cubit<SebhaState> {
 
   Future<void> addCustomZikr(ZikrEntity zikr) async {
     final result = await _saveCustomZikrUseCase(zikr);
-    result.fold((failure) => null, (success) async {
+    await result.fold((failure) => null, (success) async {
       if (success) {
         await loadCustomAzkar();
       }
@@ -81,7 +81,7 @@ class SebhaCubit extends Cubit<SebhaState> {
 
   Future<void> editCustomZikr(ZikrEntity zikr) async {
     final result = await _updateCustomZikrUseCase(zikr);
-    result.fold((failure) => null, (success) async {
+    await result.fold((failure) => null, (success) async {
       if (success) {
         await loadCustomAzkar();
 
@@ -105,7 +105,7 @@ class SebhaCubit extends Cubit<SebhaState> {
         currentIndex < allAzkar.length && allAzkar[currentIndex].id == id;
 
     final result = await _deleteCustomZikrUseCase(id);
-    result.fold((failure) => null, (success) async {
+    await result.fold((failure) => null, (success) async {
       if (success) {
         await loadCustomAzkar();
 

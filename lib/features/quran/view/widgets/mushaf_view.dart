@@ -4,21 +4,21 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/quran/repository/tafsir_repository.dart';
+import 'package:muslim/features/quran/view/utils/quran_position_helper.dart';
+import 'package:muslim/features/quran/view/widgets/create_share_tafsir.dart';
+import 'package:muslim/features/quran/view/widgets/tafsir_selection_dialog.dart';
+import 'package:muslim/features/quran/view/widgets/verse_options_menu.dart';
+import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_cubit.dart';
+import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_state.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/widgets/base_app_dialog.dart';
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../repository/tafsir_repository.dart';
-import '../../viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
-import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
-import '../utils/quran_position_helper.dart';
-import 'create_share_tafsir.dart';
-import 'tafsir_selection_dialog.dart';
-import 'verse_options_menu.dart';
 
 class MushafView extends StatefulWidget {
   const MushafView({
@@ -46,11 +46,12 @@ class MushafView extends StatefulWidget {
 
 class _MushafViewState extends State<MushafView> {
   late PageController _pageController;
-  StreamSubscription? _playerSub;
+  StreamSubscription<QuranPlayerState>? _playerSub;
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
   final ValueNotifier<int?> currentSurahNotifier = ValueNotifier(null);
   final TafsirRepository _tafsirRepository = TafsirRepository();
   final Map<String, GlobalKey> _ayahKeys = {};
+  bool _initialScrollDone = false;
 
   @override
   void initState() {
@@ -103,15 +104,17 @@ class _MushafViewState extends State<MushafView> {
           if (targetIndex >= 0 && targetIndex <= maxIndex) {
             if (_pageController.hasClients) {
               if ((_pageController.page?.round() ?? 0) != targetIndex) {
-                _pageController
-                    .animateToPage(
-                      targetIndex,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    )
-                    .then((_) {
-                      _scrollToCurrentAyah();
-                    });
+                unawaited(
+                  _pageController
+                      .animateToPage(
+                        targetIndex,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      )
+                      .then((_) {
+                        _scrollToCurrentAyah();
+                      }),
+                );
               } else {
                 _scrollToCurrentAyah();
               }
@@ -121,44 +124,46 @@ class _MushafViewState extends State<MushafView> {
       }
     });
 
-    final playerState = context.read<QuranPlayerCubit>().state;
-    // Only use player state for initial positioning if it's relevant to this view
-    final isRelevantState =
-        playerState.currentSurah != null &&
-        playerState.currentAyah != null &&
-        playerState.currentSurah == widget.surahNumber &&
-        playerState.currentAyah! >= 1 &&
-        playerState.currentAyah! <=
-            quran.getVerseCount(playerState.currentSurah!);
-    if (isRelevantState) {
-      currentAyahNotifier.value = playerState.currentAyah;
-      currentSurahNotifier.value = playerState.currentSurah;
+    // Guard: only perform initial scroll positioning once per widget lifetime
+    if (!_initialScrollDone) {
+      final playerState = context.read<QuranPlayerCubit>().state;
+      // Only use player state for initial positioning if it's relevant to this view
+      final isRelevantState =
+          playerState.currentSurah != null &&
+          playerState.currentAyah != null &&
+          playerState.currentSurah == widget.surahNumber &&
+          playerState.currentAyah! >= 1 &&
+          playerState.currentAyah! <=
+              quran.getVerseCount(playerState.currentSurah!);
+      if (isRelevantState) {
+        _initialScrollDone = true;
+        currentAyahNotifier.value = playerState.currentAyah;
+        currentSurahNotifier.value = playerState.currentSurah;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final page = quran.getPageNumber(
-          playerState.currentSurah!,
-          playerState.currentAyah!,
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final page = quran.getPageNumber(
+            playerState.currentSurah!,
+            playerState.currentAyah!,
+          );
 
-        int targetIndex;
-        if (widget.fromPage != null) {
-          targetIndex = page - widget.fromPage!;
-        } else {
-          targetIndex = page - 1;
-        }
-
-        if (_pageController.hasClients) {
-          if ((_pageController.page?.round() ?? 0) != targetIndex) {
-            _pageController.jumpToPage(targetIndex);
+          int targetIndex;
+          if (widget.fromPage != null) {
+            targetIndex = page - widget.fromPage!;
+          } else {
+            targetIndex = page - 1;
           }
-          // Use a small delay to ensure page content is built before scrolling to ayah
-          Future.delayed(const Duration(milliseconds: 100), () {
-            if (mounted) {
-              _scrollToCurrentAyah();
+
+          if (_pageController.hasClients) {
+            if ((_pageController.page?.round() ?? 0) != targetIndex) {
+              _pageController.jumpToPage(targetIndex);
             }
-          });
-        }
-      });
+            // Use addPostFrameCallback instead of Future.delayed for deterministic timing
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _scrollToCurrentAyah();
+            });
+          }
+        });
+      }
     }
   }
 
@@ -173,24 +178,24 @@ class _MushafViewState extends State<MushafView> {
     final ctx = key.currentContext;
     if (ctx == null) return;
 
-    Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 400),
-      alignment: 0.4,
+    unawaited(
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 400),
+        alignment: 0.4,
+      ),
     );
   }
 
   @override
   void dispose() {
-    _playerSub?.cancel();
+    unawaited(_playerSub?.cancel());
     _pageController.dispose();
     currentAyahNotifier.dispose();
     currentSurahNotifier.dispose();
     super.dispose();
   }
 
-  // Performance Optimization: Extracted gesture recognition logic
-  // into the MushafPageContent implementation.
   Future<void> _onAyahTap(
     int surah,
     int ayah,
@@ -212,21 +217,21 @@ class _MushafViewState extends State<MushafView> {
     }
   }
 
-  // Removed old _createGestureRecognizer as it's now handled in MushafPageContent.
-
   void _handlePlay(int surah, int ayah) {
     if (mounted) {
-      context.read<QuranPlayerCubit>().seekToAyah(surah, ayah);
-      context.read<QuranPlayerCubit>().play();
+      unawaited(context.read<QuranPlayerCubit>().seekToAyah(surah, ayah));
+      unawaited(context.read<QuranPlayerCubit>().play());
     }
   }
 
   void _handleBookmark(int surah, int ayah, String text) {
     if (mounted) {
-      context.read<BookmarksCubit>().addBookmark(
-        surah: surah,
-        ayah: ayah,
-        ayahText: text,
+      unawaited(
+        context.read<BookmarksCubit>().addBookmark(
+          surah: surah,
+          ayah: ayah,
+          ayahText: text,
+        ),
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -243,7 +248,7 @@ class _MushafViewState extends State<MushafView> {
   Future<void> _handleTafsir(int surah, int ayah, String text) async {
     if (!mounted) return;
 
-    final Map<String, dynamic>? selectedTafsir =
+    final selectedTafsir =
         await TafsirSelectionDialog.show(
           context,
           localizations: widget.localizations,
@@ -253,16 +258,16 @@ class _MushafViewState extends State<MushafView> {
     if (selectedTafsir == null) return;
 
     if (mounted) {
-      BaseAppDialog.showLoading(context);
+      await BaseAppDialog.showLoading(context);
     }
     final tafsirText = await _tafsirRepository.fetchTafsirById(
-      selectedTafsir['id'],
+      selectedTafsir['id'] as int,
       surah,
       ayah,
     );
-    final selectedTafsirName = widget.isArabic
+    final selectedTafsirName = (widget.isArabic
         ? selectedTafsir['name_ar']
-        : selectedTafsir['name_en'];
+        : selectedTafsir['name_en']) as String;
     final surahName = widget.isArabic
         ? quran.getSurahNameArabic(surah)
         : quran.getSurahName(surah);
@@ -270,12 +275,13 @@ class _MushafViewState extends State<MushafView> {
     if (mounted) Navigator.pop(context);
 
     if (mounted) {
-      showCustomModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        minChildSize: 0.3,
-        initialChildSize: 0.7,
-        maxChildSize: 0.9,
+      unawaited(
+        showCustomModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          minChildSize: 0.3,
+          initialChildSize: 0.7,
+          maxChildSize: 0.9,
         builder: (context) => SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -319,7 +325,7 @@ class _MushafViewState extends State<MushafView> {
                   height: 52.toH,
                   child: ElevatedButton(
                     onPressed: () async {
-                      BaseAppDialog.showLoading(
+                      await BaseAppDialog.showLoading(
                         context,
                         message: widget.isArabic
                             ? 'جاري إنشاء الصور...'
@@ -327,6 +333,7 @@ class _MushafViewState extends State<MushafView> {
                       );
 
                       try {
+                        if (!context.mounted) return;
                         final result = await TafsirShareService()
                             .createAndShare(
                               surahName: surahName,
@@ -341,7 +348,7 @@ class _MushafViewState extends State<MushafView> {
                         if (context.mounted) Navigator.pop(context);
 
                         if (!result.success && context.mounted) {
-                          BaseAppDialog.show(
+                          await BaseAppDialog.show<void>(
                             context,
                             title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
                             contentText: result.errorMessage ?? '',
@@ -353,12 +360,12 @@ class _MushafViewState extends State<MushafView> {
                             ],
                           );
                         }
-                      } catch (e) {
+                      } on Object catch (e) {
                         if (context.mounted && Navigator.canPop(context)) {
                           Navigator.of(context).pop();
                         }
                         if (context.mounted) {
-                          BaseAppDialog.show(
+                          await BaseAppDialog.show<void>(
                             context,
                             title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
                             contentText: e.toString().replaceAll(
@@ -382,9 +389,10 @@ class _MushafViewState extends State<MushafView> {
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -459,7 +467,7 @@ class MushafPage extends StatefulWidget {
   final ValueNotifier<int?> currentAyahNotifier;
   final ValueNotifier<int?> currentSurahNotifier;
   final Map<String, GlobalKey> ayahKeys;
-  final Function(int surah, int ayah, String text, Offset position) onAyahTap;
+  final void Function(int surah, int ayah, String text, Offset position) onAyahTap;
 
   @override
   State<MushafPage> createState() => _MushafPageState();
@@ -468,7 +476,12 @@ class MushafPage extends StatefulWidget {
 class _MushafPageState extends State<MushafPage> {
   late final List<dynamic> _pageData;
   final Map<String, TapGestureRecognizer> _recognizers = {};
+  // Pre-cached verse texts so _buildSpans never calls quran.getVerse at paint time
   final Map<String, String> _verseTexts = {};
+  // Pre-cached end symbols keyed by ayah number (display-language-independent)
+  final Map<String, String> _endSymbols = {};
+  // Flat ordered list of (surah, ayah) pairs for _buildSpans iteration
+  late final List<(int, int)> _ayahOrder;
 
   @override
   void initState() {
@@ -478,17 +491,24 @@ class _MushafPageState extends State<MushafPage> {
   }
 
   void _initData() {
-    for (var data in _pageData) {
+    final order = <(int, int)>[];
+    for (final data in _pageData) {
       final rowData = data as Map<String, dynamic>;
       final surah = rowData['surah'] as int;
       final start = rowData['start'] as int;
       final end = rowData['end'] as int;
 
-      for (int ayah = start; ayah <= end; ayah++) {
+      for (var ayah = start; ayah <= end; ayah++) {
         final keyString = '${surah}_$ayah';
+        order.add((surah, ayah));
         if (!_recognizers.containsKey(keyString)) {
           final text = quran.getVerse(surah, ayah);
           _verseTexts[keyString] = text;
+          // Cache end symbol for both Arabic and non-Arabic numerals
+          _endSymbols['${keyString}_ar'] =
+              quran.getVerseEndSymbol(ayah);
+          _endSymbols['${keyString}_en'] =
+              quran.getVerseEndSymbol(ayah, arabicNumeral: false);
           _recognizers[keyString] = TapGestureRecognizer()
             ..onTapDown = (details) {
               widget.onAyahTap(surah, ayah, text, details.globalPosition);
@@ -496,11 +516,12 @@ class _MushafPageState extends State<MushafPage> {
         }
       }
     }
+    _ayahOrder = order;
   }
 
   @override
   void dispose() {
-    for (var recognizer in _recognizers.values) {
+    for (final recognizer in _recognizers.values) {
       recognizer.dispose();
     }
     super.dispose();
@@ -523,12 +544,13 @@ class _MushafPageState extends State<MushafPage> {
           ),
         ),
         const Divider(),
-        // Optimized: Build static text spans once, only highlight widgets rebuild
+        // Only the highlight-color layer rebuilds on ayah changes; text/symbols are pre-cached.
         _OptimizedMushafText(
-          pageData: _pageData,
+          ayahOrder: _ayahOrder,
           isArabic: widget.isArabic,
           recognizers: _recognizers,
           verseTexts: _verseTexts,
+          endSymbols: _endSymbols,
           ayahKeys: widget.ayahKeys,
           currentAyahNotifier: widget.currentAyahNotifier,
           currentSurahNotifier: widget.currentSurahNotifier,
@@ -538,22 +560,27 @@ class _MushafPageState extends State<MushafPage> {
   );
 }
 
-// Optimized widget that only rebuilds highlighting, not the entire text
+// Optimized widget: rebuilds only the text-highlight layer on ayah changes.
+// All verse text, end-symbols and recognizers are pre-cached by the parent State.
 class _OptimizedMushafText extends StatelessWidget {
   const _OptimizedMushafText({
-    required this.pageData,
+    required this.ayahOrder,
     required this.isArabic,
     required this.recognizers,
     required this.verseTexts,
+    required this.endSymbols,
     required this.ayahKeys,
     required this.currentAyahNotifier,
     required this.currentSurahNotifier,
   });
 
-  final List<dynamic> pageData;
+  /// Flat ordered list of (surah, ayah) pairs — pre-built in initState.
+  final List<(int, int)> ayahOrder;
   final bool isArabic;
   final Map<String, TapGestureRecognizer> recognizers;
   final Map<String, String> verseTexts;
+  /// Pre-cached end symbols: key = '${surah}_${ayah}_ar' or '_en'.
+  final Map<String, String> endSymbols;
   final Map<String, GlobalKey> ayahKeys;
   final ValueNotifier<int?> currentAyahNotifier;
   final ValueNotifier<int?> currentSurahNotifier;
@@ -580,52 +607,44 @@ class _OptimizedMushafText extends StatelessWidget {
     ),
   );
 
+  /// Assembles spans using only pre-cached data — no Quran package calls at paint time.
   List<InlineSpan> _buildSpans(
     BuildContext context,
     int? currentSurah,
     int? currentAyah,
   ) {
+    final symbolSuffix = isArabic ? '_ar' : '_en';
     final spans = <InlineSpan>[];
 
-    for (var data in pageData) {
-      final rowData = data as Map<String, dynamic>;
-      final surah = rowData['surah'] as int;
-      final start = rowData['start'] as int;
-      final end = rowData['end'] as int;
+    for (final (surah, ayah) in ayahOrder) {
+      final isCurrent = ayah == currentAyah && surah == currentSurah;
+      final keyString = '${surah}_$ayah';
+      final text = verseTexts[keyString] ?? '';
+      final endSymbol = endSymbols['$keyString$symbolSuffix'] ?? '';
 
-      for (int ayah = start; ayah <= end; ayah++) {
-        final isCurrent = ayah == currentAyah && surah == currentSurah;
-        final keyString = '${surah}_$ayah';
-        final text = verseTexts[keyString] ?? '';
-        final endSymbol = quran.getVerseEndSymbol(
-          ayah,
-          arabicNumeral: isArabic,
-        );
+      // Ensure key exists for scrolling
+      final key = ayahKeys.putIfAbsent(keyString, GlobalKey.new);
 
-        // Ensure key exists for scrolling
-        final key = ayahKeys.putIfAbsent(keyString, () => GlobalKey());
-
-        spans
-          ..add(
-            WidgetSpan(
-              alignment: PlaceholderAlignment.top,
-              child: SizedBox(key: key, width: 0, height: 0),
+      spans
+        ..add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.top,
+            child: SizedBox.shrink(key: key),
+          ),
+        )
+        ..add(
+          TextSpan(
+            text: '$text ',
+            style: TextStyle(
+              color: isCurrent ? context.colorScheme.error : null,
+              backgroundColor: isCurrent
+                  ? context.colorScheme.error.withValues(alpha: 0.1)
+                  : null,
             ),
-          )
-          ..add(
-            TextSpan(
-              text: '$text ',
-              style: TextStyle(
-                color: isCurrent ? context.colorScheme.error : null,
-                backgroundColor: isCurrent
-                    ? context.colorScheme.error.withValues(alpha: 0.1)
-                    : null,
-              ),
-              recognizer: recognizers[keyString],
-            ),
-          )
-          ..add(TextSpan(text: '$endSymbol '));
-      }
+            recognizer: recognizers[keyString],
+          ),
+        )
+        ..add(TextSpan(text: '$endSymbol '));
     }
     return spans;
   }

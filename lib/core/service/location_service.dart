@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../widgets/location_disclosure_dialog.dart';
+import 'package:muslim/core/widgets/location_disclosure_dialog.dart';
 
 class LocationService {
   Stream<ServiceStatus> get serviceStatusStream =>
       Geolocator.getServiceStatusStream();
 
   Future<bool> isLocationEnabled() async =>
-      await Geolocator.isLocationServiceEnabled();
+      Geolocator.isLocationServiceEnabled();
 
   Future<LocationStatus> checkLocationStatus([BuildContext? context]) async {
     final enabled = await Geolocator.isLocationServiceEnabled();
@@ -27,7 +27,7 @@ class LocationService {
           ),
         );
 
-        if (accepted == true) {
+        if (accepted ?? false) {
           await LocationDisclosureDialog.markAsShown();
           permission = await Geolocator.requestPermission();
         }
@@ -55,7 +55,7 @@ class LocationService {
       return null;
     }
 
-    return await Geolocator.getCurrentPosition();
+    return Geolocator.getCurrentPosition();
   }
 }
 

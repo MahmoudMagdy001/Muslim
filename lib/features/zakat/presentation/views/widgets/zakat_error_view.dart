@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ZakatErrorView extends StatelessWidget {
   const ZakatErrorView({

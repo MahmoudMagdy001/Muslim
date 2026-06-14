@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/local_prayer_times.dart';
-import '../repositories/prayer_notification_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_notification_repository.dart';
 
 class ScheduleNotificationsUseCase
     implements UseCase<void, List<LocalPrayerTimes>> {
@@ -16,7 +16,7 @@ class ScheduleNotificationsUseCase
     try {
       await repository.scheduleNotifications(params);
       return const Right(null);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

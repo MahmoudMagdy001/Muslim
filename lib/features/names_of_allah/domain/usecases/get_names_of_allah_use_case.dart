@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/name_of_allah_entity.dart';
-import '../repositories/names_of_allah_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
 
 class GetNamesOfAllahUseCase
     implements UseCase<List<NameOfAllahEntity>, NoParams> {
@@ -14,5 +14,5 @@ class GetNamesOfAllahUseCase
   @override
   Future<Either<Failure, List<NameOfAllahEntity>>> call(
     NoParams params,
-  ) async => await repository.getNamesOfAllah();
+  ) async => repository.getNamesOfAllah();
 }

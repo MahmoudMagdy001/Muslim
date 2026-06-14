@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../../../../../../../core/utils/extensions.dart';
-import '../../../../../../../core/utils/format_helper.dart';
-import '../../../../../../../core/utils/responsive_helper.dart';
-import '../../../../../../../l10n/app_localizations.dart';
-import '../../../../../domain/entities/hadith_entity.dart';
-import '../../../../cubit/hadith_cubit.dart';
-import 'hadith_card_header.dart';
-import 'hadith_meta_data.dart';
-import 'hadith_text.dart';
+import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_card_header.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_meta_data.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_text.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class HadithCard extends StatelessWidget {
   const HadithCard({
@@ -24,23 +25,25 @@ class HadithCard extends StatelessWidget {
   final bool isArabic;
   final AppLocalizations localizations;
   final HadithCubit cubit;
-  final Function(String) onShowSnackBar;
+  final void Function(String) onShowSnackBar;
 
   void _onBookmarkPressed() {
-    cubit.toggleHadithSave(hadith, isArabic).then((_) {
-      final isSaved = cubit.isHadithSaved(hadith.id);
-      final message = isSaved
-          ? 'تم حفظ الحديث رقم: ${convertToArabicNumbers(hadith.id)}'
-          : 'تم إزالة الحديث رقم: ${convertToArabicNumbers(hadith.id)}';
-      onShowSnackBar(message);
-    });
+    unawaited(
+      cubit.toggleHadithSave(hadith, isArabic: isArabic).then((_) {
+        final isSaved = cubit.isHadithSaved(hadith.id);
+        final message = isSaved
+            ? 'تم حفظ الحديث رقم: ${convertToArabicNumbers(hadith.id)}'
+            : 'تم إزالة الحديث رقم: ${convertToArabicNumbers(hadith.id)}';
+        onShowSnackBar(message);
+      }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final heading = isArabic ? hadith.headingArabic : hadith.headingEnglish;
     final text = isArabic ? hadith.hadithArabic : hadith.hadithEnglish;
-    final status = cubit.getStatus(hadith.status, isArabic);
+    final status = cubit.getStatus(hadith.status, isArabic: isArabic);
 
     return RepaintBoundary(
       child: Card(

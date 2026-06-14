@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../core/utils/extensions.dart';
-import '../../../../../../../core/utils/format_helper.dart';
-import '../../../../../../../core/utils/responsive_helper.dart';
-import '../../../../helper/hadith_helper.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/hadith/presentation/helper/hadith_helper.dart';
 
 class SavedHadithCard extends StatefulWidget {
   const SavedHadithCard({
@@ -74,11 +74,11 @@ class _SavedHadithCardState extends State<SavedHadithCard> {
     final theme = context.theme;
     final chapterName = widget.hadith['chapterName'];
     final chapterNumber = convertToArabicNumbers(
-      widget.hadith['chapterNumber'],
+      widget.hadith['chapterNumber'] as String,
     );
-    final chapterId = convertToArabicNumbers(widget.hadith['id']);
+    final chapterId = convertToArabicNumbers(widget.hadith['id'].toString());
     final needsExpandButton = _needsExpandButton(
-      widget.hadith['text'],
+      widget.hadith['text'] as String,
       context,
     );
 
@@ -111,7 +111,7 @@ class _SavedHadithCardState extends State<SavedHadithCard> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        widget.hadith['text'],
+                        widget.hadith['text'] as String,
                         style: theme.textTheme.titleMedium?.copyWith(
                           height: 1.8,
                         ),
@@ -137,7 +137,7 @@ class _SavedHadithCardState extends State<SavedHadithCard> {
                     Text(
                       'الحكم: ${widget.hadith['status']}',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: _getStatusColor(widget.hadith['status']),
+                        color: _getStatusColor(widget.hadith['status'] as String),
                         fontWeight: FontWeight.bold,
                       ),
                     ),

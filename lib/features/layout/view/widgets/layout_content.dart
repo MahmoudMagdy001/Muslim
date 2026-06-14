@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../prayer_times/presentation/views/prayer_times_view.dart';
-import 'daily_verse_card.dart';
-import 'dashboard_list.dart';
-import 'zakat_card_widget.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/layout/view/widgets/daily_verse_card.dart';
+import 'package:muslim/features/layout/view/widgets/dashboard_list.dart';
+import 'package:muslim/features/layout/view/widgets/zakat_card_widget.dart';
+import 'package:muslim/features/prayer_times/presentation/views/prayer_times_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class LayoutContent extends StatelessWidget {
   const LayoutContent(

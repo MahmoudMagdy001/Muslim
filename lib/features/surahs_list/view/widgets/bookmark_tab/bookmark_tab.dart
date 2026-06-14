@@ -1,19 +1,19 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/quran/view/quran_view.dart';
+import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
+import 'package:muslim/features/surahs_list/view/widgets/bookmark_tab/bookmark_card.dart';
+import 'package:muslim/features/surahs_list/view/widgets/bookmark_tab/empty_bookmarks_state.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/navigation_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../core/widgets/base_app_dialog.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../../../quran/view/quran_view.dart';
-import '../../../../quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
-import '../../../../quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
-import 'bookmark_card.dart';
-import 'empty_bookmarks_state.dart';
 
 class BookmarksTab extends StatelessWidget {
   const BookmarksTab({
@@ -28,7 +28,7 @@ class BookmarksTab extends StatelessWidget {
   final bool isArabic;
 
   Future<void> _openBookmark(BuildContext context, int surah, int ayah) async {
-    await navigateWithTransition(
+    await navigateWithTransition<void>(
       type: TransitionType.fade,
       context,
       QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
@@ -43,7 +43,7 @@ class BookmarksTab extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (cubit.state.bookmarks.isEmpty &&
           cubit.state.status != BookmarksStatus.loading) {
-        cubit.load();
+        unawaited(cubit.load());
       }
     });
 
@@ -128,7 +128,7 @@ class BookmarksTab extends StatelessWidget {
                           isArabic,
                         );
 
-                        if (confirmed == true) {
+                        if (confirmed ?? false) {
                           await cubit.removeBookmark(
                             surah: bookmark.surahNumber,
                             ayah: bookmark.ayahNumber,

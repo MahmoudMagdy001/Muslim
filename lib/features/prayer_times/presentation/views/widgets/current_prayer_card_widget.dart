@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/prayer_consts.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/time_left_format.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../../domain/entities/prayer_type.dart';
-import '../../cubit/prayer_times_cubit.dart';
-import '../../cubit/prayer_times_state.dart';
-import '../../helper/prayer_consts.dart';
-import '../../helper/time_left_format.dart';
 
 class CurrentPrayerCard extends StatelessWidget {
   const CurrentPrayerCard({
@@ -45,7 +44,7 @@ class CurrentPrayerCard extends StatelessWidget {
             : DateTime.now();
 
         // Calculate real progress
-        double progress = 0.0;
+        var progress = 0.0;
         if (previous != null && state.timeLeft != null) {
           final totalInterval = nextDateTime.difference(previous).inSeconds;
           if (totalInterval > 0) {
@@ -89,7 +88,10 @@ class CurrentPrayerCard extends StatelessWidget {
                                 _CityText(theme),
                               ],
                             ),
-                            _RefreshButton(localizations, isArabic),
+                             _RefreshButton(
+                               localizations: localizations,
+                               isArabic: isArabic,
+                             ),
                           ],
                         ),
                       ),
@@ -98,7 +100,7 @@ class CurrentPrayerCard extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.toH),
                         child: Stack(
-                          alignment: .center,
+                          alignment: Alignment.center,
                           children: [
                             CustomPaint(
                               size: Size(200.toW, 180.toH),
@@ -108,11 +110,11 @@ class CurrentPrayerCard extends StatelessWidget {
                               ),
                             ),
                             Column(
-                              mainAxisSize: .min,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                _NextPrayerName(theme, isArabic),
-                                SizedBox(height: 4.toH),
-                                _TimeLeftText(theme, isArabic),
+                                 _NextPrayerName(theme: theme, isArabic: isArabic),
+                                 SizedBox(height: 4.toH),
+                                 _TimeLeftText(theme: theme, isArabic: isArabic),
                               ],
                             ),
                           ],
@@ -141,7 +143,10 @@ class CurrentPrayerCard extends StatelessWidget {
                                       label: prayer.displayName(
                                         isArabic: isArabic,
                                       ),
-                                      time: formatTo12Hour(timing, isArabic),
+                                       time: formatTo12Hour(
+                                         timing,
+                                         isArabic: isArabic,
+                                       ),
                                       isNext: isNext,
                                       theme: theme,
                                       iconPath: visual.assetPath,
@@ -239,7 +244,7 @@ class _CityText extends StatelessWidget {
 }
 
 class _NextPrayerName extends StatelessWidget {
-  const _NextPrayerName(this.theme, this.isArabic);
+  const _NextPrayerName({required this.theme, required this.isArabic});
   final ThemeData theme;
   final bool isArabic;
 
@@ -258,7 +263,7 @@ class _NextPrayerName extends StatelessWidget {
 }
 
 class _TimeLeftText extends StatelessWidget {
-  const _TimeLeftText(this.theme, this.isArabic);
+  const _TimeLeftText({required this.theme, required this.isArabic});
   final ThemeData theme;
   final bool isArabic;
 
@@ -269,7 +274,7 @@ class _TimeLeftText extends StatelessWidget {
         builder: (context, timeLeft) => Text(
           formatTimeLeft(
             timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
-            isArabic,
+            isArabic: isArabic,
           ),
           style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
         ),
@@ -277,17 +282,19 @@ class _TimeLeftText extends StatelessWidget {
 }
 
 class _RefreshButton extends StatelessWidget {
-  const _RefreshButton(this.localizations, this.isArabic);
+  const _RefreshButton({required this.localizations, required this.isArabic});
   final AppLocalizations localizations;
   final bool isArabic;
 
   @override
   Widget build(BuildContext context) => IconButton(
     onPressed: () async {
-      HapticFeedback.heavyImpact();
-      await context.read<PrayerTimesCubit>().refreshPrayerTimes(
-        isArabic: isArabic,
-      );
+      await HapticFeedback.heavyImpact();
+      if (context.mounted) {
+        await context.read<PrayerTimesCubit>().refreshPrayerTimes(
+          isArabic: isArabic,
+        );
+      }
     },
     icon: const Icon(Icons.refresh_rounded, color: Colors.white),
     tooltip: localizations.updatePrayerTimes,
@@ -306,8 +313,8 @@ class _PrayerProgressPainter extends CustomPainter {
     final radius = (size.width - 19) / 2;
     final rect = Rect.fromCircle(center: center, radius: radius);
 
-    const double startAngle = 0.65 * 3.141592653589793;
-    const double totalSweep = 1.7 * 3.141592653589793;
+    const startAngle = 0.65 * 3.141592653589793;
+    const totalSweep = 1.7 * 3.141592653589793;
 
     final backgroundPaint = Paint()
       ..color = Colors.white12

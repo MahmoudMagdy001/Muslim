@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../cubit/qiblah_cubit.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
 
 class QiblahErrorWidget extends StatelessWidget {
   const QiblahErrorWidget({required this.message, super.key});

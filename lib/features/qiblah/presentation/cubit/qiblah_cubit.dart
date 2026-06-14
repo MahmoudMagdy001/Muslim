@@ -7,13 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/service/location_service.dart';
+import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';
+import 'package:muslim/features/qiblah/domain/usecases/get_qiblah_stream_usecase.dart';
+import 'package:muslim/features/qiblah/presentation/cubit/qiblah_state.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/service/location_service.dart';
-import '../../domain/entities/qiblah_direction_entity.dart';
-import '../../domain/usecases/get_qiblah_stream_usecase.dart';
-import 'qiblah_state.dart';
 
 class QiblahCubit extends Cubit<QiblahState> {
   QiblahCubit({
@@ -60,7 +59,7 @@ class QiblahCubit extends Cubit<QiblahState> {
           await _handleLocationServiceDisabled();
         }
       },
-      onError: (error) {
+      onError: (Object error) {
         if (!isClosed) {
           emit(
             state.copyWith(
@@ -102,7 +101,7 @@ class QiblahCubit extends Cubit<QiblahState> {
           );
         }
       }
-    } catch (error) {
+    } on Object catch (error) {
       if (!isClosed) {
         emit(
           state.copyWith(
@@ -134,7 +133,7 @@ class QiblahCubit extends Cubit<QiblahState> {
         )
         .listen(
           _handleQiblahData,
-          onError: (error) {
+          onError: (Object error) {
             if (!isClosed) {
               emit(
                 state.copyWith(
@@ -174,7 +173,7 @@ class QiblahCubit extends Cubit<QiblahState> {
 
   void _triggerHapticFeedback(bool isAligned) {
     if (isAligned && !_hasTriggeredFeedback) {
-      HapticFeedback.heavyImpact();
+      unawaited(HapticFeedback.heavyImpact());
       _hasTriggeredFeedback = true;
     } else if (!isAligned) {
       _hasTriggeredFeedback = false;

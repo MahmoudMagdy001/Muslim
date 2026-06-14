@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../model/juz_model.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/juz_model.dart';
 
 class JuzListTile extends StatelessWidget {
   const JuzListTile({

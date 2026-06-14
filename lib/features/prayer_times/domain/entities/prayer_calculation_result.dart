@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
 /// Result of calculating the next/previous prayer from [LocalPrayerTimes].
 class PrayerCalculationResult extends Equatable {

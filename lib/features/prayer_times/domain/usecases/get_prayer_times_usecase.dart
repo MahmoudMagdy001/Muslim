@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/local_prayer_times.dart';
-import '../repositories/prayer_times_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_times_repository.dart';
 
 class GetPrayerTimesParams {
   const GetPrayerTimesParams({required this.isArabic, this.useLocation = true});
@@ -27,7 +27,7 @@ class GetPrayerTimesUseCase
         useLocation: params.useLocation,
       );
       return Right(result);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

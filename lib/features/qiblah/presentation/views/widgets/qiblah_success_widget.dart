@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'compass_widget.dart';
+import 'package:muslim/features/qiblah/presentation/views/widgets/compass_widget.dart';
 
 class QiblahSuccessWidget extends StatelessWidget {
   const QiblahSuccessWidget({

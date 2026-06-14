@@ -1,15 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../cubit/prayer_times_cubit.dart';
-import '../cubit/prayer_times_state.dart';
-import 'widgets/current_prayer_card_widget.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/views/widgets/current_prayer_card_widget.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class PrayerTimesView extends StatefulWidget {
   const PrayerTimesView({
@@ -30,7 +31,7 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
   void initState() {
     super.initState();
     final isArabic = widget.localizations.localeName == 'ar';
-    context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic);
+    unawaited(context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic));
   }
 
   @override
@@ -42,8 +43,8 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
       selector: (state) => state.status,
       builder: (context, status) {
         if (status == RequestStatus.failure) {
-          final message = context.select(
-            (PrayerTimesCubit cubit) =>
+          final message = context.select<PrayerTimesCubit, String>(
+            (cubit) =>
                 cubit.state.message ?? widget.localizations.errorMain,
           );
           return _PrayerErrorSliver(
@@ -117,7 +118,7 @@ class _PrayerSuccessSliver extends StatelessWidget {
     final theme = context.theme;
 
     final hijriDate = _getHijriDate(isArabic);
-    final String dayName = DateFormat.EEEE(
+    final dayName = DateFormat.EEEE(
       isArabic ? 'ar' : 'en',
     ).format(DateTime.now());
 

@@ -7,12 +7,12 @@ class AboutUsView extends StatelessWidget {
   final String appVersion;
 
   Future<void> _launchEmail(bool isArabic) async {
-    final String subject = Uri.encodeComponent(
+    final subject = Uri.encodeComponent(
       isArabic
           ? 'تواصل بخصوص التطبيق - مُسَلِّم'
           : 'Contact regarding the app - Muslim',
     );
-    final Uri emailLaunchUri = Uri.parse(
+    final emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
     );
     if (await canLaunchUrl(emailLaunchUri)) {
@@ -21,7 +21,7 @@ class AboutUsView extends StatelessWidget {
   }
 
   Future<void> _launchWebsite() async {
-    final Uri websiteUri = Uri.parse('https://github.com/MahmoudMagdy001');
+    final websiteUri = Uri.parse('https://github.com/MahmoudMagdy001');
     if (await canLaunchUrl(websiteUri)) {
       await launchUrl(websiteUri, mode: LaunchMode.externalApplication);
     }
@@ -30,7 +30,7 @@ class AboutUsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = theme.textTheme;
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       appBar: AppBar(title: Text(isArabic ? 'من نحن' : 'About Us')),

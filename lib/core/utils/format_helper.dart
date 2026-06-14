@@ -79,7 +79,7 @@ String getEnglishHijriMonthName(int month) {
   }
 }
 
-String formatTo12Hour(String time24, bool isArabic) {
+String formatTo12Hour(String time24, {required bool isArabic}) {
   try {
     final date = DateFormat('HH:mm').parse(time24);
     final formatted = DateFormat('hh:mm a').format(date);
@@ -87,7 +87,7 @@ String formatTo12Hour(String time24, bool isArabic) {
     return convertToArabicNumbers(
       formatted.replaceAll('AM', 'ص').replaceAll('PM', 'م'),
     );
-  } catch (e) {
+  } on Object catch (_) {
     return time24;
   }
 }

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../core/error/failures.dart';
-import '../models/chapter_of_book_model.dart';
-import '../models/hadith_book_model.dart';
-import '../models/hadith_model.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/hadith/data/models/chapter_of_book_model.dart';
+import 'package:muslim/features/hadith/data/models/hadith_book_model.dart';
+import 'package:muslim/features/hadith/data/models/hadith_model.dart';
 
 abstract class HadithRemoteDataSource {
   Future<List<HadithBookModel>> fetchBooks();
@@ -44,7 +44,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      final List booksJson = (data['books'] as List?) ?? [];
+      final booksJson = (data['books'] as List?) ?? [];
       return booksJson
           .map((json) => HadithBookModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -63,7 +63,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      final List chaptersJson = (data['chapters'] as List?) ?? [];
+      final chaptersJson = (data['chapters'] as List?) ?? [];
       return chaptersJson
           .map(
             (json) => ChapterOfBookModel.fromJson(json as Map<String, dynamic>),
@@ -99,8 +99,8 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
 
     final firstData = await compute(_decodeJson, firstResponse.body);
     final hadithsMap = firstData['hadiths'] as Map<String, dynamic>? ?? {};
-    final int totalPages = (hadithsMap['last_page'] as int?) ?? 1;
-    final List firstHadiths = (hadithsMap['data'] as List?) ?? [];
+    final totalPages = (hadithsMap['last_page'] as int?) ?? 1;
+    final firstHadiths = (hadithsMap['data'] as List?) ?? [];
 
     final allHadiths = <HadithModel>[
       ...firstHadiths.map(
@@ -150,7 +150,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
         if (response.statusCode == 200) {
           final data = await compute(_decodeJson, response.body);
           final hadithsMap = data['hadiths'] as Map<String, dynamic>? ?? {};
-          final List hadithsJson = (hadithsMap['data'] as List?) ?? [];
+          final hadithsJson = (hadithsMap['data'] as List?) ?? [];
           allHadiths.addAll(
             hadithsJson
                 .map((e) => HadithModel.fromJson(e as Map<String, dynamic>))
@@ -159,7 +159,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
         }
       }
 
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
     }
   }
 
@@ -179,7 +179,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
 
     final firstPageData = await compute(_decodeJson, firstPageResponse.body);
     final hadithsMap = firstPageData['hadiths'] as Map<String, dynamic>? ?? {};
-    final int totalPages = (hadithsMap['last_page'] as int?) ?? 1;
+    final totalPages = (hadithsMap['last_page'] as int?) ?? 1;
 
     return {'firstPageData': firstPageData, 'totalPages': totalPages};
   }
@@ -197,7 +197,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
     if (targetPageResponse.statusCode != 200) {
       throw const ServerFailure('Failed to fetch random page of hadiths');
     }
-    return await compute(_decodeJson, targetPageResponse.body);
+    return compute(_decodeJson, targetPageResponse.body);
   }
 }
 

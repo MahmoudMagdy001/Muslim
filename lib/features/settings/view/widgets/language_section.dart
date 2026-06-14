@@ -1,13 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../view_model/language/language_cubit.dart';
-import '../../view_model/language/language_state.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/settings/view_model/language/language_cubit.dart';
+import 'package:muslim/features/settings/view_model/language/language_state.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class LanguageSection extends StatelessWidget {
   const LanguageSection({
@@ -24,7 +24,7 @@ class LanguageSection extends StatelessWidget {
         builder: (context, state) {
           final currentLocale = state.locale;
 
-          final String title = currentLocale.languageCode == 'ar'
+          final title = currentLocale.languageCode == 'ar'
               ? localizations.arabicLanguage
               : localizations.englishLanguage;
 
@@ -44,8 +44,9 @@ class LanguageSection extends StatelessWidget {
     final theme = context.theme;
     final cubit = context.read<LanguageCubit>();
 
-    showCustomModalBottomSheet(
-      context: context,
+    unawaited(
+      showCustomModalBottomSheet<void>(
+        context: context,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -60,10 +61,12 @@ class LanguageSection extends StatelessWidget {
             ),
             value: const Locale('ar'),
             groupValue: currentLocale,
-            onChanged: (value) {
+            onChanged: (value) async {
               if (value != null) {
-                cubit.changeLanguage(value);
-                Navigator.pop(context);
+                await cubit.changeLanguage(value);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               }
             },
           ),
@@ -74,16 +77,18 @@ class LanguageSection extends StatelessWidget {
             ),
             value: const Locale('en'),
             groupValue: currentLocale,
-            onChanged: (value) {
+            onChanged: (value) async {
               if (value != null) {
-                cubit.changeLanguage(value);
-                Navigator.pop(context);
+                await cubit.changeLanguage(value);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               }
             },
           ),
           const SizedBox(height: 12),
         ],
       ),
-    );
+    ),);
   }
 }

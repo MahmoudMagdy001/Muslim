@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/service_locator.dart';
-import '../../service/quran_service.dart';
-import 'last_played_state.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
+import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played_state.dart';
 
 class LastPlayedCubit extends Cubit<LastPlayedState> {
   LastPlayedCubit([QuranService? quranService])
@@ -12,7 +12,7 @@ class LastPlayedCubit extends Cubit<LastPlayedState> {
       super(const LastPlayedState());
 
   final QuranService _quranService;
-  StreamSubscription? _lastPlayedSubscription;
+  StreamSubscription<Map<String, dynamic>?>? _lastPlayedSubscription;
 
   Future<void> initialize() async {
     // تحميل آخر استماع عند البدء
@@ -26,8 +26,8 @@ class LastPlayedCubit extends Cubit<LastPlayedState> {
   }
 
   @override
-  Future<void> close() {
-    _lastPlayedSubscription?.cancel();
+  Future<void> close() async {
+    await _lastPlayedSubscription?.cancel();
     return super.close();
   }
 }

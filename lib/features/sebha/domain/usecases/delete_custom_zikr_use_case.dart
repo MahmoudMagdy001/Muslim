@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../repositories/sebha_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/sebha/domain/repositories/sebha_repository.dart';
 
 class DeleteCustomZikrUseCase implements UseCase<bool, String> {
   DeleteCustomZikrUseCase(this.repository);

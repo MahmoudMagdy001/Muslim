@@ -1,20 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/features/names_of_allah/presentation/cubit/names_of_allah_cubit.dart';
+import 'package:muslim/features/names_of_allah/presentation/cubit/names_of_allah_state.dart';
+import 'package:muslim/features/names_of_allah/presentation/views/widgets/name_of_allah_card.dart';
+import 'package:muslim/features/names_of_allah/presentation/views/widgets/shareable_name_of_allah_card.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
-
-import '../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../domain/entities/name_of_allah_entity.dart';
-import '../cubit/names_of_allah_cubit.dart';
-import '../cubit/names_of_allah_state.dart';
-import 'widgets/name_of_allah_card.dart';
-import 'widgets/shareable_name_of_allah_card.dart';
 
 class NamesOfAllahScreen extends StatefulWidget {
   const NamesOfAllahScreen({super.key});
@@ -33,7 +33,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<NamesOfAllahCubit>().getNamesOfAllah();
+    unawaited(context.read<NamesOfAllahCubit>().getNamesOfAllah());
     _searchController.addListener(() {
       searchQueryNotifier.value = _searchController.text.trim();
     });
@@ -58,7 +58,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
     try {
       // Small delay to ensure UI updates before capture
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
       final imageBytes = await _screenshotController.captureFromWidget(
         ShareableNameOfAllahCard(data: data, isArabic: isArabic),
         delay: const Duration(milliseconds: 10),
@@ -77,7 +77,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
           subject: isArabic ? 'أسماء الله الحسني' : 'Names of Allah',
         ),
       );
-    } catch (e) {
+    } on Object catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

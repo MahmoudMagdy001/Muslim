@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_cubit.dart';
+import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_state.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../viewmodel/quran_player_cubit/quran_player_cubit.dart';
-import '../../viewmodel/quran_player_cubit/quran_player_state.dart';
 
 class PlayerControlsWidget extends StatelessWidget {
   const PlayerControlsWidget({super.key});
@@ -76,8 +75,8 @@ class _PlayerSlider extends StatelessWidget {
               max: state.totalDuration.inSeconds > 0
                   ? state.totalDuration.inSeconds.toDouble()
                   : 1,
-              onChanged: (value) {
-                context.read<QuranPlayerCubit>().seek(
+              onChanged: (value) async {
+                await context.read<QuranPlayerCubit>().seek(
                   Duration(seconds: (value as double).toInt()),
                 );
               },

@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:muslim/core/error/failures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../../core/error/failures.dart';
 
 abstract class AzkarLocalDataSource {
   Future<Map<String, dynamic>> loadAzkarFromAssets();
@@ -19,11 +18,11 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
   @override
   Future<Map<String, dynamic>> loadAzkarFromAssets() async {
     try {
-      final String response = await rootBundle.loadString(
+      final response = await rootBundle.loadString(
         'assets/json/zekr.json',
       );
       return json.decode(response) as Map<String, dynamic>;
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheFailure('Failed to load azkar from cache');
     }
   }
@@ -34,7 +33,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
       final prefs = await SharedPreferences.getInstance();
       final key = _generateKey(sourceUrl, index);
       await prefs.setInt(key, count);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheFailure('Failed to save azkar count');
     }
   }
@@ -45,7 +44,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
       final prefs = await SharedPreferences.getInstance();
       final key = _generateKey(sourceUrl, index);
       return prefs.getInt(key);
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheFailure('Failed to get azkar count');
     }
   }
@@ -70,14 +69,14 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
 
         await prefs.setString(_lastUpdateDateKey, today);
       }
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheFailure('Failed to clear azkar counts');
     }
   }
 
   String _generateKey(String sourceUrl, int index) {
     // Sanitize URL to use as part of the key
-    final sanitizedUrl = sourceUrl.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+    final sanitizedUrl = sourceUrl.replaceAll(RegExp('[^a-zA-Z0-9]'), '_');
     return '$_azkarCountPrefix${sanitizedUrl}_$index';
   }
 

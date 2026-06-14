@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 
-import '../utils/extensions.dart';
+import 'package:muslim/core/utils/extensions.dart';
 
 part 'app_colors.dart';
 part 'app_text_style.dart';
@@ -233,12 +233,12 @@ class AppThemeFactory {
 
   static final SwitchThemeData _lightSwitchTheme = SwitchThemeData(
     thumbColor: WidgetStateProperty.resolveWith<Color>(
-      (Set<WidgetState> states) => states.contains(WidgetState.selected)
+      (states) => states.contains(WidgetState.selected)
           ? AppColors.primary
           : AppColors.white,
     ),
     trackColor: WidgetStateProperty.resolveWith<Color>(
-      (Set<WidgetState> states) => states.contains(WidgetState.selected)
+      (states) => states.contains(WidgetState.selected)
           ? AppColors.primary.withAlpha((0.3 * 255).toInt())
           : AppColors.lightInactiveTrack,
     ),
@@ -246,12 +246,12 @@ class AppThemeFactory {
 
   static final SwitchThemeData _darkSwitchTheme = SwitchThemeData(
     thumbColor: WidgetStateProperty.resolveWith<Color>(
-      (Set<WidgetState> states) => states.contains(WidgetState.selected)
+      (states) => states.contains(WidgetState.selected)
           ? AppColors.secondary
           : Colors.grey,
     ),
     trackColor: WidgetStateProperty.resolveWith<Color>(
-      (Set<WidgetState> states) => states.contains(WidgetState.selected)
+      (states) => states.contains(WidgetState.selected)
           ? AppColors.secondary.withAlpha((0.3 * 255).toInt())
           : AppColors.darkInactiveTrack,
     ),

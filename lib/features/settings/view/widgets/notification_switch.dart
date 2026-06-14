@@ -1,17 +1,17 @@
+import 'dart:async';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/prayer_consts.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/service/permissions_sevice.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../prayer_times/domain/entities/prayer_notification_settings.dart';
-import '../../../prayer_times/domain/entities/prayer_type.dart';
-import '../../../prayer_times/presentation/helper/prayer_consts.dart';
-import '../../../prayer_times/presentation/cubit/prayer_times_cubit.dart';
-import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PUBLIC API
@@ -45,7 +45,7 @@ class _NotificationSectionState extends State<NotificationSection> {
     _controller = NotificationSettingsController(
       onSettingsChanged: _handleSettingsChange,
     );
-    _controller.loadSettings();
+    unawaited(_controller.loadSettings());
   }
 
   @override
@@ -86,13 +86,15 @@ class _NotificationSectionState extends State<NotificationSection> {
   }
 
   void _showNotificationSettingsModal(AppLocalizations localizations) {
-    showCustomModalBottomSheet(
-      context: context,
-      builder: (context) => NotificationSettingsModal(
-        theme: widget.theme,
-        localizations: localizations,
-        isArabic: widget.isArabic,
-        controller: _controller,
+    unawaited(
+      showCustomModalBottomSheet<void>(
+        context: context,
+        builder: (context) => NotificationSettingsModal(
+          theme: widget.theme,
+          localizations: localizations,
+          isArabic: widget.isArabic,
+          controller: _controller,
+        ),
       ),
     );
   }
@@ -142,7 +144,7 @@ class NotificationSettingsModal extends StatelessWidget {
     icon: Icons.auto_stories_rounded,
     title: localizations.enableQuranReminders,
     value: controller.settings.quranNotifications,
-    onChanged: controller.toggleQuranNotifications,
+    onChanged: (value) => controller.toggleQuranNotifications(value: value),
     theme: theme,
   );
 }
@@ -209,7 +211,7 @@ class _PerPrayerSettingsSection extends StatelessWidget {
     }
 
     if (context.mounted) {
-      context.read<PrayerTimesCubit>().togglePrayerNotification(
+      await context.read<PrayerTimesCubit>().togglePrayerNotification(
         prayer,
         enabled: value,
       );
@@ -277,8 +279,8 @@ class NotificationSettingsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleQuranNotifications(bool value) async {
-    await _repository.saveQuranNotifications(value);
+  Future<void> toggleQuranNotifications({required bool value}) async {
+    await _repository.saveQuranNotifications(value: value);
 
     _settings = _settings.copyWith(quranNotifications: value);
     notifyListeners();
@@ -311,7 +313,7 @@ class NotificationRepository {
     );
   }
 
-  Future<void> saveQuranNotifications(bool value) async {
+  Future<void> saveQuranNotifications({required bool value}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_quranNotificationsKey, value);
   }
@@ -329,7 +331,7 @@ class QuranNotificationService {
     try {
       await AwesomeNotifications().cancelSchedulesByChannelKey(_channelKey);
       debugPrint('تم إلغاء جميع إشعارات القرآن');
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       debugPrint('⚠️ حدث خطأ أثناء إلغاء إشعارات القرآن: $e');
       debugPrint(stackTrace.toString());
     }
@@ -339,7 +341,7 @@ class QuranNotificationService {
     try {
       await _clearExistingSchedules();
       await _createHourlyReminder();
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       debugPrint('❌ خطأ أثناء جدولة إشعار القرآن: $e');
       debugPrint(stackTrace.toString());
     }

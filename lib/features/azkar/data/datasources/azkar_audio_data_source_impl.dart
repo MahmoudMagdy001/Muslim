@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-
-import '../../domain/entities/azkar_audio_state.dart';
-import 'azkar_audio_data_source.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_audio_data_source.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
 
 class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
   AzkarAudioDataSourceImpl(this._audioPlayer) {
@@ -111,6 +110,6 @@ class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
 
   @override
   void dispose() {
-    _stateController.close();
+    unawaited(_stateController.close());
   }
 }

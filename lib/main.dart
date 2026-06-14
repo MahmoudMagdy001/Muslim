@@ -3,24 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/main/main_content/app_content.dart';
+import 'package:muslim/core/main/main_content/app_initializer.dart';
+import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
+import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
+import 'package:muslim/features/quran/service/bookmarks_service.dart';
+import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
+import 'package:muslim/features/settings/view_model/font_size/font_size_cubit.dart';
+import 'package:muslim/features/settings/view_model/language/language_cubit.dart';
+import 'package:muslim/features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
+import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
+import 'package:muslim/features/settings/view_model/theme/theme_cubit.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'core/di/service_locator.dart';
-import 'core/main/main_content/app_content.dart';
-import 'core/main/main_content/app_initializer.dart';
-import 'core/service/periodic_reminder_channel_factory.dart';
-import 'core/service/permissions_sevice.dart';
-import 'features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
-import 'features/prayer_times/presentation/helper/notification_channel_factory.dart';
-import 'features/prayer_times/presentation/helper/notification_constants.dart';
-import 'features/quran/service/bookmarks_service.dart';
-import 'features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
-import 'features/settings/view_model/font_size/font_size_cubit.dart';
-import 'features/settings/view_model/language/language_cubit.dart';
-import 'features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
-import 'features/settings/view_model/rectire/rectire_cubit.dart';
-import 'features/settings/view_model/theme/theme_cubit.dart';
-import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,7 +71,7 @@ Future<void> main() async {
 
       final initializer = AppInitializer(prefs);
       await initializer.initialize();
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Background initialization error: $e');
     }
   });
@@ -94,7 +93,7 @@ Future<void> _initializeNotificationChannels() async {
           createPrayerChannel(),
           createPeriodicReminderChannel(),
         ]);
-  } catch (e) {
+  } on Object catch (e) {
     debugPrint('Error initializing notification channels: $e');
   }
 }

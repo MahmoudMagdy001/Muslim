@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../../../../core/error/failures.dart';
+import 'package:muslim/core/error/failures.dart';
 
 abstract class AzkarRemoteDataSource {
   Future<Map<String, dynamic>> fetchAzkarContent(String url);
@@ -15,7 +15,7 @@ class AzkarRemoteDataSourceImpl implements AzkarRemoteDataSource {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         // Handle potential BOM (Byte Order Mark) or encoding issues
-        String body = utf8.decode(response.bodyBytes);
+        var body = utf8.decode(response.bodyBytes);
         // The API response starts with a BOM sometimes or follows a specific structure
         // Let's strip any non-json characters if they exist at the start
         if (body.startsWith('\uFEFF')) {
@@ -27,7 +27,7 @@ class AzkarRemoteDataSourceImpl implements AzkarRemoteDataSource {
       }
     } on ServerFailure {
       rethrow;
-    } catch (e) {
+    } on Object catch (_) {
       throw const ServerFailure('Failed to connect to server');
     }
   }

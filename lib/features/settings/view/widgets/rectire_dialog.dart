@@ -1,10 +1,9 @@
 // ignore_for_file: avoid_dynamic_calls, deprecated_member_use
 
 import 'package:flutter/material.dart';
-
-import '../../../../l10n/app_localizations.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../consts/reciters_name_arabic.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/settings/consts/reciters_name_arabic.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ReciterDialog extends StatefulWidget {
   const ReciterDialog({
@@ -103,7 +102,7 @@ class _ReciterRadioItem extends StatelessWidget {
     required this.onChanged,
     required this.isArabic,
   });
-  final dynamic reciter;
+  final Reciter reciter;
   final String selectedReciterId;
   final ValueChanged<String?> onChanged;
   final bool isArabic;

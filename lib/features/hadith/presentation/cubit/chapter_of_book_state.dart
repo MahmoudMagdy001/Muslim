@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/chapter_of_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
 
 enum ChapterOfBookStatus { initial, loading, success, failure }
 

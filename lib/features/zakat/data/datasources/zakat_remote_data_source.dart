@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../../../core/error/exceptions.dart';
+import 'package:muslim/core/error/exceptions.dart';
 
 abstract class ZakatRemoteDataSource {
   Future<double> getGoldPriceInUsd();
@@ -23,10 +23,10 @@ class ZakatRemoteDataSourceImpl implements ZakatRemoteDataSource {
   Future<double> getGoldPriceInUsd() async {
     try {
       return await _fetchFromPrimaryApi();
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Primary Gold API failed: $e');
       debugPrint('Trying fallback API...');
-      return await _fetchFromFallbackApi();
+      return _fetchFromFallbackApi();
     }
   }
 
@@ -76,7 +76,7 @@ class ZakatRemoteDataSourceImpl implements ZakatRemoteDataSource {
       } else {
         throw const ServerException();
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error fetching exchange rate: $e');
       throw const ServerException();
     }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_card.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_empty.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
-import '../../../../../../../l10n/app_localizations.dart';
-import '../../../../../domain/entities/hadith_entity.dart';
-import '../../../../cubit/hadith_cubit.dart';
-import 'hadith_card.dart';
-import 'hadith_empty.dart';
 
 class HadithsList extends StatelessWidget {
   const HadithsList({
@@ -25,7 +24,7 @@ class HadithsList extends StatelessWidget {
   final bool isArabic;
   final AppLocalizations localizations;
   final HadithCubit cubit;
-  final Function(String) onShowSnackBar;
+  final void Function(String) onShowSnackBar;
 
   @override
   Widget build(BuildContext context) {

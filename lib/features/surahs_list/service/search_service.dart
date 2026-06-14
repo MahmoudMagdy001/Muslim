@@ -1,6 +1,5 @@
+import 'package:muslim/features/surahs_list/model/search_model.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../model/search_model.dart';
 
 class QuranSearchService {
   /// إزالة التشكيل من النصوص العربية
@@ -24,7 +23,7 @@ class QuranSearchService {
     final results = <SearchResult>[];
 
     // 1. البحث في أسماء السور
-    for (int surah = 1; surah <= 114; surah++) {
+    for (var surah = 1; surah <= 114; surah++) {
       final surahName = quran.getSurahNameArabic(surah);
       final normalizedSurahName = normalizeArabic(surahName);
 
@@ -42,10 +41,10 @@ class QuranSearchService {
     }
 
     // 2. البحث في الآيات
-    for (int surah = 1; surah <= 114; surah++) {
+    for (var surah = 1; surah <= 114; surah++) {
       final totalAyahs = quran.getVerseCount(surah);
 
-      for (int verse = 1; verse <= totalAyahs; verse++) {
+      for (var verse = 1; verse <= totalAyahs; verse++) {
         final ayah = quran.getVerse(surah, verse);
         final normalizedAyah = normalizeArabic(ayah);
 

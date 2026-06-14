@@ -82,7 +82,7 @@ class CompassBackgroundPainter extends CustomPainter {
       ..color = colors.onSurface.withAlpha(_smallMarkOpacity)
       ..strokeWidth = 1;
 
-    for (int i = 0; i < 360; i += 5) {
+    for (var i = 0; i < 360; i += 5) {
       final angle = i * degreesToRadians;
       final startRadius = i % 15 == 0 ? radius * 0.85 : radius * 0.9;
 
@@ -103,7 +103,7 @@ class CompassBackgroundPainter extends CustomPainter {
       ..color = colors.primary
       ..strokeWidth = 2;
 
-    for (int i = 0; i < 360; i += 15) {
+    for (var i = 0; i < 360; i += 15) {
       final angle = i * degreesToRadians;
       final start = _calculatePoint(center, radius * 0.8, angle);
       final end = _calculatePoint(center, radius * 0.95, angle);
@@ -128,7 +128,7 @@ class CompassBackgroundPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
 
-    for (int i = 0; i < 360; i += 90) {
+    for (var i = 0; i < 360; i += 90) {
       final angle = i * degreesToRadians;
       final index = i ~/ 90;
 

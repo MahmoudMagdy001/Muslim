@@ -1,11 +1,10 @@
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/zikr_entity.dart';
-import '../../domain/repositories/sebha_repository.dart';
-import '../datasources/sebha_local_data_source.dart';
-import '../models/zikr_model.dart';
+import 'package:muslim/core/error/exceptions.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/sebha/data/datasources/sebha_local_data_source.dart';
+import 'package:muslim/features/sebha/data/models/zikr_model.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
+import 'package:muslim/features/sebha/domain/repositories/sebha_repository.dart';
 
 class SebhaRepositoryImpl implements SebhaRepository {
   SebhaRepositoryImpl({required this.localDataSource});
@@ -19,7 +18,7 @@ class SebhaRepositoryImpl implements SebhaRepository {
       return Right(customAzkar);
     } on CacheException {
       return const Left(CacheFailure());
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure());
     }
   }
@@ -32,7 +31,7 @@ class SebhaRepositoryImpl implements SebhaRepository {
       return Right(result);
     } on CacheException {
       return const Left(CacheFailure());
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure());
     }
   }
@@ -45,7 +44,7 @@ class SebhaRepositoryImpl implements SebhaRepository {
       return Right(result);
     } on CacheException {
       return const Left(CacheFailure());
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure());
     }
   }
@@ -57,7 +56,7 @@ class SebhaRepositoryImpl implements SebhaRepository {
       return Right(result);
     } on CacheException {
       return const Left(CacheFailure());
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure());
     }
   }

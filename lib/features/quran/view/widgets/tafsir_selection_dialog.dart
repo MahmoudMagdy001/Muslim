@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/widgets/base_app_dialog.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../repository/tafsir_repository.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/features/quran/repository/tafsir_repository.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class TafsirSelectionDialog extends StatelessWidget {
   const TafsirSelectionDialog({
@@ -47,12 +47,12 @@ class TafsirSelectionDialog extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final tafsir = TafsirRepository.tafasirList[index];
-              final tafsirName = isArabic
+              final tafsirName = (isArabic
                   ? tafsir['name_ar']
-                  : tafsir['name_en'];
+                  : tafsir['name_en']) as String;
 
               // Extract just the name if it contains "تفسير"
-              String displayableName = tafsirName;
+              var displayableName = tafsirName;
               if (displayableName.startsWith('تفسير ')) {
                 displayableName = displayableName.substring(6);
               }
@@ -60,7 +60,7 @@ class TafsirSelectionDialog extends StatelessWidget {
               return InkWell(
                 onTap: () => Navigator.pop(context, tafsir),
                 borderRadius: BorderRadius.circular(15),
-                child: Container(
+                child: DecoratedBox(
                   decoration: BoxDecoration(
                     color: context.colorScheme.primary,
                     borderRadius: BorderRadius.circular(15),

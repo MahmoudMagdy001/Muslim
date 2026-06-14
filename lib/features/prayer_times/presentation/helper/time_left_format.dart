@@ -1,6 +1,6 @@
-import '../../../../core/utils/format_helper.dart';
+import 'package:muslim/core/utils/format_helper.dart';
 
-String formatTimeLeft(Duration timeLeft, bool isArabic) {
+String formatTimeLeft(Duration timeLeft, {required bool isArabic}) {
   if (timeLeft.isNegative) return '0 ثانية';
 
   final h = timeLeft.inHours;

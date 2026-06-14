@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
 
 abstract class NamesOfAllahState extends Equatable {
   const NamesOfAllahState();

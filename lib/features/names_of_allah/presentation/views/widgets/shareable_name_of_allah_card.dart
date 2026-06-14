@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
 
 class ShareableNameOfAllahCard extends StatelessWidget {
   const ShareableNameOfAllahCard({

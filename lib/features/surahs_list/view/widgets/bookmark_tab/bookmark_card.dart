@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/quran/model/bookmark_model.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../../../quran/model/bookmark_model.dart';
 
 class BookmarkCard extends StatelessWidget {
   const BookmarkCard({

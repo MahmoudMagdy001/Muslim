@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/usecases/get_chapters_of_book_use_case.dart';
-import 'chapter_of_book_state.dart';
+import 'package:muslim/features/hadith/domain/usecases/get_chapters_of_book_use_case.dart';
+import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_state.dart';
 
 class ChapterOfBookCubit extends Cubit<ChapterOfBookState> {
   ChapterOfBookCubit(this.getChaptersOfBookUseCase)

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
 
 class NameOfAllahCard extends StatelessWidget {
   const NameOfAllahCard({
@@ -85,16 +85,14 @@ class NameOfAllahCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8.toW),
-              isSharing
-                  ? SizedBox(
+              if (isSharing) SizedBox(
                       width: 24.toR,
                       height: 24.toR,
                       child: const CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
-                    )
-                  : IconButton(
+                    ) else IconButton(
                       icon: Icon(
                         Icons.share_rounded,
                         color: Colors.white,

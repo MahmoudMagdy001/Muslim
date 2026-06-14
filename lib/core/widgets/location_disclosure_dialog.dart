@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/extensions.dart';
-import 'base_app_dialog.dart';
 
 class LocationDisclosureDialog extends StatelessWidget {
   const LocationDisclosureDialog({required this.isArabic, super.key});

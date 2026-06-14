@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../l10n/app_localizations.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 /// Context Extensions
 extension ContextExtension on BuildContext {

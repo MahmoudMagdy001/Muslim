@@ -33,7 +33,7 @@ class FontSizeCubit extends Cubit<FontSizeState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble(_fontSizeKey, value);
-    } catch (error) {
+    } on Object catch (error) {
       debugPrint('Error saving font size: $error');
     }
   }

@@ -1,13 +1,12 @@
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/azkar_audio_state.dart';
-import '../../domain/entities/azkar_entity.dart';
-import '../../domain/repositories/azkar_repository.dart';
-import '../datasources/azkar_audio_data_source.dart';
-import '../datasources/azkar_local_data_source.dart';
-import '../datasources/azkar_remote_data_source.dart';
-import '../models/azkar_model.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_audio_data_source.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_local_data_source.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_remote_data_source.dart';
+import 'package:muslim/features/azkar/data/models/azkar_model.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
+import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
 
 class AzkarRepositoryImpl implements AzkarRepository {
   AzkarRepositoryImpl(
@@ -23,14 +22,14 @@ class AzkarRepositoryImpl implements AzkarRepository {
   Future<Either<Failure, List<AzkarEntity>>> getAzkarList() async {
     try {
       final json = await _localDataSource.loadAzkarFromAssets();
-      final List<dynamic> data = json['data'] as List<dynamic>;
+      final data = json['data'] as List<dynamic>;
       final result = data
           .map((e) => AzkarModel.fromJson(e as Map<String, dynamic>))
           .toList();
       return Right(result);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
   }
@@ -43,7 +42,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       final json = await _remoteDataSource.fetchAzkarContent(url);
       // The API returns a map where the key is the title and value is a list of items
       if (json.isNotEmpty) {
-        final List<dynamic> data = json.values.first as List<dynamic>;
+        final data = json.values.first as List<dynamic>;
         final result = data
             .map((e) => AzkarContentModel.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -52,7 +51,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return const Right([]);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -68,7 +67,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
   }
@@ -83,7 +82,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return Right(count);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
   }
@@ -95,7 +94,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
   }
@@ -107,7 +106,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -119,7 +118,7 @@ class AzkarRepositoryImpl implements AzkarRepository {
       return const Right(null);
     } on Failure catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

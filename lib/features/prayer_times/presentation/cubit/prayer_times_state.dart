@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/local_prayer_times.dart';
-import '../../domain/entities/prayer_notification_settings.dart';
-import '../../domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
 /// Status of prayer times loading.
 enum RequestStatus { initial, loading, success, failure }

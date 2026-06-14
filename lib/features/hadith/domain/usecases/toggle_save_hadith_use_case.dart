@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/hadith_entity.dart';
-import '../repositories/hadith_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 
 class ToggleSaveHadithUseCase implements UseCase<void, ToggleSaveHadithParams> {
   const ToggleSaveHadithUseCase(this.repository);

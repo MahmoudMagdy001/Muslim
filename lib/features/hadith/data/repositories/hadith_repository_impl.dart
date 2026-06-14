@@ -1,17 +1,16 @@
 import 'dart:math';
 
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/chapter_of_book_entity.dart';
-import '../../domain/entities/hadith_book_entity.dart';
-import '../../domain/entities/hadith_entity.dart';
-import '../../domain/repositories/hadith_repository.dart';
-import '../datasources/hadith_local_data_source.dart';
-import '../datasources/hadith_remote_data_source.dart';
-import '../models/chapter_of_book_model.dart';
-import '../models/hadith_book_model.dart';
-import '../models/hadith_model.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/hadith/data/datasources/hadith_local_data_source.dart';
+import 'package:muslim/features/hadith/data/datasources/hadith_remote_data_source.dart';
+import 'package:muslim/features/hadith/data/models/chapter_of_book_model.dart';
+import 'package:muslim/features/hadith/data/models/hadith_book_model.dart';
+import 'package:muslim/features/hadith/data/models/hadith_model.dart';
+import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 
 class HadithRepositoryImpl implements HadithRepository {
   const HadithRepositoryImpl({
@@ -42,7 +41,7 @@ class HadithRepositoryImpl implements HadithRepository {
         books.map((e) => e.toJson()).toList(),
       );
       return Right(books);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(ServerFailure('Failed to load books'));
     }
   }
@@ -70,7 +69,7 @@ class HadithRepositoryImpl implements HadithRepository {
         chapters.map((e) => e.toJson()).toList(),
       );
       return Right(chapters);
-    } catch (e) {
+    } on Object catch (_) {
       return Left(ServerFailure('Failed to load chapters for book $bookSlug'));
     }
   }
@@ -86,7 +85,7 @@ class HadithRepositoryImpl implements HadithRepository {
         chapterNumber: chapterNumber,
       );
       return Right(hadiths);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(ServerFailure('Failed to load hadiths'));
     }
   }
@@ -100,7 +99,7 @@ class HadithRepositoryImpl implements HadithRepository {
           final hadithMap = cachedHadith['hadith'] as Map<String, dynamic>;
           cachedHadith['hadith'] = HadithModel.fromJson(hadithMap);
           return Right(cachedHadith);
-        } catch (e) {
+        } on Object catch (_) {
           // If parsing fails, proceed to fetch a new one
         }
       }
@@ -144,10 +143,10 @@ class HadithRepositoryImpl implements HadithRepository {
       final totalPages = firstPageResponse['totalPages'] as int;
 
       Map<String, dynamic> targetPageData;
-      final int randomPage = random.nextInt(totalPages) + 1;
+      final randomPage = random.nextInt(totalPages) + 1;
 
       if (randomPage == 1) {
-        targetPageData = firstPageData;
+        targetPageData = firstPageData as Map<String, dynamic>;
       } else {
         targetPageData = await remoteDataSource.fetchSpecificHadithPage(
           bookSlug,
@@ -156,9 +155,9 @@ class HadithRepositoryImpl implements HadithRepository {
         );
       }
 
-      final Map<String, dynamic> hadithsMap =
+      final hadithsMap =
           targetPageData['hadiths'] as Map<String, dynamic>;
-      final List hadithsJson = hadithsMap['data'] as List? ?? [];
+      final hadithsJson = hadithsMap['data'] as List? ?? [];
       if (hadithsJson.isEmpty) {
         return const Left(
           ServerFailure('No hadiths found in selected random page'),
@@ -181,12 +180,12 @@ class HadithRepositoryImpl implements HadithRepository {
         final storageMap = Map<String, dynamic>.from(result);
         storageMap['hadith'] = hadith.toJson();
         await localDataSource.saveRandomHadith(storageMap);
-      } catch (e) {
+      } on Object catch (_) {
         // Ignore cache save error
       }
 
       return Right(result);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(ServerFailure('Failed to fetch random hadith'));
     }
   }
@@ -196,7 +195,7 @@ class HadithRepositoryImpl implements HadithRepository {
     try {
       final saved = await localDataSource.loadSavedHadiths();
       return Right(saved);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure('Failed to load saved hadiths'));
     }
   }
@@ -208,7 +207,7 @@ class HadithRepositoryImpl implements HadithRepository {
     try {
       await localDataSource.saveHadith(hadithData);
       return const Right(null);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure('Failed to save hadith'));
     }
   }
@@ -218,7 +217,7 @@ class HadithRepositoryImpl implements HadithRepository {
     try {
       await localDataSource.removeHadith(hadithId);
       return const Right(null);
-    } catch (e) {
+    } on Object catch (_) {
       return const Left(CacheFailure('Failed to remove hadith'));
     }
   }

@@ -2,12 +2,11 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 import 'package:workmanager/workmanager.dart';
-
-import '../../../core/service/periodic_reminder_channel_factory.dart';
-import '../../../core/service/periodic_reminder_constants.dart';
-import '../../../core/utils/app_logger.dart';
-import '../../../features/settings/service/settings_service.dart';
 
 /// WorkManager callback dispatcher for periodic reminder background scheduling.
 @pragma('vm:entry-point')
@@ -68,7 +67,7 @@ void periodicReminderCallbackDispatcher() {
         '✅ Periodic reminder rescheduled: every $intervalMinutes minutes',
       );
       return Future.value(true);
-    } catch (e, s) {
+    } on Object catch (e, s) {
       logError('❌ Error in Periodic Reminder WorkManager', e, s);
       return Future.value(false);
     }

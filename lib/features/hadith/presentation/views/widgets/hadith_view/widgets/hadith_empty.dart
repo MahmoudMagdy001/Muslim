@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../core/utils/extensions.dart';
-import '../../../../../../../l10n/app_localizations.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class EmptyHadithsState extends StatelessWidget {
   const EmptyHadithsState({required this.localizations, super.key});

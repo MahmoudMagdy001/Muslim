@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../l10n/app_localizations.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class VerseOptionsMenu {
   static Future<String?> show(
@@ -10,7 +10,7 @@ class VerseOptionsMenu {
     required Offset position,
     required AppLocalizations localizations,
   }) async {
-    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
     final menuPosition = RelativeRect.fromLTRB(
       position.dx,
       position.dy,

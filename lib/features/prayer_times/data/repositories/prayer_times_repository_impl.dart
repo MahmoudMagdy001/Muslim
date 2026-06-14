@@ -1,8 +1,7 @@
 import 'package:adhan/adhan.dart';
-
-import '../../domain/entities/local_prayer_times.dart';
-import '../../domain/repositories/prayer_times_repository.dart';
-import '../datasources/prayer_times_local_data_source.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_times_repository.dart';
 
 /// Concrete implementation of [PrayerTimesRepository].
 ///

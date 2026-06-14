@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../core/utils/extensions.dart';
-import '../../../../cubit/hadith_cubit.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
 
 class HadithCardHeader extends StatelessWidget {
   const HadithCardHeader({

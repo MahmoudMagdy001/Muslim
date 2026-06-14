@@ -1,15 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_books_state.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/hadith_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../../../../../../core/di/service_locator.dart';
-import '../../../../../../core/utils/extensions.dart';
-import '../../../../../../core/utils/navigation_helper.dart';
-import '../../../../../../l10n/app_localizations.dart';
-import '../../../domain/entities/hadith_entity.dart';
-import '../../cubit/hadith_books_state.dart';
-import '../../cubit/hadith_cubit.dart';
-import 'hadith_view/hadith_view.dart';
 
 class HadithOfTheDayCard extends StatelessWidget {
   const HadithOfTheDayCard({
@@ -33,7 +34,7 @@ class HadithOfTheDayCard extends StatelessWidget {
     final hasError = status == RandomHadithStatus.failure;
 
     if (hasError) {
-      return Container(
+      return DecoratedBox(
         decoration: BoxDecoration(
           color: theme.colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(20),
@@ -91,7 +92,7 @@ class HadithOfTheDayCard extends StatelessWidget {
                       Text(
                         isLoading
                             ? 'جاري تحميل حديث اليوم...'
-                            : _getHadithText(data!['hadith'], isArabic),
+                            : _getHadithText(data!['hadith'] as HadithEntity, isArabic),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -154,28 +155,32 @@ class HadithOfTheDayCard extends StatelessWidget {
     AppLocalizations localization,
   ) {
     final hadith = data['hadith'] as HadithEntity;
-    final String bookSlug = data['bookSlug'] as String;
-    final String chapterNumber = data['chapterNumber'] as String;
-    final String chapterName =
+    final bookSlug = data['bookSlug'] as String;
+    final chapterNumber = data['chapterNumber'] as String;
+    final chapterName =
         Localizations.localeOf(context).languageCode == 'ar'
-        ? data['chapterNameAr']
-        : data['chapterNameEn'];
+        ? data['chapterNameAr'] as String
+        : data['chapterNameEn'] as String;
 
-    navigateWithTransition(
-      context,
-      BlocProvider(
-        create: (context) =>
-            getIt<HadithCubit>()
-              ..initializeData(bookSlug, chapterNumber, chapterName),
-        child: HadithView(
-          bookSlug: bookSlug,
-          chapterNumber: chapterNumber,
-          chapterName: chapterName,
-          localizations: localization,
-          scrollToHadithId: int.tryParse(hadith.id),
+    unawaited(
+      navigateWithTransition<void>(
+        context,
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<HadithCubit>();
+            unawaited(cubit.initializeData(bookSlug, chapterNumber, chapterName));
+            return cubit;
+          },
+          child: HadithView(
+            bookSlug: bookSlug,
+            chapterNumber: chapterNumber,
+            chapterName: chapterName,
+            localizations: localization,
+            scrollToHadithId: int.tryParse(hadith.id),
+          ),
         ),
+        type: TransitionType.fade,
       ),
-      type: TransitionType.fade,
     );
   }
 }

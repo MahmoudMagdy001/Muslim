@@ -2,10 +2,10 @@ import 'package:adhan/adhan.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../entities/local_prayer_times.dart';
-import '../repositories/prayer_times_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_times_repository.dart';
 
 class GetPrayerTimesForDateParams extends Equatable {
   const GetPrayerTimesForDateParams({
@@ -39,7 +39,7 @@ class GetPrayerTimesForDateUseCase
         cityName: params.cityName,
       );
       return Right(result);
-    } catch (e) {
+    } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }

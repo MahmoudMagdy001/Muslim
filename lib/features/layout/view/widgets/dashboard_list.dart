@@ -1,22 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../azkar/presentation/views/azkar_view.dart';
-import '../../../hadith/presentation/views/hadith_books_view.dart';
-import '../../../names_of_allah/presentation/cubit/names_of_allah_cubit.dart';
-import '../../../names_of_allah/presentation/views/names_of_allah_screen.dart';
-import '../../../qiblah/presentation/cubit/qiblah_cubit.dart';
-import '../../../qiblah/presentation/views/qiblah_view.dart';
-import '../../../sebha/presentation/cubit/sebha_cubit.dart';
-import '../../../sebha/presentation/views/sebha_view.dart';
-import '../../../settings/view_model/rectire/rectire_cubit.dart';
-import '../../../surahs_list/view/surahs_list_view.dart';
-import '../../model/dashboard_item_model.dart';
-import 'dashboard_button.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/azkar/presentation/views/azkar_view.dart';
+import 'package:muslim/features/hadith/presentation/views/hadith_books_view.dart';
+import 'package:muslim/features/layout/model/dashboard_item_model.dart';
+import 'package:muslim/features/layout/view/widgets/dashboard_button.dart';
+import 'package:muslim/features/names_of_allah/presentation/cubit/names_of_allah_cubit.dart';
+import 'package:muslim/features/names_of_allah/presentation/views/names_of_allah_screen.dart';
+import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
+import 'package:muslim/features/qiblah/presentation/views/qiblah_view.dart';
+import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
+import 'package:muslim/features/sebha/presentation/views/sebha_view.dart';
+import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
+import 'package:muslim/features/surahs_list/view/surahs_list_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class DashboardGrid extends StatelessWidget {
   const DashboardGrid({required this.localizations, super.key});
@@ -27,7 +28,7 @@ class DashboardGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final reciterCubit = context.watch<ReciterCubit>();
 
-    final List<DashboardItemModel> items = [
+    final items = <DashboardItemModel>[
       DashboardItemModel(
         image: 'assets/home/quran.png',
         label: localizations.quranButton,
@@ -58,7 +59,11 @@ class DashboardGrid extends StatelessWidget {
         color: const Color(0xFFCEB6F6),
         darkColor: const Color(0xFF5D4E75),
         route: BlocProvider(
-          create: (_) => getIt<QiblahCubit>()..init(),
+          create: (_) {
+            final cubit = getIt<QiblahCubit>();
+            unawaited(cubit.init());
+            return cubit;
+          },
           child: const QiblahView(),
         ),
       ),
@@ -68,7 +73,11 @@ class DashboardGrid extends StatelessWidget {
         color: const Color(0xFFC2EFE1),
         darkColor: const Color(0xFF386E5D),
         route: BlocProvider(
-          create: (_) => getIt<SebhaCubit>()..loadCustomAzkar(),
+          create: (_) {
+            final cubit = getIt<SebhaCubit>();
+            unawaited(cubit.loadCustomAzkar());
+            return cubit;
+          },
           child: const SebhaView(),
         ),
       ),

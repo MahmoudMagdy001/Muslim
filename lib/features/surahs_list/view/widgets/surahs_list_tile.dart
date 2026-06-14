@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../model/surahs_list_model.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/surahs_list_model.dart';
 
 class SurahListTile extends StatelessWidget {
   const SurahListTile({
@@ -70,7 +70,7 @@ class SurahListTile extends StatelessWidget {
                   ),
                   SizedBox(height: 4.toH),
                   Text(
-                    '${surah.locationArabic} - ${isArabic ? '${convertToArabicNumbers(surah.ayahCount.toString())} آيات' : '${surah.ayahCount.toString()} Verses'}',
+                    '${surah.locationArabic} - ${isArabic ? '${convertToArabicNumbers(surah.ayahCount.toString())} آيات' : '${surah.ayahCount} Verses'}',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onPrimary.withAlpha(180),
                     ),

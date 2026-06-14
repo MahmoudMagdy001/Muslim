@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/responsive_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
 
 class EmptyBookmarksState extends StatefulWidget {
   const EmptyBookmarksState({required this.message, super.key});
@@ -22,7 +23,8 @@ class _EmptyBookmarksStateState extends State<EmptyBookmarksState>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+    );
+    unawaited(_controller.repeat(reverse: true));
 
     _animation = Tween<double>(
       begin: 1.0,

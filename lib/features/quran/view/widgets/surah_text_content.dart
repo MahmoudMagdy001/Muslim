@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:quran/quran.dart' as quran;
-import '../../../../core/utils/extensions.dart';
 
 class SurahTextContent extends StatelessWidget {
   const SurahTextContent({
@@ -17,7 +17,7 @@ class SurahTextContent extends StatelessWidget {
   final bool isArabic;
   final ValueNotifier<int?> currentAyahNotifier;
   final Map<int, GlobalKey> ayahKeys;
-  final Function(int ayah, String text, Offset position) onAyahTap;
+  final void Function(int ayah, String text, Offset position) onAyahTap;
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<int?>(
@@ -38,21 +38,21 @@ class SurahTextContent extends StatelessWidget {
     final ayahCount = quran.getVerseCount(surahNumber);
     final spans = <InlineSpan>[];
 
-    for (int ayah = 1; ayah <= ayahCount; ayah++) {
+    for (var ayah = 1; ayah <= ayahCount; ayah++) {
       final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
       final text = isArabic
           ? quran.getVerse(surahNumber, ayah)
           : quran.getVerseTranslation(surahNumber, ayah);
 
       final isCurrent = ayah == currentAyah;
-      final keyForThisAyah = ayahKeys.putIfAbsent(ayah, () => GlobalKey());
+      final keyForThisAyah = ayahKeys.putIfAbsent(ayah, GlobalKey.new);
 
       spans.add(
         TextSpan(
           children: [
             WidgetSpan(
               alignment: PlaceholderAlignment.top,
-              child: SizedBox(key: keyForThisAyah, width: 0, height: 0),
+              child: SizedBox.shrink(key: keyForThisAyah),
             ),
             TextSpan(
               text: '$text ',

@@ -1,17 +1,17 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/quran/view/quran_view.dart';
+import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../quran/view/quran_view.dart';
-import '../../../settings/view_model/rectire/rectire_cubit.dart';
 
 class _SurahModel {
   const _SurahModel({
@@ -91,14 +91,16 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
       child: InkWell(
         onTap: () {
           final reciter = context.read<ReciterCubit>().state.selectedReciter;
-          navigateWithTransition(
-            context,
-            QuranView(
-              surahNumber: _surah.number,
-              reciter: reciter,
-              currentAyah: _ayahNumber,
+          unawaited(
+            navigateWithTransition<void>(
+              context,
+              QuranView(
+                surahNumber: _surah.number,
+                reciter: reciter,
+                currentAyah: _ayahNumber,
+              ),
+              type: TransitionType.fade,
             ),
-            type: TransitionType.fade,
           );
         },
         borderRadius: BorderRadius.circular(24.toR),

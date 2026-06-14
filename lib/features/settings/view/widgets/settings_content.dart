@@ -1,16 +1,16 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/service/in_app_rate.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/settings/view/widgets/app_info_section.dart';
+import 'package:muslim/features/settings/view/widgets/font_size_section.dart';
+import 'package:muslim/features/settings/view/widgets/location_section.dart';
+import 'package:muslim/features/settings/view/widgets/notification_switch.dart';
+import 'package:muslim/features/settings/view/widgets/periodic_reminder_section.dart';
+import 'package:muslim/features/settings/view/widgets/rectire_section.dart';
+import 'package:muslim/features/settings/view/widgets/theme_section.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import '../../../../core/service/in_app_rate.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import 'app_info_section.dart';
-import 'font_size_section.dart';
-import 'location_section.dart';
-import 'notification_switch.dart';
-import 'periodic_reminder_section.dart';
-import 'rectire_section.dart';
-import 'theme_section.dart';
 
 class SettingsContent extends StatefulWidget {
   const SettingsContent({
@@ -35,7 +35,7 @@ class _SettingsContentState extends State<SettingsContent> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchAppInfo();
+      unawaited(_fetchAppInfo());
     });
   }
 
@@ -49,7 +49,7 @@ class _SettingsContentState extends State<SettingsContent> {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       appVersionNotifier.value = packageInfo.version;
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('❌ Failed to get package info: $e');
     }
   }

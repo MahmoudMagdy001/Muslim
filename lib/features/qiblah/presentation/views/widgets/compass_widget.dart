@@ -2,11 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../../core/utils/extensions.dart';
-import 'arrow_painter.dart';
-import 'compass_background_painter.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/qiblah/presentation/views/widgets/arrow_painter.dart';
+import 'package:muslim/features/qiblah/presentation/views/widgets/compass_background_painter.dart';
 
 class CompassWidget extends StatelessWidget {
   const CompassWidget({

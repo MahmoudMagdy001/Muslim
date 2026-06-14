@@ -1,6 +1,6 @@
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 
-import '../../domain/entities/qiblah_direction_entity.dart';
+import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';
 
 class QiblahDirectionModel extends QiblahDirectionEntity {
   const QiblahDirectionModel({

@@ -32,7 +32,11 @@ class HadithLocalDataSourceImpl implements HadithLocalDataSource {
 
     if (saved == null) return [];
 
-    return List<Map<String, dynamic>>.from(json.decode(saved));
+    final decoded = json.decode(saved);
+    if (decoded is Iterable) {
+      return decoded.map((dynamic e) => Map<String, dynamic>.from(e as Map)).toList();
+    }
+    return [];
   }
 
   @override
@@ -73,16 +77,16 @@ class HadithLocalDataSourceImpl implements HadithLocalDataSource {
     if (saved == null) return null;
 
     try {
-      final Map<String, dynamic> cacheData = json.decode(saved);
-      final timestamp = DateTime.parse(cacheData['timestamp']);
+      final cacheData = json.decode(saved) as Map<String, dynamic>;
+      final timestamp = DateTime.parse(cacheData['timestamp'] as String);
       final now = DateTime.now();
 
       if (timestamp.year == now.year &&
           timestamp.month == now.month &&
           timestamp.day == now.day) {
-        return Map<String, dynamic>.from(cacheData['data']);
+        return Map<String, dynamic>.from(cacheData['data'] as Map);
       }
-    } catch (e) {
+    } on Object catch (_) {
       return null;
     }
     return null;

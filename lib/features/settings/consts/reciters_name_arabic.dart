@@ -87,7 +87,7 @@ String getReciterName(String reciterId, {bool isArabic = true}) {
     );
 
     return isArabic ? reciter.nameAr : reciter.nameEn;
-  } catch (e) {
+  } on Object catch (e) {
     debugPrint('Error getting reciter name: $e');
     return isArabic
         ? 'المصحف المرتل للشيخ عبدالباسط'

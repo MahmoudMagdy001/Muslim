@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../entities/chapter_of_book_entity.dart';
-import '../entities/hadith_book_entity.dart';
-import '../entities/hadith_entity.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
 
 abstract class HadithRepository {
   Future<Either<Failure, List<HadithBookEntity>>> getHadithBooks();

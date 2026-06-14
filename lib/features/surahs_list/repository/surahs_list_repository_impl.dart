@@ -1,8 +1,7 @@
+import 'package:muslim/features/surahs_list/model/surahs_list_model.dart';
+import 'package:muslim/features/surahs_list/repository/surahs_list_repository.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../model/surahs_list_model.dart';
-import 'surahs_list_repository.dart';
 
 class SurahsListRepositoryImpl implements SurahsListRepository {
   SurahsListRepositoryImpl();

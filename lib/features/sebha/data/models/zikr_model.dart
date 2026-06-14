@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../domain/entities/zikr_entity.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
 class ZikrModel extends ZikrEntity {
   const ZikrModel({

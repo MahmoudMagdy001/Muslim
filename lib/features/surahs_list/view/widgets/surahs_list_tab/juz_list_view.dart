@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../model/juz_model.dart';
-import 'juz_list_tile.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/juz_model.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/juz_list_tile.dart';
 
 class JuzListView extends StatelessWidget {
   const JuzListView({

@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../service/settings_service.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 
 class LocationSection extends StatefulWidget {
   const LocationSection({
@@ -22,7 +23,7 @@ class _LocationSectionState extends State<LocationSection> {
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    unawaited(_loadSettings());
   }
 
   @override
@@ -37,7 +38,7 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   Future<void> _toggleAutoLocation(bool value) async {
-    await _settingsService.setAutoLocationEnabled(value);
+    await _settingsService.setAutoLocationEnabled(enabled: value);
     autoLocationNotifier.value = value;
 
     _showSnackBar(

@@ -1,10 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import '../../../../core/utils/app_logger.dart';
-import '../../domain/entities/local_prayer_times.dart';
-import '../../domain/entities/prayer_notification_settings.dart';
-import '../../domain/entities/prayer_type.dart';
-import '../../presentation/helper/notification_constants.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 
 abstract class PrayerNotificationLocalDataSource {
   Future<void> scheduleAll(
@@ -26,7 +26,7 @@ class PrayerNotificationLocalDataSourceImpl
     await cancelAll();
     logInfo('تم مسح أي إشعارات قديمة...');
 
-    int totalScheduled = 0;
+    var totalScheduled = 0;
 
     for (final times in days) {
       final date = times.date;
@@ -72,7 +72,7 @@ class PrayerNotificationLocalDataSourceImpl
         NotificationConstants.prayerChannelKey,
       );
       logInfo('تم إلغاء جميع إشعارات الصلاة السابقة');
-    } catch (e) {
+    } on Object catch (e) {
       logWarning('حدث خطأ أثناء إلغاء الإشعارات: $e');
     }
   }
@@ -119,7 +119,7 @@ class PrayerNotificationLocalDataSourceImpl
     );
 
     logSuccess(
-      'تم جدولة ${prayer.arabicName} في ${prayerDateTime.toString()} (ID: $notificationId)',
+      'تم جدولة ${prayer.arabicName} في $prayerDateTime (ID: $notificationId)',
     );
     return true;
   }

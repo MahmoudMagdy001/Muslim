@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../zakat/presentation/views/zakat_view.dart';
+import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/zakat/presentation/views/zakat_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ZakatCardWidget extends StatelessWidget {
   const ZakatCardWidget({required this.localizations, super.key});
@@ -12,7 +13,7 @@ class ZakatCardWidget extends StatelessWidget {
   final AppLocalizations localizations;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => DecoratedBox(
     decoration: BoxDecoration(
       borderRadius: .circular(24.toR),
       gradient: LinearGradient(
@@ -22,7 +23,7 @@ class ZakatCardWidget extends StatelessWidget {
       ),
     ),
     child: InkWell(
-      onTap: () => navigateWithTransition(context, const ZakatView()),
+      onTap: () => unawaited(navigateWithTransition<void>(context, const ZakatView())),
       borderRadius: BorderRadius.circular(24.toR),
       child: Padding(
         padding: .symmetric(horizontal: 16.toW, vertical: 16.toH),

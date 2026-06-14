@@ -1,17 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/usecases/get_hadith_books_use_case.dart';
-import '../../domain/usecases/get_random_hadith_use_case.dart';
-import 'hadith_books_state.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/hadith/domain/usecases/get_hadith_books_use_case.dart';
+import 'package:muslim/features/hadith/domain/usecases/get_random_hadith_use_case.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_books_state.dart';
 
 class HadithBooksCubit extends Cubit<HadithBooksState> {
   HadithBooksCubit({
     required this.getHadithBooksUseCase,
     required this.getRandomHadithUseCase,
   }) : super(const HadithBooksState()) {
-    loadBooks();
-    loadRandomHadith();
+    unawaited(loadBooks());
+    unawaited(loadRandomHadith());
   }
 
   final GetHadithBooksUseCase getHadithBooksUseCase;

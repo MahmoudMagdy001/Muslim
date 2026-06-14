@@ -1,7 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-import 'notification_constants.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 
 /// Creates the prayer reminder notification channel.
 NotificationChannel createPrayerChannel() => NotificationChannel(

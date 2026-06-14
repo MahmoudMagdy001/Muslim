@@ -1,11 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/widgets/custom_modal_sheet.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../view_model/font_size/font_size_cubit.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
+import 'package:muslim/features/settings/view_model/font_size/font_size_cubit.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class FontSizeSection extends StatelessWidget {
   const FontSizeSection({
@@ -42,8 +42,9 @@ class FontSizeSection extends StatelessWidget {
     double currentSize,
     FontSizeCubit cubit,
   ) {
-    showCustomModalBottomSheet(
-      context: context,
+    unawaited(
+      showCustomModalBottomSheet<void>(
+        context: context,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -59,9 +60,11 @@ class FontSizeSection extends StatelessWidget {
             ),
             value: 14,
             groupValue: currentSize.roundToDouble(),
-            onChanged: (value) {
-              cubit.setFontSize(value!);
-              Navigator.pop(context);
+            onChanged: (value) async {
+              await cubit.setFontSize(value!);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
           ),
           RadioListTile<double>(
@@ -71,9 +74,11 @@ class FontSizeSection extends StatelessWidget {
             ),
             value: 18,
             groupValue: currentSize.roundToDouble(),
-            onChanged: (value) {
-              cubit.setFontSize(value!);
-              Navigator.pop(context);
+            onChanged: (value) async {
+              await cubit.setFontSize(value!);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
           ),
           RadioListTile<double>(
@@ -83,14 +88,16 @@ class FontSizeSection extends StatelessWidget {
             ),
             value: 22,
             groupValue: currentSize.roundToDouble(),
-            onChanged: (value) {
-              cubit.setFontSize(value!);
-              Navigator.pop(context);
+            onChanged: (value) async {
+              await cubit.setFontSize(value!);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
           ),
         ],
       ),
-    );
+    ),);
   }
 
   String _getLabelForFontSize(double size) {

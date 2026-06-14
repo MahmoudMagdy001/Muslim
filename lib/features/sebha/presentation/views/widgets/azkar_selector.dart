@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../domain/entities/zikr_entity.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
 class AzkarSelector extends StatelessWidget {
   const AzkarSelector({

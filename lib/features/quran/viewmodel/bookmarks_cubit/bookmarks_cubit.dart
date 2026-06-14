@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/service_locator.dart';
-import '../../model/bookmark_model.dart';
-import '../../service/bookmarks_service.dart';
-import 'bookmarks_state.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/features/quran/model/bookmark_model.dart';
+import 'package:muslim/features/quran/service/bookmarks_service.dart';
+import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
 
 class BookmarksCubit extends Cubit<BookmarksState> {
   BookmarksCubit([BookmarksService? service])
@@ -20,7 +20,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       if (!isClosed) {
         emit(state.copyWith(status: BookmarksStatus.ready, bookmarks: list));
       }
-    } catch (e) {
+    } on Object catch (e) {
       if (!isClosed) {
         emit(state.copyWith(status: BookmarksStatus.error, message: '$e'));
       }
@@ -47,7 +47,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
 
       if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
-    } catch (e) {
+    } on Object catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
       debugPrint('Error adding bookmark: $e');
     }
@@ -60,7 +60,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
 
       if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
-    } catch (e) {
+    } on Object catch (e) {
       // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
       debugPrint('Error removing bookmark: $e');
     }

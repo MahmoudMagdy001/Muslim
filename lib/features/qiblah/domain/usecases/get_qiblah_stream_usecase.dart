@@ -1,5 +1,5 @@
-import '../entities/qiblah_direction_entity.dart';
-import '../repositories/qiblah_repository.dart';
+import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';
+import 'package:muslim/features/qiblah/domain/repositories/qiblah_repository.dart';
 
 class GetQiblahStreamUseCase {
   const GetQiblahStreamUseCase(this.repository);

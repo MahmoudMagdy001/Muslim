@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/entities/azkar_audio_state.dart';
-import '../../domain/usecases/get_azkar_audio_stream_usecase.dart';
-import '../../domain/usecases/get_current_audio_state_usecase.dart';
-import '../../domain/usecases/play_azkar_audio_usecase.dart';
-import '../../domain/usecases/stop_azkar_audio_usecase.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
+import 'package:muslim/features/azkar/domain/usecases/get_azkar_audio_stream_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/get_current_audio_state_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/play_azkar_audio_usecase.dart';
+import 'package:muslim/features/azkar/domain/usecases/stop_azkar_audio_usecase.dart';
 
 class AzkarAudioCubit extends Cubit<AzkarAudioState> {
   AzkarAudioCubit(
@@ -45,7 +45,7 @@ class AzkarAudioCubit extends Cubit<AzkarAudioState> {
 
   @override
   Future<void> close() {
-    _subscription?.cancel();
+    unawaited(_subscription?.cancel());
     return super.close();
   }
 }

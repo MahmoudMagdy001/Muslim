@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../model/bookmark_model.dart';
+import 'package:flutter/material.dart';
+import 'package:muslim/features/quran/model/bookmark_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookmarksService {
   static const String _prefsKey = 'ayah_bookmarks_v1';
@@ -12,7 +12,7 @@ class BookmarksService {
     final jsonString = prefs.getString(_prefsKey);
     if (jsonString == null || jsonString.isEmpty) return [];
 
-    final List<dynamic> list = json.decode(jsonString);
+    final list = json.decode(jsonString) as List<dynamic>;
     return list
         .map((e) => AyahBookmark.fromJson(e as Map<String, dynamic>))
         .toList();

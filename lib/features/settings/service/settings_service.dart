@@ -1,7 +1,6 @@
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../prayer_times/domain/entities/prayer_notification_settings.dart';
-import '../../prayer_times/domain/entities/prayer_type.dart';
 
 /// Centralized settings service for app-wide and prayer-specific settings.
 ///
@@ -18,7 +17,7 @@ class SettingsService {
       'prayer_notification_${type.id}';
   // ── Quran notifications ────────────────────────────────────────────
 
-  Future<void> setQuranNotificationsEnabled(bool enabled) async {
+  Future<void> setQuranNotificationsEnabled({required bool enabled}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_quranNotificationsKey, enabled);
   }
@@ -30,7 +29,7 @@ class SettingsService {
 
   // ── Auto location ─────────────────────────────────────────────────
 
-  Future<void> setAutoLocationEnabled(bool enabled) async {
+  Future<void> setAutoLocationEnabled({required bool enabled}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_autoLocationKey, enabled);
   }
@@ -75,7 +74,7 @@ class SettingsService {
 
   // ── Periodic reminder settings ───────────────────────────────────
 
-  Future<void> setPeriodicReminderEnabled(bool enabled) async {
+  Future<void> setPeriodicReminderEnabled({required bool enabled}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_periodicReminderEnabledKey, enabled);
   }

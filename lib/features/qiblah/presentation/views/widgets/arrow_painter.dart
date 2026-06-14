@@ -1,7 +1,7 @@
 // --- Professional Arrow Painter (Refactored) ---
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
+import 'package:muslim/core/utils/extensions.dart';
 
 class ProfessionalArrowPainter extends CustomPainter {
   ProfessionalArrowPainter({required this.context, required this.theme});

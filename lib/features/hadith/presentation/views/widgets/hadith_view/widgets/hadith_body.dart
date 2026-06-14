@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_error.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_list.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
-import '../../../../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../../../../l10n/app_localizations.dart';
-import '../../../../cubit/hadith_cubit.dart';
-import '../../../../cubit/hadith_state.dart';
-import 'hadith_error.dart';
-import 'hadith_list.dart';
 
 class HadithsBody extends StatelessWidget {
   const HadithsBody({
@@ -26,8 +25,8 @@ class HadithsBody extends StatelessWidget {
   final AppLocalizations localizations;
   final bool isArabic;
   final int? scrollToHadithId;
-  final Function(HadithCubit) onScrollToHadith;
-  final Function(String) onShowSnackBar;
+  final void Function(HadithCubit) onScrollToHadith;
+  final void Function(String) onShowSnackBar;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<HadithCubit, HadithState>(

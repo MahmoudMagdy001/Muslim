@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../model/dashboard_item_model.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/layout/model/dashboard_item_model.dart';
 
 class DashboardButton extends StatelessWidget {
   const DashboardButton({required this.item, super.key});
@@ -12,7 +14,7 @@ class DashboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () => navigateWithTransition(context, item.route),
+    onTap: () => unawaited(navigateWithTransition<void>(context, item.route)),
     borderRadius: .circular(20.toR),
     child: Container(
       decoration: BoxDecoration(

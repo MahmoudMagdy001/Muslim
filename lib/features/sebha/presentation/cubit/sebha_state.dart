@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../data/models/zikr_model.dart';
-import '../../domain/entities/zikr_entity.dart';
+import 'package:muslim/features/sebha/data/models/zikr_model.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
 enum SebhaRequestStatus { initial, loading, success, failure }
 

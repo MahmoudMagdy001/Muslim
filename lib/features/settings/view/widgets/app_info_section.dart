@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import 'about_us.dart';
-import 'privacy_policy_view.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/features/settings/view/widgets/about_us.dart';
+import 'package:muslim/features/settings/view/widgets/privacy_policy_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class AppInfoSection extends StatelessWidget {
   const AppInfoSection({
@@ -31,10 +31,12 @@ class AppInfoSection extends StatelessWidget {
         icon: Icons.privacy_tip_outlined,
         title: localizations.privacy,
         onTap: () {
-          navigateWithTransition(
-            context,
-            const PrivacyPolicyView(),
-            type: TransitionType.fade,
+          unawaited(
+            navigateWithTransition<void>(
+              context,
+              const PrivacyPolicyView(),
+              type: TransitionType.fade,
+            ),
           );
         },
         theme: theme,
@@ -44,10 +46,12 @@ class AppInfoSection extends StatelessWidget {
         icon: Icons.person_rounded,
         title: localizations.aboutUs,
         theme: theme,
-        onTap: () => navigateWithTransition(
-          context,
-          AboutUsView(theme: theme, appVersion: appVersion),
-          type: TransitionType.fade,
+        onTap: () => unawaited(
+          navigateWithTransition<void>(
+            context,
+            AboutUsView(theme: theme, appVersion: appVersion),
+            type: TransitionType.fade,
+          ),
         ),
       ),
     ],

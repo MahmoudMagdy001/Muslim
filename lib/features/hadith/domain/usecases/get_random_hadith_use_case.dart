@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../repositories/hadith_repository.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 
 class GetRandomHadithUseCase
     implements UseCase<Map<String, dynamic>, NoParams> {

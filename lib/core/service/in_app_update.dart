@@ -3,11 +3,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../widgets/base_app_dialog.dart';
 
 class AppUpdateService {
   static const String _packageName = 'com.mahmoud.muslim';
@@ -40,7 +39,7 @@ class AppUpdateService {
 
       if (!context.mounted) return;
       await _showFlexibleUpdateDialog(context);
-    } catch (e, stackTrace) {
+    } on Object catch (e, stackTrace) {
       debugPrint('Error checking for update: $e');
       debugPrint('Stack: $stackTrace');
     }
@@ -76,7 +75,7 @@ class AppUpdateService {
 
     final storeUrl = _getStoreUrl();
 
-    await BaseAppDialog.show(
+    await BaseAppDialog.show<void>(
       context,
       title: 'تحديث متاح',
       contentText:
@@ -116,7 +115,7 @@ class AppUpdateService {
       } else {
         debugPrint('Cannot launch store URL');
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Error launching store: $e');
     }
   }
@@ -125,7 +124,7 @@ class AppUpdateService {
   static Future<void> resetUpdateState() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_lastDismissedKey);
-    _upgrader.saveLastAlerted();
+    await _upgrader.saveLastAlerted();
     debugPrint('Update dismiss state reset');
   }
 }

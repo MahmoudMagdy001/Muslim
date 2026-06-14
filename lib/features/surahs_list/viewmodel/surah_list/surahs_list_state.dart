@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-import '../../model/hizb_model.dart';
-import '../../model/juz_model.dart';
-import '../../model/quran_view_type.dart';
-import '../../model/search_model.dart';
-import '../../model/surahs_list_model.dart';
+import 'package:muslim/features/surahs_list/model/hizb_model.dart';
+import 'package:muslim/features/surahs_list/model/juz_model.dart';
+import 'package:muslim/features/surahs_list/model/quran_view_type.dart';
+import 'package:muslim/features/surahs_list/model/search_model.dart';
+import 'package:muslim/features/surahs_list/model/surahs_list_model.dart';
 
 enum SurahsListStatus { initial, loading, success, error }
 

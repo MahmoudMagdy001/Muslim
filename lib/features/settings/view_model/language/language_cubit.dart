@@ -1,8 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/features/settings/view_model/language/language_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'language_state.dart';
 
 class LanguageCubit extends Cubit<LanguageState> {
   LanguageCubit(Locale initialLocale) : super(LanguageState(initialLocale));

@@ -1,4 +1,4 @@
-import '../../domain/entities/azkar_entity.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
 
 class AzkarModel extends AzkarEntity {
   const AzkarModel({

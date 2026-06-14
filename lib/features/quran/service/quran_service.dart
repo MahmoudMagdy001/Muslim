@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:muslim/features/settings/consts/reciters_name_arabic.dart';
 import 'package:quran/quran.dart' as quran;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../settings/consts/reciters_name_arabic.dart';
 
 class QuranService {
   QuranService(this._audioPlayer);
@@ -25,9 +24,9 @@ class QuranService {
 
   AudioPlayer get audioPlayer => _audioPlayer;
 
-  int? get currentSurah => _currentSurah ?? _getMetadataFromPlayer('surah');
+  int? get currentSurah => _currentSurah ?? (_getMetadataFromPlayer('surah') as int?);
   String? get currentReciter =>
-      _currentReciter ?? _getMetadataFromPlayer('reciter');
+      _currentReciter ?? (_getMetadataFromPlayer('reciter') as String?);
 
   int? _currentSurah;
   String? _currentReciter;
@@ -53,8 +52,8 @@ class QuranService {
 
   /// يحسب الرقم التسلسلي العام للآية (عبر جميع السور)
   int globalAyahNumber(int surah, int ayah) {
-    int offset = 0;
-    for (int s = 1; s < surah; s++) {
+    var offset = 0;
+    for (var s = 1; s < surah; s++) {
       offset += quran.getVerseCount(s);
     }
     return offset + ayah;
@@ -85,7 +84,7 @@ class QuranService {
     await _audioPlayer.stop();
     await _audioPlayer.setAudioSources(playlist);
 
-    _indexSubscription?.cancel();
+    await _indexSubscription?.cancel();
     _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
       if (index != null) {
         final prefs = await SharedPreferences.getInstance();
@@ -115,7 +114,7 @@ class QuranService {
     final audioSources = <AudioSource>[];
     final seen = <String>{}; // Avoid duplicates across page boundaries
 
-    for (int page = fromPage; page <= toPage; page++) {
+    for (var page = fromPage; page <= toPage; page++) {
       final pageData = quran.getPageData(page);
       for (final data in pageData) {
         final rowData = data as Map<String, dynamic>;
@@ -123,7 +122,7 @@ class QuranService {
         final start = rowData['start'] as int;
         final end = rowData['end'] as int;
 
-        for (int ayah = start; ayah <= end; ayah++) {
+        for (var ayah = start; ayah <= end; ayah++) {
           final key = '${surah}_$ayah';
           if (seen.contains(key)) continue;
           seen.add(key);
@@ -148,7 +147,7 @@ class QuranService {
     await _audioPlayer.stop();
     await _audioPlayer.setAudioSources(audioSources);
 
-    _indexSubscription?.cancel();
+    await _indexSubscription?.cancel();
     _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
       if (index != null && index < _rangeAyahMap.length) {
         final entry = _rangeAyahMap[index];
@@ -208,11 +207,11 @@ class QuranService {
 
   /// تنظيف الموارد
   void dispose() {
-    _audioPlayer.stop();
-    _indexSubscription?.cancel();
+    unawaited(_audioPlayer.stop());
+    unawaited(_indexSubscription?.cancel());
     _currentSurah = null;
     _currentReciter = null;
-    _lastPlayedController.close(); // إغلاق الـ StreamController
+    unawaited(_lastPlayedController.close()); // إغلاق الـ StreamController
   }
 
   // ------------------ Internal Helpers ------------------ //

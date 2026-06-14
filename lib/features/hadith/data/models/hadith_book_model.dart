@@ -1,4 +1,4 @@
-import '../../domain/entities/hadith_book_entity.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
 
 class HadithBookModel extends HadithBookEntity {
   const HadithBookModel({
@@ -14,12 +14,12 @@ class HadithBookModel extends HadithBookEntity {
   factory HadithBookModel.fromJson(Map<String, dynamic> json) =>
       HadithBookModel(
         id: json['id'].toString(),
-        bookName: json['bookName'] ?? '',
-        writerName: json['writerName'] ?? '',
+        bookName: json['bookName'] as String? ?? '',
+        writerName: json['writerName'] as String? ?? '',
         hadithCount: json['hadiths_count'].toString(),
         chapterCount: json['chapters_count'].toString(),
-        writerDeath: json['writerDeath'] ?? '',
-        bookSlug: json['bookSlug'] ?? '',
+        writerDeath: json['writerDeath'] as String? ?? '',
+        bookSlug: json['bookSlug'] as String? ?? '',
       );
 
   Map<String, dynamic> toJson() => {

@@ -1,4 +1,4 @@
-import '../../domain/entities/azkar_audio_state.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
 
 abstract class AzkarAudioDataSource {
   Stream<AzkarAudioState> get stateStream;

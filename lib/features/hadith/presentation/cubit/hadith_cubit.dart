@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/entities/hadith_entity.dart';
-import '../../domain/usecases/get_hadiths_of_chapter_use_case.dart';
-import '../../domain/usecases/get_saved_hadiths_use_case.dart';
-import '../../domain/usecases/toggle_save_hadith_use_case.dart';
-import 'hadith_state.dart';
+import 'package:muslim/core/usecases/usecase.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
+import 'package:muslim/features/hadith/domain/usecases/get_hadiths_of_chapter_use_case.dart';
+import 'package:muslim/features/hadith/domain/usecases/get_saved_hadiths_use_case.dart';
+import 'package:muslim/features/hadith/domain/usecases/toggle_save_hadith_use_case.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
 
 class HadithCubit extends Cubit<HadithState> {
   HadithCubit({
@@ -43,7 +43,7 @@ class HadithCubit extends Cubit<HadithState> {
     if (!isClosed) emit(state.copyWith(status: HadithStatus.loading));
 
     final savedResult = await getSavedHadithsUseCase(NoParams());
-    List<Map<String, dynamic>> savedHadiths = [];
+    var savedHadiths = <Map<String, dynamic>>[];
     savedResult.fold((failure) => null, (data) {
       savedHadiths = data;
       for (final h in data) {
@@ -58,7 +58,7 @@ class HadithCubit extends Cubit<HadithState> {
       ),
     );
 
-    hadithsResult.fold(
+    await hadithsResult.fold(
       (failure) {
         if (!isClosed) {
           emit(
@@ -92,7 +92,7 @@ class HadithCubit extends Cubit<HadithState> {
   }
 
   Future<void> _prepareHadithData(List<HadithEntity> hadiths) async {
-    for (var hadith in hadiths) {
+    for (final hadith in hadiths) {
       final id = hadith.id;
       if (!_hadithSavedMap.containsKey(id)) {
         _hadithSavedMap[id] = ValueNotifier(false);
@@ -100,7 +100,7 @@ class HadithCubit extends Cubit<HadithState> {
     }
   }
 
-  Future<void> toggleHadithSave(HadithEntity hadith, bool isArabic) async {
+  Future<void> toggleHadithSave(HadithEntity hadith, {required bool isArabic}) async {
     if (_bookSlug == null || _chapterNumber == null || _chapterName == null) {
       return;
     }
@@ -139,6 +139,6 @@ class HadithCubit extends Cubit<HadithState> {
     'da`eef': 'ضعيف',
   };
 
-  String getStatus(String status, bool isArabic) =>
+  String getStatus(String status, {required bool isArabic}) =>
       isArabic ? _statusMap[status] ?? status : status;
 }

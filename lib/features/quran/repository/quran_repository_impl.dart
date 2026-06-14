@@ -1,7 +1,6 @@
 import 'package:just_audio/just_audio.dart';
-
-import '../service/quran_service.dart';
-import 'quran_repository.dart';
+import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
 
 class QuranRepositoryImpl implements QuranRepository {
   QuranRepositoryImpl(this._quranService);
@@ -39,7 +38,7 @@ class QuranRepositoryImpl implements QuranRepository {
   Future<void> prepareSurahPlaylist({
     required int surahNumber,
     required String reciter,
-  }) async => await _quranService.prepareSurahPlaylist(
+  }) async => _quranService.prepareSurahPlaylist(
     surahNumber: surahNumber,
     reciter: reciter,
   );
@@ -49,7 +48,7 @@ class QuranRepositoryImpl implements QuranRepository {
     required int fromPage,
     required int toPage,
     required String reciter,
-  }) async => await _quranService.prepareRangePlaylist(
+  }) async => _quranService.prepareRangePlaylist(
     fromPage: fromPage,
     toPage: toPage,
     reciter: reciter,
@@ -60,20 +59,20 @@ class QuranRepositoryImpl implements QuranRepository {
       _quranService.getAyahAtIndex(index);
 
   @override
-  Future<void> play() async => await _quranService.play();
+  Future<void> play() async => _quranService.play();
 
   @override
-  Future<void> pause() async => await _quranService.pause();
+  Future<void> pause() async => _quranService.pause();
 
   @override
   Future<void> seek(Duration position, {int? index}) async =>
-      await _quranService.seek(position, index: index);
+      _quranService.seek(position, index: index);
 
   @override
-  Future<void> seekToNext() async => await _quranService.seekToNext();
+  Future<void> seekToNext() async => _quranService.seekToNext();
 
   @override
-  Future<void> seekToPrevious() async => await _quranService.seekToPrevious();
+  Future<void> seekToPrevious() async => _quranService.seekToPrevious();
 
   @override
   void dispose() {
@@ -83,9 +82,9 @@ class QuranRepositoryImpl implements QuranRepository {
   @override
   Future<Duration?> getCurrentDuration() async {
     try {
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       return _quranService.audioPlayer.duration;
-    } catch (e) {
+    } on Object catch (_) {
       return null;
     }
   }

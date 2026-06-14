@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-import '../../../../core/error/exceptions.dart';
-import '../models/name_of_allah_model.dart';
+import 'package:muslim/core/error/exceptions.dart';
+import 'package:muslim/features/names_of_allah/data/models/name_of_allah_model.dart';
 
 abstract class NamesOfAllahLocalDataSource {
   Future<List<NameOfAllahModel>> getNamesOfAllah();
@@ -15,14 +15,14 @@ class NamesOfAllahLocalDataSourceImpl implements NamesOfAllahLocalDataSource {
   @override
   Future<List<NameOfAllahModel>> getNamesOfAllah() async {
     try {
-      final String response = await rootBundle.loadString(
+      final response = await rootBundle.loadString(
         'assets/json/names_of_allah.json',
       );
       final data = await json.decode(response);
       return (data as List)
           .map((e) => NameOfAllahModel.fromJson(e as Map<String, dynamic>))
           .toList();
-    } catch (e) {
+    } on Object catch (_) {
       throw const CacheException();
     }
   }

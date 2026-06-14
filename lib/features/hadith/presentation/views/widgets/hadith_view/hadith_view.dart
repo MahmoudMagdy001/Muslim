@@ -1,15 +1,14 @@
-// ignore_for_file: avoid_dynamic_calls
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_body.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
-import '../../../../../../core/utils/extensions.dart';
-import '../../../../../../l10n/app_localizations.dart';
-import '../../../cubit/hadith_cubit.dart';
-import '../../../cubit/hadith_state.dart';
-import 'widgets/hadith_body.dart';
 
 class HadithView extends StatefulWidget {
   const HadithView({
@@ -113,10 +112,12 @@ class _HadithViewState extends State<HadithView> {
       );
 
       if (index != -1) {
-        _itemScrollController.scrollTo(
-          index: index,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInOut,
+        unawaited(
+          _itemScrollController.scrollTo(
+            index: index,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
+          ),
         );
       }
     }
@@ -138,7 +139,7 @@ class _HadithViewState extends State<HadithView> {
         ),
         body: InternetStateManager(
           onRestoreInternetConnection: () {
-            context.read<HadithCubit>().reloadData();
+            unawaited(context.read<HadithCubit>().reloadData());
           },
           noInternetScreen: const NoInternetScreen(),
           child: RefreshIndicator(
@@ -160,10 +161,12 @@ class _HadithViewState extends State<HadithView> {
               ? FloatingActionButton(
                   mini: true,
                   onPressed: () {
-                    _itemScrollController.scrollTo(
-                      index: 0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
+                    unawaited(
+                      _itemScrollController.scrollTo(
+                        index: 0,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      ),
                     );
                   },
                   backgroundColor: context.theme.primaryColor,

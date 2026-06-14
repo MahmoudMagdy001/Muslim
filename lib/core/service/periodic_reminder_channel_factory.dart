@@ -1,7 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-import 'periodic_reminder_constants.dart';
+import 'package:muslim/core/service/periodic_reminder_constants.dart';
 
 /// Creates the periodic Islamic reminder notification channel.
 NotificationChannel createPeriodicReminderChannel() => NotificationChannel(

@@ -1,8 +1,8 @@
-import '../../../../features/surahs_list/model/hizb_model.dart';
-import '../../../../features/surahs_list/model/juz_model.dart';
+import 'package:muslim/features/surahs_list/model/hizb_model.dart';
+import 'package:muslim/features/surahs_list/model/juz_model.dart';
 
 int getJuzForAyah(int surah, int ayah) {
-  for (int i = JuzModel.starts.length - 1; i >= 0; i--) {
+  for (var i = JuzModel.starts.length - 1; i >= 0; i--) {
     final start = JuzModel.starts[i];
     final startSurah = start['surah'] as int;
     final startAyah = start['ayah'] as int;
@@ -15,7 +15,7 @@ int getJuzForAyah(int surah, int ayah) {
 }
 
 int getHizbForAyah(int surah, int ayah) {
-  for (int i = HizbModel.starts.length - 1; i >= 0; i--) {
+  for (var i = HizbModel.starts.length - 1; i >= 0; i--) {
     final start = HizbModel.starts[i];
     final startSurah = start['surah'] as int;
     final startAyah = start['ayah'] as int;

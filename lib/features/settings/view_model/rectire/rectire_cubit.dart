@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ class ReciterState extends Equatable {
 // Cubit class
 class ReciterCubit extends Cubit<ReciterState> {
   ReciterCubit() : super(const ReciterState(selectedReciter: _defaultReciter)) {
-    _initializeReciter();
+    unawaited(_initializeReciter());
   }
   static const String _defaultReciter = 'ar.alafasy';
   static const String _reciterKey = 'selected_reciter';
@@ -23,7 +24,7 @@ class ReciterCubit extends Cubit<ReciterState> {
   Future<void> _initializeReciter() async {
     try {
       await _loadReciter();
-    } catch (error) {
+    } on Object catch (error) {
       debugPrint('Error initializing reciter: $error');
       // Fall back to default value
       emit(const ReciterState(selectedReciter: _defaultReciter));
@@ -50,7 +51,7 @@ class ReciterCubit extends Cubit<ReciterState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_reciterKey, reciterId);
-    } catch (error) {
+    } on Object catch (error) {
       debugPrint('Error saving reciter: $error');
       // Revert the change if saving fails
       if (!isClosed) emit(previousState);
@@ -61,7 +62,7 @@ class ReciterCubit extends Cubit<ReciterState> {
   Future<void> refreshReciter() async {
     try {
       await _loadReciter();
-    } catch (error) {
+    } on Object catch (error) {
       debugPrint('Error refreshing reciter: $error');
     }
   }

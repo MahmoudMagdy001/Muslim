@@ -1,22 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
-import '../../../../core/utils/navigation_helper.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/hadith_book_entity.dart';
-import '../helper/hadith_helper.dart';
-import '../cubit/hadith_books_cubit.dart';
-import '../cubit/hadith_books_state.dart';
-import 'widgets/chapter_of_book.dart';
-import 'widgets/hadith_of_the_day_card.dart';
-import 'widgets/saved_hadiths_view/saved_hadith_view.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/theme/app_theme.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_books_cubit.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_books_state.dart';
+import 'package:muslim/features/hadith/presentation/helper/hadith_helper.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/chapter_of_book.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_of_the_day_card.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/saved_hadiths_view/saved_hadith_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class HadithBooksView extends StatelessWidget {
   const HadithBooksView({super.key});
@@ -83,10 +84,12 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
         actions: [
           IconButton(
             onPressed: () {
-              navigateWithTransition(
-                context,
-                const SavedHadithView(),
-                type: TransitionType.fade,
+              unawaited(
+                navigateWithTransition<void>(
+                  context,
+                  const SavedHadithView(),
+                  type: TransitionType.fade,
+                ),
               );
             },
             icon: const Icon(Icons.save_alt_outlined),
@@ -96,8 +99,8 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
       body: InternetStateManager(
         noInternetScreen: const NoInternetScreen(),
         onRestoreInternetConnection: () {
-          context.read<HadithBooksCubit>().loadBooks();
-          context.read<HadithBooksCubit>().loadRandomHadith();
+          unawaited(context.read<HadithBooksCubit>().loadBooks());
+          unawaited(context.read<HadithBooksCubit>().loadRandomHadith());
         },
         child: SafeArea(
           child: Column(
@@ -204,10 +207,11 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<HadithBooksCubit>().loadBooks();
-                        context.read<HadithBooksCubit>().loadRandomHadith();
+                        final cubit = context.read<HadithBooksCubit>();
+                        await cubit.loadBooks();
+                        await cubit.loadRandomHadith();
                         // Optional: Could return a future that completes when state status changes, but just waiting briefly works for UI.
-                        await Future.delayed(const Duration(milliseconds: 500));
+                        await Future<void>.delayed(const Duration(milliseconds: 500));
                       },
                       child: Scrollbar(
                         controller: _scrollController,
@@ -327,10 +331,12 @@ class SuccessWidget extends StatelessWidget {
     child: InkWell(
       borderRadius: BorderRadius.circular(15.toR),
       onTap: () {
-        navigateWithTransition(
-          type: TransitionType.fade,
-          context,
-          ChapterOfBook(bookSlug: book.bookSlug, bookName: name),
+        unawaited(
+          navigateWithTransition<void>(
+            context,
+            ChapterOfBook(bookSlug: book.bookSlug, bookName: name),
+            type: TransitionType.fade,
+          ),
         );
       },
       child: Padding(

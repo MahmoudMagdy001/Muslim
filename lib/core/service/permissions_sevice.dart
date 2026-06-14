@@ -8,7 +8,7 @@ Future<bool> requestAllPermissions() async {
     final locationGranted = await checkLocationPermission();
     await checkBatteryOptimization();
     return locationGranted;
-  } catch (e) {
+  } on Object catch (e) {
     debugPrint('Permission request error: $e');
     return false;
   }
@@ -47,7 +47,7 @@ Future<void> checkBatteryOptimization() async {
     } else {
       debugPrint('✅ التطبيق غير محسن (Unrestricted)');
     }
-  } catch (e) {
+  } on Object catch (e) {
     debugPrint('⚠️ خطأ في التحقق من Battery Optimization: $e');
   }
 }

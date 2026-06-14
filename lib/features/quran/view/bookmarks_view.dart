@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../../l10n/app_localizations.dart';
-import '../../surahs_list/view/widgets/bookmark_tab/bookmark_tab.dart';
+import 'package:muslim/features/surahs_list/view/widgets/bookmark_tab/bookmark_tab.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class BookmarksView extends StatelessWidget {
   const BookmarksView({

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/utils/format_helper.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
   const PrivacyPolicyView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       appBar: AppBar(
@@ -456,13 +455,13 @@ class _ContactSection extends StatelessWidget {
   }
 
   Future<void> _launchEmail(BuildContext context) async {
-    final String subject = Uri.encodeComponent(
+    final subject = Uri.encodeComponent(
       isArabic
           ? 'استفسار عن سياسة الخصوصية - مُسَلِّم'
           : 'Privacy Policy Inquiry - Muslim',
     );
 
-    final Uri emailLaunchUri = Uri.parse(
+    final emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
     );
 

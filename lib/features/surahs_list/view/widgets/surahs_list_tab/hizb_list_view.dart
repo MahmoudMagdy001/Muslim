@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../model/hizb_model.dart';
-import 'hizb_list_tile.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/surahs_list/model/hizb_model.dart';
+import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/hizb_list_tile.dart';
 
 class HizbListView extends StatelessWidget {
   const HizbListView({

@@ -1,19 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
-
-import '../../../../../core/di/service_locator.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/navigation_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../../l10n/app_localizations.dart';
-import '../../../domain/entities/chapter_of_book_entity.dart';
-import '../../cubit/chapter_of_book_cubit.dart';
-import '../../cubit/chapter_of_book_state.dart';
-import '../../cubit/hadith_cubit.dart';
-import 'hadith_view/hadith_view.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
+import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_cubit.dart';
+import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_state.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/hadith_view.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ChapterOfBook extends StatelessWidget {
   const ChapterOfBook({
@@ -27,7 +28,11 @@ class ChapterOfBook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => getIt<ChapterOfBookCubit>()..loadChapters(bookSlug),
+    create: (context) {
+      final cubit = getIt<ChapterOfBookCubit>();
+      unawaited(cubit.loadChapters(bookSlug));
+      return cubit;
+    },
     child: _ChapterOfBookContent(bookSlug: bookSlug, bookName: bookName),
   );
 }
@@ -70,19 +75,24 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
     String chapterName,
     String chapterNumber,
   ) {
-    navigateWithTransition(
-      context,
-      BlocProvider(
-        create: (context) => getIt<HadithCubit>()
-          ..initializeData(widget.bookSlug, chapter.chapterNumber, chapterName),
-        child: HadithView(
-          bookSlug: widget.bookSlug,
-          chapterNumber: chapter.chapterNumber,
-          chapterName: chapterName,
-          localizations: AppLocalizations.of(context),
+    unawaited(
+      navigateWithTransition<void>(
+        context,
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<HadithCubit>();
+            unawaited(cubit.initializeData(widget.bookSlug, chapter.chapterNumber, chapterName));
+            return cubit;
+          },
+          child: HadithView(
+            bookSlug: widget.bookSlug,
+            chapterNumber: chapter.chapterNumber,
+            chapterName: chapterName,
+            localizations: AppLocalizations.of(context),
+          ),
         ),
+        type: TransitionType.fade,
       ),
-      type: TransitionType.fade,
     );
   }
 
@@ -100,7 +110,7 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
       body: InternetStateManager(
         noInternetScreen: const NoInternetScreen(),
         onRestoreInternetConnection: () {
-          context.read<ChapterOfBookCubit>().loadChapters(widget.bookSlug);
+          unawaited(context.read<ChapterOfBookCubit>().loadChapters(widget.bookSlug));
         },
         child: SafeArea(
           child: Column(
@@ -130,10 +140,10 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<ChapterOfBookCubit>().loadChapters(
+                        await context.read<ChapterOfBookCubit>().loadChapters(
                           widget.bookSlug,
                         );
-                        await Future.delayed(const Duration(milliseconds: 500));
+                        await Future<void>.delayed(const Duration(milliseconds: 500));
                       },
                       child: _buildChapterListView(chapters, theme, isArabic),
                     );

@@ -1,16 +1,17 @@
+import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/utils/extensions.dart';
-import '../../../../core/widgets/base_app_dialog.dart';
-import '../../domain/entities/zikr_entity.dart';
-import '../cubit/sebha_cubit.dart';
-import '../cubit/sebha_state.dart';
-import 'widgets/azkar_selector.dart';
-import 'widgets/custom_zikr_dialog.dart';
-import 'widgets/sebha_button.dart';
-import 'widgets/sebha_controls.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
+import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
+import 'package:muslim/features/sebha/presentation/cubit/sebha_state.dart';
+import 'package:muslim/features/sebha/presentation/views/widgets/azkar_selector.dart';
+import 'package:muslim/features/sebha/presentation/views/widgets/custom_zikr_dialog.dart';
+import 'package:muslim/features/sebha/presentation/views/widgets/sebha_button.dart';
+import 'package:muslim/features/sebha/presentation/views/widgets/sebha_controls.dart';
 
 class SebhaView extends StatelessWidget {
   const SebhaView({super.key});
@@ -56,7 +57,7 @@ class SebhaView extends StatelessWidget {
                         currentIndex: data.currentIndex,
                         isArabic: isArabic,
                         onSelect: context.read<SebhaCubit>().selectZikr,
-                        onLongPress: (ZikrEntity zikr) =>
+                        onLongPress: (zikr) =>
                             _showZikrOptions(context, zikr),
                       ),
                       const SizedBox(height: 24),
@@ -132,23 +133,25 @@ class SebhaView extends StatelessWidget {
   void _showCompleteDialog(BuildContext context, int maxCount) {
     final l10n = context.l10n;
 
-    BaseAppDialog.show(
-      context,
-      title: '${l10n.congrates} 🎉',
-      contentText: '${l10n.completeTasbeh} $maxCount\n ${l10n.tasbehQuestion}',
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            context.read<SebhaCubit>().reset();
-          },
-          child: Text(l10n.resetTasbeh),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.continueTasbeh),
-        ),
-      ],
+    unawaited(
+      BaseAppDialog.show<void>(
+        context,
+        title: '${l10n.congrates} 🎉',
+        contentText: '${l10n.completeTasbeh} $maxCount\n ${l10n.tasbehQuestion}',
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<SebhaCubit>().reset();
+            },
+            child: Text(l10n.resetTasbeh),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.continueTasbeh),
+          ),
+        ],
+      ),
     );
   }
 
@@ -156,39 +159,41 @@ class SebhaView extends StatelessWidget {
     final l10n = context.l10n;
     final controller = TextEditingController();
 
-    BaseAppDialog.show(
-      context,
-      title: l10n.chooseGoal,
-      content: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(labelText: l10n.goalExample),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            context.read<SebhaCubit>().setGoal(null);
-          },
-          child: Text(l10n.clear),
+    unawaited(
+      BaseAppDialog.show<void>(
+        context,
+        title: l10n.chooseGoal,
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: l10n.goalExample),
         ),
-        TextButton(
-          onPressed: () {
-            if (controller.text.isNotEmpty) {
-              final value = int.tryParse(controller.text);
-              if (value != null && value > 0) {
-                context.read<SebhaCubit>().setGoal(value);
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<SebhaCubit>().setGoal(null);
+            },
+            child: Text(l10n.clear),
+          ),
+          TextButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                final value = int.tryParse(controller.text);
+                if (value != null && value > 0) {
+                  context.read<SebhaCubit>().setGoal(value);
+                }
               }
-            }
-            Navigator.pop(context);
-          },
-          child: Text(l10n.save),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.cancelButton),
-        ),
-      ],
+              Navigator.pop(context);
+            },
+            child: Text(l10n.save),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancelButton),
+          ),
+        ],
+      ),
     );
   }
 
@@ -242,7 +247,7 @@ class SebhaView extends StatelessWidget {
       ],
     );
 
-    if (confirmed == true && context.mounted) {
+    if ((confirmed ?? false) && context.mounted) {
       await context.read<SebhaCubit>().deleteCustomZikr(zikr.id);
     }
   }
@@ -253,62 +258,64 @@ class SebhaView extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = context.theme.brightness == Brightness.dark;
 
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: isDark ? context.colorScheme.surface : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (bottomSheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle bar
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white.withAlpha(40)
-                      : Colors.black.withAlpha(25),
-                  borderRadius: BorderRadius.circular(2),
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: isDark ? context.colorScheme.surface : Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (bottomSheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? Colors.white.withAlpha(40)
+                        : Colors.black.withAlpha(25),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.edit_rounded,
-                  color: isDark ? Colors.white70 : context.colorScheme.primary,
+                ListTile(
+                  leading: Icon(
+                    Icons.edit_rounded,
+                    color: isDark ? Colors.white70 : context.colorScheme.primary,
+                  ),
+                  title: Text(l10n.editTasbih),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    unawaited(_showEditZikrDialog(context, zikr));
+                  },
                 ),
-                title: Text(l10n.editTasbih),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                ListTile(
+                  leading: Icon(
+                    Icons.delete_rounded,
+                    color: context.colorScheme.error,
+                  ),
+                  title: Text(
+                    l10n.deleteTasbih,
+                    style: TextStyle(color: context.colorScheme.error),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  onTap: () {
+                    Navigator.pop(bottomSheetContext);
+                    unawaited(_showDeleteZikrDialog(context, zikr));
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                  _showEditZikrDialog(context, zikr);
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.delete_rounded,
-                  color: context.colorScheme.error,
-                ),
-                title: Text(
-                  l10n.deleteTasbih,
-                  style: TextStyle(color: context.colorScheme.error),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                onTap: () {
-                  Navigator.pop(bottomSheetContext);
-                  _showDeleteZikrDialog(context, zikr);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

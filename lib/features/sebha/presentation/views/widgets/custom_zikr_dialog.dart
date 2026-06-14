@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/widgets/base_app_dialog.dart';
-import '../../../domain/entities/zikr_entity.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
 class CustomZikrDialog extends StatefulWidget {
   const CustomZikrDialog({this.zikr, super.key});

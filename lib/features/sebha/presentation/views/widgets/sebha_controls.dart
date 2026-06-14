@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
+import 'package:muslim/core/utils/extensions.dart';
 
 class SebhaControls extends StatelessWidget {
   const SebhaControls({

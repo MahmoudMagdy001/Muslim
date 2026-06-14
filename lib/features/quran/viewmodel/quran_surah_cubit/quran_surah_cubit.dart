@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/viewmodel/quran_surah_cubit/quran_surah_state.dart';
 import 'package:quran/quran.dart' as quran;
-
-import '../../repository/quran_repository.dart';
-import 'quran_surah_state.dart';
 
 class QuranSurahCubit extends Cubit<QuranSurahState> {
   QuranSurahCubit(this._repository) : super(const QuranSurahState());
@@ -39,7 +38,7 @@ class QuranSurahCubit extends Cubit<QuranSurahState> {
 
     try {
       await _prepareAndEmitLoaded(surahNumber, reciter, startAyah);
-    } catch (e) {
+    } on Object catch (e) {
       _emitError(surahNumber, e);
     }
   }

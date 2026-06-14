@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:muslim/core/service/location_service.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/service/location_service.dart';
-import '../../../../core/utils/app_logger.dart';
-import '../../../settings/service/settings_service.dart';
-import '../../domain/entities/local_prayer_times.dart';
 
 abstract class PrayerTimesLocalDataSource {
   Future<dynamic> getPrayerTimes({
@@ -52,18 +51,18 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
 
       String? cityName;
       try {
-        geo.setLocaleIdentifier(isArabic ? 'ar' : 'en');
+        await geo.setLocaleIdentifier(isArabic ? 'ar' : 'en');
         final placemarks = await geo.placemarkFromCoordinates(
           coords.latitude,
           coords.longitude,
         );
         if (placemarks.isNotEmpty) {
           final place = placemarks.first;
-          cityName = place.locality?.isNotEmpty == true
+          cityName = place.locality?.isNotEmpty ?? false
               ? place.locality
               : place.administrativeArea;
         }
-      } catch (e) {
+      } on Object catch (e) {
         logWarning('فشل geocoding: $e');
       }
 
@@ -72,9 +71,9 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       } else {
         return await _calculatePrayerTimes(coords, cityName: cityName);
       }
-    } catch (error) {
+    } on Object catch (error) {
       logError('خطأ في الحصول على مواقيت الصلاة', error);
-      return await _getDefaultPrayerTimes();
+      return _getDefaultPrayerTimes();
     }
   }
 
@@ -134,10 +133,10 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     final calculationParams = _getCalculationParameters();
     final now = DateTime.now();
 
-    final List<LocalPrayerTimes> monthlyTimes = [];
-    final int daysInMonth = DateUtils.getDaysInMonth(now.year, now.month);
+    final monthlyTimes = <LocalPrayerTimes>[];
+    final daysInMonth = DateUtils.getDaysInMonth(now.year, now.month);
 
-    for (int day = 1; day <= daysInMonth; day++) {
+    for (var day = 1; day <= daysInMonth; day++) {
       final date = DateTime(now.year, now.month, day);
       final prayerTimes = PrayerTimes(
         coordinates,
@@ -236,7 +235,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         final position = await _getCurrentPosition();
         await _cacheCoordinates(prefs, position.latitude, position.longitude);
         return Coordinates(position.latitude, position.longitude);
-      } catch (e) {
+      } on Object catch (e) {
         logWarning('فشل في الحصول على الموقع الحالي: $e');
       }
     }
@@ -262,7 +261,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     final locationService = LocationService();
     final position = await locationService.getCurrentLocate();
     if (position != null) return position;
-    return await Geolocator.getCurrentPosition();
+    return Geolocator.getCurrentPosition();
   }
 
   Future<void> _cacheCoordinates(

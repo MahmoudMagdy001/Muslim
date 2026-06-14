@@ -1,39 +1,39 @@
 import 'package:get_it/get_it.dart';
 
-import '../../features/azkar/data/datasources/azkar_audio_data_source.dart';
-import '../../features/azkar/data/datasources/azkar_local_data_source.dart';
-import '../../features/azkar/data/datasources/azkar_remote_data_source.dart';
-import '../../features/azkar/data/repositories/azkar_repository_impl.dart';
-import '../../features/azkar/domain/repositories/azkar_repository.dart';
-import '../../features/hadith/data/datasources/hadith_local_data_source.dart';
-import '../../features/hadith/data/datasources/hadith_remote_data_source.dart';
-import '../../features/hadith/data/repositories/hadith_repository_impl.dart';
-import '../../features/hadith/domain/repositories/hadith_repository.dart';
-import '../../features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
-import '../../features/names_of_allah/data/repositories/names_of_allah_repository_impl.dart';
-import '../../features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
-import '../../features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
-import '../../features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
-import '../../features/prayer_times/data/repositories/prayer_notification_repository_impl.dart';
-import '../../features/prayer_times/data/repositories/prayer_times_repository_impl.dart';
-import '../../features/prayer_times/domain/repositories/prayer_notification_repository.dart';
-import '../../features/prayer_times/domain/repositories/prayer_times_repository.dart';
-import '../../features/qiblah/data/datasources/qiblah_local_data_source.dart';
-import '../../features/qiblah/data/repositories/qiblah_repository_impl.dart';
-import '../../features/qiblah/domain/repositories/qiblah_repository.dart';
-import '../../features/quran/repository/quran_repository.dart';
-import '../../features/quran/repository/quran_repository_impl.dart';
-import '../../features/quran/repository/tafsir_repository.dart';
-import '../../features/quran/service/quran_service.dart';
-import '../../features/sebha/data/datasources/sebha_local_data_source.dart';
-import '../../features/sebha/data/repositories/sebha_repository_impl.dart';
-import '../../features/sebha/domain/repositories/sebha_repository.dart';
-import '../../features/settings/service/settings_service.dart';
-import '../../features/surahs_list/repository/surahs_list_repository.dart';
-import '../../features/surahs_list/repository/surahs_list_repository_impl.dart';
-import '../../features/zakat/data/datasources/zakat_remote_data_source.dart';
-import '../../features/zakat/data/repositories/zakat_repository_impl.dart';
-import '../../features/zakat/domain/repositories/zakat_repository.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_audio_data_source.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_local_data_source.dart';
+import 'package:muslim/features/azkar/data/datasources/azkar_remote_data_source.dart';
+import 'package:muslim/features/azkar/data/repositories/azkar_repository_impl.dart';
+import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
+import 'package:muslim/features/hadith/data/datasources/hadith_local_data_source.dart';
+import 'package:muslim/features/hadith/data/datasources/hadith_remote_data_source.dart';
+import 'package:muslim/features/hadith/data/repositories/hadith_repository_impl.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
+import 'package:muslim/features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
+import 'package:muslim/features/names_of_allah/data/repositories/names_of_allah_repository_impl.dart';
+import 'package:muslim/features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_notification_local_data_source.dart';
+import 'package:muslim/features/prayer_times/data/datasources/prayer_times_local_data_source.dart';
+import 'package:muslim/features/prayer_times/data/repositories/prayer_notification_repository_impl.dart';
+import 'package:muslim/features/prayer_times/data/repositories/prayer_times_repository_impl.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_notification_repository.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_times_repository.dart';
+import 'package:muslim/features/qiblah/data/datasources/qiblah_local_data_source.dart';
+import 'package:muslim/features/qiblah/data/repositories/qiblah_repository_impl.dart';
+import 'package:muslim/features/qiblah/domain/repositories/qiblah_repository.dart';
+import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/repository/quran_repository_impl.dart';
+import 'package:muslim/features/quran/repository/tafsir_repository.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
+import 'package:muslim/features/sebha/data/datasources/sebha_local_data_source.dart';
+import 'package:muslim/features/sebha/data/repositories/sebha_repository_impl.dart';
+import 'package:muslim/features/sebha/domain/repositories/sebha_repository.dart';
+import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/surahs_list/repository/surahs_list_repository.dart';
+import 'package:muslim/features/surahs_list/repository/surahs_list_repository_impl.dart';
+import 'package:muslim/features/zakat/data/datasources/zakat_remote_data_source.dart';
+import 'package:muslim/features/zakat/data/repositories/zakat_repository_impl.dart';
+import 'package:muslim/features/zakat/domain/repositories/zakat_repository.dart';
 
 void registerRepositories(GetIt getIt) {
   getIt
@@ -51,9 +51,9 @@ void registerRepositories(GetIt getIt) {
     ..registerLazySingleton<QuranRepository>(
       () => QuranRepositoryImpl(getIt<QuranService>()),
     )
-    ..registerLazySingleton<TafsirRepository>(() => TafsirRepository())
+    ..registerLazySingleton<TafsirRepository>(TafsirRepository.new)
     ..registerLazySingleton<SurahsListRepository>(
-      () => SurahsListRepositoryImpl(),
+      SurahsListRepositoryImpl.new,
     )
     ..registerLazySingleton<AzkarRepository>(
       () => AzkarRepositoryImpl(

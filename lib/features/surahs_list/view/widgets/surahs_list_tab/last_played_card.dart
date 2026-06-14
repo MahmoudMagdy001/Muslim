@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:quran/quran.dart' as quran;
+import 'dart:async';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:quran/quran.dart' as quran;
 
 class LastPlayedCard extends StatelessWidget {
   const LastPlayedCard({
@@ -57,7 +58,7 @@ class LastPlayedCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${quran.getSurahNameArabic(lastPlayed['surah'])} - آية ${convertToArabicNumbers(lastPlayed['verse'].toString())}',
+                        '${quran.getSurahNameArabic(lastPlayed['surah'] as int)} - آية ${convertToArabicNumbers(lastPlayed['verse'].toString())}',
                         style: context.textTheme.bodyMedium?.copyWith(
                           color: Colors.white70,
                         ),
@@ -68,10 +69,14 @@ class LastPlayedCard extends StatelessWidget {
               ),
               const Spacer(),
               ElevatedButton(
-                onPressed: () => navigateToSurah(
-                  surah: lastPlayed['surah'],
-                  ayah: lastPlayed['verse'],
-                ),
+                onPressed: () {
+                  unawaited(
+                    navigateToSurah(
+                      surah: lastPlayed['surah'] as int,
+                      ayah: lastPlayed['verse'] as int,
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.theme.colorScheme.secondary,
                   foregroundColor: Colors.black,

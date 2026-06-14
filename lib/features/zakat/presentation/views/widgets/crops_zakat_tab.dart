@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/extensions.dart';
-import '../../../../../core/utils/format_helper.dart';
-import '../../../../../core/utils/responsive_helper.dart';
-import '../../../../../l10n/app_localizations.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class CropsZakatTab extends StatefulWidget {
   const CropsZakatTab({required this.localizations, super.key});

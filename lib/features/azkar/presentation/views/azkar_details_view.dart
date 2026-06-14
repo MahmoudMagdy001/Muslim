@@ -1,16 +1,16 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
-
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/widgets/custom_loading_indicator.dart';
-import '../../../../core/utils/extensions.dart';
-import '../../../prayer_times/presentation/cubit/prayer_times_state.dart';
-import '../../domain/entities/azkar_entity.dart';
-import '../cubit/azkar_cubit.dart';
-import '../cubit/azkar_state.dart';
-import 'widgets/azkar_item_card.dart';
+import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/widgets/custom_loading_indicator.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
+import 'package:muslim/features/azkar/presentation/cubit/azkar_cubit.dart';
+import 'package:muslim/features/azkar/presentation/cubit/azkar_state.dart';
+import 'package:muslim/features/azkar/presentation/views/widgets/azkar_item_card.dart';
+import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 
 class AzkarDetailsView extends StatelessWidget {
   const AzkarDetailsView({required this.azkar, super.key});
@@ -18,7 +18,11 @@ class AzkarDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => getIt<AzkarCubit>()..loadAzkarContent(azkar.textUrl),
+    create: (context) {
+      final cubit = getIt<AzkarCubit>();
+      unawaited(cubit.loadAzkarContent(azkar.textUrl));
+      return cubit;
+    },
     child: Scaffold(
       appBar: AppBar(title: Text(azkar.title), centerTitle: true),
       body: Builder(

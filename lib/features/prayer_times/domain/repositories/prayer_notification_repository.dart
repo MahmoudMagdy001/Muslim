@@ -1,6 +1,6 @@
-import '../entities/local_prayer_times.dart';
-import '../entities/prayer_notification_settings.dart';
-import '../entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
+import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
 /// Abstract repository for prayer notification operations.
 abstract class PrayerNotificationRepository {

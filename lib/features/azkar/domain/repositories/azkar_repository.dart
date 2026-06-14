@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/error/failures.dart';
-import '../entities/azkar_audio_state.dart';
-import '../entities/azkar_entity.dart';
+import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
+import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
 
 abstract class AzkarRepository {
   Future<Either<Failure, List<AzkarEntity>>> getAzkarList();
