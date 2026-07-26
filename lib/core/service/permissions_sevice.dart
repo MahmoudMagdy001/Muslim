@@ -14,6 +14,9 @@ Future<bool> requestAllPermissions() async {
   }
 }
 
+// ponytail: check location permission status without showing a blocking prompt
+Future<bool> isLocationPermissionGranted() async => Permission.locationWhenInUse.isGranted;
+
 Future<void> checkNotificationPermission() async {
   final status = await Permission.notification.status;
   if (status.isDenied) {
@@ -39,8 +42,7 @@ Future<bool> checkLocationPermission() async {
 
 Future<void> checkBatteryOptimization() async {
   try {
-    final isDisabled =
-        await DisableBatteryOptimization.isBatteryOptimizationDisabled;
+    final isDisabled = await DisableBatteryOptimization.isBatteryOptimizationDisabled;
 
     if (isDisabled == false) {
       await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();

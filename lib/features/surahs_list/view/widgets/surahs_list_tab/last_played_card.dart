@@ -36,7 +36,12 @@ class LastPlayedCard extends StatelessWidget {
           left: 0,
           bottom: 0,
           top: 0,
-          child: Image.asset('assets/quran/image.png', fit: BoxFit.contain),
+          child: Image.asset(
+            'assets/quran/image.png',
+            fit: BoxFit.contain,
+            // ponytail: cache height to save memory at runtime
+            cacheHeight: 375,
+          ),
         ),
         // Content
         Padding(

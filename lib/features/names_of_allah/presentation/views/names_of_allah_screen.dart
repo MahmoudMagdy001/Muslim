@@ -145,6 +145,8 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                           child: Image.asset(
                             'assets/quran/search.png',
                             width: 20.toW,
+                            // ponytail: cache dimensions to save memory at runtime
+                            cacheWidth: 60,
                             color: context.colorScheme.secondary,
                           ),
                         ),

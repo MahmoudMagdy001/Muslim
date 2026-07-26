@@ -13,7 +13,7 @@
 
 ## 🌟 Overview
 
-**Muslim App** is a modern, elegant, and comprehensive Islamic application built with Flutter. It's designed to be more than just an app; it's a daily companion for every Muslim, providing a seamless and spiritually enriching experience. 
+**Muslim App** is a modern, elegant, and comprehensive Islamic application built with Flutter. It's designed to be more than just an app; it's a daily companion for every Muslim, providing a seamless and spiritually enriching experience.
 
 Whether you're looking for high-quality Quran recitations, precise prayer timings, or a smart Zakat calculator, this app delivers it all with a premium Material 3 interface.
 
@@ -22,48 +22,57 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 ## ✨ Features
 
 ### 📖 Holy Quran
-*   **Complete Quran**: Full Quran with all 114 Surahs in a clean, readable interface.
-*   **Audio Recitation**: Crystal-clear audio from world-renowned Qaris (e.g., Mishary Rashid Alafasy).
-*   **Surah Browser**: Browse and search through all Surahs with detailed information.
-*   **Background Playback**: Continue listening with lock-screen controls and background audio support.
+
+* **Complete Quran**: Full Quran with all 114 Surahs in a clean, readable interface.
+* **Audio Recitation**: Crystal-clear audio from world-renowned Qaris (e.g., Mishary Rashid Alafasy).
+* **Surah Browser**: Browse and search through all Surahs with detailed information.
+* **Background Playback**: Continue listening with lock-screen controls and background audio support.
 
 ### 🕌 Prayer Times
-*   **Precision Adhan**: Location-aware prayer times using the industry-standard `adhan` package.
-*   **Visual Notifications**: Beautiful, custom-designed Adhan alerts via `awesome_notifications`.
-*   **Daily Schedule**: View all five daily prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) with accurate timings.
+
+* **Precision Adhan**: Location-aware prayer times using the industry-standard `adhan` package.
+* **Visual Notifications**: Beautiful, custom-designed Adhan alerts via `awesome_notifications`.
+* **Daily Schedule**: View all five daily prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) with accurate timings.
 
 ### 🧭 Qibla Finder
-*   **Live Qibla**: Real-time direction finding using advanced device sensors and GPS integration.
-*   **Visual Compass**: Animated compass pointing toward the Kaaba in Mecca.
-*   **Location Awareness**: Automatically adjusts based on your current location.
+
+* **Live Qibla**: Real-time direction finding using advanced device sensors and GPS integration.
+* **Visual Compass**: Animated compass pointing toward the Kaaba in Mecca.
+* **Location Awareness**: Automatically adjusts based on your current location.
 
 ### 📿 Azkar (Morning & Evening)
-*   **Daily Supplications**: Complete collection of morning and evening remembrance (Athkar).
-*   **Offline Access**: All Azkar available without internet connection.
-*   **Categorized**: Organized by time of day for easy access.
+
+* **Daily Supplications**: Complete collection of morning and evening remembrance (Athkar).
+* **Offline Access**: All Azkar available without internet connection.
+* **Categorized**: Organized by time of day for easy access.
 
 ### 📚 Hadith Collection
-*   **Curated Hadith**: Authentic Hadith collections for daily reading.
-*   **Offline Library**: Full access to Hadith without requiring internet.
+
+* **Curated Hadith**: Authentic Hadith collections for daily reading.
+* **Offline Library**: Full access to Hadith without requiring internet.
 
 ### 🌟 99 Names of Allah
-*   **Asma ul-Husna**: Complete list of Allah's beautiful names with meanings.
-*   **Offline Access**: Available anytime, anywhere without connectivity.
+
+* **Asma ul-Husna**: Complete list of Allah's beautiful names with meanings.
+* **Offline Access**: Available anytime, anywhere without connectivity.
 
 ### 📿 Digital Sebha (Tasbih)
-*   **Minimalist Counter**: Simple and elegant digital prayer beads counter.
-*   **Haptic Feedback**: Responsive tactile feedback on each count.
-*   **Reset Functionality**: Easy reset to start new dhikr sessions.
+
+* **Minimalist Counter**: Simple and elegant digital prayer beads counter.
+* **Haptic Feedback**: Responsive tactile feedback on each count.
+* **Reset Functionality**: Easy reset to start new dhikr sessions.
 
 ### 💰 Zakat Calculator
-*   **Intelligent Calculations**: Calculate Zakat based on current wealth, gold, silver, and assets.
-*   **Gold Rate Integration**: Real-time gold price fetching via API for accurate Zakat values.
-*   **Nisab Threshold**: Automatic calculation of minimum wealth requirements.
+
+* **Intelligent Calculations**: Calculate Zakat based on current wealth, gold, silver, and assets.
+* **Gold Rate Integration**: Real-time gold price fetching via API for accurate Zakat values.
+* **Nisab Threshold**: Automatic calculation of minimum wealth requirements.
 
 ### ⚙️ Settings
-*   **Localization**: Multi-language support (Arabic & English).
-*   **Notifications**: Configure prayer time alerts and reminders.
-*   **App Preferences**: Customize app behavior and appearance.
+
+* **Localization**: Multi-language support (Arabic & English).
+* **Notifications**: Configure prayer time alerts and reminders.
+* **App Preferences**: Customize app behavior and appearance.
 
 ---
 
@@ -99,6 +108,7 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 ## 🛠️ Technical Excellence
 
 ### Built With
+
 | Category | Technology |
 | :--- | :--- |
 | **Framework** | [Flutter](https://flutter.dev/) v3.10+ |
@@ -113,30 +123,38 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 | **Utilities** | [url_launcher](https://pub.dev/packages/url_launcher), [share_plus](https://pub.dev/packages/share_plus), [in_app_review](https://pub.dev/packages/in_app_review) |
 
 ### Architecture Highlights
+
 - **Clean Architecture**: Separation of concerns between UI, Business Logic (BLoC), and Data layers.
-- **Offline-First Strategy**: Local caching ensures the app remains functional in low-connectivity areas.
-- **Responsive Layouts**: Fully optimized for both phone and tablet form factors.
+* **Offline-First Strategy**: Local caching ensures the app remains functional in low-connectivity areas.
+* **Responsive Layouts**: Fully optimized for both phone and tablet form factors.
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Flutter SDK (v3.10.0 or higher)
-- Android Studio / VS Code
-- An active Internet connection for the initial setup
+* Android Studio / VS Code
+* An active Internet connection for the initial setup
 
 ### Installation
-1.  **Clone the Repo**
+
+1. **Clone the Repo**
+
     ```bash
     git clone https://github.com/MahmoudMagdy001/Muslim.git
     cd muslim
     ```
-2.  **Install Dependencies**
+
+2. **Install Dependencies**
+
     ```bash
     flutter pub get
     ```
-3.  **Launch the App**
+
+3. **Launch the App**
+
     ```bash
     flutter run
     ```
@@ -144,10 +162,11 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 ---
 
 ## 🤝 Roadmap & Contributions
+
 We are constantly improving! Future updates will include:
-- [ ] Apple Watch & WearOS support.
-- [ ] Community prayer tracking.
-- [ ] Multi-language support expansion.
+* [ ] Apple Watch & WearOS support.
+* [ ] Community prayer tracking.
+* [ ] Multi-language support expansion.
 
 **Want to contribute?** We love PRs! Check out our [Contribution Guidelines](CONTRIBUTING.md) to get started.
 

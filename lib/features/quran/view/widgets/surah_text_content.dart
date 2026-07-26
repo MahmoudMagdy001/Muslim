@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:quran/quran.dart' as quran;
 
-class SurahTextContent extends StatelessWidget {
+// ponytail: converted to StatefulWidget to cache and dispose TapGestureRecognizer instances, avoiding native leaks
+class SurahTextContent extends StatefulWidget {
   const SurahTextContent({
     required this.surahNumber,
     required this.isArabic,
@@ -20,13 +21,37 @@ class SurahTextContent extends StatelessWidget {
   final void Function(int ayah, String text, Offset position) onAyahTap;
 
   @override
+  State<SurahTextContent> createState() => _SurahTextContentState();
+}
+
+class _SurahTextContentState extends State<SurahTextContent> {
+  final Map<int, TapGestureRecognizer> _recognizers = {};
+
+  @override
+  void dispose() {
+    for (final recognizer in _recognizers.values) {
+      recognizer.dispose();
+    }
+    super.dispose();
+  }
+
+  TapGestureRecognizer _getOrCreateRecognizer(int ayah, String text) =>
+      _recognizers.putIfAbsent(
+        ayah,
+        () => TapGestureRecognizer()
+          ..onTapDown = (details) {
+            widget.onAyahTap(ayah, text, details.globalPosition);
+          },
+      );
+
+  @override
   Widget build(BuildContext context) => ValueListenableBuilder<int?>(
-    valueListenable: currentAyahNotifier,
+    valueListenable: widget.currentAyahNotifier,
     builder: (context, currentAyah, child) => RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
         style: context.textTheme.titleLarge?.copyWith(
-          height: isArabic ? 2.3 : 1.7,
+          height: widget.isArabic ? 2.3 : 1.7,
           fontWeight: FontWeight.normal,
         ),
         children: _buildSpans(context, currentAyah),
@@ -35,17 +60,17 @@ class SurahTextContent extends StatelessWidget {
   );
 
   List<InlineSpan> _buildSpans(BuildContext context, int? currentAyah) {
-    final ayahCount = quran.getVerseCount(surahNumber);
+    final ayahCount = quran.getVerseCount(widget.surahNumber);
     final spans = <InlineSpan>[];
 
     for (var ayah = 1; ayah <= ayahCount; ayah++) {
-      final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: isArabic);
-      final text = isArabic
-          ? quran.getVerse(surahNumber, ayah)
-          : quran.getVerseTranslation(surahNumber, ayah);
+      final endSymbol = quran.getVerseEndSymbol(ayah, arabicNumeral: widget.isArabic);
+      final text = widget.isArabic
+          ? quran.getVerse(widget.surahNumber, ayah)
+          : quran.getVerseTranslation(widget.surahNumber, ayah);
 
       final isCurrent = ayah == currentAyah;
-      final keyForThisAyah = ayahKeys.putIfAbsent(ayah, GlobalKey.new);
+      final keyForThisAyah = widget.ayahKeys.putIfAbsent(ayah, GlobalKey.new);
 
       spans.add(
         TextSpan(
@@ -61,13 +86,7 @@ class SurahTextContent extends StatelessWidget {
                     ? context.colorScheme.error
                     : context.textTheme.bodyLarge?.color,
               ),
-              recognizer: TapGestureRecognizer()
-                ..onTapDown = (details) {
-                  onAyahTap(ayah, text, details.globalPosition);
-                }
-                ..onTap = () {
-                  // Handled in onTapDown to get position
-                },
+              recognizer: _getOrCreateRecognizer(ayah, text),
             ),
             TextSpan(text: endSymbol, style: context.textTheme.displayMedium),
             const TextSpan(text: ' '),

@@ -51,10 +51,12 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
 
       String? cityName;
       try {
-        await geo.setLocaleIdentifier(isArabic ? 'ar' : 'en');
-        final placemarks = await geo.placemarkFromCoordinates(
+        // ponytail: Use Geocoding instance for compatibility with v5.0.0
+        final geocoding = geo.Geocoding();
+        final placemarks = await geocoding.placemarkFromCoordinates(
           coords.latitude,
           coords.longitude,
+          locale: Locale(isArabic ? 'ar' : 'en'),
         );
         if (placemarks.isNotEmpty) {
           final place = placemarks.first;

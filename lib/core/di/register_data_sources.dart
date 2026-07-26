@@ -58,7 +58,7 @@ void registerDataSources(GetIt getIt) {
       QiblahLocalDataSourceImpl.new,
     )
     ..registerLazySingleton<NamesOfAllahLocalDataSource>(
-      () => const NamesOfAllahLocalDataSourceImpl(),
+      NamesOfAllahLocalDataSourceImpl.new,
     )
     // ── Prayer Times Services ──────────────────────────────────────────
     ..registerLazySingleton<PrayerTimesLocalDataSource>(

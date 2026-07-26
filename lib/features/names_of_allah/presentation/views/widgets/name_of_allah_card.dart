@@ -50,6 +50,9 @@ class NameOfAllahCard extends StatelessWidget {
                     'assets/quran/marker.png',
                     width: 40.toW,
                     height: 40.toH,
+                    // ponytail: cache dimensions to save memory at runtime
+                    cacheWidth: 120,
+                    cacheHeight: 120,
                   ),
                   Text(
                     isArabic

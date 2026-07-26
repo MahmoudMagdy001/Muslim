@@ -1,4 +1,7 @@
-class QuranPlayerState {
+import 'package:equatable/equatable.dart';
+
+// ponytail: extend Equatable to prevent unnecessary rebuilds if the state did not change
+class QuranPlayerState extends Equatable {
   const QuranPlayerState({
     this.currentPosition = Duration.zero,
     this.totalDuration = Duration.zero,
@@ -26,4 +29,13 @@ class QuranPlayerState {
     currentAyah: currentAyah ?? this.currentAyah,
     currentSurah: currentSurah ?? this.currentSurah,
   );
+
+  @override
+  List<Object?> get props => [
+        currentPosition,
+        totalDuration,
+        isPlaying,
+        currentAyah,
+        currentSurah,
+      ];
 }

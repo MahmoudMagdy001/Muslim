@@ -30,28 +30,16 @@ class CurrentPrayerCard extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     final isArabic = locale.languageCode == 'ar';
 
+    // ponytail: restrict rebuilds of outer widget to only status and prayer-time changes (avoid 1s ticks)
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+      buildWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.localPrayerTimes != current.localPrayerTimes ||
+          previous.nextPrayer != current.nextPrayer ||
+          previous.previousPrayerDateTime != current.previousPrayerDateTime,
       builder: (context, state) {
         final localPrayerTimes = state.localPrayerTimes;
         final next = state.nextPrayer;
-        final previous = state.previousPrayerDateTime;
-        final nextDateTime = state.localPrayerTimes != null && next != null
-            ? state.localPrayerTimes!.timeForPrayer(next) != '--:--'
-                  ? state.timeLeft != null
-                        ? DateTime.now().add(state.timeLeft!)
-                        : DateTime.now()
-                  : DateTime.now()
-            : DateTime.now();
-
-        // Calculate real progress
-        var progress = 0.0;
-        if (previous != null && state.timeLeft != null) {
-          final totalInterval = nextDateTime.difference(previous).inSeconds;
-          if (totalInterval > 0) {
-            final elapsed = totalInterval - state.timeLeft!.inSeconds;
-            progress = (elapsed / totalInterval).clamp(0.0, 1.0);
-          }
-        }
 
         return ColoredBox(
           color: theme.colorScheme.primary,
@@ -102,13 +90,8 @@ class CurrentPrayerCard extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            CustomPaint(
-                              size: Size(200.toW, 180.toH),
-                              painter: _PrayerProgressPainter(
-                                progress: progress,
-                                color: theme.colorScheme.secondary,
-                              ),
-                            ),
+                            // ponytail: isolates countdown tick rebuilds to just the progress arc
+                            _PrayerProgressArc(theme: theme),
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -213,6 +196,9 @@ class _PrayerSmallCard extends StatelessWidget {
           iconPath,
           height: 24.toH,
           width: 24.toW,
+          // ponytail: DPR-aware image caching to avoid decoding full resolution
+          cacheWidth: 72,
+          cacheHeight: 72,
           color: isNext ? theme.colorScheme.secondary : Colors.white,
         ),
         SizedBox(height: 4.toH),
@@ -336,4 +322,50 @@ class _PrayerProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PrayerProgressPainter oldDelegate) =>
       oldDelegate.progress != progress || oldDelegate.color != color;
+}
+
+// ponytail: isolate high-frequency rebuilds of the countdown timer progress arc
+class _PrayerProgressArc extends StatelessWidget {
+  const _PrayerProgressArc({required this.theme});
+
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+        buildWhen: (previous, current) =>
+            previous.timeLeft != current.timeLeft ||
+            previous.previousPrayerDateTime != current.previousPrayerDateTime ||
+            previous.localPrayerTimes != current.localPrayerTimes ||
+            previous.nextPrayer != current.nextPrayer,
+        builder: (context, state) {
+          final localPrayerTimes = state.localPrayerTimes;
+          final next = state.nextPrayer;
+          final previous = state.previousPrayerDateTime;
+          final nextDateTime = localPrayerTimes != null && next != null
+              ? localPrayerTimes.timeForPrayer(next) != '--:--'
+                  ? state.timeLeft != null
+                      ? DateTime.now().add(state.timeLeft!)
+                      : DateTime.now()
+                  : DateTime.now()
+              : DateTime.now();
+
+          var progress = 0.0;
+          if (previous != null && state.timeLeft != null) {
+            final totalInterval = nextDateTime.difference(previous).inSeconds;
+            if (totalInterval > 0) {
+              final elapsed = totalInterval - state.timeLeft!.inSeconds;
+              progress = (elapsed / totalInterval).clamp(0.0, 1.0);
+            }
+          }
+
+          return CustomPaint(
+            size: Size(200.toW, 180.toH),
+            painter: _PrayerProgressPainter(
+              progress: progress,
+              color: theme.colorScheme.secondary,
+            ),
+          );
+        },
+      );
 }

@@ -51,7 +51,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
            calculateNextPrayerUseCase ?? getIt<CalculateNextPrayerUseCase>(),
        super(const PrayerTimesState());
 
-  final bool locationGranted;
+  // ponytail: allow locationGranted to be updated dynamically after post-frame permission request
+  bool locationGranted;
 
   final GetPrayerTimesUseCase _getPrayerTimes;
   final GetPrayerTimesForDateUseCase _getPrayerTimesForDate;
@@ -274,7 +275,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// Manual refresh of prayer times.
   Future<void> refreshPrayerTimes({required bool isArabic}) async {
     logInfo('🔄 تحديث يدوي لمواعيد الصلاة...');
-    await checkAllPermissions();
+    // ponytail: update locationGranted status dynamically when refreshing
+    locationGranted = await requestAllPermissions();
     await init(isArabic: isArabic);
   }
 

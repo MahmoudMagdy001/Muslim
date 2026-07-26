@@ -212,6 +212,8 @@ class QuranService {
     _currentSurah = null;
     _currentReciter = null;
     unawaited(_lastPlayedController.close()); // إغلاق الـ StreamController
+    // ponytail: close notification controller as well to avoid leaks
+    unawaited(_notificationClickController.close());
   }
 
   // ------------------ Internal Helpers ------------------ //

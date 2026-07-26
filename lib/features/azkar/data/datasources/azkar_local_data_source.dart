@@ -15,13 +15,18 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
   static const String _lastUpdateDateKey = 'azkar_last_update_date';
   static const String _azkarCountPrefix = 'azkar_count_';
 
+  Map<String, dynamic>? _cache;
+
   @override
   Future<Map<String, dynamic>> loadAzkarFromAssets() async {
+    // ponytail: return cached map to avoid re-parsing JSON on every view mount
+    if (_cache != null) return _cache!;
     try {
       final response = await rootBundle.loadString(
         'assets/json/zekr.json',
       );
-      return json.decode(response) as Map<String, dynamic>;
+      _cache = json.decode(response) as Map<String, dynamic>;
+      return _cache!;
     } on Object catch (_) {
       throw const CacheFailure('Failed to load azkar from cache');
     }

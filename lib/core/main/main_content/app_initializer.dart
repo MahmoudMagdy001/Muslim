@@ -1,13 +1,11 @@
 import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
-import 'package:muslim/core/service/permissions_sevice.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/prayer_times/data/datasources/prayer_work_manager_data_source.dart';
-import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 import 'package:muslim/features/settings/service/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,23 +18,15 @@ class AppInitializer {
 
   final SharedPreferences prefs;
 
-  Future<bool> initialize() async {
-    // Request permissions and wait for user response
-    final locationGranted = await requestAllPermissions();
-
-    // Non-critical initialization (Fire and forget, or handle errors silently)
-    // executed after the first frame to not block startup
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_initializeBackgroundTasks());
-    });
-
-    return locationGranted;
+  Future<void> initialize() async {
+    // ponytail: non-critical background tasks executed asynchronously to avoid startup lags
+    await _initializeBackgroundTasks();
   }
 
   Future<void> _initializeBackgroundTasks() async {
     try {
       await Future.wait([
-        _initializeNotifications(),
+        // ponytail: removed duplicate notification initialization as it is done in main()
         workManagerNotify(),
         _initializeAudioBackground(),
         _scheduleQuranReminders(),
@@ -99,25 +89,6 @@ class AppInitializer {
     );
   }
 
-  /// Initializes notification channels using [NotificationChannelFactory]
-  /// to avoid duplication with WorkManager.
-  Future<void> _initializeNotifications() async {
-    await AwesomeNotifications()
-        .initialize(NotificationConstants.notificationIcon, [
-          NotificationChannel(
-            channelKey: 'quran_channel',
-            channelName: 'Quran Reminders',
-            channelDescription: 'Reminders to read Quran',
-            defaultColor: const Color(0xFF33A1E0),
-            importance: NotificationImportance.High,
-            channelShowBadge: true,
-            icon: NotificationConstants.notificationIcon,
-          ),
-          createPrayerChannel(),
-          createPeriodicReminderChannel(),
-        ]);
-  }
-
   Future<void> _scheduleQuranReminders() async {
     final enabled = await _settingsService.getQuranNotificationsEnabled();
     if (!enabled) {
@@ -130,12 +101,7 @@ class AppInitializer {
       await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
 
       final now = DateTime.now();
-      final firstNotification = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        now.hour + 1,
-      );
+      final firstNotification = DateTime(now.year, now.month, now.day, now.hour + 1);
 
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -144,10 +110,7 @@ class AppInitializer {
           title: '📖 تذكير بقراءة القرآن',
           body: 'لا تنس وردك من القرآن الكريم 🌿',
         ),
-        schedule: NotificationAndroidCrontab.hourly(
-          referenceDateTime: firstNotification,
-          allowWhileIdle: true,
-        ),
+        schedule: NotificationAndroidCrontab.hourly(referenceDateTime: firstNotification, allowWhileIdle: true),
       );
     } on Object catch (e) {
       logError('خطأ أثناء جدولة الإشعارات', e);

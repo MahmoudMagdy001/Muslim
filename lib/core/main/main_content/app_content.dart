@@ -33,6 +33,8 @@ class AppContent extends StatefulWidget {
 }
 
 class _AppContentState extends State<AppContent> {
+  StreamSubscription<bool>? _notificationClickSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +45,13 @@ class _AppContentState extends State<AppContent> {
       _listenToNotificationClick();
       _checkPendingNotificationClick();
     });
+  }
+
+  @override
+  void dispose() {
+    // ponytail: cancel subscription to avoid stream leak
+    unawaited(_notificationClickSubscription?.cancel());
+    super.dispose();
   }
 
   void _checkPendingNotificationClick() {
@@ -66,7 +75,8 @@ class _AppContentState extends State<AppContent> {
   }
 
   void _listenToNotificationClick() {
-    getIt<QuranService>().notificationClickStream.listen((clicked) {
+    _notificationClickSubscription =
+        getIt<QuranService>().notificationClickStream.listen((clicked) {
       debugPrint('NotificationNav: notificationClickStream received: $clicked');
       if (clicked) {
         _handleDeepLink();

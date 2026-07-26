@@ -29,11 +29,13 @@
     <!-- 🔋 Battery Optimization - Critical for WorkManager -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <!-- ponytail: enable predictive back gesture support for API 33+ compatibility -->
     <application
         android:label="muslim"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true">
 
         <!-- Activity الأساسية -->
         <activity

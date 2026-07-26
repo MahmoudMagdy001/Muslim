@@ -165,6 +165,8 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
               Image.asset(
                 'assets/home/quran.png',
                 height: 80.toH,
+                // ponytail: cache height to save memory at runtime
+                cacheHeight: 240,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.menu_book,
                   size: 60,

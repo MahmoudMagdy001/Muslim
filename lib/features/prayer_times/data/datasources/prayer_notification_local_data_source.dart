@@ -105,7 +105,7 @@ class PrayerNotificationLocalDataSourceImpl
         body: 'حان الأن موعد أذان ${prayer.arabicName}',
         wakeUpScreen: true,
         category: NotificationCategory.Event,
-        criticalAlert: true,
+        // ponytail: Removed criticalAlert as it is configured at the channel level in v0.12.x
       ),
       schedule: NotificationCalendar(
         year: prayerDateTime.year,

@@ -39,7 +39,13 @@ class DashboardButton extends StatelessWidget {
           ),
           Expanded(
             child: Center(
-              child: Image.asset(item.image, fit: BoxFit.cover, height: 80.toH),
+              child: Image.asset(
+                item.image,
+                fit: BoxFit.cover,
+                height: 80.toH,
+                // ponytail: cache height to save memory at runtime
+                cacheHeight: 240,
+              ),
             ),
           ),
         ],

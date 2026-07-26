@@ -10,18 +10,23 @@ abstract class NamesOfAllahLocalDataSource {
 }
 
 class NamesOfAllahLocalDataSourceImpl implements NamesOfAllahLocalDataSource {
-  const NamesOfAllahLocalDataSourceImpl();
+  NamesOfAllahLocalDataSourceImpl();
+
+  List<NameOfAllahModel>? _cache;
 
   @override
   Future<List<NameOfAllahModel>> getNamesOfAllah() async {
+    // ponytail: return cached list to avoid re-parsing JSON on every view mount
+    if (_cache != null) return _cache!;
     try {
       final response = await rootBundle.loadString(
         'assets/json/names_of_allah.json',
       );
       final data = await json.decode(response);
-      return (data as List)
+      _cache = (data as List)
           .map((e) => NameOfAllahModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      return _cache!;
     } on Object catch (_) {
       throw const CacheException();
     }
