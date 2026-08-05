@@ -12,18 +12,12 @@ class ZakatRepositoryImpl implements ZakatRepository {
   @override
   Future<Either<Failure, double>> getGoldPricePerGramInEgp() async {
     try {
-      // Fetch both prices concurrently for better performance
-      final results = await Future.wait([
-        remoteDataSource.getGoldPriceInUsd(),
-        remoteDataSource.getUsdToEgpRate(),
-      ]);
-
-      final pricePerOunceUsd = results[0];
-      final usdToEgp = results[1];
+      final goldModel = await remoteDataSource.getGoldPriceInUsd();
+      final usdToEgp = await remoteDataSource.getUsdToEgpRate();
 
       // Convert Ounce to Gram (1 Ounce ≈ 31.1035 Grams)
       const ounceToGram = 31.1035;
-      final pricePerGramUsd = pricePerOunceUsd / ounceToGram;
+      final pricePerGramUsd = goldModel.priceInUsd / ounceToGram;
 
       final pricePerGramEgp = pricePerGramUsd * usdToEgp;
 

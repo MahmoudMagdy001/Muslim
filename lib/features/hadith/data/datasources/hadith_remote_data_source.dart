@@ -1,9 +1,10 @@
+// ponytail: HadithRemoteDataSource following clean exceptions & DTO mapping
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/error/exceptions.dart';
 import 'package:muslim/features/hadith/data/models/chapter_of_book_model.dart';
 import 'package:muslim/features/hadith/data/models/hadith_book_model.dart';
 import 'package:muslim/features/hadith/data/models/hadith_model.dart';
@@ -49,7 +50,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
           .map((json) => HadithBookModel.fromJson(json as Map<String, dynamic>))
           .toList();
     }
-    throw const ServerFailure('Failed to fetch books');
+    throw const ServerException('Failed to fetch books');
   }
 
   @override
@@ -70,7 +71,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
           )
           .toList();
     }
-    throw const ServerFailure('Failed to fetch chapters');
+    throw const ServerException('Failed to fetch chapters');
   }
 
   Uri _buildApiUrl(
@@ -92,7 +93,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
         .timeout(const Duration(seconds: _timeoutSeconds));
 
     if (firstResponse.statusCode != 200) {
-      throw ServerFailure(
+      throw ServerException(
         'Failed to load hadiths: ${firstResponse.statusCode}',
       );
     }
@@ -174,7 +175,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
         .timeout(const Duration(seconds: _timeoutSeconds));
 
     if (firstPageResponse.statusCode != 200) {
-      throw const ServerFailure('Failed to fetch hadiths for random hadith');
+      throw const ServerException('Failed to fetch hadiths for random hadith');
     }
 
     final firstPageData = await compute(_decodeJson, firstPageResponse.body);
@@ -195,7 +196,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
         .get(targetPageUrl)
         .timeout(const Duration(seconds: _timeoutSeconds));
     if (targetPageResponse.statusCode != 200) {
-      throw const ServerFailure('Failed to fetch random page of hadiths');
+      throw const ServerException('Failed to fetch random page of hadiths');
     }
     return compute(_decodeJson, targetPageResponse.body);
   }
