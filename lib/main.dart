@@ -72,7 +72,7 @@ Future<void> main() async {
       final newlyGranted = await requestAllPermissions();
 
       // ponytail: if location is newly granted, trigger refresh on cubit
-      final navContext = NavigationService.context;
+      final navContext = navigatorKey.currentContext;
       if (navContext != null && navContext.mounted && newlyGranted) {
         final isArabic = Localizations.localeOf(navContext).languageCode == 'ar';
         unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes(isArabic: isArabic));

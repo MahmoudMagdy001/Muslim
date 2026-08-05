@@ -1,12 +1,12 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';

@@ -101,7 +101,7 @@ class _AppContentState extends State<AppContent> {
       debugPrint('NotificationNav: Navigating to QuranView');
       unawaited(
         navigateWithTransition<void>(
-          NavigationService.context!,
+          navigatorKey.currentContext!,
           QuranView(surahNumber: surah, reciter: reciter, currentAyah: ayah),
           type: TransitionType.fade,
         ),
@@ -139,7 +139,7 @@ class _AppContentState extends State<AppContent> {
                   locale: languageState.locale,
                   localizationsDelegates: widget.localizationsDelegates,
                   supportedLocales: widget.supportedLocales,
-                  navigatorKey: NavigationService.navigatorKey,
+                  navigatorKey: navigatorKey,
                   home: const LayoutView(),
                 );
               },
