@@ -15,13 +15,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 class SettingsContent extends StatefulWidget {
   const SettingsContent({
     required this.localizations,
-    required this.isArabic,
     required this.theme,
     super.key,
   });
 
   final AppLocalizations localizations;
-  final bool isArabic;
   final ThemeData theme;
 
   @override
@@ -75,19 +73,17 @@ class _SettingsContentState extends State<SettingsContent> {
 
           ReciterSection(
             localizations: widget.localizations,
-            isArabic: widget.isArabic,
             theme: widget.theme,
           ),
           divider,
 
-          NotificationSection(isArabic: widget.isArabic, theme: widget.theme),
+          NotificationSection(theme: widget.theme),
           divider,
           PeriodicReminderSection(
-            isArabic: widget.isArabic,
             theme: widget.theme,
           ),
           divider,
-          LocationSection(isArabic: widget.isArabic, theme: widget.theme),
+          LocationSection(theme: widget.theme),
           divider,
           ValueListenableBuilder<String?>(
             valueListenable: appVersionNotifier,
@@ -99,7 +95,7 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           const SizedBox(height: 20),
 
-          _RateAppButton(isArabic: widget.isArabic, theme: widget.theme),
+          _RateAppButton(theme: widget.theme),
           const SizedBox(height: 30),
         ],
       ),
@@ -108,9 +104,8 @@ class _SettingsContentState extends State<SettingsContent> {
 }
 
 class _RateAppButton extends StatelessWidget {
-  const _RateAppButton({required this.isArabic, required this.theme});
+  const _RateAppButton({required this.theme});
 
-  final bool isArabic;
   final ThemeData theme;
 
   @override

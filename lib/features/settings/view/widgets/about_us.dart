@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsView extends StatelessWidget {
@@ -6,12 +7,9 @@ class AboutUsView extends StatelessWidget {
   final ThemeData theme;
   final String appVersion;
 
-  Future<void> _launchEmail(bool isArabic) async {
-    final subject = Uri.encodeComponent(
-      isArabic
-          ? 'تواصل بخصوص التطبيق - مُسَلِّم'
-          : 'Contact regarding the app - Muslim',
-    );
+  Future<void> _launchEmail(BuildContext context) async {
+    final l10n = context.l10n;
+    final subject = Uri.encodeComponent(l10n.emailContactSubject);
     final emailLaunchUri = Uri.parse(
       'mailto:mahmodmansour2001@gmail.com?subject=$subject',
     );
@@ -30,10 +28,10 @@ class AboutUsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = theme.textTheme;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isArabic ? 'من نحن' : 'About Us')),
+      appBar: AppBar(title: Text(l10n.aboutUs)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,18 +42,14 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              isArabic ? 'تطبيق مُسَلِّم' : 'Muslim App',
+              l10n.muslimAppTitle,
               style: textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              isArabic
-                  ? 'تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار،'
-                        ' صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.'
-                  : 'Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar.'
-                        ' Carefully designed to provide a simple and easy spiritual experience in your daily life.',
+              l10n.aboutUsDescription,
               textAlign: TextAlign.center,
               style: textTheme.bodyMedium?.copyWith(height: 2.1),
             ),
@@ -63,7 +57,7 @@ class AboutUsView extends StatelessWidget {
             const Divider(),
             const SizedBox(height: 16),
             Text(
-              isArabic ? 'تواصل معنا' : 'Connect with Us',
+              l10n.connectWithUs,
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -73,10 +67,10 @@ class AboutUsView extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
-                onPressed: () => _launchEmail(isArabic),
+                onPressed: () => _launchEmail(context),
                 icon: const Icon(Icons.email_outlined),
                 label: Text(
-                  isArabic ? 'إرسال بريد إلكتروني' : 'Send an Email',
+                  l10n.sendEmail,
                   style: textTheme.labelLarge?.copyWith(
                     color: theme.colorScheme.onPrimary,
                   ),
@@ -91,7 +85,7 @@ class AboutUsView extends StatelessWidget {
                 onPressed: _launchWebsite,
                 icon: const Icon(Icons.public),
                 label: Text(
-                  isArabic ? 'زيارة موقعنا' : 'Visit our Website',
+                  l10n.visitWebsite,
                   style: textTheme.labelLarge?.copyWith(
                     color: theme.colorScheme.onPrimary,
                   ),
@@ -100,7 +94,7 @@ class AboutUsView extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              '${isArabic ? 'الإصدار' : 'Version'} $appVersion',
+              '${l10n.appVersion} $appVersion',
               style: textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
             ),
           ],

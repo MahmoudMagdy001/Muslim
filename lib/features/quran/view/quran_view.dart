@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get_it/get_it.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
-import 'package:muslim/features/quran/repository/quran_repository.dart';
 import 'package:muslim/features/quran/view/utils/quran_position_helper.dart';
 import 'package:muslim/features/quran/view/widgets/mushaf_view.dart';
 import 'package:muslim/features/quran/view/widgets/player_controls_widget.dart';
@@ -31,10 +30,7 @@ class QuranView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => QuranPlayerCubit(
-      GetIt.instance<QuranRepository>(),
-      initialSurah: surahNumber,
-    ),
+    create: (context) => getIt<QuranPlayerCubit>(),
     child: QuranViewContent(
       surahNumber: surahNumber,
       reciter: reciter,
@@ -66,8 +62,6 @@ class QuranViewContent extends StatefulWidget {
 }
 
 class _QuranViewContentState extends State<QuranViewContent> {
-  /// Single notifier holding (surahNumber, juz?, hizb?) so only the AppBar
-  /// title column rebuilds on page-swipe — not the full Scaffold tree.
   late final ValueNotifier<(int, int?, int?)> _headerNotifier;
 
   @override
@@ -81,7 +75,6 @@ class _QuranViewContentState extends State<QuranViewContent> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.fromPage != null && widget.toPage != null) {
-        // Range mode: Hizb/Juz - build playlist spanning all surahs
         unawaited(
           context.read<QuranPlayerCubit>().loadRange(
             fromPage: widget.fromPage!,
@@ -92,7 +85,6 @@ class _QuranViewContentState extends State<QuranViewContent> {
           ),
         );
       } else {
-        // Single surah mode
         unawaited(
           context.read<QuranPlayerCubit>().loadSurah(
             widget.surahNumber,
@@ -112,8 +104,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final isArabic = locale.languageCode == 'ar';
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
@@ -144,7 +135,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(
-                      '${isArabic ? 'الجزء' : 'Juz'} $juz • ${isArabic ? 'الحزب' : 'Hizb'} $hizb',
+                      '${localizations.juzNumberLabel(juz)} • ${localizations.hizbNumberLabel(hizb)}',
                       style: context.textTheme.bodySmall?.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 10.sp,
@@ -167,7 +158,6 @@ class _QuranViewContentState extends State<QuranViewContent> {
                   widget.surahNumber,
                   widget.startAyah,
                 ),
-                isArabic: isArabic,
                 localizations: localizations,
                 fromPage: widget.fromPage,
                 toPage: widget.toPage,

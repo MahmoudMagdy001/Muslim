@@ -45,6 +45,7 @@ dependencies:
   dartz: ^0.10.1
   rxdart: ^0.28.0
   upgrader: ^13.0.0
+  overmark: ^0.1.2
 
 dev_dependencies:
   flutter_test:

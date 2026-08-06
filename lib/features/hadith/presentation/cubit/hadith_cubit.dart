@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
-import 'package:muslim/features/hadith/domain/usecases/get_hadiths_of_chapter_use_case.dart';
-import 'package:muslim/features/hadith/domain/usecases/get_saved_hadiths_use_case.dart';
-import 'package:muslim/features/hadith/domain/usecases/toggle_save_hadith_use_case.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
 
 class HadithCubit extends Cubit<HadithState> {
   HadithCubit({
-    required this.getHadithsOfChapterUseCase,
-    required this.getSavedHadithsUseCase,
-    required this.toggleSaveHadithUseCase,
+    required this.repository,
   }) : super(const HadithState());
 
-  final GetHadithsOfChapterUseCase getHadithsOfChapterUseCase;
-  final GetSavedHadithsUseCase getSavedHadithsUseCase;
-  final ToggleSaveHadithUseCase toggleSaveHadithUseCase;
+  final HadithRepository repository;
 
   String? _bookSlug;
   String? _chapterNumber;
@@ -42,7 +35,7 @@ class HadithCubit extends Cubit<HadithState> {
 
     if (!isClosed) emit(state.copyWith(status: HadithStatus.loading));
 
-    final savedResult = await getSavedHadithsUseCase(NoParams());
+    final savedResult = await repository.getSavedHadiths();
     var savedHadiths = <Map<String, dynamic>>[];
     savedResult.fold((failure) => null, (data) {
       savedHadiths = data;
@@ -51,12 +44,7 @@ class HadithCubit extends Cubit<HadithState> {
       }
     });
 
-    final hadithsResult = await getHadithsOfChapterUseCase(
-      GetHadithsOfChapterParams(
-        bookSlug: bookSlug,
-        chapterNumber: chapterNumber,
-      ),
-    );
+    final hadithsResult = await repository.getHadithsOfChapter(bookSlug, chapterNumber);
 
     await hadithsResult.fold(
       (failure) {
@@ -114,20 +102,32 @@ class HadithCubit extends Cubit<HadithState> {
     final notifier = _hadithSavedMap[id]!;
     final isCurrentlySaved = notifier.value;
 
-    final result = await toggleSaveHadithUseCase(
-      ToggleSaveHadithParams(
-        hadith: hadith,
-        isArabic: isArabic,
-        isCurrentlySaved: isCurrentlySaved,
-        bookSlug: _bookSlug!,
-        chapterNumber: _chapterNumber!,
-        chapterName: _chapterName!,
-      ),
-    );
-
-    result.fold((failure) => null, (_) {
-      notifier.value = !isCurrentlySaved;
-    });
+    if (isCurrentlySaved) {
+      final result = await repository.removeHadith(id);
+      result.fold((failure) => null, (_) {
+        notifier.value = false;
+      });
+    } else {
+      final data = {
+        'id': id,
+        'heading': isArabic
+            ? hadith.headingArabic
+            : hadith.headingEnglish,
+        'text': isArabic
+            ? hadith.hadithArabic
+            : hadith.hadithEnglish,
+        'status': isArabic
+            ? getStatus(hadith.status)
+            : hadith.status,
+        'bookSlug': _bookSlug!,
+        'chapterNumber': _chapterNumber!,
+        'chapterName': _chapterName!,
+      };
+      final result = await repository.saveHadith(data);
+      result.fold((failure) => null, (_) {
+        notifier.value = true;
+      });
+    }
   }
 
   static const Map<String, String> _statusMap = {
@@ -139,6 +139,6 @@ class HadithCubit extends Cubit<HadithState> {
     'da`eef': 'ضعيف',
   };
 
-  String getStatus(String status, {required bool isArabic}) =>
+  String getStatus(String status, {bool isArabic = true}) =>
       isArabic ? _statusMap[status] ?? status : status;
 }

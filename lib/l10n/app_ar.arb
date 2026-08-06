@@ -580,6 +580,11 @@
     "description": "عنوان شاشة عرض اتجاه القبلة",
     "type": "text"
   },
+  "qiblahSubtitle": "وجّه هاتفك نحو القبلة",
+  "@qiblahSubtitle": {
+    "description": "تلميح توجيهي أسفل عنوان شاشة القبلة",
+    "type": "text"
+  },
   "quran_text": "إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ",
   "@quran_text": {
     "description": "",
@@ -1008,5 +1013,422 @@
   "@goalMustBePositive": {
     "description": "رسالة خطأ عندما يكون الهدف صفر أو سالب",
     "type": "text"
-  }
+  },
+  "rateAppSuccess": "تم التقييم بنجاح",
+  "@rateAppSuccess": {
+    "description": "",
+    "type": "text"
+  },
+  "rateAppButton": "تقييم التطبيق",
+  "@rateAppButton": {
+    "description": "",
+    "type": "text"
+  },
+  "enterGoldPriceManually": "إدخال سعر الذهب يدوياً",
+  "@enterGoldPriceManually": {
+    "description": "",
+    "type": "text"
+  },
+  "goldPricePerGram": "سعر الجرام (عيار 24)",
+  "@goldPricePerGram": {
+    "description": "",
+    "type": "text"
+  },
+  "confirm": "تأكيد",
+  "@confirm": {
+    "description": "",
+    "type": "text"
+  },
+  "cancel": "إلغاء",
+  "@cancel": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyMatters": "خصوصيتك تهمنا",
+  "@privacyMatters": {
+    "description": "",
+    "type": "text"
+  },
+  "noPersonalData": "نحن لا نجمع أي بيانات شخصية على الإطلاق",
+  "@noPersonalData": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyPrinciples": "مبادئ الخصوصية",
+  "@privacyPrinciples": {
+    "description": "",
+    "type": "text"
+  },
+  "noAccounts": "لا يوجد حسابات",
+  "@noAccounts": {
+    "description": "",
+    "type": "text"
+  },
+  "noAccountsDesc": "التطبيق لا يتطلب إنشاء حساب أو تسجيل دخول",
+  "@noAccountsDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "noTracking": "لا تتبع",
+  "@noTracking": {
+    "description": "",
+    "type": "text"
+  },
+  "noTrackingDesc": "لا نتابع أو نراقب استخدامك للتطبيق",
+  "@noTrackingDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "noPurchases": "لا مشتريات",
+  "@noPurchases": {
+    "description": "",
+    "type": "text"
+  },
+  "noPurchasesDesc": "لا توجد عمليات شراء داخل التطبيق",
+  "@noPurchasesDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "locationDataTitle": "بيانات الموقع (Location)",
+  "@locationDataTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "locationPurpose": "• الغرض: حساب مواقيت الصلاة بدقة واتجاه القبلة.",
+  "@locationPurpose": {
+    "description": "",
+    "type": "text"
+  },
+  "locationAccessMethod": "• طريقة الوصول: يتم الوصول للموقع فقط أثناء استخدامك للتطبيق (Foreground) لتحديث الإحداثيات.",
+  "@locationAccessMethod": {
+    "description": "",
+    "type": "text"
+  },
+  "locationStorage": "• التخزين: يتم حفظ آخر إحداثيات معروفة محلياً على جهازك لضمان استمرارية عمل التنبيهات بدقة حتى في حالة عدم الاتصال.",
+  "@locationStorage": {
+    "description": "",
+    "type": "text"
+  },
+  "locationPrivacy": "• الخصوصية: لا يتم إرسال بيانات موقعك لأي خادم خارجي ولا يتم مشاركتها مع أي طرف ثالث.",
+  "@locationPrivacy": {
+    "description": "",
+    "type": "text"
+  },
+  "dataCollectionInfo": "معلومات جمع البيانات",
+  "@dataCollectionInfo": {
+    "description": "",
+    "type": "text"
+  },
+  "dataCollectionDesc": "التطبيق لا يجمع أي بيانات شخصية. كل المعلومات تبقى على جهازك فقط ولا نصل إليها بأي شكل من الأشكال.",
+  "@dataCollectionDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "localStorage": "التخزين المحلي",
+  "@localStorage": {
+    "description": "",
+    "type": "text"
+  },
+  "storageQuranBookmarks": "الإشارات المرجعية لآيات القرآن",
+  "@storageQuranBookmarks": {
+    "description": "",
+    "type": "text"
+  },
+  "storageSavedHadith": "الأحاديث المحفوظة",
+  "@storageSavedHadith": {
+    "description": "",
+    "type": "text"
+  },
+  "storageNotificationSettings": "إعدادات التنبيهات والأذان",
+  "@storageNotificationSettings": {
+    "description": "",
+    "type": "text"
+  },
+  "storageLangTheme": "تفضيلات اللغة والمظهر",
+  "@storageLangTheme": {
+    "description": "",
+    "type": "text"
+  },
+  "storageFontSizeReciters": "حجم الخط والقراء المفضلين",
+  "@storageFontSizeReciters": {
+    "description": "",
+    "type": "text"
+  },
+  "storageLocationCoordinates": "إحداثيات الموقع (محلياً فقط)",
+  "@storageLocationCoordinates": {
+    "description": "",
+    "type": "text"
+  },
+  "haveQuestions": "لديك استفسارات؟",
+  "@haveQuestions": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyHelp": "نحن هنا لمساعدتك في أي استفسار حول الخصوصية",
+  "@privacyHelp": {
+    "description": "",
+    "type": "text"
+  },
+  "contactEmail": "اتصل بنا عبر البريد الإلكتروني",
+  "@contactEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "cannotOpenEmail": "لا يمكن فتح تطبيق البريد الإلكتروني",
+  "@cannotOpenEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "lastUpdated": "آخر تحديث",
+  "@lastUpdated": {
+    "description": "",
+    "type": "text"
+  },
+  "muslimAppTitle": "تطبيق مُسَلِّم",
+  "@muslimAppTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "aboutUsDescription": "تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار، صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.",
+  "@aboutUsDescription": {
+    "description": "",
+    "type": "text"
+  },
+  "connectWithUs": "تواصل معنا",
+  "@connectWithUs": {
+    "description": "",
+    "type": "text"
+  },
+  "sendEmail": "إرسال بريد إلكتروني",
+  "@sendEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "visitWebsite": "زيارة موقعنا",
+  "@visitWebsite": {
+    "description": "",
+    "type": "text"
+  },
+  "emailContactSubject": "تواصل بخصوص التطبيق - مُسَلِّم",
+  "@emailContactSubject": {
+    "description": "",
+    "type": "text"
+  },
+  "emailPrivacySubject": "استفسار عن سياسة الخصوصية - مُسَلِّم",
+  "@emailPrivacySubject": {
+    "description": "",
+    "type": "text"
+  },
+  "periodicReminderTitle": "التذكير الدوري",
+  "@periodicReminderTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "everyNMinutes": "كل {minutes} دقيقة",
+  "@everyNMinutes": {
+    "description": "",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "egpUnit": "جنيه",
+  "@egpUnit": {
+    "description": "",
+    "type": "text"
+  },
+  "makkiyah": "مكية",
+  "@makkiyah": {
+    "description": "",
+    "type": "text"
+  },
+  "madaniyah": "مدنية",
+  "@madaniyah": {
+    "description": "",
+    "type": "text"
+  },
+  "selectTimeInterval": "اختر الفاصل الزمني",
+  "@selectTimeInterval": {
+    "description": "",
+    "type": "text"
+  },
+  "nMinutes": "{minutes} دقيقة",
+  "@nMinutes": {
+    "description": "",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "fajr": "الفجر",
+  "@fajr": {
+    "description": "",
+    "type": "text"
+  },
+  "sunrise": "الشروق",
+  "@sunrise": {
+    "description": "",
+    "type": "text"
+  },
+  "dhuhr": "الظهر",
+  "@dhuhr": {
+    "description": "",
+    "type": "text"
+  },
+  "asr": "العصر",
+  "@asr": {
+    "description": "",
+    "type": "text"
+  },
+  "maghrib": "المغرب",
+  "@maghrib": {
+    "description": "",
+    "type": "text"
+  },
+  "isha": "العشاء",
+  "@isha": {
+    "description": "",
+    "type": "text"
+  },
+  "jumuah": "الجمعة",
+  "@jumuah": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationUpdates": "تحديث الموقع تلقائياً",
+  "@autoLocationUpdates": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationSubtitle": "تحديث مواقيت الصلاة بناءً على موقعك الحالي",
+  "@autoLocationSubtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationEnabled": "تم تفعيل التحديث التلقائي للموقع",
+  "@autoLocationEnabled": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationDisabled": "تم تعطيل التحديث التلقائي للموقع",
+  "@autoLocationDisabled": {
+    "description": "",
+    "type": "text"
+  },
+  "versesCount": "{count} آيات",
+  "@versesCount": {
+    "description": "",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "juzNumberLabel": "الجزء {number}",
+  "@juzNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hizbNumberLabel": "الحزب {number}",
+  "@hizbNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "ayahNumberLabel": "الآية {number}",
+  "@ayahNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "surahNumberLabel": "سورة رقم {number}",
+  "@surahNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "noResultsFound": "لا توجد نتائج",
+  "@noResultsFound": {
+    "description": "",
+    "type": "text"
+  },
+  "emptyTafsirText": "نص التفسير فارغ",
+  "@emptyTafsirText": {
+    "description": "",
+    "type": "text"
+  },
+  "failedSplitTafsir": "فشل تقسيم نص التفسير",
+  "@failedSplitTafsir": {
+    "description": "",
+    "type": "text"
+  },
+  "meaningLabel": "المعنى",
+  "@meaningLabel": {
+    "description": "",
+    "type": "text"
+  },
+  "shareError": "حدث خطأ أثناء المشاركة",
+  "@shareError": {
+    "description": "",
+    "type": "text"
+  },
+  "namesOfAllahShareText": "أسماء الله الحسنى - مشاركة من تطبيق مُسَلِّم",
+  "@namesOfAllahShareText": {
+    "description": "",
+    "type": "text"
+  },
+  "sharedFromMuslimApp": "تمت المشاركة من تطبيق مُسَلِّم",
+  "@sharedFromMuslimApp": {
+    "description": "",
+    "type": "text"
+  },
+  "ayatText": "الآيات",
+  "@ayatText": {
+    "description": "",
+    "type": "text"
+  },
+  "tourNext": "التالي",
+  "tourSkip": "تخطي",
+  "tourDone": "فهمت",
+  "tourPrayerTimesTitle": "مواقيت الصلاة والأذان",
+  "tourPrayerTimesMessage": "متابعة مواقيت الصلاة القادمة وإعدادات الموقع.",
+  "tourZakatTitle": "حاسبة الزكاة",
+  "tourZakatMessage": "احسب زكاتك بسهولة وتعرف على مصارف الزكاة المستحقة.",
+  "tourServicesTitle": "الخدمات الإسلامية",
+  "tourServicesMessage": "تصفح القرآن الكريم، الأحاديث، الأذكار، السبحة، وأسماء الله.",
+  "tourSettingsTitle": "إعدادات التطبيق",
+  "tourSettingsMessage": "خصص اللغة، المظهر، حجم الخط، واختيار القارئ.",
+  "tourQuranTitle": "القرآن الكريم",
+  "tourQuranMessage": "تصفح السور والأجزاء والأحزاب بسهولة.",
+  "tourBookmarksTitle": "الفواصل والتحفيظ",
+  "tourBookmarksMessage": "الوصول السريع إلى العلامات المرجعية المحفوظة.",
+  "tourHadithTitle": "موسوعة الأحاديث",
+  "tourHadithMessage": "استكشف كتب الحديث الشريف والحديث اليومي.",
+  "tourSavedHadithTitle": "الأحاديث المحفوظة",
+  "tourSavedHadithMessage": "استعرض الأحاديث النبوية التي قمت بحفظها.",
+  "tourSebhaTitle": "السبحة الإلكترونية",
+  "tourSebhaMessage": "اضغط على الزر لتسبيح الله وحساب الأذكار.",
+  "tourAddZikrTitle": "إضافة ذكر خاص",
+  "tourAddZikrMessage": "أضف أذكارك الخاصة وحدد الأهداف اليومية.",
+  "tourAzkarTitle": "الأذكار اليومية",
+  "tourAzkarMessage": "أذكار الصباح والمساء والمناسبات مرتبة ومبوبة.",
+  "tourNamesOfAllahTitle": "أسماء الله الحسنى",
+  "tourNamesOfAllahMessage": "اقرأ المعاني وشارك بطاقات أسماء الله الحسنى.",
+  "tourQiblahTitle": "بوصلة القبلة",
+  "tourQiblahMessage": "وجه جهازك للتعرف على اتجاه الكعبة المشرفة بدقة."
 }

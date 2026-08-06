@@ -8,6 +8,7 @@ import 'package:muslim/core/theme/app_theme.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
@@ -39,6 +40,16 @@ class _HadithBooksViewContent extends StatefulWidget {
 
 class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(AppTourHelper.showHadithTour(context));
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -83,6 +94,14 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
         title: Text(localization.hadithBooks),
         actions: [
           IconButton(
+            onPressed: () => unawaited(
+              AppTourHelper.showHadithTour(context, force: true),
+            ),
+            icon: const Icon(Icons.explore_outlined),
+            tooltip: localization.tourHadithTitle,
+          ),
+          IconButton(
+            key: AppTourKeys.hadithSavedKey,
             onPressed: () {
               unawaited(
                 navigateWithTransition<void>(
@@ -107,11 +126,13 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
             children: [
               // ====== Search Bar ======
               Padding(
+                key: AppTourKeys.hadithSearchKey,
                 padding: EdgeInsets.symmetric(
                   horizontal: 12.toW,
                   vertical: 8.toH,
                 ),
                 child: TextField(
+
                   textAlign: isArabic ? TextAlign.right : TextAlign.left,
                   decoration: InputDecoration(
                     hintText: localization.hadithBooksSearch,
@@ -176,7 +197,8 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
 
               // ====== Books List ======
               Expanded(
-                child: BlocBuilder<HadithBooksCubit, HadithBooksState>(
+                child: BlocSelector<HadithBooksCubit, HadithBooksState, HadithBooksState>(
+                  selector: (state) => state,
                   builder: (context, state) {
                     if (state.status == HadithBooksStatus.loading ||
                         state.status == HadithBooksStatus.initial) {

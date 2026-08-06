@@ -2,24 +2,24 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
 import 'package:muslim/features/quran/viewmodel/quran_player_cubit/quran_player_state.dart';
 
 class QuranPlayerCubit extends Cubit<QuranPlayerState> {
-  QuranPlayerCubit(this._repository, {int? initialSurah})
+  QuranPlayerCubit(this._quranService, {int? initialSurah})
     : super(
         QuranPlayerState(
-          currentSurah: _repository.currentSurah ?? initialSurah,
-          currentAyah: _repository.currentIndex != null
-              ? _repository.currentIndex! + 1
+          currentSurah: _quranService.currentSurah ?? initialSurah,
+          currentAyah: _quranService.audioPlayer.currentIndex != null
+              ? _quranService.audioPlayer.currentIndex! + 1
               : null,
-          isPlaying: _repository.isPlaying,
+          isPlaying: _quranService.audioPlayer.playing,
         ),
       ) {
     _initializeListeners();
   }
 
-  final QuranRepository _repository;
+  final QuranService _quranService;
   final List<StreamSubscription<dynamic>> _subscriptions = [];
   bool _isRangeMode = false;
 
@@ -36,7 +36,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToPosition() {
     _subscriptions.add(
-      _repository.positionStream.listen((position) {
+      _quranService.audioPlayer.positionStream.listen((position) {
         if (!isClosed) emit(state.copyWith(currentPosition: position));
       }),
     );
@@ -44,7 +44,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToDuration() {
     _subscriptions.add(
-      _repository.durationStream.listen((duration) {
+      _quranService.audioPlayer.durationStream.listen((duration) {
         if (duration != null && duration.inMilliseconds > 0) {
           if (!isClosed) emit(state.copyWith(totalDuration: duration));
         }
@@ -54,7 +54,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToPlayerState() {
     _subscriptions.add(
-      _repository.playerStateStream.listen((playerState) {
+      _quranService.audioPlayer.playerStateStream.listen((playerState) {
         if (!isClosed) emit(state.copyWith(isPlaying: playerState.playing));
       }),
     );
@@ -62,11 +62,11 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   void _listenToCurrentIndex() {
     _subscriptions.add(
-      _repository.currentIndexStream.listen((index) {
+      _quranService.audioPlayer.currentIndexStream.listen((index) {
         if (index != null) {
           if (_isRangeMode) {
             // In range mode, resolve the actual surah/ayah from the map
-            final entry = _repository.getAyahAtIndex(index);
+            final entry = _quranService.getAyahAtIndex(index);
             if (entry != null && !isClosed) {
               emit(
                 state.copyWith(
@@ -88,18 +88,18 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
 
   Future<void> loadSurah(int surah, String reciter, {int startAyah = 1}) async {
     _isRangeMode = false;
-    await _repository.prepareSurahPlaylist(
+    await _quranService.prepareSurahPlaylist(
       surahNumber: surah,
       reciter: reciter,
     );
 
     final targetIndex = startAyah - 1;
     final isAlreadyAtTarget =
-        _repository.currentSurah == surah &&
-        _repository.currentIndex == targetIndex;
+        _quranService.currentSurah == surah &&
+        _quranService.audioPlayer.currentIndex == targetIndex;
 
     if (startAyah > 1 && !isAlreadyAtTarget) {
-      await _repository.seek(Duration.zero, index: targetIndex);
+      await _quranService.seek(Duration.zero, index: targetIndex);
     }
     if (!isClosed) {
       emit(state.copyWith(currentSurah: surah, currentAyah: startAyah));
@@ -114,7 +114,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     required int startAyah,
   }) async {
     _isRangeMode = true;
-    await _repository.prepareRangePlaylist(
+    await _quranService.prepareRangePlaylist(
       fromPage: fromPage,
       toPage: toPage,
       reciter: reciter,
@@ -123,7 +123,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     // Find the index in the range playlist that matches the start surah/ayah
     var targetIndex = 0;
     for (var i = 0; ; i++) {
-      final entry = _repository.getAyahAtIndex(i);
+      final entry = _quranService.getAyahAtIndex(i);
       if (entry == null) break;
       if (entry.surah == startSurah && entry.ayah == startAyah) {
         targetIndex = i;
@@ -132,7 +132,7 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     }
 
     if (targetIndex > 0) {
-      await _repository.seek(Duration.zero, index: targetIndex);
+      await _quranService.seek(Duration.zero, index: targetIndex);
     }
 
     if (!isClosed) {
@@ -140,12 +140,12 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     }
   }
 
-  Future<void> play() => _repository.play();
+  Future<void> play() => _quranService.play();
 
-  Future<void> pause() => _repository.pause();
+  Future<void> pause() => _quranService.pause();
 
   Future<void> seek(Duration position, {int? index, int? surah}) async {
-    await _repository.seek(position, index: index);
+    await _quranService.seek(position, index: index);
     if (surah != null && !isClosed) emit(state.copyWith(currentSurah: surah));
   }
 
@@ -155,10 +155,10 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
     if (_isRangeMode) {
       // Find the index in the range playlist that matches the surah/ayah
       for (var i = 0; ; i++) {
-        final entry = _repository.getAyahAtIndex(i);
+        final entry = _quranService.getAyahAtIndex(i);
         if (entry == null) break;
         if (entry.surah == surah && entry.ayah == ayah) {
-          await _repository.seek(Duration.zero, index: i);
+          await _quranService.seek(Duration.zero, index: i);
           if (!isClosed) {
             emit(state.copyWith(currentSurah: surah, currentAyah: ayah));
           }
@@ -167,16 +167,16 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
       }
     } else {
       // Single surah mode: index is ayah - 1
-      await _repository.seek(Duration.zero, index: ayah - 1);
+      await _quranService.seek(Duration.zero, index: ayah - 1);
       if (!isClosed) {
         emit(state.copyWith(currentSurah: surah, currentAyah: ayah));
       }
     }
   }
 
-  Future<void> seekToNext() => _repository.seekToNext();
+  Future<void> seekToNext() => _quranService.seekToNext();
 
-  Future<void> seekToPrevious() => _repository.seekToPrevious();
+  Future<void> seekToPrevious() => _quranService.seekToPrevious();
 
   // -------------------- Cleanup -------------------- //
 

@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 
@@ -9,7 +8,7 @@ NotificationChannel createPrayerChannel() => NotificationChannel(
   channelName: NotificationConstants.prayerChannelName,
   channelDescription: NotificationConstants.prayerChannelDescription,
   defaultColor: NotificationConstants.prayerChannelColor,
-  ledColor: Colors.white,
+  ledColor: NotificationConstants.ledColor,
   importance: NotificationImportance.Max,
   playSound: true,
   enableVibration: false,

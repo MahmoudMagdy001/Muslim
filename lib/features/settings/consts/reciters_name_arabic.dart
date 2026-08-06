@@ -7,6 +7,11 @@ class Reciter {
   final String nameEn;
 
   Map<String, String> toMap() => {'id': id, 'name': nameAr, 'nameEn': nameEn};
+
+  String localizedName(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return isArabic ? nameAr : nameEn;
+  }
 }
 
 const List<Reciter> recitersNames = [
@@ -75,7 +80,7 @@ const List<Reciter> recitersNames = [
   Reciter(id: 'ar.aymanswoaid', nameAr: 'أيمن سويد', nameEn: 'Ayman Sowaid'),
 ];
 
-String getReciterName(String reciterId, {bool isArabic = true}) {
+String getReciterName(String reciterId, {BuildContext? context, bool isArabic = true}) {
   try {
     final reciter = recitersNames.firstWhere(
       (r) => r.id == reciterId,
@@ -86,10 +91,16 @@ String getReciterName(String reciterId, {bool isArabic = true}) {
       ),
     );
 
-    return isArabic ? reciter.nameAr : reciter.nameEn;
+    final isAr = context != null
+        ? Localizations.localeOf(context).languageCode == 'ar'
+        : isArabic;
+    return isAr ? reciter.nameAr : reciter.nameEn;
   } on Object catch (e) {
     debugPrint('Error getting reciter name: $e');
-    return isArabic
+    final isAr = context != null
+        ? Localizations.localeOf(context).languageCode == 'ar'
+        : isArabic;
+    return isAr
         ? 'المصحف المرتل للشيخ عبدالباسط'
         : 'Abdul Basit Abdus Samad (Murattal)';
   }

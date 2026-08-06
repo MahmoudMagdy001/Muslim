@@ -14,11 +14,9 @@ import 'package:muslim/core/service/permissions_sevice.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
-import 'package:muslim/features/quran/service/bookmarks_service.dart';
 import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
 import 'package:muslim/features/settings/view_model/font_size/font_size_cubit.dart';
 import 'package:muslim/features/settings/view_model/language/language_cubit.dart';
-import 'package:muslim/features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
 import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
 import 'package:muslim/features/settings/view_model/theme/theme_cubit.dart';
 import 'package:muslim/l10n/app_localizations.dart';
@@ -47,13 +45,24 @@ Future<void> main() async {
     InternetStateManagerInitializer(
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => PrayerTimesCubit(locationGranted: locationGranted)),
-          BlocProvider(create: (_) => FontSizeCubit(initialFontSize)),
-          BlocProvider(create: (_) => ThemeCubit(initialMode)),
-          BlocProvider(create: (_) => ReciterCubit()),
-          BlocProvider(create: (_) => BookmarksCubit(getIt<BookmarksService>())),
-          BlocProvider(create: (_) => LanguageCubit(initialLocale)),
-          BlocProvider(create: (_) => getIt<PeriodicReminderCubit>()),
+          BlocProvider(create: (_) => getIt<PrayerTimesCubit>()..locationGranted = locationGranted),
+          BlocProvider(create: (_) {
+            final cubit = getIt<FontSizeCubit>();
+            unawaited(cubit.setFontSize(initialFontSize));
+            return cubit;
+          }),
+          BlocProvider(create: (_) {
+            final cubit = getIt<ThemeCubit>();
+            unawaited(cubit.setThemeMode(initialMode));
+            return cubit;
+          }),
+          BlocProvider(create: (_) {
+            final cubit = getIt<LanguageCubit>();
+            unawaited(cubit.changeLanguage(initialLocale));
+            return cubit;
+          }),
+          BlocProvider(create: (_) => getIt<ReciterCubit>()),
+          BlocProvider(create: (_) => getIt<BookmarksCubit>()),
         ],
         child: const AppContent(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -74,8 +83,7 @@ Future<void> main() async {
       // ponytail: if location is newly granted, trigger refresh on cubit
       final navContext = navigatorKey.currentContext;
       if (navContext != null && navContext.mounted && newlyGranted) {
-        final isArabic = Localizations.localeOf(navContext).languageCode == 'ar';
-        unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes(isArabic: isArabic));
+        unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes());
       }
 
       final initializer = AppInitializer(prefs);
@@ -90,10 +98,11 @@ Future<void> _initializeNotificationChannels() async {
   try {
     await AwesomeNotifications().initialize(NotificationConstants.notificationIcon, [
       NotificationChannel(
-        channelKey: 'quran_channel',
-        channelName: 'Quran Reminders',
-        channelDescription: 'Reminders to read Quran',
-        defaultColor: const Color(0xFF33A1E0),
+        channelKey: NotificationConstants.quranChannelKey,
+        channelName: NotificationConstants.quranChannelName,
+        channelDescription: NotificationConstants.quranChannelDescription,
+        defaultColor: NotificationConstants.quranChannelColor,
+        ledColor: NotificationConstants.ledColor,
         importance: NotificationImportance.High,
         channelShowBadge: true,
         icon: NotificationConstants.notificationIcon,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 
 /// Centralized notification constants for periodic Islamic reminders.
 abstract final class PeriodicReminderConstants {
@@ -7,7 +8,9 @@ abstract final class PeriodicReminderConstants {
   static const String reminderChannelName = 'تذكير إسلامي دوري';
   static const String reminderChannelDescription =
       'إشعارات تذكير إسلامية دورية مع صوت مخصص';
-  static const Color reminderChannelColor = Color(0xFF2E7D32);
+  static const Color reminderChannelColor =
+      NotificationConstants.defaultNotificationColor;
+  static const Color ledColor = NotificationConstants.ledColor;
   static const String reminderSoundSource = 'resource://raw/salah';
   static const String notificationIcon = 'resource://drawable/ic_muslim_logo';
 

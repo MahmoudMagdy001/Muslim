@@ -1,34 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/features/sebha/data/models/zikr_model.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
-import 'package:muslim/features/sebha/domain/usecases/delete_custom_zikr_use_case.dart';
-import 'package:muslim/features/sebha/domain/usecases/get_custom_azkar_use_case.dart';
-import 'package:muslim/features/sebha/domain/usecases/save_custom_zikr_use_case.dart';
-import 'package:muslim/features/sebha/domain/usecases/update_custom_zikr_use_case.dart';
+import 'package:muslim/features/sebha/domain/repositories/sebha_repository.dart';
 import 'package:muslim/features/sebha/presentation/cubit/sebha_state.dart';
 
 class SebhaCubit extends Cubit<SebhaState> {
   SebhaCubit({
-    required GetCustomAzkarUseCase getCustomAzkarUseCase,
-    required SaveCustomZikrUseCase saveCustomZikrUseCase,
-    required UpdateCustomZikrUseCase updateCustomZikrUseCase,
-    required DeleteCustomZikrUseCase deleteCustomZikrUseCase,
-  }) : _getCustomAzkarUseCase = getCustomAzkarUseCase,
-       _saveCustomZikrUseCase = saveCustomZikrUseCase,
-       _updateCustomZikrUseCase = updateCustomZikrUseCase,
-       _deleteCustomZikrUseCase = deleteCustomZikrUseCase,
+    required SebhaRepository repository,
+  }) : _repository = repository,
        super(SebhaState(customGoal: ZikrModel.defaultAzkar[0].count));
 
-  final GetCustomAzkarUseCase _getCustomAzkarUseCase;
-  final SaveCustomZikrUseCase _saveCustomZikrUseCase;
-  final UpdateCustomZikrUseCase _updateCustomZikrUseCase;
-  final DeleteCustomZikrUseCase _deleteCustomZikrUseCase;
+  final SebhaRepository _repository;
 
   Future<void> loadCustomAzkar() async {
     emit(state.copyWith(status: SebhaRequestStatus.loading));
-    final result = await _getCustomAzkarUseCase(NoParams());
+    final result = await _repository.getCustomAzkar();
     result.fold(
       (failure) => emit(state.copyWith(status: SebhaRequestStatus.failure)),
       (customAzkar) => emit(
@@ -38,6 +27,15 @@ class SebhaCubit extends Cubit<SebhaState> {
         ),
       ),
     );
+    // Load saved progress for the currently selected zikr after azkar load
+    await _loadCurrentProgress();
+  }
+
+  Future<void> _loadCurrentProgress() async {
+    final zikr = state.currentZikr;
+    if (zikr == null) return;
+    final saved = await _repository.loadProgress(zikr.id);
+    if (saved > 0) emit(state.copyWith(counter: saved));
   }
 
   void increment() {
@@ -47,7 +45,10 @@ class SebhaCubit extends Cubit<SebhaState> {
 
     emit(state.copyWith(counter: newCounter, goalReached: goalReached));
 
-    // Reset goalReached flag so listener only fires once
+    // ponytail: fire-and-forget — SP writes are fast, no debounce needed
+    final zikr = state.currentZikr;
+    if (zikr != null) unawaited(_repository.saveProgress(zikr.id, newCounter));
+
     if (goalReached) {
       emit(state.copyWith(goalReached: false));
     }
@@ -55,15 +56,25 @@ class SebhaCubit extends Cubit<SebhaState> {
 
   void reset() {
     emit(state.copyWith(counter: 0));
+    // Clear saved progress on manual reset
+    final zikr = state.currentZikr;
+    if (zikr != null) unawaited(_repository.saveProgress(zikr.id, 0));
   }
 
-  void selectZikr(int index) {
+  Future<void> selectZikr(int index) async {
     final allAzkar = state.allAzkar;
     final goal = index < allAzkar.length ? allAzkar[index].count : null;
 
     emit(
       state.copyWith(currentIndex: index, counter: 0, customGoal: () => goal),
     );
+
+    // Load persisted progress for the newly selected zikr
+    final zikr = state.currentZikr;
+    if (zikr != null) {
+      final saved = await _repository.loadProgress(zikr.id);
+      if (saved > 0) emit(state.copyWith(counter: saved));
+    }
   }
 
   void setGoal(int? goal) {
@@ -71,7 +82,7 @@ class SebhaCubit extends Cubit<SebhaState> {
   }
 
   Future<void> addCustomZikr(ZikrEntity zikr) async {
-    final result = await _saveCustomZikrUseCase(zikr);
+    final result = await _repository.saveCustomZikr(zikr);
     await result.fold((failure) => null, (success) async {
       if (success) {
         await loadCustomAzkar();
@@ -80,12 +91,11 @@ class SebhaCubit extends Cubit<SebhaState> {
   }
 
   Future<void> editCustomZikr(ZikrEntity zikr) async {
-    final result = await _updateCustomZikrUseCase(zikr);
+    final result = await _repository.updateCustomZikr(zikr);
     await result.fold((failure) => null, (success) async {
       if (success) {
         await loadCustomAzkar();
 
-        // If the edited zikr is currently selected, update the goal
         final allAzkar = state.allAzkar;
         final currentIndex = state.currentIndex;
         if (currentIndex < allAzkar.length &&
@@ -100,16 +110,16 @@ class SebhaCubit extends Cubit<SebhaState> {
     final allAzkar = state.allAzkar;
     final currentIndex = state.currentIndex;
 
-    // Track if the deleted zikr was selected
     final wasSelected =
         currentIndex < allAzkar.length && allAzkar[currentIndex].id == id;
 
-    final result = await _deleteCustomZikrUseCase(id);
+    final result = await _repository.deleteCustomZikr(id);
     await result.fold((failure) => null, (success) async {
       if (success) {
+        // Clear progress for deleted zikr
+        await _repository.saveProgress(id, 0);
         await loadCustomAzkar();
 
-        // If deleted zikr was selected, reset to first
         if (wasSelected) {
           emit(
             state.copyWith(

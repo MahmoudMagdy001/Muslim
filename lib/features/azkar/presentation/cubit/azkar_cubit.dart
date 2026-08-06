@@ -1,33 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
-import 'package:muslim/features/azkar/domain/usecases/clear_azkar_count_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/get_azkar_content_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/get_azkar_count_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/get_azkar_list_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/save_azkar_count_usecase.dart';
+import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
 import 'package:muslim/features/azkar/presentation/cubit/azkar_state.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 
 class AzkarCubit extends Cubit<AzkarState> {
-  AzkarCubit(
-    this._getAzkarListUseCase,
-    this._getAzkarContentUseCase,
-    this._saveAzkarCountUseCase,
-    this._getAzkarCountUseCase,
-    this._clearAzkarCountUseCase,
-  ) : super(const AzkarState());
+  AzkarCubit(this._repository) : super(const AzkarState());
 
-  final GetAzkarListUseCase _getAzkarListUseCase;
-  final GetAzkarContentUseCase _getAzkarContentUseCase;
-  final SaveAzkarCountUseCase _saveAzkarCountUseCase;
-  final GetAzkarCountUseCase _getAzkarCountUseCase;
-  final ClearAzkarCountUseCase _clearAzkarCountUseCase;
+  final AzkarRepository _repository;
 
   Future<void> loadAzkar() async {
     if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
 
-    final result = await _getAzkarListUseCase(NoParams());
+    final result = await _repository.getAzkarList();
 
     result.fold(
       (failure) {
@@ -75,11 +60,9 @@ class AzkarCubit extends Cubit<AzkarState> {
       );
     }
 
-    await _clearAzkarCountUseCase(NoParams());
+    await _repository.clearAzkarCountIfNewDay();
 
-    final result = await _getAzkarContentUseCase(
-      GetAzkarContentParams(url: url),
-    );
+    final result = await _repository.getAzkarContent(url);
 
     await result.fold(
       (failure) {
@@ -101,9 +84,7 @@ class AzkarCubit extends Cubit<AzkarState> {
 
         for (var i = 0; i < content.length; i++) {
           countFutures.add(
-            _getAzkarCountUseCase(
-              GetAzkarCountParams(sourceUrl: url, index: i),
-            ).then((countResult) {
+            _repository.getAzkarCount(url, i).then((countResult) {
               var savedCount = content[i].repeat;
               countResult.fold((l) => null, (r) {
                 if (r != null) {
@@ -135,13 +116,7 @@ class AzkarCubit extends Cubit<AzkarState> {
     final counts = Map<int, int>.from(state.currentCounts);
     if (counts.containsKey(index) && counts[index]! > 0) {
       counts[index] = counts[index]! - 1;
-      await _saveAzkarCountUseCase(
-        SaveAzkarCountParams(
-          sourceUrl: url,
-          index: index,
-          count: counts[index]!,
-        ),
-      );
+      await _repository.saveAzkarCount(url, index, counts[index]!);
       if (!isClosed) emit(state.copyWith(currentCounts: counts));
     }
   }
@@ -150,13 +125,7 @@ class AzkarCubit extends Cubit<AzkarState> {
     final counts = Map<int, int>.from(state.currentCounts);
     if (index < state.currentContent.length) {
       counts[index] = state.currentContent[index].repeat;
-      await _saveAzkarCountUseCase(
-        SaveAzkarCountParams(
-          sourceUrl: url,
-          index: index,
-          count: counts[index]!,
-        ),
-      );
+      await _repository.saveAzkarCount(url, index, counts[index]!);
       if (!isClosed) emit(state.copyWith(currentCounts: counts));
     }
   }

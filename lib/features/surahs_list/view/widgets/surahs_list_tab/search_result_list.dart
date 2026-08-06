@@ -18,13 +18,15 @@ class SearchResultsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     if (searchResults.isEmpty) {
       return SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.toH, horizontal: 20.toW),
           child: Center(
             child: Text(
-              'لا توجد نتائج',
+              l10n.noResultsFound,
               style: context.theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white,
               ),
@@ -40,21 +42,19 @@ class SearchResultsList extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate([
         if (surahResults.isNotEmpty) ...[
-          _buildHeader(context, 'السور'),
+          _buildHeader(context, l10n.surahsText),
           ...surahResults.map(
             (result) => SearchResultTile(
               result: result,
-              isArabic: true, // Assuming Arabic as per user request context
               onTap: () => navigateToResult(surah: result.surahNumber, ayah: 1),
             ),
           ),
         ],
         if (ayahResults.isNotEmpty) ...[
-          _buildHeader(context, 'الآيات'),
+          _buildHeader(context, l10n.ayatText),
           ...ayahResults.map(
             (result) => SearchResultTile(
               result: result,
-              isArabic: true,
               onTap: () => navigateToResult(
                 surah: result.surahNumber,
                 ayah: result.verseNumber,

@@ -2,33 +2,21 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
-import 'package:muslim/features/azkar/domain/usecases/get_azkar_audio_stream_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/get_current_audio_state_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/play_azkar_audio_usecase.dart';
-import 'package:muslim/features/azkar/domain/usecases/stop_azkar_audio_usecase.dart';
+import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
 
 class AzkarAudioCubit extends Cubit<AzkarAudioState> {
-  AzkarAudioCubit(
-    this._playAzkarAudioUseCase,
-    this._stopAzkarAudioUseCase,
-    this._getAzkarAudioStreamUseCase,
-    this._getCurrentAudioStateUseCase,
-  ) : super(const AzkarAudioState(status: AzkarAudioStatus.initial)) {
+  AzkarAudioCubit(this._repository) : super(const AzkarAudioState(status: AzkarAudioStatus.initial)) {
     _init();
   }
 
-  final PlayAzkarAudioUseCase _playAzkarAudioUseCase;
-  final StopAzkarAudioUseCase _stopAzkarAudioUseCase;
-  final GetAzkarAudioStreamUseCase _getAzkarAudioStreamUseCase;
-  final GetCurrentAudioStateUseCase _getCurrentAudioStateUseCase;
+  final AzkarRepository _repository;
 
   StreamSubscription<AzkarAudioState>? _subscription;
 
   void _init() {
-    emit(_getCurrentAudioStateUseCase());
-    _subscription = _getAzkarAudioStreamUseCase().listen((state) {
+    emit(_repository.currentAudioState);
+    _subscription = _repository.getAudioStateStream().listen((state) {
       if (!isClosed) {
         emit(state);
       }
@@ -36,11 +24,11 @@ class AzkarAudioCubit extends Cubit<AzkarAudioState> {
   }
 
   Future<void> playAudio(String url, {String? title}) async {
-    await _playAzkarAudioUseCase(PlayAzkarAudioParams(url: url, title: title));
+    await _repository.playAudio(url, title: title);
   }
 
   Future<void> stopAudio() async {
-    await _stopAzkarAudioUseCase(NoParams());
+    await _repository.stopAudio();
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:muslim/features/prayer_times/domain/entities/prayer_notification
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/prayer_consts.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,12 +21,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A settings section widget for managing app notifications.
 class NotificationSection extends StatefulWidget {
   const NotificationSection({
-    required this.isArabic,
     required this.theme,
     super.key,
   });
 
-  final bool isArabic;
   final ThemeData theme;
 
   @override
@@ -92,7 +91,6 @@ class _NotificationSectionState extends State<NotificationSection> {
         builder: (context) => NotificationSettingsModal(
           theme: widget.theme,
           localizations: localizations,
-          isArabic: widget.isArabic,
           controller: _controller,
         ),
       ),
@@ -108,14 +106,12 @@ class NotificationSettingsModal extends StatelessWidget {
   const NotificationSettingsModal({
     required this.theme,
     required this.localizations,
-    required this.isArabic,
     required this.controller,
     super.key,
   });
 
   final ThemeData theme;
   final AppLocalizations localizations;
-  final bool isArabic;
   final NotificationSettingsController controller;
 
   @override
@@ -125,7 +121,7 @@ class NotificationSettingsModal extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildPrayerNotificationsHeader(),
-        _PerPrayerSettingsSection(theme: theme, isArabic: isArabic),
+        _PerPrayerSettingsSection(theme: theme),
         Divider(height: 24.toH, indent: 16.toW, endIndent: 16.toW),
         _buildQuranNotificationTile(),
         SizedBox(height: 12.toH),
@@ -156,11 +152,9 @@ class NotificationSettingsModal extends StatelessWidget {
 class _PerPrayerSettingsSection extends StatelessWidget {
   const _PerPrayerSettingsSection({
     required this.theme,
-    required this.isArabic,
   });
 
   final ThemeData theme;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) =>
@@ -191,10 +185,11 @@ class _PerPrayerSettingsSection extends StatelessWidget {
   ) {
     final visual = prayerVisuals[prayer]!;
     final enabled = settings.isEnabled(prayer);
+    final l10n = AppLocalizations.of(context);
 
     return NotificationSwitchTile(
       icon: visual.icon,
-      title: prayer.displayName(isArabic: isArabic),
+      title: prayer.localizedName(l10n),
       value: enabled,
       onChanged: (value) => _handlePrayerToggle(context, prayer, value),
       theme: theme,
@@ -325,7 +320,7 @@ class NotificationRepository {
 
 /// Manages Quran notification scheduling using Awesome Notifications.
 class QuranNotificationService {
-  static const String _channelKey = 'quran_channel';
+  static const String _channelKey = NotificationConstants.quranChannelKey;
 
   Future<void> cancelAllNotifications() async {
     try {
@@ -368,6 +363,7 @@ class QuranNotificationService {
         channelKey: _channelKey,
         title: 'Quran Reminder',
         body: 'Time to read Quran',
+        color: NotificationConstants.quranChannelColor,
       ),
       schedule: NotificationAndroidCrontab.hourly(
         referenceDateTime: firstNotification,

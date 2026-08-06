@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
@@ -78,7 +79,6 @@ class CurrentPrayerCard extends StatelessWidget {
                             ),
                              _RefreshButton(
                                localizations: localizations,
-                               isArabic: isArabic,
                              ),
                           ],
                         ),
@@ -95,9 +95,9 @@ class CurrentPrayerCard extends StatelessWidget {
                             Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                 _NextPrayerName(theme: theme, isArabic: isArabic),
+                                 _NextPrayerName(theme: theme),
                                  SizedBox(height: 4.toH),
-                                 _TimeLeftText(theme: theme, isArabic: isArabic),
+                                 _TimeLeftText(theme: theme),
                               ],
                             ),
                           ],
@@ -230,53 +230,53 @@ class _CityText extends StatelessWidget {
 }
 
 class _NextPrayerName extends StatelessWidget {
-  const _NextPrayerName({required this.theme, required this.isArabic});
+  const _NextPrayerName({required this.theme});
   final ThemeData theme;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) =>
       BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerType?>(
         selector: (state) => state.nextPrayer,
         builder: (context, nextPrayer) => Text(
-          nextPrayer?.displayName(isArabic: isArabic) ?? '------',
+          nextPrayer?.localizedName(context.l10n) ?? '------',
           style: theme.textTheme.headlineLarge?.copyWith(
             color: theme.colorScheme.secondary,
-            fontWeight: .bold,
+            fontWeight: FontWeight.bold,
           ),
         ),
       );
 }
 
 class _TimeLeftText extends StatelessWidget {
-  const _TimeLeftText({required this.theme, required this.isArabic});
+  const _TimeLeftText({required this.theme});
   final ThemeData theme;
-  final bool isArabic;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocSelector<PrayerTimesCubit, PrayerTimesState, Duration?>(
-        selector: (state) => state.timeLeft,
-        builder: (context, timeLeft) => Text(
-          formatTimeLeft(
-            timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
-            isArabic: isArabic,
-          ),
-          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return BlocSelector<PrayerTimesCubit, PrayerTimesState, Duration?>(
+      selector: (state) => state.timeLeft,
+      builder: (context, timeLeft) => Text(
+        formatTimeLeft(
+          timeLeft ?? const Duration(hours: 1, minutes: 23, seconds: 45),
+          isArabic: isArabic,
         ),
-      );
+        style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
+      ),
+    );
+  }
 }
 
 class _RefreshButton extends StatelessWidget {
-  const _RefreshButton({required this.localizations, required this.isArabic});
+  const _RefreshButton({required this.localizations});
   final AppLocalizations localizations;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) => IconButton(
     onPressed: () async {
       await HapticFeedback.heavyImpact();
       if (context.mounted) {
+        final isArabic = Localizations.localeOf(context).languageCode == 'ar';
         await context.read<PrayerTimesCubit>().refreshPrayerTimes(
           isArabic: isArabic,
         );

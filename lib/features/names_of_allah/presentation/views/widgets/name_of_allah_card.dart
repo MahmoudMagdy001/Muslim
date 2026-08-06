@@ -9,7 +9,6 @@ class NameOfAllahCard extends StatelessWidget {
   const NameOfAllahCard({
     required this.data,
     required this.index,
-    required this.isArabic,
     required this.isSharing,
     required this.onShare,
     super.key,
@@ -17,12 +16,14 @@ class NameOfAllahCard extends StatelessWidget {
 
   final NameOfAllahEntity data;
   final int index;
-  final bool isArabic;
   final bool isSharing;
   final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
+
     final name = isArabic ? data.name : data.nameTranslation;
     final text = isArabic ? data.text : data.textTranslation;
 
@@ -50,7 +51,6 @@ class NameOfAllahCard extends StatelessWidget {
                     'assets/quran/marker.png',
                     width: 40.toW,
                     height: 40.toH,
-                    // ponytail: cache dimensions to save memory at runtime
                     cacheWidth: 120,
                     cacheHeight: 120,
                   ),
@@ -79,7 +79,7 @@ class NameOfAllahCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.toH),
                     Text(
-                      '${isArabic ? 'المعني' : 'Meaning'}: $text',
+                      '${l10n.meaningLabel}: $text',
                       style: context.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
                       ),

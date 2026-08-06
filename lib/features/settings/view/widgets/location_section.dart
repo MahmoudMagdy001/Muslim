@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/app_logger.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/features/settings/service/settings_service.dart';
 
 class LocationSection extends StatefulWidget {
   const LocationSection({
-    required this.isArabic,
     required this.theme,
     super.key,
   });
 
-  final bool isArabic;
   final ThemeData theme;
 
   @override
@@ -40,16 +40,12 @@ class _LocationSectionState extends State<LocationSection> {
   Future<void> _toggleAutoLocation(bool value) async {
     await _settingsService.setAutoLocationEnabled(enabled: value);
     autoLocationNotifier.value = value;
+    logInfo('📍 التحديث التلقائي للموقع: ${value ? "مفعّل" : "معطّل"}');
 
-    _showSnackBar(
-      value
-          ? (widget.isArabic
-                ? 'تم تفعيل التحديث التلقائي للموقع'
-                : 'Auto location updates enabled')
-          : (widget.isArabic
-                ? 'تم تعطيل التحديث التلقائي للموقع'
-                : 'Auto location updates disabled'),
-    );
+    if (mounted) {
+      final l10n = context.l10n;
+      _showSnackBar(value ? l10n.autoLocationEnabled : l10n.autoLocationDisabled);
+    }
   }
 
   void _showSnackBar(String message) {
@@ -60,21 +56,23 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<bool>(
-    valueListenable: autoLocationNotifier,
-    builder: (context, autoLocation, child) => ListTile(
-      leading: const Icon(Icons.location_on_rounded),
-      title: Text(
-        widget.isArabic ? 'تحديث الموقع تلقائياً' : 'Auto Location Updates',
-        style: widget.theme.textTheme.titleMedium,
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: autoLocationNotifier,
+      builder: (context, autoLocation, child) => ListTile(
+        leading: const Icon(Icons.location_on_rounded),
+        title: Text(
+          l10n.autoLocationUpdates,
+          style: widget.theme.textTheme.titleMedium,
+        ),
+        subtitle: Text(
+          l10n.autoLocationSubtitle,
+          style: widget.theme.textTheme.bodySmall,
+        ),
+        trailing: Switch(value: autoLocation, onChanged: _toggleAutoLocation),
       ),
-      subtitle: Text(
-        widget.isArabic
-            ? 'تحديث مواقيت الصلاة بناءً على موقعك الحالي'
-            : 'Update prayer times based on your current location',
-        style: widget.theme.textTheme.bodySmall,
-      ),
-      trailing: Switch(value: autoLocation, onChanged: _toggleAutoLocation),
-    ),
-  );
+    );
+  }
 }

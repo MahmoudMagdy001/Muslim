@@ -232,7 +232,7 @@ class _ZakatCardState extends State<ZakatCard> {
                           ),
                           SizedBox(height: 8.toH),
                           Text(
-                            '${isArabic ? convertToArabicNumbers(result.toStringAsFixed(2)) : result.toStringAsFixed(2)} ${isArabic ? 'جنيه' : 'EGP'}',
+                            '${isArabic ? convertToArabicNumbers(result.toStringAsFixed(2)) : result.toStringAsFixed(2)} ${context.l10n.egpUnit}',
                             style: textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: theme.primaryColor,

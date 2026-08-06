@@ -14,7 +14,7 @@ class FontSizeState extends Equatable {
 
 // Cubit class
 class FontSizeCubit extends Cubit<FontSizeState> {
-  FontSizeCubit(double initialFontSize)
+  FontSizeCubit([double initialFontSize = _defaultFontSize])
     : super(FontSizeState(fontSize: initialFontSize));
 
   static const double _defaultFontSize = 18.0;

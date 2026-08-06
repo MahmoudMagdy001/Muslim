@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/quran/view/bookmarks_view.dart';
 import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played.dart';
@@ -11,29 +13,41 @@ import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/surah_l
 import 'package:muslim/features/surahs_list/viewmodel/surah_list/surahs_list_cubit.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 
-class SurahsListView extends StatelessWidget {
+class SurahsListView extends StatefulWidget {
   const SurahsListView({required this.selectedReciter, super.key});
   final String selectedReciter;
 
   @override
-  Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final isArabic = locale.languageCode == 'ar';
+  State<SurahsListView> createState() => _SurahsListViewState();
+}
 
+class _SurahsListViewState extends State<SurahsListView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(AppTourHelper.showQuranTour(context));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) {
-            final cubit = SurahListCubit();
-            unawaited(cubit.loadSurahs(isArabic: isArabic));
+            final cubit = getIt<SurahListCubit>();
+            unawaited(cubit.loadSurahs());
             return cubit;
           },
         ),
         BlocProvider(
           create: (context) {
-            final cubit = LastPlayedCubit();
+            final cubit = getIt<LastPlayedCubit>();
             unawaited(cubit.initialize());
             return cubit;
           },
@@ -48,10 +62,18 @@ class SurahsListView extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () => unawaited(
+                    AppTourHelper.showQuranTour(context, force: true),
+                  ),
+                  icon: const Icon(Icons.explore_outlined),
+                  tooltip: localizations.tourQuranTitle,
+                ),
+                IconButton(
+                  key: AppTourKeys.quranBookmarksKey,
+                  onPressed: () => unawaited(
                     navigateWithTransition<void>(
                       type: TransitionType.fade,
                       context,
-                      BookmarksView(reciter: selectedReciter, isArabic: isArabic),
+                      BookmarksView(reciter: widget.selectedReciter),
                     ),
                   ),
                   icon: const Icon(Icons.bookmarks_rounded),
@@ -60,6 +82,7 @@ class SurahsListView extends StatelessWidget {
                 SizedBox(width: 8.toW),
               ],
               bottom: TabBar(
+                key: AppTourKeys.quranTabKey,
                 labelColor: context.theme.colorScheme.secondary,
                 unselectedLabelColor: Colors.white,
                 onTap: (index) {
@@ -77,20 +100,17 @@ class SurahsListView extends StatelessWidget {
               child: TabBarView(
                 children: [
                   SurahListTab(
-                    selectedReciter: selectedReciter,
-                    isArabic: isArabic,
+                    selectedReciter: widget.selectedReciter,
                     localizations: localizations,
                     forceViewType: QuranViewType.surah,
                   ),
                   SurahListTab(
-                    selectedReciter: selectedReciter,
-                    isArabic: isArabic,
+                    selectedReciter: widget.selectedReciter,
                     localizations: localizations,
                     forceViewType: QuranViewType.juz,
                   ),
                   SurahListTab(
-                    selectedReciter: selectedReciter,
-                    isArabic: isArabic,
+                    selectedReciter: widget.selectedReciter,
                     localizations: localizations,
                     forceViewType: QuranViewType.hizb,
                   ),

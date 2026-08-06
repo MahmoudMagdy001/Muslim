@@ -3,7 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
@@ -13,16 +15,38 @@ import 'package:muslim/features/sebha/presentation/views/widgets/custom_zikr_dia
 import 'package:muslim/features/sebha/presentation/views/widgets/sebha_button.dart';
 import 'package:muslim/features/sebha/presentation/views/widgets/sebha_controls.dart';
 
-class SebhaView extends StatelessWidget {
+class SebhaView extends StatefulWidget {
   const SebhaView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final isDark = context.theme.brightness == Brightness.dark;
+  State<SebhaView> createState() => _SebhaViewState();
+}
 
-    return BlocListener<SebhaCubit, SebhaState>(
+class _SebhaViewState extends State<SebhaView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(AppTourHelper.showSebhaTour(context));
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) {
+      final cubit = getIt<SebhaCubit>();
+      unawaited(cubit.loadCustomAzkar());
+      return cubit;
+    },
+    child: Builder(
+      builder: (context) {
+        final l10n = context.l10n;
+        final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+        final isDark = context.theme.brightness == Brightness.dark;
+
+        return BlocListener<SebhaCubit, SebhaState>(
       listenWhen: (previous, current) =>
           current.goalReached && !previous.goalReached,
       listener: (context, state) {
@@ -34,11 +58,20 @@ class SebhaView extends StatelessWidget {
           elevation: 0,
           actions: [
             IconButton(
+              onPressed: () => unawaited(
+                AppTourHelper.showSebhaTour(context, force: true),
+              ),
+              icon: const Icon(Icons.explore_outlined),
+              tooltip: l10n.tourSebhaTitle,
+            ),
+            IconButton(
+              key: AppTourKeys.sebhaAddKey,
               onPressed: () => _showAddCustomZikrDialog(context),
               icon: const Icon(Icons.add_rounded),
             ),
           ],
         ),
+
         body: SafeArea(
           child: Column(
             children: [
@@ -107,6 +140,7 @@ class SebhaView extends StatelessWidget {
                       goal: state.customGoal,
                     ),
                     builder: (context, data) => SebhaButton(
+                      key: AppTourKeys.sebhaButtonKey,
                       onPressed: context.read<SebhaCubit>().increment,
                       counter: data.counter,
                       goal: data.goal,
@@ -128,7 +162,9 @@ class SebhaView extends StatelessWidget {
         ),
       ),
     );
-  }
+  },
+),
+);
 
   void _showCompleteDialog(BuildContext context, int maxCount) {
     final l10n = context.l10n;

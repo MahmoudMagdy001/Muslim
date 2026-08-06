@@ -585,6 +585,11 @@
     "description": "Title for the Qiblah direction screen",
     "type": "text"
   },
+  "qiblahSubtitle": "Point your phone toward the Qiblah",
+  "@qiblahSubtitle": {
+    "description": "Subtitle hint below the Qiblah screen title",
+    "type": "text"
+  },
   "quran_text": "Zakat is for the poor and the needy and those employed to collect it and for bringing hearts together and for freeing captives and for those in debt and for the cause of Allah and for the traveler",
   "@quran_text": {
     "description": "",
@@ -1012,5 +1017,402 @@
   "@cancel": {
     "description": "",
     "type": "text"
-  }
+  },
+  "fieldRequired": "This field is required",
+  "@fieldRequired": {
+    "description": "",
+    "type": "text"
+  },
+  "goalMustBePositive": "Goal must be greater than zero",
+  "@goalMustBePositive": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyMatters": "Your Privacy Matters",
+  "@privacyMatters": {
+    "description": "",
+    "type": "text"
+  },
+  "noPersonalData": "We do not collect any personal data at all",
+  "@noPersonalData": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyPrinciples": "Privacy Principles",
+  "@privacyPrinciples": {
+    "description": "",
+    "type": "text"
+  },
+  "noAccounts": "No Accounts",
+  "@noAccounts": {
+    "description": "",
+    "type": "text"
+  },
+  "noAccountsDesc": "The app does not require account creation or login",
+  "@noAccountsDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "noTracking": "No Tracking",
+  "@noTracking": {
+    "description": "",
+    "type": "text"
+  },
+  "noTrackingDesc": "We do not track or monitor your app usage",
+  "@noTrackingDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "noPurchases": "No Purchases",
+  "@noPurchases": {
+    "description": "",
+    "type": "text"
+  },
+  "noPurchasesDesc": "There are no in-app purchases",
+  "@noPurchasesDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "locationDataTitle": "Location Data",
+  "@locationDataTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "locationPurpose": "• Purpose: Calculating accurate prayer times and Qibla direction.",
+  "@locationPurpose": {
+    "description": "",
+    "type": "text"
+  },
+  "locationAccessMethod": "• Access Method: Location is accessed only while using the app (Foreground) to update coordinates.",
+  "@locationAccessMethod": {
+    "description": "",
+    "type": "text"
+  },
+  "locationStorage": "• Storage: Last known coordinates are saved locally on your device to ensure accurate alerts even offline.",
+  "@locationStorage": {
+    "description": "",
+    "type": "text"
+  },
+  "locationPrivacy": "• Privacy: Your location data is not sent to any external server and is not shared with third parties.",
+  "@locationPrivacy": {
+    "description": "",
+    "type": "text"
+  },
+  "dataCollectionInfo": "Data Collection Info",
+  "@dataCollectionInfo": {
+    "description": "",
+    "type": "text"
+  },
+  "dataCollectionDesc": "The app does not collect any personal data. All information remains on your device only and we do not access it in any way.",
+  "@dataCollectionDesc": {
+    "description": "",
+    "type": "text"
+  },
+  "localStorage": "Local Storage",
+  "@localStorage": {
+    "description": "",
+    "type": "text"
+  },
+  "storageQuranBookmarks": "Quran Ayah Bookmarks",
+  "@storageQuranBookmarks": {
+    "description": "",
+    "type": "text"
+  },
+  "storageSavedHadith": "Saved Hadiths",
+  "@storageSavedHadith": {
+    "description": "",
+    "type": "text"
+  },
+  "storageNotificationSettings": "Notification Settings",
+  "@storageNotificationSettings": {
+    "description": "",
+    "type": "text"
+  },
+  "storageLangTheme": "Language & Theme Preferences",
+  "@storageLangTheme": {
+    "description": "",
+    "type": "text"
+  },
+  "storageFontSizeReciters": "Font Size & Reciters",
+  "@storageFontSizeReciters": {
+    "description": "",
+    "type": "text"
+  },
+  "storageLocationCoordinates": "Location Coordinates (Local only)",
+  "@storageLocationCoordinates": {
+    "description": "",
+    "type": "text"
+  },
+  "haveQuestions": "Have Questions?",
+  "@haveQuestions": {
+    "description": "",
+    "type": "text"
+  },
+  "privacyHelp": "We are here to help with any privacy questions",
+  "@privacyHelp": {
+    "description": "",
+    "type": "text"
+  },
+  "contactEmail": "Contact Us via Email",
+  "@contactEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "cannotOpenEmail": "Cannot open email app",
+  "@cannotOpenEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "lastUpdated": "Last Updated",
+  "@lastUpdated": {
+    "description": "",
+    "type": "text"
+  },
+  "muslimAppTitle": "Muslim App",
+  "@muslimAppTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "aboutUsDescription": "Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar. Carefully designed to provide a simple and easy spiritual experience in your daily life.",
+  "@aboutUsDescription": {
+    "description": "",
+    "type": "text"
+  },
+  "connectWithUs": "Connect with Us",
+  "@connectWithUs": {
+    "description": "",
+    "type": "text"
+  },
+  "sendEmail": "Send an Email",
+  "@sendEmail": {
+    "description": "",
+    "type": "text"
+  },
+  "visitWebsite": "Visit our Website",
+  "@visitWebsite": {
+    "description": "",
+    "type": "text"
+  },
+  "emailContactSubject": "Contact regarding the app - Muslim",
+  "@emailContactSubject": {
+    "description": "",
+    "type": "text"
+  },
+  "emailPrivacySubject": "Privacy Policy Inquiry - Muslim",
+  "@emailPrivacySubject": {
+    "description": "",
+    "type": "text"
+  },
+  "periodicReminderTitle": "Periodic Reminder",
+  "@periodicReminderTitle": {
+    "description": "",
+    "type": "text"
+  },
+  "everyNMinutes": "Every {minutes} minutes",
+  "@everyNMinutes": {
+    "description": "",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "egpUnit": "EGP",
+  "@egpUnit": {
+    "description": "",
+    "type": "text"
+  },
+  "makkiyah": "Meccan",
+  "@makkiyah": {
+    "description": "",
+    "type": "text"
+  },
+  "madaniyah": "Medinan",
+  "@madaniyah": {
+    "description": "",
+    "type": "text"
+  },
+  "selectTimeInterval": "Select Time Interval",
+  "@selectTimeInterval": {
+    "description": "",
+    "type": "text"
+  },
+  "nMinutes": "{minutes} minutes",
+  "@nMinutes": {
+    "description": "",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "fajr": "Fajr",
+  "@fajr": {
+    "description": "",
+    "type": "text"
+  },
+  "sunrise": "Sunrise",
+  "@sunrise": {
+    "description": "",
+    "type": "text"
+  },
+  "dhuhr": "Dhuhr",
+  "@dhuhr": {
+    "description": "",
+    "type": "text"
+  },
+  "asr": "Asr",
+  "@asr": {
+    "description": "",
+    "type": "text"
+  },
+  "maghrib": "Maghrib",
+  "@maghrib": {
+    "description": "",
+    "type": "text"
+  },
+  "isha": "Isha",
+  "@isha": {
+    "description": "",
+    "type": "text"
+  },
+  "jumuah": "Jumuah",
+  "@jumuah": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationUpdates": "Auto Location Updates",
+  "@autoLocationUpdates": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationSubtitle": "Update prayer times based on your current location",
+  "@autoLocationSubtitle": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationEnabled": "Auto location updates enabled",
+  "@autoLocationEnabled": {
+    "description": "",
+    "type": "text"
+  },
+  "autoLocationDisabled": "Auto location updates disabled",
+  "@autoLocationDisabled": {
+    "description": "",
+    "type": "text"
+  },
+  "versesCount": "{count} Verses",
+  "@versesCount": {
+    "description": "",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "juzNumberLabel": "Juz {number}",
+  "@juzNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "hizbNumberLabel": "Hizb {number}",
+  "@hizbNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "ayahNumberLabel": "Ayah {number}",
+  "@ayahNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "surahNumberLabel": "Surah {number}",
+  "@surahNumberLabel": {
+    "description": "",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "noResultsFound": "No results found",
+  "@noResultsFound": {
+    "description": "",
+    "type": "text"
+  },
+  "emptyTafsirText": "Tafsir text is empty",
+  "@emptyTafsirText": {
+    "description": "",
+    "type": "text"
+  },
+  "failedSplitTafsir": "Failed to split tafsir text",
+  "@failedSplitTafsir": {
+    "description": "",
+    "type": "text"
+  },
+  "meaningLabel": "Meaning",
+  "@meaningLabel": {
+    "description": "",
+    "type": "text"
+  },
+  "shareError": "Error sharing image",
+  "@shareError": {
+    "description": "",
+    "type": "text"
+  },
+  "namesOfAllahShareText": "Names of Allah - Shared from Muslim App",
+  "@namesOfAllahShareText": {
+    "description": "",
+    "type": "text"
+  },
+  "sharedFromMuslimApp": "Shared from Muslim App",
+  "@sharedFromMuslimApp": {
+    "description": "",
+    "type": "text"
+  },
+  "ayatText": "Verses",
+  "@ayatText": {
+    "description": "",
+    "type": "text"
+  },
+  "tourNext": "Next",
+  "tourSkip": "Skip",
+  "tourDone": "Got it",
+  "tourPrayerTimesTitle": "Prayer Times & Azan",
+  "tourPrayerTimesMessage": "Track upcoming prayer times and location settings.",
+  "tourZakatTitle": "Zakat Calculator",
+  "tourZakatMessage": "Calculate your Zakat easily and check eligible categories.",
+  "tourServicesTitle": "Islamic Features",
+  "tourServicesMessage": "Access Holy Quran, Hadiths, Azkar, Sebha, and Allah Names.",
+  "tourSettingsTitle": "App Settings",
+  "tourSettingsMessage": "Customize language, theme, font size, and reciters.",
+  "tourQuranTitle": "Holy Quran",
+  "tourQuranMessage": "Browse Surahs, Juz, and Hizb sections.",
+  "tourBookmarksTitle": "Saved Bookmarks",
+  "tourBookmarksMessage": "Quickly access your saved Quran bookmarks.",
+  "tourHadithTitle": "Hadith Collection",
+  "tourHadithMessage": "Explore authentic Hadith books and daily Hadiths.",
+  "tourSavedHadithTitle": "Saved Hadiths",
+  "tourSavedHadithMessage": "View your saved Hadiths for quick reference.",
+  "tourSebhaTitle": "Digital Sebha",
+  "tourSebhaMessage": "Tap the button to increment your Tasbih counter.",
+  "tourAddZikrTitle": "Custom Zikr",
+  "tourAddZikrMessage": "Add your own custom Azkar and set personal goals.",
+  "tourAzkarTitle": "Daily Azkar",
+  "tourAzkarMessage": "Morning, evening, and situational Azkar categorized for convenience.",
+  "tourNamesOfAllahTitle": "99 Names of Allah",
+  "tourNamesOfAllahMessage": "Read meanings and share beautiful cards of Allah's names.",
+  "tourQiblahTitle": "Qiblah Compass",
+  "tourQiblahMessage": "Align your device to find the precise Kaaba direction."
 }

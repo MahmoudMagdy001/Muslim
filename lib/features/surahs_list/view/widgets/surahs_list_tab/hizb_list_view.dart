@@ -7,13 +7,11 @@ import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/hizb_li
 class HizbListView extends StatelessWidget {
   const HizbListView({
     required this.hizbs,
-    required this.isArabic,
     required this.navigateToHizb,
     super.key,
   });
 
   final List<HizbModel> hizbs;
-  final bool isArabic;
   final Future<void> Function({required int surah, required int ayah})
   navigateToHizb;
 
@@ -30,7 +28,6 @@ class HizbListView extends StatelessWidget {
         final hizb = hizbs[index];
         return HizbListTile(
           hizb: hizb,
-          isArabic: isArabic,
           onTap: () =>
               navigateToHizb(surah: hizb.startSurah, ayah: hizb.startAyah),
         );

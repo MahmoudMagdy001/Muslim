@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/layout/view/widgets/daily_verse_card.dart';
 import 'package:muslim/features/layout/view/widgets/dashboard_list.dart';
@@ -22,18 +23,29 @@ class LayoutContent extends StatelessWidget {
   Widget build(BuildContext context) => CustomScrollView(
     slivers: [
       SliverToBoxAdapter(
-        child: PrayerTimesView(
-          scaffoldContext: scaffoldContext,
-          localizations: localizations,
+        child: KeyedSubtree(
+          key: AppTourKeys.prayerTimesKey,
+          child: PrayerTimesView(
+            scaffoldContext: scaffoldContext,
+            localizations: localizations,
+          ),
         ),
       ),
       SliverPadding(
         padding: EdgeInsets.symmetric(vertical: 8.toH, horizontal: 8.toW),
         sliver: SliverToBoxAdapter(
-          child: ZakatCardWidget(localizations: localizations),
+          child: KeyedSubtree(
+            key: AppTourKeys.zakatKey,
+            child: ZakatCardWidget(localizations: localizations),
+          ),
         ),
       ),
-      SliverToBoxAdapter(child: DashboardGrid(localizations: localizations)),
+      SliverToBoxAdapter(
+        child: KeyedSubtree(
+          key: AppTourKeys.servicesKey,
+          child: DashboardGrid(localizations: localizations),
+        ),
+      ),
       SliverPadding(
         padding: EdgeInsets.symmetric(vertical: 8.toH),
         sliver: const SliverToBoxAdapter(child: DailyVerseCard()),

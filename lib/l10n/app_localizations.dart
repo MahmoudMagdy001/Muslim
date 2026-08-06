@@ -760,6 +760,12 @@ abstract class AppLocalizations {
   /// **'Qiblah Direction'**
   String get qiblahDirection;
 
+  /// Subtitle hint below the Qiblah screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Point your phone toward the Qiblah'**
+  String get qiblahSubtitle;
+
   ///
   ///
   /// In en, this message translates to:
@@ -1186,13 +1192,13 @@ abstract class AppLocalizations {
   /// **'Example: 100'**
   String get tasbihGoalHint;
 
-  /// Error message for required fields
+  ///
   ///
   /// In en, this message translates to:
   /// **'This field is required'**
   String get fieldRequired;
 
-  /// Error message when goal is zero or negative
+  ///
   ///
   /// In en, this message translates to:
   /// **'Goal must be greater than zero'**
@@ -1263,6 +1269,576 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Your Privacy Matters'**
+  String get privacyMatters;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'We do not collect any personal data at all'**
+  String get noPersonalData;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Principles'**
+  String get privacyPrinciples;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'No Accounts'**
+  String get noAccounts;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The app does not require account creation or login'**
+  String get noAccountsDesc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'No Tracking'**
+  String get noTracking;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'We do not track or monitor your app usage'**
+  String get noTrackingDesc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'No Purchases'**
+  String get noPurchases;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'There are no in-app purchases'**
+  String get noPurchasesDesc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Location Data'**
+  String get locationDataTitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'• Purpose: Calculating accurate prayer times and Qibla direction.'**
+  String get locationPurpose;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'• Access Method: Location is accessed only while using the app (Foreground) to update coordinates.'**
+  String get locationAccessMethod;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'• Storage: Last known coordinates are saved locally on your device to ensure accurate alerts even offline.'**
+  String get locationStorage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'• Privacy: Your location data is not sent to any external server and is not shared with third parties.'**
+  String get locationPrivacy;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Data Collection Info'**
+  String get dataCollectionInfo;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'The app does not collect any personal data. All information remains on your device only and we do not access it in any way.'**
+  String get dataCollectionDesc;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Local Storage'**
+  String get localStorage;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Quran Ayah Bookmarks'**
+  String get storageQuranBookmarks;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Hadiths'**
+  String get storageSavedHadith;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get storageNotificationSettings;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Language & Theme Preferences'**
+  String get storageLangTheme;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Font Size & Reciters'**
+  String get storageFontSizeReciters;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Location Coordinates (Local only)'**
+  String get storageLocationCoordinates;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Have Questions?'**
+  String get haveQuestions;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'We are here to help with any privacy questions'**
+  String get privacyHelp;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us via Email'**
+  String get contactEmail;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot open email app'**
+  String get cannotOpenEmail;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get lastUpdated;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Muslim App'**
+  String get muslimAppTitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar. Carefully designed to provide a simple and easy spiritual experience in your daily life.'**
+  String get aboutUsDescription;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Connect with Us'**
+  String get connectWithUs;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Send an Email'**
+  String get sendEmail;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Visit our Website'**
+  String get visitWebsite;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Contact regarding the app - Muslim'**
+  String get emailContactSubject;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy Inquiry - Muslim'**
+  String get emailPrivacySubject;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Periodic Reminder'**
+  String get periodicReminderTitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Every {minutes} minutes'**
+  String everyNMinutes(int minutes);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egpUnit;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Meccan'**
+  String get makkiyah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Medinan'**
+  String get madaniyah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time Interval'**
+  String get selectTimeInterval;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String nMinutes(int minutes);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Fajr'**
+  String get fajr;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Sunrise'**
+  String get sunrise;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Dhuhr'**
+  String get dhuhr;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Asr'**
+  String get asr;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Maghrib'**
+  String get maghrib;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Isha'**
+  String get isha;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Jumuah'**
+  String get jumuah;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Location Updates'**
+  String get autoLocationUpdates;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Update prayer times based on your current location'**
+  String get autoLocationSubtitle;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Auto location updates enabled'**
+  String get autoLocationEnabled;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Auto location updates disabled'**
+  String get autoLocationDisabled;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Verses'**
+  String versesCount(int count);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Juz {number}'**
+  String juzNumberLabel(int number);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Hizb {number}'**
+  String hizbNumberLabel(int number);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Ayah {number}'**
+  String ayahNumberLabel(int number);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Surah {number}'**
+  String surahNumberLabel(int number);
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResultsFound;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Tafsir text is empty'**
+  String get emptyTafsirText;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to split tafsir text'**
+  String get failedSplitTafsir;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Meaning'**
+  String get meaningLabel;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Error sharing image'**
+  String get shareError;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Names of Allah - Shared from Muslim App'**
+  String get namesOfAllahShareText;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Shared from Muslim App'**
+  String get sharedFromMuslimApp;
+
+  ///
+  ///
+  /// In en, this message translates to:
+  /// **'Verses'**
+  String get ayatText;
+
+  /// No description provided for @tourNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tourNext;
+
+  /// No description provided for @tourSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tourSkip;
+
+  /// No description provided for @tourDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get tourDone;
+
+  /// No description provided for @tourPrayerTimesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prayer Times & Azan'**
+  String get tourPrayerTimesTitle;
+
+  /// No description provided for @tourPrayerTimesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Track upcoming prayer times and location settings.'**
+  String get tourPrayerTimesMessage;
+
+  /// No description provided for @tourZakatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zakat Calculator'**
+  String get tourZakatTitle;
+
+  /// No description provided for @tourZakatMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate your Zakat easily and check eligible categories.'**
+  String get tourZakatMessage;
+
+  /// No description provided for @tourServicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Features'**
+  String get tourServicesTitle;
+
+  /// No description provided for @tourServicesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Holy Quran, Hadiths, Azkar, Sebha, and Allah Names.'**
+  String get tourServicesMessage;
+
+  /// No description provided for @tourSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get tourSettingsTitle;
+
+  /// No description provided for @tourSettingsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize language, theme, font size, and reciters.'**
+  String get tourSettingsMessage;
+
+  /// No description provided for @tourQuranTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Holy Quran'**
+  String get tourQuranTitle;
+
+  /// No description provided for @tourQuranMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Surahs, Juz, and Hizb sections.'**
+  String get tourQuranMessage;
+
+  /// No description provided for @tourBookmarksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Bookmarks'**
+  String get tourBookmarksTitle;
+
+  /// No description provided for @tourBookmarksMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Quickly access your saved Quran bookmarks.'**
+  String get tourBookmarksMessage;
+
+  /// No description provided for @tourHadithTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hadith Collection'**
+  String get tourHadithTitle;
+
+  /// No description provided for @tourHadithMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore authentic Hadith books and daily Hadiths.'**
+  String get tourHadithMessage;
+
+  /// No description provided for @tourSavedHadithTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Hadiths'**
+  String get tourSavedHadithTitle;
+
+  /// No description provided for @tourSavedHadithMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'View your saved Hadiths for quick reference.'**
+  String get tourSavedHadithMessage;
+
+  /// No description provided for @tourSebhaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Sebha'**
+  String get tourSebhaTitle;
+
+  /// No description provided for @tourSebhaMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button to increment your Tasbih counter.'**
+  String get tourSebhaMessage;
+
+  /// No description provided for @tourAddZikrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Zikr'**
+  String get tourAddZikrTitle;
+
+  /// No description provided for @tourAddZikrMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own custom Azkar and set personal goals.'**
+  String get tourAddZikrMessage;
+
+  /// No description provided for @tourAzkarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Azkar'**
+  String get tourAzkarTitle;
+
+  /// No description provided for @tourAzkarMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning, evening, and situational Azkar categorized for convenience.'**
+  String get tourAzkarMessage;
+
+  /// No description provided for @tourNamesOfAllahTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'99 Names of Allah'**
+  String get tourNamesOfAllahTitle;
+
+  /// No description provided for @tourNamesOfAllahMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Read meanings and share beautiful cards of Allah\'s names.'**
+  String get tourNamesOfAllahMessage;
+
+  /// No description provided for @tourQiblahTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Qiblah Compass'**
+  String get tourQiblahTitle;
+
+  /// No description provided for @tourQiblahMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Align your device to find the precise Kaaba direction.'**
+  String get tourQiblahMessage;
 }
 
 class _AppLocalizationsDelegate

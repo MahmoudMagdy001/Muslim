@@ -8,8 +8,6 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final isArabic = locale.languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
     final theme = context.theme;
 
@@ -17,7 +15,6 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(title: Text(localizations.settingsButton)),
       body: SettingsContent(
         localizations: localizations,
-        isArabic: isArabic,
         theme: theme,
       ),
     );

@@ -1,14 +1,15 @@
 import 'package:equatable/equatable.dart';
+import 'package:quran/quran.dart' as quran;
 
 class JuzModel extends Equatable {
   const JuzModel({
     required this.number,
     required this.startSurah,
     required this.startAyah,
-    required this.startSurahName,
     required this.endSurah,
     required this.endAyah,
-    required this.endSurahName,
+    this.startSurahName = '',
+    this.endSurahName = '',
   });
 
   final int number;
@@ -19,16 +20,14 @@ class JuzModel extends Equatable {
   final int endAyah;
   final String endSurahName;
 
+  String getStartSurahName({required bool isArabic}) =>
+      isArabic ? quran.getSurahNameArabic(startSurah) : quran.getSurahName(startSurah);
+
+  String getEndSurahName({required bool isArabic}) =>
+      isArabic ? quran.getSurahNameArabic(endSurah) : quran.getSurahName(endSurah);
+
   @override
-  List<Object?> get props => [
-    number,
-    startSurah,
-    startAyah,
-    startSurahName,
-    endSurah,
-    endAyah,
-    endSurahName,
-  ];
+  List<Object?> get props => [number, startSurah, startAyah, startSurahName, endSurah, endAyah, endSurahName];
 
   static const List<Map<String, dynamic>> starts = [
     {'surah': 1, 'ayah': 1}, // 1

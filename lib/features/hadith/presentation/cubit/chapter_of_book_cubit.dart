@@ -1,22 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/features/hadith/domain/usecases/get_chapters_of_book_use_case.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_state.dart';
 
 class ChapterOfBookCubit extends Cubit<ChapterOfBookState> {
-  ChapterOfBookCubit(this.getChaptersOfBookUseCase)
+  ChapterOfBookCubit(this.repository)
     : super(const ChapterOfBookState());
 
-  final GetChaptersOfBookUseCase getChaptersOfBookUseCase;
+  final HadithRepository repository;
 
   Future<void> loadChapters(String bookSlug) async {
     if (state.status == ChapterOfBookStatus.initial) {
       emit(state.copyWith(status: ChapterOfBookStatus.loading));
     }
 
-    final result = await getChaptersOfBookUseCase(
-      GetChaptersOfBookParams(bookSlug: bookSlug),
-    );
+    final result = await repository.getChaptersOfBook(bookSlug);
 
     result.fold(
       (failure) => emit(

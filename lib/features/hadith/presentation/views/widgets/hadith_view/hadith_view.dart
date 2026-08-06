@@ -124,57 +124,51 @@ class _HadithViewState extends State<HadithView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context).languageCode;
-    final isArabic = locale == 'ar';
-
-    return BlocListener<HadithCubit, HadithState>(
-      listener: (context, state) =>
-          _handleStateChanges(state, context.read<HadithCubit>()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '${widget.localizations.hadithsTitle} ${widget.chapterName}',
-          ),
-        ),
-        body: InternetStateManager(
-          onRestoreInternetConnection: () {
-            unawaited(context.read<HadithCubit>().reloadData());
-          },
-          noInternetScreen: const NoInternetScreen(),
-          child: RefreshIndicator(
-            onRefresh: () => context.read<HadithCubit>().reloadData(),
-            child: HadithsBody(
-              itemScrollController: _itemScrollController,
-              itemPositionsListener: _itemPositionsListener,
-              localizations: widget.localizations,
-              isArabic: isArabic,
-              scrollToHadithId: widget.scrollToHadithId,
-              onScrollToHadith: _scrollToInitialHadith,
-              onShowSnackBar: _showSnackBar,
+  Widget build(BuildContext context) => BlocListener<HadithCubit, HadithState>(
+        listener: (context, state) =>
+            _handleStateChanges(state, context.read<HadithCubit>()),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              '${widget.localizations.hadithsTitle} ${widget.chapterName}',
             ),
           ),
+          body: InternetStateManager(
+            onRestoreInternetConnection: () {
+              unawaited(context.read<HadithCubit>().reloadData());
+            },
+            noInternetScreen: const NoInternetScreen(),
+            child: RefreshIndicator(
+              onRefresh: () => context.read<HadithCubit>().reloadData(),
+              child: HadithsBody(
+                itemScrollController: _itemScrollController,
+                itemPositionsListener: _itemPositionsListener,
+                localizations: widget.localizations,
+                scrollToHadithId: widget.scrollToHadithId,
+                onScrollToHadith: _scrollToInitialHadith,
+                onShowSnackBar: _showSnackBar,
+              ),
+            ),
+          ),
+          floatingActionButton: ValueListenableBuilder<bool>(
+            valueListenable: showScrollToTopNotifier,
+            builder: (context, showScrollToTop, child) => showScrollToTop
+                ? FloatingActionButton(
+                    mini: true,
+                    onPressed: () {
+                      unawaited(
+                        _itemScrollController.scrollTo(
+                          index: 0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        ),
+                      );
+                    },
+                    backgroundColor: context.theme.primaryColor,
+                    child: const Icon(Icons.arrow_upward, color: Colors.white),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ),
-        floatingActionButton: ValueListenableBuilder<bool>(
-          valueListenable: showScrollToTopNotifier,
-          builder: (context, showScrollToTop, child) => showScrollToTop
-              ? FloatingActionButton(
-                  mini: true,
-                  onPressed: () {
-                    unawaited(
-                      _itemScrollController.scrollTo(
-                        index: 0,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      ),
-                    );
-                  },
-                  backgroundColor: context.theme.primaryColor,
-                  child: const Icon(Icons.arrow_upward, color: Colors.white),
-                )
-              : const SizedBox.shrink(),
-        ),
-      ),
-    );
-  }
+      );
 }

@@ -7,13 +7,11 @@ import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tab/juz_lis
 class JuzListView extends StatelessWidget {
   const JuzListView({
     required this.juzs,
-    required this.isArabic,
     required this.navigateToJuz,
     super.key,
   });
 
   final List<JuzModel> juzs;
-  final bool isArabic;
   final Future<void> Function({required int surah, required int ayah})
   navigateToJuz;
 
@@ -30,7 +28,6 @@ class JuzListView extends StatelessWidget {
         final juz = juzs[index];
         return JuzListTile(
           juz: juz,
-          isArabic: isArabic,
           onTap: () =>
               navigateToJuz(surah: juz.startSurah, ayah: juz.startAyah),
         );

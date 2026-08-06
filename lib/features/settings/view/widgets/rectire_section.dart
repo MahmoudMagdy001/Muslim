@@ -2,29 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim/core/widgets/custom_modal_sheet.dart';
 import 'package:muslim/features/settings/consts/reciters_name_arabic.dart';
-import 'package:muslim/features/settings/view/widgets/rectire_dialog.dart'; // هنستخدمه جوة الـ bottom sheet
+import 'package:muslim/features/settings/view/widgets/rectire_dialog.dart';
 import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 
 class ReciterSection extends StatelessWidget {
-  const ReciterSection({
-    required this.localizations,
-    required this.isArabic,
-    required this.theme,
-    super.key,
-  });
+  const ReciterSection({required this.localizations, required this.theme, super.key});
 
   final AppLocalizations localizations;
-  final bool isArabic;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) => BlocBuilder<ReciterCubit, ReciterState>(
     builder: (context, state) {
-      final reciterName = getReciterName(
-        state.selectedReciter,
-        isArabic: isArabic,
-      );
+      final reciterName = getReciterName(state.selectedReciter, context: context);
       final cubit = context.read<ReciterCubit>();
 
       return ListTile(
@@ -39,26 +30,18 @@ class ReciterSection extends StatelessWidget {
             minChildSize: 0.3,
             initialChildSize: 0.6,
             isScrollControlled: true,
-            builder: (context) => ReciterDialog(
-              selectedReciterId: currentReciter,
-              localizations: localizations,
-              isArabic: isArabic,
-            ),
+            builder: (context) => ReciterDialog(selectedReciterId: currentReciter, localizations: localizations),
           );
 
           if (result != null && result != currentReciter) {
+            if (!context.mounted) return;
+            final changedReciterName = getReciterName(result, context: context);
             await cubit.saveReciter(result);
-            final changedReciterName = getReciterName(
-              result,
-              isArabic: isArabic,
-            );
 
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    '${localizations.changeReciterSuccess}$changedReciterName',
-                  ),
+                  content: Text('${localizations.changeReciterSuccess}$changedReciterName'),
                   duration: const Duration(seconds: 2),
                 ),
               );

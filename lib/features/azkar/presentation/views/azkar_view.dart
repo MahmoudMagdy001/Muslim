@@ -5,14 +5,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/azkar/presentation/cubit/azkar_cubit.dart';
 import 'package:muslim/features/azkar/presentation/cubit/azkar_state.dart';
 import 'package:muslim/features/azkar/presentation/views/widgets/azkar_category_card.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 
-class AzkarView extends StatelessWidget {
+class AzkarView extends StatefulWidget {
   const AzkarView({super.key});
+
+  @override
+  State<AzkarView> createState() => _AzkarViewState();
+}
+
+class _AzkarViewState extends State<AzkarView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(AppTourHelper.showAzkarTour(context));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) => BlocProvider(
@@ -22,13 +38,27 @@ class AzkarView extends StatelessWidget {
       return cubit;
     },
     child: Scaffold(
-      appBar: AppBar(title: Text(context.l10n.azkar), centerTitle: true),
+      appBar: AppBar(
+        key: AppTourKeys.azkarTitleKey,
+        title: Text(context.l10n.azkar),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => unawaited(
+              AppTourHelper.showAzkarTour(context, force: true),
+            ),
+            icon: const Icon(Icons.explore_outlined),
+            tooltip: context.l10n.tourAzkarTitle,
+          ),
+        ],
+      ),
       body: Builder(
         builder: (context) => InternetStateManager(
           noInternetScreen: const NoInternetScreen(),
           onRestoreInternetConnection: () =>
               context.read<AzkarCubit>().loadAzkar(),
-          child: BlocBuilder<AzkarCubit, AzkarState>(
+          child: BlocSelector<AzkarCubit, AzkarState, AzkarState>(
+            selector: (state) => state,
             builder: (context, state) {
               if (state.status == RequestStatus.loading) {
                 return Center(

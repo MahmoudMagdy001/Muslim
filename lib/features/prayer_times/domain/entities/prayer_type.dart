@@ -1,3 +1,5 @@
+import 'package:muslim/l10n/app_localizations.dart';
+
 /// Strongly-typed enum representing the daily prayers.
 ///
 /// Replaces raw string prayer names throughout the prayer_times feature.
@@ -10,12 +12,7 @@ enum PrayerType {
   isha('Isha', 'العشاء', 5),
   jumuah('Jumuah', 'الجمعة', 7, hasAzan: false);
 
-  const PrayerType(
-    this.id,
-    this.arabicName,
-    this.notificationIndex, {
-    this.hasAzan = true,
-  });
+  const PrayerType(this.id, this.arabicName, this.notificationIndex, {this.hasAzan = true});
 
   /// English identifier used in maps and persistence (e.g. 'Fajr').
   final String id;
@@ -40,6 +37,26 @@ enum PrayerType {
     return null;
   }
 
+  /// Returns the localized display name using AppLocalizations.
+  String localizedName(AppLocalizations l10n) {
+    switch (this) {
+      case PrayerType.fajr:
+        return l10n.fajr;
+      case PrayerType.sunrise:
+        return l10n.sunrise;
+      case PrayerType.dhuhr:
+        return l10n.dhuhr;
+      case PrayerType.asr:
+        return l10n.asr;
+      case PrayerType.maghrib:
+        return l10n.maghrib;
+      case PrayerType.isha:
+        return l10n.isha;
+      case PrayerType.jumuah:
+        return l10n.jumuah;
+    }
+  }
+
   /// Returns the localized display name based on [isArabic].
-  String displayName({required bool isArabic}) => isArabic ? arabicName : id;
+  String displayName({bool isArabic = true}) => isArabic ? arabicName : id;
 }

@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
@@ -16,14 +18,24 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
-class NamesOfAllahScreen extends StatefulWidget {
+class NamesOfAllahScreen extends StatelessWidget {
   const NamesOfAllahScreen({super.key});
 
   @override
-  State<NamesOfAllahScreen> createState() => _NamesOfAllahScreenState();
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) => getIt<NamesOfAllahCubit>(),
+    child: const _NamesOfAllahContent(),
+  );
 }
 
-class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
+class _NamesOfAllahContent extends StatefulWidget {
+  const _NamesOfAllahContent();
+
+  @override
+  State<_NamesOfAllahContent> createState() => _NamesOfAllahContentState();
+}
+
+class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
   final TextEditingController _searchController = TextEditingController();
   final ScreenshotController _screenshotController = ScreenshotController();
   final ValueNotifier<String> searchQueryNotifier = ValueNotifier('');
@@ -36,6 +48,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
     unawaited(context.read<NamesOfAllahCubit>().getNamesOfAllah());
     _searchController.addListener(() {
       searchQueryNotifier.value = _searchController.text.trim();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(AppTourHelper.showNamesOfAllahTour(context));
+      }
     });
   }
 
@@ -51,16 +68,17 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   Future<void> _shareAsImage(
     NameOfAllahEntity data,
     int index,
-    bool isArabic,
   ) async {
     isSharingNotifier.value = true;
     sharingIndexNotifier.value = index;
+
+    final l10n = context.l10n;
 
     try {
       // Small delay to ensure UI updates before capture
       await Future<void>.delayed(const Duration(milliseconds: 50));
       final imageBytes = await _screenshotController.captureFromWidget(
-        ShareableNameOfAllahCard(data: data, isArabic: isArabic),
+        ShareableNameOfAllahCard(data: data),
         delay: const Duration(milliseconds: 10),
       );
 
@@ -71,10 +89,8 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(file.path)],
-          text: isArabic
-              ? 'أسماء الله الحسني - مشاركه من تطبيق مُسَلِّم'
-              : 'Names of Allah - Shared from Muslim App',
-          subject: isArabic ? 'أسماء الله الحسني' : 'Names of Allah',
+          text: l10n.namesOfAllahShareText,
+          subject: l10n.namesOfAllah,
         ),
       );
     } on Object catch (_) {
@@ -82,17 +98,15 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              isArabic ? 'حدث خطأ أثناء المشاركة' : 'Error sharing image',
+              l10n.shareError,
             ),
             backgroundColor: Colors.red,
           ),
         );
       }
     } finally {
-      if (mounted) {
-        isSharingNotifier.value = false;
-        sharingIndexNotifier.value = null;
-      }
+      isSharingNotifier.value = false;
+      sharingIndexNotifier.value = null;
     }
   }
 
@@ -103,7 +117,18 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(localizations.namesOfAllah)),
+      appBar: AppBar(
+        title: Text(localizations.namesOfAllah),
+        actions: [
+          IconButton(
+            onPressed: () => unawaited(
+              AppTourHelper.showNamesOfAllahTour(context, force: true),
+            ),
+            icon: const Icon(Icons.explore_outlined),
+            tooltip: localizations.tourNamesOfAllahTitle,
+          ),
+        ],
+      ),
       body: BlocBuilder<NamesOfAllahCubit, NamesOfAllahState>(
         builder: (context, state) {
           if (state is NamesOfAllahLoaded) {
@@ -112,6 +137,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
             return Column(
               children: [
                 Padding(
+                  key: AppTourKeys.namesSearchKey,
                   padding: EdgeInsets.symmetric(
                     horizontal: 12.toW,
                     vertical: 8.toH,
@@ -217,7 +243,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                       if (filteredData.isEmpty) {
                         return Center(
                           child: Text(
-                            isArabic ? 'لا توجد نتائج' : 'No results found',
+                            localizations.noResultsFound,
                             style: context.textTheme.bodyLarge,
                           ),
                         );
@@ -240,14 +266,12 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                                       return NameOfAllahCard(
                                         data: data,
                                         index: originalIndex,
-                                        isArabic: isArabic,
                                         isSharing:
                                             isSharing &&
                                             sharingIndex == originalIndex,
                                         onShare: () => _shareAsImage(
                                           data,
                                           originalIndex,
-                                          isArabic,
                                         ),
                                       );
                                     },

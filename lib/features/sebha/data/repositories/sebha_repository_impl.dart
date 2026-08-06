@@ -60,4 +60,12 @@ class SebhaRepositoryImpl implements SebhaRepository {
       return const Left(CacheFailure());
     }
   }
+
+  @override
+  Future<void> saveProgress(String zikrId, int counter) =>
+      localDataSource.saveProgress(zikrId, counter);
+
+  @override
+  Future<int> loadProgress(String zikrId) =>
+      localDataSource.loadProgress(zikrId);
 }

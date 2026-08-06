@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 
@@ -9,7 +8,7 @@ NotificationChannel createPeriodicReminderChannel() => NotificationChannel(
   channelName: PeriodicReminderConstants.reminderChannelName,
   channelDescription: PeriodicReminderConstants.reminderChannelDescription,
   defaultColor: PeriodicReminderConstants.reminderChannelColor,
-  ledColor: Colors.white,
+  ledColor: PeriodicReminderConstants.ledColor,
   importance: NotificationImportance.High,
   playSound: true,
   enableVibration: true,

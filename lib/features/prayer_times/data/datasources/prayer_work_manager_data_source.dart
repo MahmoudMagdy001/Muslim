@@ -119,6 +119,7 @@ Future<bool> _handlePeriodicReminderTask() async {
         title: message['title'],
         body: message['body'],
         category: NotificationCategory.Reminder,
+        color: PeriodicReminderConstants.reminderChannelColor,
       ),
       schedule: NotificationInterval(
         interval: Duration(minutes: intervalMinutes),

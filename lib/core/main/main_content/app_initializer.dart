@@ -93,12 +93,12 @@ class AppInitializer {
     final enabled = await _settingsService.getQuranNotificationsEnabled();
     if (!enabled) {
       logInfo('🚫 الإشعارات معطلة، لن يتم جدولة أي إشعار');
-      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
+      await AwesomeNotifications().cancelSchedulesByChannelKey(NotificationConstants.quranChannelKey);
       return;
     }
 
     try {
-      await AwesomeNotifications().cancelSchedulesByChannelKey('quran_channel');
+      await AwesomeNotifications().cancelSchedulesByChannelKey(NotificationConstants.quranChannelKey);
 
       final now = DateTime.now();
       final firstNotification = DateTime(now.year, now.month, now.day, now.hour + 1);
@@ -106,9 +106,10 @@ class AppInitializer {
       await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
-          channelKey: 'quran_channel',
+          channelKey: NotificationConstants.quranChannelKey,
           title: '📖 تذكير بقراءة القرآن',
           body: 'لا تنس وردك من القرآن الكريم 🌿',
+          color: NotificationConstants.quranChannelColor,
         ),
         schedule: NotificationAndroidCrontab.hourly(referenceDateTime: firstNotification, allowWhileIdle: true),
       );

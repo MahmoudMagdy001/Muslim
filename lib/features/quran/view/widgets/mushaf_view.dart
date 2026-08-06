@@ -24,7 +24,6 @@ class MushafView extends StatefulWidget {
   const MushafView({
     required this.surahNumber,
     required this.initialPage,
-    required this.isArabic,
     required this.localizations,
     this.onPartChanged,
     this.fromPage,
@@ -34,7 +33,6 @@ class MushafView extends StatefulWidget {
 
   final int surahNumber;
   final int initialPage;
-  final bool isArabic;
   final AppLocalizations localizations;
   final void Function(int surah, int juz, int hizb)? onPartChanged;
   final int? fromPage;
@@ -83,8 +81,7 @@ class _MushafViewState extends State<MushafView> {
         final verseCount = quran.getVerseCount(newSurah);
         if (newAyah < 1 || newAyah > verseCount) return;
 
-        if (newAyah != currentAyahNotifier.value ||
-            newSurah != currentSurahNotifier.value) {
+        if (newAyah != currentAyahNotifier.value || newSurah != currentSurahNotifier.value) {
           currentAyahNotifier.value = newAyah;
           currentSurahNotifier.value = newSurah;
 
@@ -98,19 +95,13 @@ class _MushafViewState extends State<MushafView> {
           }
 
           // Only follow if the page is within our range
-          final maxIndex = widget.fromPage != null && widget.toPage != null
-              ? widget.toPage! - widget.fromPage!
-              : 603;
+          final maxIndex = widget.fromPage != null && widget.toPage != null ? widget.toPage! - widget.fromPage! : 603;
           if (targetIndex >= 0 && targetIndex <= maxIndex) {
             if (_pageController.hasClients) {
               if ((_pageController.page?.round() ?? 0) != targetIndex) {
                 unawaited(
                   _pageController
-                      .animateToPage(
-                        targetIndex,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                      )
+                      .animateToPage(targetIndex, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut)
                       .then((_) {
                         _scrollToCurrentAyah();
                       }),
@@ -133,18 +124,14 @@ class _MushafViewState extends State<MushafView> {
           playerState.currentAyah != null &&
           playerState.currentSurah == widget.surahNumber &&
           playerState.currentAyah! >= 1 &&
-          playerState.currentAyah! <=
-              quran.getVerseCount(playerState.currentSurah!);
+          playerState.currentAyah! <= quran.getVerseCount(playerState.currentSurah!);
       if (isRelevantState) {
         _initialScrollDone = true;
         currentAyahNotifier.value = playerState.currentAyah;
         currentSurahNotifier.value = playerState.currentSurah;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          final page = quran.getPageNumber(
-            playerState.currentSurah!,
-            playerState.currentAyah!,
-          );
+          final page = quran.getPageNumber(playerState.currentSurah!, playerState.currentAyah!);
 
           int targetIndex;
           if (widget.fromPage != null) {
@@ -178,13 +165,7 @@ class _MushafViewState extends State<MushafView> {
     final ctx = key.currentContext;
     if (ctx == null) return;
 
-    unawaited(
-      Scrollable.ensureVisible(
-        ctx,
-        duration: const Duration(milliseconds: 400),
-        alignment: 0.4,
-      ),
-    );
+    unawaited(Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 400), alignment: 0.4));
   }
 
   @override
@@ -196,17 +177,8 @@ class _MushafViewState extends State<MushafView> {
     super.dispose();
   }
 
-  Future<void> _onAyahTap(
-    int surah,
-    int ayah,
-    String text,
-    Offset position,
-  ) async {
-    final selected = await VerseOptionsMenu.show(
-      context,
-      position: position,
-      localizations: widget.localizations,
-    );
+  Future<void> _onAyahTap(int surah, int ayah, String text, Offset position) async {
+    final selected = await VerseOptionsMenu.show(context, position: position, localizations: widget.localizations);
 
     if (selected == 'play') {
       _handlePlay(surah, ayah);
@@ -226,18 +198,13 @@ class _MushafViewState extends State<MushafView> {
 
   void _handleBookmark(int surah, int ayah, String text) {
     if (mounted) {
-      unawaited(
-        context.read<BookmarksCubit>().addBookmark(
-          surah: surah,
-          ayah: ayah,
-          ayahText: text,
-        ),
-      );
+      unawaited(context.read<BookmarksCubit>().addBookmark(surah: surah, ayah: ayah, ayahText: text));
 
+      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${widget.localizations.bookmarkVerseSuccess} ${widget.isArabic ? convertToArabicNumbers(ayah.toString()) : ayah}',
+            '${widget.localizations.bookmarkVerseSuccess} ${isArabic ? convertToArabicNumbers(ayah.toString()) : ayah}',
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -247,30 +214,18 @@ class _MushafViewState extends State<MushafView> {
 
   Future<void> _handleTafsir(int surah, int ayah, String text) async {
     if (!mounted) return;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    final selectedTafsir =
-        await TafsirSelectionDialog.show(
-          context,
-          localizations: widget.localizations,
-          isArabic: widget.isArabic,
-        );
+    final selectedTafsir = await TafsirSelectionDialog.show(context, localizations: widget.localizations);
 
     if (selectedTafsir == null) return;
 
     if (mounted) {
       await BaseAppDialog.showLoading(context);
     }
-    final tafsirText = await _tafsirRepository.fetchTafsirById(
-      selectedTafsir['id'] as int,
-      surah,
-      ayah,
-    );
-    final selectedTafsirName = (widget.isArabic
-        ? selectedTafsir['name_ar']
-        : selectedTafsir['name_en']) as String;
-    final surahName = widget.isArabic
-        ? quran.getSurahNameArabic(surah)
-        : quran.getSurahName(surah);
+    final tafsirText = await _tafsirRepository.fetchTafsirById(selectedTafsir['id'] as int, surah, ayah);
+    final selectedTafsirName = (isArabic ? selectedTafsir['name_ar'] : selectedTafsir['name_en']) as String;
+    final surahName = isArabic ? quran.getSurahNameArabic(surah) : quran.getSurahName(surah);
 
     if (mounted) Navigator.pop(context);
 
@@ -282,120 +237,105 @@ class _MushafViewState extends State<MushafView> {
           minChildSize: 0.3,
           initialChildSize: 0.7,
           maxChildSize: 0.9,
-        builder: (context) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                '$selectedTafsirName - ${widget.isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
-                textAlign: TextAlign.center,
-                style: context.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 20.toH),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Text(
-                  text,
+          builder: (context) => SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  '$selectedTafsirName - ${isArabic ? 'للآية رقم ${convertToArabicNumbers(ayah.toString())} - سورة $surahName' : 'Verse Number $ayah - Surah $surahName'}',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.amiri().copyWith(
-                    fontSize: 22.toSp,
-                    height: 2.0,
-                    fontWeight: FontWeight.bold,
+                  style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20.toH),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.amiri().copyWith(fontSize: 22.toSp, height: 2.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-              SizedBox(height: 10.toH),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  tafsirText ?? widget.localizations.emptyTafsir,
-                  textAlign: TextAlign.justify,
-                  style: context.textTheme.titleMedium?.copyWith(height: 1.7),
+                SizedBox(height: 10.toH),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    tafsirText ?? widget.localizations.emptyTafsir,
+                    textAlign: TextAlign.justify,
+                    style: context.textTheme.titleMedium?.copyWith(height: 1.7),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25.0,
-                  vertical: 15,
-                ),
-                child: SizedBox(
-                  height: 52.toH,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await BaseAppDialog.showLoading(
-                        context,
-                        message: widget.isArabic
-                            ? 'جاري إنشاء الصور...'
-                            : 'Creating images...',
-                      );
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15),
+                  child: SizedBox(
+                    height: 52.toH,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await BaseAppDialog.showLoading(
+                          context,
+                          message: isArabic ? 'جاري إنشاء الصور...' : 'Creating images...',
+                        );
 
-                      try {
-                        if (!context.mounted) return;
-                        final result = await TafsirShareService()
-                            .createAndShare(
-                              surahName: surahName,
-                              ayahNumber: ayah,
-                              ayahText: text,
-                              tafsirTitle: selectedTafsirName,
-                              tafsirText: tafsirText ?? '',
-                              isArabic: widget.isArabic,
-                              context: context,
+                        try {
+                          if (!context.mounted) return;
+                          final result = await TafsirShareService().createAndShare(
+                            surahName: surahName,
+                            ayahNumber: ayah,
+                            ayahText: text,
+                            tafsirTitle: selectedTafsirName,
+                            tafsirText: tafsirText ?? '',
+                            context: context,
+                          );
+
+                          if (context.mounted) Navigator.pop(context);
+
+                          if (!result.success && context.mounted) {
+                            await BaseAppDialog.show<void>(
+                              context,
+                              title: isArabic ? '⚠️ خطأ' : '⚠️ Error',
+                              contentText: result.errorMessage ?? '',
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text(isArabic ? 'موافق' : 'OK'),
+                                ),
+                              ],
                             );
-
-                        if (context.mounted) Navigator.pop(context);
-
-                        if (!result.success && context.mounted) {
-                          await BaseAppDialog.show<void>(
-                            context,
-                            title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
-                            contentText: result.errorMessage ?? '',
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(widget.isArabic ? 'موافق' : 'OK'),
-                              ),
-                            ],
-                          );
+                          }
+                        } on Object catch (e) {
+                          if (context.mounted && Navigator.canPop(context)) {
+                            Navigator.of(context).pop();
+                          }
+                          if (context.mounted) {
+                            await BaseAppDialog.show<void>(
+                              context,
+                              title: isArabic ? '⚠️ خطأ' : '⚠️ Error',
+                              contentText: e.toString().replaceAll('Exception: ', ''),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text(isArabic ? 'موافق' : 'OK'),
+                                ),
+                              ],
+                            );
+                          }
                         }
-                      } on Object catch (e) {
-                        if (context.mounted && Navigator.canPop(context)) {
-                          Navigator.of(context).pop();
-                        }
-                        if (context.mounted) {
-                          await BaseAppDialog.show<void>(
-                            context,
-                            title: widget.isArabic ? '⚠️ خطأ' : '⚠️ Error',
-                            contentText: e.toString().replaceAll(
-                              'Exception: ',
-                              '',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(widget.isArabic ? 'موافق' : 'OK'),
-                              ),
-                            ],
-                          );
-                        }
-                      }
-                    },
-                    child: Text(widget.localizations.shareTafsir),
+                      },
+                      child: Text(widget.localizations.shareTafsir),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final int effectiveItemCount;
     if (widget.fromPage != null && widget.toPage != null) {
       effectiveItemCount = widget.toPage! - widget.fromPage! + 1;
@@ -405,7 +345,7 @@ class _MushafViewState extends State<MushafView> {
 
     return PageView.builder(
       controller: _pageController,
-      reverse: widget.isArabic,
+      reverse: isArabic,
       itemCount: effectiveItemCount,
       onPageChanged: (index) {
         final int pageNumber;
@@ -440,7 +380,6 @@ class _MushafViewState extends State<MushafView> {
 
         return MushafPage(
           pageNumber: pageNumber,
-          isArabic: widget.isArabic,
           currentAyahNotifier: currentAyahNotifier,
           currentSurahNotifier: currentSurahNotifier,
           ayahKeys: _ayahKeys,
@@ -454,7 +393,6 @@ class _MushafViewState extends State<MushafView> {
 class MushafPage extends StatefulWidget {
   const MushafPage({
     required this.pageNumber,
-    required this.isArabic,
     required this.currentAyahNotifier,
     required this.currentSurahNotifier,
     required this.ayahKeys,
@@ -463,7 +401,6 @@ class MushafPage extends StatefulWidget {
   });
 
   final int pageNumber;
-  final bool isArabic;
   final ValueNotifier<int?> currentAyahNotifier;
   final ValueNotifier<int?> currentSurahNotifier;
   final Map<String, GlobalKey> ayahKeys;
@@ -476,11 +413,8 @@ class MushafPage extends StatefulWidget {
 class _MushafPageState extends State<MushafPage> {
   late final List<dynamic> _pageData;
   final Map<String, TapGestureRecognizer> _recognizers = {};
-  // Pre-cached verse texts so _buildSpans never calls quran.getVerse at paint time
   final Map<String, String> _verseTexts = {};
-  // Pre-cached end symbols keyed by ayah number (display-language-independent)
   final Map<String, String> _endSymbols = {};
-  // Flat ordered list of (surah, ayah) pairs for _buildSpans iteration
   late final List<(int, int)> _ayahOrder;
 
   @override
@@ -504,11 +438,8 @@ class _MushafPageState extends State<MushafPage> {
         if (!_recognizers.containsKey(keyString)) {
           final text = quran.getVerse(surah, ayah);
           _verseTexts[keyString] = text;
-          // Cache end symbol for both Arabic and non-Arabic numerals
-          _endSymbols['${keyString}_ar'] =
-              quran.getVerseEndSymbol(ayah);
-          _endSymbols['${keyString}_en'] =
-              quran.getVerseEndSymbol(ayah, arabicNumeral: false);
+          _endSymbols['${keyString}_ar'] = quran.getVerseEndSymbol(ayah);
+          _endSymbols['${keyString}_en'] = quran.getVerseEndSymbol(ayah, arabicNumeral: false);
           _recognizers[keyString] = TapGestureRecognizer()
             ..onTapDown = (details) {
               widget.onAyahTap(surah, ayah, text, details.globalPosition);
@@ -528,44 +459,35 @@ class _MushafPageState extends State<MushafPage> {
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: EdgeInsetsDirectional.only(
-      start: 8.toW,
-      end: 8.toW,
-      top: 16.toH,
-      bottom: 8.toH,
-    ),
-    child: Column(
-      children: [
-        Text(
-          '${widget.isArabic ? 'صفحة' : 'Page'} ${convertToArabicNumbers(widget.pageNumber.toString())}',
-          style: context.textTheme.labelSmall?.copyWith(
-            color: context.theme.colorScheme.onSurface,
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 8.toH),
+    child: SingleChildScrollView(
+      // ponytail: SingleChildScrollView added to allow scrolling on pages with long text
+      child: Column(
+        children: [
+          Text(
+            convertToArabicNumbers(widget.pageNumber.toString()),
+            style: context.textTheme.labelSmall?.copyWith(color: context.theme.colorScheme.onSurface),
           ),
-        ),
-        const Divider(),
-        // Only the highlight-color layer rebuilds on ayah changes; text/symbols are pre-cached.
-        _OptimizedMushafText(
-          ayahOrder: _ayahOrder,
-          isArabic: widget.isArabic,
-          recognizers: _recognizers,
-          verseTexts: _verseTexts,
-          endSymbols: _endSymbols,
-          ayahKeys: widget.ayahKeys,
-          currentAyahNotifier: widget.currentAyahNotifier,
-          currentSurahNotifier: widget.currentSurahNotifier,
-        ),
-      ],
+          const Divider(),
+          _OptimizedMushafText(
+            ayahOrder: _ayahOrder,
+            recognizers: _recognizers,
+            verseTexts: _verseTexts,
+            endSymbols: _endSymbols,
+            ayahKeys: widget.ayahKeys,
+            currentAyahNotifier: widget.currentAyahNotifier,
+            currentSurahNotifier: widget.currentSurahNotifier,
+          ),
+        ],
+      ),
     ),
   );
 }
 
-// Optimized widget: rebuilds only the text-highlight layer on ayah changes.
-// All verse text, end-symbols and recognizers are pre-cached by the parent State.
 class _OptimizedMushafText extends StatelessWidget {
   const _OptimizedMushafText({
     required this.ayahOrder,
-    required this.isArabic,
     required this.recognizers,
     required this.verseTexts,
     required this.endSymbols,
@@ -574,12 +496,9 @@ class _OptimizedMushafText extends StatelessWidget {
     required this.currentSurahNotifier,
   });
 
-  /// Flat ordered list of (surah, ayah) pairs — pre-built in initState.
   final List<(int, int)> ayahOrder;
-  final bool isArabic;
   final Map<String, TapGestureRecognizer> recognizers;
   final Map<String, String> verseTexts;
-  /// Pre-cached end symbols: key = '${surah}_${ayah}_ar' or '_en'.
   final Map<String, String> endSymbols;
   final Map<String, GlobalKey> ayahKeys;
   final ValueNotifier<int?> currentAyahNotifier;
@@ -607,12 +526,8 @@ class _OptimizedMushafText extends StatelessWidget {
     ),
   );
 
-  /// Assembles spans using only pre-cached data — no Quran package calls at paint time.
-  List<InlineSpan> _buildSpans(
-    BuildContext context,
-    int? currentSurah,
-    int? currentAyah,
-  ) {
+  List<InlineSpan> _buildSpans(BuildContext context, int? currentSurah, int? currentAyah) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final symbolSuffix = isArabic ? '_ar' : '_en';
     final spans = <InlineSpan>[];
 
@@ -637,9 +552,7 @@ class _OptimizedMushafText extends StatelessWidget {
             text: '$text ',
             style: TextStyle(
               color: isCurrent ? context.colorScheme.error : null,
-              backgroundColor: isCurrent
-                  ? context.colorScheme.error.withValues(alpha: 0.1)
-                  : null,
+              backgroundColor: isCurrent ? context.colorScheme.error.withValues(alpha: 0.1) : null,
             ),
             recognizer: recognizers[keyString],
           ),

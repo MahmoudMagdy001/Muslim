@@ -1,19 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/azkar/presentation/views/azkar_view.dart';
 import 'package:muslim/features/hadith/presentation/views/hadith_books_view.dart';
 import 'package:muslim/features/layout/model/dashboard_item_model.dart';
 import 'package:muslim/features/layout/view/widgets/dashboard_button.dart';
-import 'package:muslim/features/names_of_allah/presentation/cubit/names_of_allah_cubit.dart';
 import 'package:muslim/features/names_of_allah/presentation/views/names_of_allah_screen.dart';
-import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
 import 'package:muslim/features/qiblah/presentation/views/qiblah_view.dart';
-import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
 import 'package:muslim/features/sebha/presentation/views/sebha_view.dart';
 import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
 import 'package:muslim/features/surahs_list/view/surahs_list_view.dart';
@@ -58,43 +52,26 @@ class DashboardGrid extends StatelessWidget {
         label: localizations.qiblahButton,
         color: const Color(0xFFCEB6F6),
         darkColor: const Color(0xFF5D4E75),
-        route: BlocProvider(
-          create: (_) {
-            final cubit = getIt<QiblahCubit>();
-            unawaited(cubit.init());
-            return cubit;
-          },
-          child: const QiblahView(),
-        ),
+        route: const QiblahView(),
       ),
       DashboardItemModel(
         image: 'assets/home/tasbih.png',
         label: localizations.sebha,
         color: const Color(0xFFC2EFE1),
         darkColor: const Color(0xFF386E5D),
-        route: BlocProvider(
-          create: (_) {
-            final cubit = getIt<SebhaCubit>();
-            unawaited(cubit.loadCustomAzkar());
-            return cubit;
-          },
-          child: const SebhaView(),
-        ),
+        route: const SebhaView(),
       ),
       DashboardItemModel(
         image: 'assets/home/allah_Names.png',
         label: localizations.namesOfAllah,
         color: const Color(0xFFE0E0E0),
         darkColor: const Color(0xFF424242),
-        route: BlocProvider(
-          create: (_) => getIt<NamesOfAllahCubit>(),
-          child: const NamesOfAllahScreen(),
-        ),
+        route: const NamesOfAllahScreen(),
       ),
     ];
 
     return Column(
-      crossAxisAlignment: .start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: .symmetric(horizontal: 16.toW, vertical: 8.toH),

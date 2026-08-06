@@ -9,7 +9,6 @@ import 'package:quran/quran.dart' as quran;
 class BookmarkCard extends StatelessWidget {
   const BookmarkCard({
     required this.bookmark,
-    required this.isArabic,
     required this.localizations,
     required this.reciter,
     required this.onOpen,
@@ -18,7 +17,6 @@ class BookmarkCard extends StatelessWidget {
   });
 
   final AyahBookmark bookmark;
-  final bool isArabic;
   final AppLocalizations localizations;
   final String reciter;
   final VoidCallback onOpen;
@@ -26,6 +24,9 @@ class BookmarkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
+
     final surahName = isArabic
         ? quran.getSurahNameArabic(bookmark.surahNumber)
         : quran.getSurahName(bookmark.surahNumber);
@@ -93,9 +94,7 @@ class BookmarkCard extends StatelessWidget {
                         ),
                         SizedBox(height: 4.toH),
                         Text(
-                          isArabic
-                              ? 'الآية ${convertToArabicNumbers(bookmark.ayahNumber.toString())}'
-                              : 'Ayah ${bookmark.ayahNumber}',
+                          l10n.ayahNumberLabel(bookmark.ayahNumber),
                           style: context.textTheme.bodyMedium?.copyWith(
                             color: context.colorScheme.onPrimary.withAlpha(180),
                           ),

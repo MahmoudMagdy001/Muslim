@@ -1,61 +1,62 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/service/permissions_sevice.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/custom_modal_sheet.dart';
 import 'package:muslim/features/settings/view_model/periodic_reminder/periodic_reminder_cubit.dart';
-import 'package:muslim/l10n/app_localizations.dart';
 
 /// Settings section widget for managing periodic Islamic reminders.
 class PeriodicReminderSection extends StatelessWidget {
   const PeriodicReminderSection({
     required this.theme,
-    required this.isArabic,
     super.key,
   });
 
   final ThemeData theme;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final l10n = context.l10n;
 
-    return BlocBuilder<PeriodicReminderCubit, PeriodicReminderState>(
-      builder: (context, state) => ListTile(
-        leading: const Icon(Icons.timer_rounded),
-        title: Text(
-          isArabic ? 'التذكير الدوري' : 'Periodic Reminder',
-          style: theme.textTheme.titleMedium,
-        ),
-        subtitle: state.enabled
-            ? Text(
-                isArabic
-                    ? 'كل ${state.intervalMinutes} دقيقة'
-                    : 'Every ${state.intervalMinutes} minutes',
-                style: theme.textTheme.bodySmall,
-              )
-            : null,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Switch(
-              value: state.enabled,
-              onChanged: (value) => _handleToggle(context, value),
+    return BlocProvider(
+      create: (_) => getIt<PeriodicReminderCubit>(),
+      child: Builder(
+        builder: (context) => BlocBuilder<PeriodicReminderCubit, PeriodicReminderState>(
+          builder: (context, state) => ListTile(
+            leading: const Icon(Icons.timer_rounded),
+            title: Text(
+              l10n.periodicReminderTitle,
+              style: theme.textTheme.titleMedium,
             ),
-            const Icon(Icons.arrow_drop_down_rounded),
-          ],
+            subtitle: state.enabled
+                ? Text(
+                    l10n.everyNMinutes(state.intervalMinutes),
+                    style: theme.textTheme.bodySmall,
+                  )
+                : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Switch(
+                  value: state.enabled,
+                  onChanged: (value) => _handleToggle(context, value),
+                ),
+                const Icon(Icons.arrow_drop_down_rounded),
+              ],
+            ),
+            onTap: () => _showIntervalModal(context, state),
+          ),
         ),
-        onTap: () => _showIntervalModal(context, localizations, state),
       ),
     );
   }
 
   Future<void> _handleToggle(BuildContext context, bool value) async {
     if (value) {
-      // Request permissions before enabling
       await requestAllPermissions();
     }
     if (context.mounted) {
@@ -65,20 +66,19 @@ class PeriodicReminderSection extends StatelessWidget {
 
   void _showIntervalModal(
     BuildContext context,
-    AppLocalizations localizations,
     PeriodicReminderState state,
   ) {
+    final cubit = context.read<PeriodicReminderCubit>();
     unawaited(
       showCustomModalBottomSheet<void>(
         context: context,
-        builder: (context) => _IntervalSelectionModal(
+        builder: (modalContext) => _IntervalSelectionModal(
           theme: theme,
-          isArabic: isArabic,
           currentInterval: state.intervalMinutes,
           onIntervalSelected: (minutes) async {
-            await context.read<PeriodicReminderCubit>().setInterval(minutes);
-            if (context.mounted) {
-              Navigator.of(context).pop();
+            await cubit.setInterval(minutes);
+            if (modalContext.mounted) {
+              Navigator.of(modalContext).pop();
             }
           },
         ),
@@ -90,68 +90,67 @@ class PeriodicReminderSection extends StatelessWidget {
 class _IntervalSelectionModal extends StatelessWidget {
   const _IntervalSelectionModal({
     required this.theme,
-    required this.isArabic,
     required this.currentInterval,
     required this.onIntervalSelected,
   });
 
   final ThemeData theme;
-  final bool isArabic;
   final int currentInterval;
   final ValueChanged<int> onIntervalSelected;
 
   @override
-  Widget build(BuildContext context) => Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Padding(
-        padding: EdgeInsets.all(16.toR),
-        child: Text(
-          isArabic ? 'اختر الفاصل الزمني' : 'Select Time Interval',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(16.toR),
+          child: Text(
+            l10n.selectTimeInterval,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-      ...PeriodicReminderConstants.availableIntervals.map(
-        (minutes) => _IntervalOption(
-          minutes: minutes,
-          isSelected: minutes == currentInterval,
-          isArabic: isArabic,
-          theme: theme,
-          onTap: () => onIntervalSelected(minutes),
+        ...PeriodicReminderConstants.availableIntervals.map(
+          (minutes) => _IntervalOption(
+            minutes: minutes,
+            isSelected: minutes == currentInterval,
+            theme: theme,
+            onTap: () => onIntervalSelected(minutes),
+          ),
         ),
-      ),
-      SizedBox(height: 16.toH),
-    ],
-  );
+        SizedBox(height: 16.toH),
+      ],
+    );
+  }
 }
 
 class _IntervalOption extends StatelessWidget {
   const _IntervalOption({
     required this.minutes,
     required this.isSelected,
-    required this.isArabic,
     required this.theme,
     required this.onTap,
   });
 
   final int minutes;
   final bool isSelected;
-  final bool isArabic;
   final ThemeData theme;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final label = isArabic ? '$minutes دقيقة' : '$minutes minutes';
+    final l10n = context.l10n;
 
     return ListTile(
       leading: Icon(
         isSelected ? Icons.check_circle_rounded : Icons.circle_outlined,
         color: isSelected ? theme.colorScheme.primary : theme.iconTheme.color,
       ),
-      title: Text(label, style: theme.textTheme.bodyLarge),
+      title: Text(l10n.nMinutes(minutes), style: theme.textTheme.bodyLarge),
       onTap: onTap,
       selected: isSelected,
       selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.1),

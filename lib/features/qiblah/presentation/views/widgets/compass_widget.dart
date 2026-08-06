@@ -21,16 +21,13 @@ class CompassWidget extends StatelessWidget {
   final bool isAligned;
   final bool isLoading;
 
-  static const _compassDiameterFactor = 0.8;
+  static const _compassDiameterFactor = 0.78;
   static const _maxCompassDiameter = 300.0;
   static const _compassBackgroundSizeFactor = 0.97;
   static const _arrowSizeFactor = 0.45;
   static const _arrowHeightFactor = 0.85;
-  static const _fixedArrowTopPosition = -57.2;
-  static const _fixedArrowSize = 100.0;
-  static const _alignedTextBottomPosition = -80.0;
-  static const _kaabaIconTopPosition = -100.0;
-  static const _kaabaIconSize = 80.0;
+  // ponytail: kaaba fixed above compass, arrow rotates toward it
+  static const _kaabaSize = 64.0;
 
   @override
   Widget build(BuildContext context) {
@@ -48,133 +45,132 @@ class CompassWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (isLoading) ...[
-            // Loading indicator with message
             CustomLoadingIndicator(text: context.l10n.compassLoading),
           ] else ...[
-            Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: [
-                _buildMainCircle(compassSize, theme, isDark, context),
-                _buildFixedArrow(theme, isDark),
-                if (isAligned) _buildAlignedText(theme, isDark, context),
-                _buildKaabaIcon(),
-              ],
+            // Fixed Kaaba image — the target the arrow points to
+            _KaabaIndicator(
+              isAligned: isAligned,
+              primaryColor: theme.colorScheme.primary,
             ),
+            SizedBox(height: 12.h),
+            // Main rotating compass
+            _buildMainCircle(compassSize, theme, isDark, context),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildMainCircle(
-    Size compassSize,
-    ThemeData theme,
-    bool isDark,
-    BuildContext context,
-  ) => AnimatedContainer(
-    duration: const Duration(milliseconds: 300),
-    width: compassSize.width,
-    height: compassSize.height,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: isDark ? Colors.grey.shade900 : Colors.white,
-      border: Border.all(
-        color: isAligned
-            ? theme.colorScheme.primary
-            : (isDark ? Colors.grey.shade700 : theme.primaryColor),
-        width: isAligned ? 18.0 : 14.0,
-      ),
-      boxShadow: [
-        if (!isDark)
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-      ],
-    ),
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        Transform.rotate(
-          angle: headingAngle,
-          child: RepaintBoundary(
-            child: CustomPaint(
-              size: Size(
-                compassSize.width * _compassBackgroundSizeFactor,
-                compassSize.height * _compassBackgroundSizeFactor,
-              ),
-              painter: CompassBackgroundPainter(theme: theme),
-            ),
-          ),
-        ),
-        Transform.rotate(
-          angle: qiblahAngle,
-          child: RepaintBoundary(
-            child: CustomPaint(
-              size: Size(
-                compassSize.width * _arrowSizeFactor,
-                compassSize.height * _arrowHeightFactor,
-              ),
-              painter: ProfessionalArrowPainter(theme: theme, context: context),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
-  Widget _buildFixedArrow(ThemeData theme, bool isDark) => Positioned(
-    top: _fixedArrowTopPosition,
-    child: Icon(
-      Icons.arrow_drop_up,
-      size: _fixedArrowSize,
-      color: theme.colorScheme.primary,
-    ),
-  );
-
-  Widget _buildAlignedText(
-    ThemeData theme,
-    bool isDark,
-    BuildContext context,
-  ) => Positioned(
-    bottom: _alignedTextBottomPosition,
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+  Widget _buildMainCircle(Size compassSize, ThemeData theme, bool isDark, BuildContext context) {
+    final primary = theme.colorScheme.primary;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: compassSize.width,
+      height: compassSize.height,
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withAlpha(76),
-        borderRadius: BorderRadius.circular(20.r),
+        shape: BoxShape.circle,
+        color: isDark ? const Color(0xFF201A2B) : Colors.white,
         border: Border.all(
-          color: isDark
-              ? Colors.white30
-              : theme.colorScheme.onSurface.withAlpha(76),
+          color: isAligned ? primary : (isDark ? const Color(0xFF4C406F) : primary),
+          width: isAligned ? 4.0 : 3.0,
         ),
+        boxShadow: [
+          if (isAligned)
+            BoxShadow(
+              color: primary.withAlpha(120),
+              blurRadius: 28,
+              spreadRadius: 6,
+            )
+          else
+            BoxShadow(
+              color: Colors.black.withAlpha(isDark ? 60 : 25),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+        ],
       ),
-      child: Text(
-        context.l10n.salahDirection,
-        style: TextStyle(
-          color: isDark ? Colors.white : theme.colorScheme.onPrimary,
-          fontWeight: FontWeight.bold,
-          shadows: const [Shadow(offset: Offset(0, 1), blurRadius: 4)],
-        ),
-      ),
-    ),
-  );
-
-  Widget _buildKaabaIcon() => Positioned(
-    top: _kaabaIconTopPosition,
-    child: DecoratedBox(
-      decoration: const BoxDecoration(shape: BoxShape.circle),
       child: ClipOval(
-        child: Image.asset(
-          cacheHeight: 210,
-          cacheWidth: 210,
-          'assets/qiblah/image_3.png',
-          width: _kaabaIconSize,
-          fit: BoxFit.cover,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Rotating compass background (N/S/E/W marks)
+            Transform.rotate(
+              angle: headingAngle,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  size: Size(
+                    compassSize.width * _compassBackgroundSizeFactor,
+                    compassSize.height * _compassBackgroundSizeFactor,
+                  ),
+                  painter: CompassBackgroundPainter(theme: theme),
+                ),
+              ),
+            ),
+            // Rotating qiblah arrow — points up toward the fixed Kaaba
+            Transform.rotate(
+              angle: qiblahAngle,
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  size: Size(
+                    compassSize.width * _arrowSizeFactor,
+                    compassSize.height * _arrowHeightFactor,
+                  ),
+                  painter: ProfessionalArrowPainter(theme: theme, context: context),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-    ),
+    );
+  }
+}
+
+// ---------- Fixed Kaaba indicator above compass ----------
+
+class _KaabaIndicator extends StatelessWidget {
+  const _KaabaIndicator({required this.isAligned, required this.primaryColor});
+
+  final bool isAligned;
+  final Color primaryColor;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      // Kaaba image with glow ring when aligned
+      AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: EdgeInsets.all(isAligned ? 3.r : 2.r),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: primaryColor.withAlpha(isAligned ? 200 : 80),
+          boxShadow: [
+            if (isAligned)
+              BoxShadow(
+                color: primaryColor.withAlpha(140),
+                blurRadius: 20,
+                spreadRadius: 4,
+              ),
+          ],
+        ),
+        child: ClipOval(
+          child: Image.asset(
+            'assets/qiblah/image_3.png',
+            width: CompassWidget._kaabaSize.r,
+            height: CompassWidget._kaabaSize.r,
+            fit: BoxFit.cover,
+            cacheWidth: 210,
+            cacheHeight: 210,
+          ),
+        ),
+      ),
+      // Connector line down to compass border
+      Container(
+        width: 2.w,
+        height: 14.h,
+        color: primaryColor.withAlpha(120),
+      ),
+    ],
   );
 }

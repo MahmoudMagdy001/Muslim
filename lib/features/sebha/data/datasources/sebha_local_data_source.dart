@@ -9,6 +9,8 @@ abstract class SebhaLocalDataSource {
   Future<bool> saveCustomZikr(ZikrModel zikr);
   Future<bool> updateCustomZikr(ZikrModel zikr);
   Future<bool> deleteCustomZikr(String id);
+  Future<bool> saveProgress(String zikrId, int counter);
+  Future<int> loadProgress(String zikrId);
 }
 
 class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
@@ -90,5 +92,18 @@ class SebhaLocalDataSourceImpl implements SebhaLocalDataSource {
     } on Object catch (_) {
       throw const CacheException();
     }
+  }
+
+  @override
+  Future<bool> saveProgress(String zikrId, int counter) async {
+    // ponytail: flat key per zikr, no overhead
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.setInt('zikr_progress_$zikrId', counter);
+  }
+
+  @override
+  Future<int> loadProgress(String zikrId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('zikr_progress_$zikrId') ?? 0;
   }
 }

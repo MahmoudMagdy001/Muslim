@@ -105,6 +105,7 @@ class PrayerNotificationLocalDataSourceImpl
         body: 'حان الأن موعد أذان ${prayer.arabicName}',
         wakeUpScreen: true,
         category: NotificationCategory.Event,
+        color: NotificationConstants.prayerChannelColor,
         // ponytail: Removed criticalAlert as it is configured at the channel level in v0.12.x
       ),
       schedule: NotificationCalendar(
@@ -138,6 +139,7 @@ class PrayerNotificationLocalDataSourceImpl
         channelKey: NotificationConstants.prayerChannelKey,
         title: 'تحديث المواقيت',
         body: 'يرجى فتح التطبيق لتحديث مواقيت الصلاة للأيام القادمة',
+        color: NotificationConstants.prayerChannelColor,
       ),
       schedule: NotificationCalendar(
         year: updateTime.year,

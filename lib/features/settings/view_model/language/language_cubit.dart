@@ -4,7 +4,8 @@ import 'package:muslim/features/settings/view_model/language/language_state.dart
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageCubit extends Cubit<LanguageState> {
-  LanguageCubit(Locale initialLocale) : super(LanguageState(initialLocale));
+  LanguageCubit([Locale initialLocale = const Locale('ar')])
+    : super(LanguageState(initialLocale));
 
   static const _key = 'appLanguage';
 

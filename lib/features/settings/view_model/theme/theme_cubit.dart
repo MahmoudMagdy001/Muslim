@@ -16,7 +16,8 @@ class ThemeState extends Equatable {
 
 // Cubit class
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit(ThemeMode initialMode) : super(ThemeState(themeMode: initialMode));
+  ThemeCubit([ThemeMode initialMode = ThemeMode.system])
+    : super(ThemeState(themeMode: initialMode));
 
   static const String _themeKey = 'themeMode';
 

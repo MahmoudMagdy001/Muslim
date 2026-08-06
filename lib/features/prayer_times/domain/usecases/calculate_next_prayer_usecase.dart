@@ -2,19 +2,16 @@ import 'package:dartz/dartz.dart';
 import 'package:intl/intl.dart';
 
 import 'package:muslim/core/error/failures.dart';
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
 import 'package:muslim/features/prayer_times/domain/entities/prayer_calculation_result.dart';
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
-/// UseCase for calculating the next/previous prayer and time remaining.
-class CalculateNextPrayerUseCase
-    implements UseCase<PrayerCalculationResult, LocalPrayerTimes> {
+/// Calculation logic for the next/previous prayer and time remaining.
+class CalculateNextPrayerUseCase {
   CalculateNextPrayerUseCase();
 
   final DateFormat _timeFormat = DateFormat('HH:mm');
 
-  @override
   Future<Either<Failure, PrayerCalculationResult>> call(
     LocalPrayerTimes params,
   ) async {

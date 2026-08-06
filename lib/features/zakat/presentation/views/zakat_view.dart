@@ -52,9 +52,9 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
     final theme = context.theme;
     final textTheme = context.textTheme;
     final localizations = AppLocalizations.of(context);
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return BlocBuilder<ZakatCubit, ZakatState>(
+    return BlocSelector<ZakatCubit, ZakatState, ZakatState>(
+      selector: (state) => state,
       builder: (context, state) {
         if (state.status == ZakatRequestStatus.loading) {
           return Scaffold(
@@ -100,17 +100,14 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
               MoneyZakatTab(
                 nisabMoney: nisabMoney,
                 localizations: localizations,
-                isArabic: isArabic,
               ),
               GoldZakatTab(
                 goldPricePerGram: goldPricePerGram,
                 localizations: localizations,
-                isArabic: isArabic,
               ),
               TradeZakatTab(
                 nisabMoney: nisabMoney,
                 localizations: localizations,
-                isArabic: isArabic,
               ),
               CropsZakatTab(localizations: localizations),
             ],
@@ -195,41 +192,41 @@ class MoneyZakatTab extends StatelessWidget {
   const MoneyZakatTab({
     required this.nisabMoney,
     required this.localizations,
-    required this.isArabic,
     super.key,
   });
   final double nisabMoney;
   final AppLocalizations localizations;
-  final bool isArabic;
 
   @override
-  Widget build(BuildContext context) => ZakatCard(
-    title: localizations.money_zakat_title,
-    description: localizations.money_zakat_description(
-      isArabic
-          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
-          : nisabMoney.toStringAsFixed(0),
-      isArabic ? convertToArabicNumbers('2.5') : '2.5',
-    ),
-    hintText: localizations.money_zakat_hint,
-    calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
-    localizations: localizations,
-  );
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return ZakatCard(
+      title: localizations.money_zakat_title,
+      description: localizations.money_zakat_description(
+        isArabic
+            ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+            : nisabMoney.toStringAsFixed(0),
+        isArabic ? convertToArabicNumbers('2.5') : '2.5',
+      ),
+      hintText: localizations.money_zakat_hint,
+      calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+      localizations: localizations,
+    );
+  }
 }
 
 class GoldZakatTab extends StatelessWidget {
   const GoldZakatTab({
     required this.goldPricePerGram,
     required this.localizations,
-    required this.isArabic,
     super.key,
   });
   final double goldPricePerGram;
   final AppLocalizations localizations;
-  final bool isArabic;
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final descriptionText = localizations.gold_zakat_description(
       isArabic ? convertToArabicNumbers('85') : '85',
       isArabic ? convertToArabicNumbers('2.5') : '2.5',
@@ -255,26 +252,27 @@ class TradeZakatTab extends StatelessWidget {
   const TradeZakatTab({
     required this.nisabMoney,
     required this.localizations,
-    required this.isArabic,
     super.key,
   });
   final double nisabMoney;
   final AppLocalizations localizations;
-  final bool isArabic;
 
   @override
-  Widget build(BuildContext context) => ZakatCard(
-    title: localizations.trade_zakat_title,
-    description: localizations.trade_zakat_description(
-      isArabic ? convertToArabicNumbers('2.5') : '2.5',
-      isArabic
-          ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
-          : nisabMoney.toStringAsFixed(0),
-    ),
-    hintText: localizations.trade_zakat_hint,
-    calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
-    localizations: localizations,
-  );
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return ZakatCard(
+      title: localizations.trade_zakat_title,
+      description: localizations.trade_zakat_description(
+        isArabic ? convertToArabicNumbers('2.5') : '2.5',
+        isArabic
+            ? convertToArabicNumbers(nisabMoney.toStringAsFixed(0))
+            : nisabMoney.toStringAsFixed(0),
+      ),
+      hintText: localizations.trade_zakat_hint,
+      calculate: (input) => (double.tryParse(input) ?? 0) * 0.025,
+      localizations: localizations,
+    );
+  }
 }
 
 class _ManualPriceDialog extends StatefulWidget {

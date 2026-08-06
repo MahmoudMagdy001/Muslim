@@ -13,7 +13,6 @@ class HadithsBody extends StatelessWidget {
     required this.itemScrollController,
     required this.itemPositionsListener,
     required this.localizations,
-    required this.isArabic,
     required this.scrollToHadithId,
     required this.onScrollToHadith,
     required this.onShowSnackBar,
@@ -23,7 +22,6 @@ class HadithsBody extends StatelessWidget {
   final ItemScrollController itemScrollController;
   final ItemPositionsListener itemPositionsListener;
   final AppLocalizations localizations;
-  final bool isArabic;
   final int? scrollToHadithId;
   final void Function(HadithCubit) onScrollToHadith;
   final void Function(String) onShowSnackBar;
@@ -41,7 +39,6 @@ class HadithsBody extends StatelessWidget {
           itemScrollController: itemScrollController,
           itemPositionsListener: itemPositionsListener,
           hadiths: state.hadiths,
-          isArabic: isArabic,
           localizations: localizations,
           cubit: cubit,
           onShowSnackBar: onShowSnackBar,

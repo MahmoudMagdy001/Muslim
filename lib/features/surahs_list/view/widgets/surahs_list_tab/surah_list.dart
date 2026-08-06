@@ -7,13 +7,11 @@ import 'package:muslim/features/surahs_list/view/widgets/surahs_list_tile.dart';
 class SurahList extends StatelessWidget {
   const SurahList({
     required this.surahs,
-    required this.isArabic,
     required this.navigateToSurah,
     super.key,
   });
 
   final List<SurahsListModel> surahs;
-  final bool isArabic;
   final Future<void> Function({required int surah, required int ayah})
   navigateToSurah;
 
@@ -30,7 +28,6 @@ class SurahList extends StatelessWidget {
         final surah = surahs[index];
         return SurahListTile(
           surah: surah,
-          isArabic: isArabic,
           onTap: () => navigateToSurah(surah: surah.number, ayah: 1),
         );
       }, childCount: surahs.length),

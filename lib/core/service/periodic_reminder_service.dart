@@ -4,7 +4,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/utils/app_logger.dart';
-import 'package:workmanager/workmanager.dart';
 
 /// Service for managing periodic Islamic reminder notifications.
 /// Uses native scheduling (NotificationAndroidCrontab) for battery efficiency.
@@ -43,6 +42,7 @@ class PeriodicReminderService {
           title: message['title'],
           body: message['body'],
           category: NotificationCategory.Reminder,
+          color: PeriodicReminderConstants.reminderChannelColor,
         ),
         schedule: NotificationInterval(
           interval: Duration(minutes: intervalMinutes),
@@ -50,9 +50,6 @@ class PeriodicReminderService {
           timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
         ),
       );
-
-      // Register WorkManager for background reliability
-      await _registerWorkManagerTask();
 
       logSuccess(
         '✅ Periodic reminder scheduled: every $intervalMinutes minutes starting at $firstNotificationTime',
@@ -63,35 +60,14 @@ class PeriodicReminderService {
     }
   }
 
-  /// Registers WorkManager task for background reliability
-  Future<void> _registerWorkManagerTask() async {
-    try {
-      await Workmanager().registerPeriodicTask(
-        PeriodicReminderConstants.workManagerUniqueId,
-        PeriodicReminderConstants.workManagerTaskName,
-        frequency: const Duration(
-          minutes: 15,
-        ), // Re-schedule check every 15 minutes
-        existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
-      );
-      logInfo('🔄 WorkManager task registered for periodic reminders');
-    } on Object catch (e) {
-      logWarning('⚠️ Could not register WorkManager task: $e');
-    }
-  }
-
-  /// Cancels the periodic reminder notification and WorkManager task.
+  /// Cancels the periodic reminder notification schedule.
   Future<void> cancelReminder() async {
     try {
       // Cancel notification schedule
       await AwesomeNotifications().cancelSchedule(
         PeriodicReminderConstants.periodicReminderNotificationId,
       );
-      // Cancel WorkManager task
-      await Workmanager().cancelByUniqueName(
-        PeriodicReminderConstants.workManagerUniqueId,
-      );
-      logInfo('🗑️ Periodic reminder and WorkManager task cancelled');
+      logInfo('🗑️ Periodic reminder cancelled');
     } on Object catch (e, stackTrace) {
       logError('⚠️ Error cancelling periodic reminder', e, stackTrace);
     }

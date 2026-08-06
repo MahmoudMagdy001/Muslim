@@ -7,7 +7,7 @@ class SurahsListRepositoryImpl implements SurahsListRepository {
   SurahsListRepositoryImpl();
 
   @override
-  Future<List<SurahsListModel>> getAllSurahs({required bool isArabic}) async =>
+  Future<List<SurahsListModel>> getAllSurahs({bool isArabic = true}) async =>
       List.generate(114, (index) {
         final surahNumber = index + 1;
         final location = quran.getPlaceOfRevelation(surahNumber);
@@ -18,11 +18,8 @@ class SurahsListRepositoryImpl implements SurahsListRepository {
               ? quran.getSurahNameArabic(surahNumber)
               : quran.getSurahName(surahNumber),
           ayahCount: quran.getVerseCount(surahNumber),
-          // location: location,
           locationArabic: isArabic
-              ? location == 'Makkah'
-                    ? 'مكية'
-                    : 'مدنية'
+              ? (location == 'Makkah' ? 'مكية' : 'مدنية')
               : location,
         );
       });

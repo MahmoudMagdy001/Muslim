@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim/core/utils/extensions.dart';
-import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
@@ -19,13 +18,11 @@ class BookmarksTab extends StatelessWidget {
   const BookmarksTab({
     required this.reciter,
     required this.localizations,
-    required this.isArabic,
     super.key,
   });
 
   final String reciter;
   final AppLocalizations localizations;
-  final bool isArabic;
 
   Future<void> _openBookmark(BuildContext context, int surah, int ayah) async {
     await navigateWithTransition<void>(
@@ -38,8 +35,9 @@ class BookmarksTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<BookmarksCubit>();
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
 
-    // Load bookmarks after first frame if empty
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (cubit.state.bookmarks.isEmpty &&
           cubit.state.status != BookmarksStatus.loading) {
@@ -89,7 +87,6 @@ class BookmarksTab extends StatelessWidget {
                       bookmark.surahNumber,
                       bookmark.ayahNumber,
                       localizations,
-                      isArabic,
                     ),
                     onDismissed: (direction) async {
                       await cubit.removeBookmark(
@@ -97,12 +94,13 @@ class BookmarksTab extends StatelessWidget {
                         ayah: bookmark.ayahNumber,
                       );
                       if (context.mounted) {
+                        final surahName = isArabic
+                            ? quran.getSurahNameArabic(bookmark.surahNumber)
+                            : quran.getSurahName(bookmark.surahNumber);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              '${localizations.deleteBookmarkSuccess} '
-                              '${isArabic ? quran.getSurahNameArabic(bookmark.surahNumber) : quran.getSurahName(bookmark.surahNumber)} '
-                              '${isArabic ? 'آية' : 'Verse'} ${bookmark.ayahNumber}',
+                              '${localizations.deleteBookmarkSuccess} $surahName ${l10n.ayahNumberLabel(bookmark.ayahNumber)}',
                             ),
                             duration: const Duration(seconds: 2),
                           ),
@@ -111,7 +109,6 @@ class BookmarksTab extends StatelessWidget {
                     },
                     child: BookmarkCard(
                       bookmark: bookmark,
-                      isArabic: isArabic,
                       localizations: localizations,
                       reciter: reciter,
                       onOpen: () => _openBookmark(
@@ -125,7 +122,6 @@ class BookmarksTab extends StatelessWidget {
                           bookmark.surahNumber,
                           bookmark.ayahNumber,
                           localizations,
-                          isArabic,
                         );
 
                         if (confirmed ?? false) {
@@ -134,12 +130,13 @@ class BookmarksTab extends StatelessWidget {
                             ayah: bookmark.ayahNumber,
                           );
                           if (context.mounted) {
+                            final surahName = isArabic
+                                ? quran.getSurahNameArabic(bookmark.surahNumber)
+                                : quran.getSurahName(bookmark.surahNumber);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  '${localizations.deleteBookmarkSuccess} '
-                                  '${isArabic ? quran.getSurahNameArabic(bookmark.surahNumber) : quran.getSurahName(bookmark.surahNumber)} '
-                                  '${isArabic ? 'آية' : 'Verse'} ${bookmark.ayahNumber}',
+                                  '${localizations.deleteBookmarkSuccess} $surahName ${l10n.ayahNumberLabel(bookmark.ayahNumber)}',
                                 ),
                                 duration: const Duration(seconds: 2),
                               ),
@@ -163,8 +160,9 @@ class BookmarksTab extends StatelessWidget {
     int surahNumber,
     int ayahNumber,
     AppLocalizations localizations,
-    bool isArabic,
   ) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
     final surahName = isArabic
         ? quran.getSurahNameArabic(surahNumber)
         : quran.getSurahName(surahNumber);
@@ -174,8 +172,7 @@ class BookmarksTab extends StatelessWidget {
       title: localizations.deleteBookmark,
       contentText:
           '${localizations.deleteBookmarkQuestion} $surahName '
-          '${isArabic ? 'الآية رقم' : 'Verse Number'} '
-          '${isArabic ? convertToArabicNumbers(ayahNumber.toString()) : ayahNumber}?',
+          '${l10n.ayahNumberLabel(ayahNumber)}?',
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),

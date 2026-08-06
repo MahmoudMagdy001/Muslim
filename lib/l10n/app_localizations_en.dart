@@ -362,6 +362,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qiblahDirection => 'Qiblah Direction';
 
   @override
+  String get qiblahSubtitle => 'Point your phone toward the Qiblah';
+
+  @override
   String get quran_text =>
       'Zakat is for the poor and the needy and those employed to collect it and for bringing hearts together and for freeing captives and for those in debt and for the cause of Allah and for the traveler';
 
@@ -620,4 +623,323 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get privacyMatters => 'Your Privacy Matters';
+
+  @override
+  String get noPersonalData => 'We do not collect any personal data at all';
+
+  @override
+  String get privacyPrinciples => 'Privacy Principles';
+
+  @override
+  String get noAccounts => 'No Accounts';
+
+  @override
+  String get noAccountsDesc =>
+      'The app does not require account creation or login';
+
+  @override
+  String get noTracking => 'No Tracking';
+
+  @override
+  String get noTrackingDesc => 'We do not track or monitor your app usage';
+
+  @override
+  String get noPurchases => 'No Purchases';
+
+  @override
+  String get noPurchasesDesc => 'There are no in-app purchases';
+
+  @override
+  String get locationDataTitle => 'Location Data';
+
+  @override
+  String get locationPurpose =>
+      '• Purpose: Calculating accurate prayer times and Qibla direction.';
+
+  @override
+  String get locationAccessMethod =>
+      '• Access Method: Location is accessed only while using the app (Foreground) to update coordinates.';
+
+  @override
+  String get locationStorage =>
+      '• Storage: Last known coordinates are saved locally on your device to ensure accurate alerts even offline.';
+
+  @override
+  String get locationPrivacy =>
+      '• Privacy: Your location data is not sent to any external server and is not shared with third parties.';
+
+  @override
+  String get dataCollectionInfo => 'Data Collection Info';
+
+  @override
+  String get dataCollectionDesc =>
+      'The app does not collect any personal data. All information remains on your device only and we do not access it in any way.';
+
+  @override
+  String get localStorage => 'Local Storage';
+
+  @override
+  String get storageQuranBookmarks => 'Quran Ayah Bookmarks';
+
+  @override
+  String get storageSavedHadith => 'Saved Hadiths';
+
+  @override
+  String get storageNotificationSettings => 'Notification Settings';
+
+  @override
+  String get storageLangTheme => 'Language & Theme Preferences';
+
+  @override
+  String get storageFontSizeReciters => 'Font Size & Reciters';
+
+  @override
+  String get storageLocationCoordinates => 'Location Coordinates (Local only)';
+
+  @override
+  String get haveQuestions => 'Have Questions?';
+
+  @override
+  String get privacyHelp => 'We are here to help with any privacy questions';
+
+  @override
+  String get contactEmail => 'Contact Us via Email';
+
+  @override
+  String get cannotOpenEmail => 'Cannot open email app';
+
+  @override
+  String get lastUpdated => 'Last Updated';
+
+  @override
+  String get muslimAppTitle => 'Muslim App';
+
+  @override
+  String get aboutUsDescription =>
+      'Muslim App is your daily companion for prayer reminders, Quran reading, and Azkar. Carefully designed to provide a simple and easy spiritual experience in your daily life.';
+
+  @override
+  String get connectWithUs => 'Connect with Us';
+
+  @override
+  String get sendEmail => 'Send an Email';
+
+  @override
+  String get visitWebsite => 'Visit our Website';
+
+  @override
+  String get emailContactSubject => 'Contact regarding the app - Muslim';
+
+  @override
+  String get emailPrivacySubject => 'Privacy Policy Inquiry - Muslim';
+
+  @override
+  String get periodicReminderTitle => 'Periodic Reminder';
+
+  @override
+  String everyNMinutes(int minutes) {
+    return 'Every $minutes minutes';
+  }
+
+  @override
+  String get egpUnit => 'EGP';
+
+  @override
+  String get makkiyah => 'Meccan';
+
+  @override
+  String get madaniyah => 'Medinan';
+
+  @override
+  String get selectTimeInterval => 'Select Time Interval';
+
+  @override
+  String nMinutes(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String get fajr => 'Fajr';
+
+  @override
+  String get sunrise => 'Sunrise';
+
+  @override
+  String get dhuhr => 'Dhuhr';
+
+  @override
+  String get asr => 'Asr';
+
+  @override
+  String get maghrib => 'Maghrib';
+
+  @override
+  String get isha => 'Isha';
+
+  @override
+  String get jumuah => 'Jumuah';
+
+  @override
+  String get autoLocationUpdates => 'Auto Location Updates';
+
+  @override
+  String get autoLocationSubtitle =>
+      'Update prayer times based on your current location';
+
+  @override
+  String get autoLocationEnabled => 'Auto location updates enabled';
+
+  @override
+  String get autoLocationDisabled => 'Auto location updates disabled';
+
+  @override
+  String versesCount(int count) {
+    return '$count Verses';
+  }
+
+  @override
+  String juzNumberLabel(int number) {
+    return 'Juz $number';
+  }
+
+  @override
+  String hizbNumberLabel(int number) {
+    return 'Hizb $number';
+  }
+
+  @override
+  String ayahNumberLabel(int number) {
+    return 'Ayah $number';
+  }
+
+  @override
+  String surahNumberLabel(int number) {
+    return 'Surah $number';
+  }
+
+  @override
+  String get noResultsFound => 'No results found';
+
+  @override
+  String get emptyTafsirText => 'Tafsir text is empty';
+
+  @override
+  String get failedSplitTafsir => 'Failed to split tafsir text';
+
+  @override
+  String get meaningLabel => 'Meaning';
+
+  @override
+  String get shareError => 'Error sharing image';
+
+  @override
+  String get namesOfAllahShareText => 'Names of Allah - Shared from Muslim App';
+
+  @override
+  String get sharedFromMuslimApp => 'Shared from Muslim App';
+
+  @override
+  String get ayatText => 'Verses';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourSkip => 'Skip';
+
+  @override
+  String get tourDone => 'Got it';
+
+  @override
+  String get tourPrayerTimesTitle => 'Prayer Times & Azan';
+
+  @override
+  String get tourPrayerTimesMessage =>
+      'Track upcoming prayer times and location settings.';
+
+  @override
+  String get tourZakatTitle => 'Zakat Calculator';
+
+  @override
+  String get tourZakatMessage =>
+      'Calculate your Zakat easily and check eligible categories.';
+
+  @override
+  String get tourServicesTitle => 'Islamic Features';
+
+  @override
+  String get tourServicesMessage =>
+      'Access Holy Quran, Hadiths, Azkar, Sebha, and Allah Names.';
+
+  @override
+  String get tourSettingsTitle => 'App Settings';
+
+  @override
+  String get tourSettingsMessage =>
+      'Customize language, theme, font size, and reciters.';
+
+  @override
+  String get tourQuranTitle => 'Holy Quran';
+
+  @override
+  String get tourQuranMessage => 'Browse Surahs, Juz, and Hizb sections.';
+
+  @override
+  String get tourBookmarksTitle => 'Saved Bookmarks';
+
+  @override
+  String get tourBookmarksMessage =>
+      'Quickly access your saved Quran bookmarks.';
+
+  @override
+  String get tourHadithTitle => 'Hadith Collection';
+
+  @override
+  String get tourHadithMessage =>
+      'Explore authentic Hadith books and daily Hadiths.';
+
+  @override
+  String get tourSavedHadithTitle => 'Saved Hadiths';
+
+  @override
+  String get tourSavedHadithMessage =>
+      'View your saved Hadiths for quick reference.';
+
+  @override
+  String get tourSebhaTitle => 'Digital Sebha';
+
+  @override
+  String get tourSebhaMessage =>
+      'Tap the button to increment your Tasbih counter.';
+
+  @override
+  String get tourAddZikrTitle => 'Custom Zikr';
+
+  @override
+  String get tourAddZikrMessage =>
+      'Add your own custom Azkar and set personal goals.';
+
+  @override
+  String get tourAzkarTitle => 'Daily Azkar';
+
+  @override
+  String get tourAzkarMessage =>
+      'Morning, evening, and situational Azkar categorized for convenience.';
+
+  @override
+  String get tourNamesOfAllahTitle => '99 Names of Allah';
+
+  @override
+  String get tourNamesOfAllahMessage =>
+      'Read meanings and share beautiful cards of Allah\'s names.';
+
+  @override
+  String get tourQiblahTitle => 'Qiblah Compass';
+
+  @override
+  String get tourQiblahMessage =>
+      'Align your device to find the precise Kaaba direction.';
 }

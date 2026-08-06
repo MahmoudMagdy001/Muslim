@@ -10,20 +10,20 @@ import 'package:geolocator/geolocator.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';
-import 'package:muslim/features/qiblah/domain/usecases/get_qiblah_stream_usecase.dart';
+import 'package:muslim/features/qiblah/domain/repositories/qiblah_repository.dart';
 import 'package:muslim/features/qiblah/presentation/cubit/qiblah_state.dart';
 import 'package:rxdart/rxdart.dart';
 
 class QiblahCubit extends Cubit<QiblahState> {
   QiblahCubit({
-    GetQiblahStreamUseCase? getQiblahStreamUseCase,
+    QiblahRepository? repository,
     LocationService? locationService,
-  }) : getQiblahStreamUseCase =
-           getQiblahStreamUseCase ?? getIt<GetQiblahStreamUseCase>(),
+  }) : _repository =
+           repository ?? getIt<QiblahRepository>(),
        locationService = locationService ?? getIt<LocationService>(),
        super(const QiblahState());
 
-  final GetQiblahStreamUseCase getQiblahStreamUseCase;
+  final QiblahRepository _repository;
   final LocationService locationService;
 
   StreamSubscription<QiblahDirectionEntity>? _qiblahSubscription;
@@ -123,13 +123,13 @@ class QiblahCubit extends Cubit<QiblahState> {
     await _qiblahSubscription?.cancel();
     _hasTriggeredFeedback = false;
 
-    // Throttled stream: max 10 updates/sec, min 1 degree change
-    _qiblahSubscription = getQiblahStreamUseCase()
-        .throttleTime(const Duration(milliseconds: 100))
+    // High-performance smooth stream: ~60 FPS updates, 0.1 degree sensitivity
+    _qiblahSubscription = _repository.getQiblahStream()
+        .sampleTime(const Duration(milliseconds: 16))
         .distinct(
           (prev, curr) =>
-              (prev.direction - curr.direction).abs() < 1.0 &&
-              (prev.qiblah - curr.qiblah).abs() < 1.0,
+              (prev.direction - curr.direction).abs() < 0.1 &&
+              (prev.qiblah - curr.qiblah).abs() < 0.1,
         )
         .listen(
           _handleQiblahData,

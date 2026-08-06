@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -42,13 +43,15 @@ class TafsirShareService {
     required String ayahText,
     required String tafsirTitle,
     required String tafsirText,
-    required bool isArabic,
     required BuildContext context,
   }) async {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = AppLocalizations.of(context);
+
     if (tafsirText.trim().isEmpty) {
       return TafsirShareResult(
         success: false,
-        errorMessage: isArabic ? 'نص التفسير فارغ' : 'Tafsir text is empty',
+        errorMessage: l10n.emptyTafsirText,
       );
     }
 
@@ -62,9 +65,7 @@ class TafsirShareService {
     if (tafsirParts.isEmpty) {
       return TafsirShareResult(
         success: false,
-        errorMessage: isArabic
-            ? 'فشل تقسيم نص التفسير'
-            : 'Failed to split tafsir text',
+        errorMessage: l10n.failedSplitTafsir,
       );
     }
 

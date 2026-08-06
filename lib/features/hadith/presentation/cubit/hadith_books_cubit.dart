@@ -2,29 +2,25 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
-import 'package:muslim/features/hadith/domain/usecases/get_hadith_books_use_case.dart';
-import 'package:muslim/features/hadith/domain/usecases/get_random_hadith_use_case.dart';
+import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 import 'package:muslim/features/hadith/presentation/cubit/hadith_books_state.dart';
 
 class HadithBooksCubit extends Cubit<HadithBooksState> {
   HadithBooksCubit({
-    required this.getHadithBooksUseCase,
-    required this.getRandomHadithUseCase,
+    required this.repository,
   }) : super(const HadithBooksState()) {
     unawaited(loadBooks());
     unawaited(loadRandomHadith());
   }
 
-  final GetHadithBooksUseCase getHadithBooksUseCase;
-  final GetRandomHadithUseCase getRandomHadithUseCase;
+  final HadithRepository repository;
 
   Future<void> loadBooks() async {
     if (state.status == HadithBooksStatus.initial) {
       emit(state.copyWith(status: HadithBooksStatus.loading));
     }
 
-    final result = await getHadithBooksUseCase(NoParams());
+    final result = await repository.getHadithBooks();
     result.fold(
       (failure) => emit(
         state.copyWith(
@@ -40,7 +36,7 @@ class HadithBooksCubit extends Cubit<HadithBooksState> {
   Future<void> loadRandomHadith() async {
     emit(state.copyWith(randomHadithStatus: RandomHadithStatus.loading));
 
-    final result = await getRandomHadithUseCase(NoParams());
+    final result = await repository.getRandomHadith();
     result.fold(
       (failure) =>
           emit(state.copyWith(randomHadithStatus: RandomHadithStatus.failure)),

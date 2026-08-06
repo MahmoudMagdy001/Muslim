@@ -358,6 +358,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qiblahDirection => 'اتجاه القبلة';
 
   @override
+  String get qiblahSubtitle => 'وجّه هاتفك نحو القبلة';
+
+  @override
   String get quran_text =>
       'إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ';
 
@@ -600,10 +603,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rateAppSuccess => 'تم التقييم بنجاح';
 
   @override
-  String get rateAppButton => 'قيّم التطبيق';
+  String get rateAppButton => 'تقييم التطبيق';
 
   @override
-  String get enterGoldPriceManually => 'من فضلك ادخل سعر الذهب الحالي';
+  String get enterGoldPriceManually => 'إدخال سعر الذهب يدوياً';
 
   @override
   String get goldPricePerGram => 'سعر الجرام (عيار 24)';
@@ -613,4 +616,320 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get privacyMatters => 'خصوصيتك تهمنا';
+
+  @override
+  String get noPersonalData => 'نحن لا نجمع أي بيانات شخصية على الإطلاق';
+
+  @override
+  String get privacyPrinciples => 'مبادئ الخصوصية';
+
+  @override
+  String get noAccounts => 'لا يوجد حسابات';
+
+  @override
+  String get noAccountsDesc => 'التطبيق لا يتطلب إنشاء حساب أو تسجيل دخول';
+
+  @override
+  String get noTracking => 'لا تتبع';
+
+  @override
+  String get noTrackingDesc => 'لا نتابع أو نراقب استخدامك للتطبيق';
+
+  @override
+  String get noPurchases => 'لا مشتريات';
+
+  @override
+  String get noPurchasesDesc => 'لا توجد عمليات شراء داخل التطبيق';
+
+  @override
+  String get locationDataTitle => 'بيانات الموقع (Location)';
+
+  @override
+  String get locationPurpose =>
+      '• الغرض: حساب مواقيت الصلاة بدقة واتجاه القبلة.';
+
+  @override
+  String get locationAccessMethod =>
+      '• طريقة الوصول: يتم الوصول للموقع فقط أثناء استخدامك للتطبيق (Foreground) لتحديث الإحداثيات.';
+
+  @override
+  String get locationStorage =>
+      '• التخزين: يتم حفظ آخر إحداثيات معروفة محلياً على جهازك لضمان استمرارية عمل التنبيهات بدقة حتى في حالة عدم الاتصال.';
+
+  @override
+  String get locationPrivacy =>
+      '• الخصوصية: لا يتم إرسال بيانات موقعك لأي خادم خارجي ولا يتم مشاركتها مع أي طرف ثالث.';
+
+  @override
+  String get dataCollectionInfo => 'معلومات جمع البيانات';
+
+  @override
+  String get dataCollectionDesc =>
+      'التطبيق لا يجمع أي بيانات شخصية. كل المعلومات تبقى على جهازك فقط ولا نصل إليها بأي شكل من الأشكال.';
+
+  @override
+  String get localStorage => 'التخزين المحلي';
+
+  @override
+  String get storageQuranBookmarks => 'الإشارات المرجعية لآيات القرآن';
+
+  @override
+  String get storageSavedHadith => 'الأحاديث المحفوظة';
+
+  @override
+  String get storageNotificationSettings => 'إعدادات التنبيهات والأذان';
+
+  @override
+  String get storageLangTheme => 'تفضيلات اللغة والمظهر';
+
+  @override
+  String get storageFontSizeReciters => 'حجم الخط والقراء المفضلين';
+
+  @override
+  String get storageLocationCoordinates => 'إحداثيات الموقع (محلياً فقط)';
+
+  @override
+  String get haveQuestions => 'لديك استفسارات؟';
+
+  @override
+  String get privacyHelp => 'نحن هنا لمساعدتك في أي استفسار حول الخصوصية';
+
+  @override
+  String get contactEmail => 'اتصل بنا عبر البريد الإلكتروني';
+
+  @override
+  String get cannotOpenEmail => 'لا يمكن فتح تطبيق البريد الإلكتروني';
+
+  @override
+  String get lastUpdated => 'آخر تحديث';
+
+  @override
+  String get muslimAppTitle => 'تطبيق مُسَلِّم';
+
+  @override
+  String get aboutUsDescription =>
+      'تطبيق مُسَلِّم هو رفيقك اليومي لتذكيرك بالصلاة وقراءة القرآن والأذكار، صُمم بعناية لتوفير تجربة روحانية سهلة وبسيطة في حياتك اليومية.';
+
+  @override
+  String get connectWithUs => 'تواصل معنا';
+
+  @override
+  String get sendEmail => 'إرسال بريد إلكتروني';
+
+  @override
+  String get visitWebsite => 'زيارة موقعنا';
+
+  @override
+  String get emailContactSubject => 'تواصل بخصوص التطبيق - مُسَلِّم';
+
+  @override
+  String get emailPrivacySubject => 'استفسار عن سياسة الخصوصية - مُسَلِّم';
+
+  @override
+  String get periodicReminderTitle => 'التذكير الدوري';
+
+  @override
+  String everyNMinutes(int minutes) {
+    return 'كل $minutes دقيقة';
+  }
+
+  @override
+  String get egpUnit => 'جنيه';
+
+  @override
+  String get makkiyah => 'مكية';
+
+  @override
+  String get madaniyah => 'مدنية';
+
+  @override
+  String get selectTimeInterval => 'اختر الفاصل الزمني';
+
+  @override
+  String nMinutes(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String get fajr => 'الفجر';
+
+  @override
+  String get sunrise => 'الشروق';
+
+  @override
+  String get dhuhr => 'الظهر';
+
+  @override
+  String get asr => 'العصر';
+
+  @override
+  String get maghrib => 'المغرب';
+
+  @override
+  String get isha => 'العشاء';
+
+  @override
+  String get jumuah => 'الجمعة';
+
+  @override
+  String get autoLocationUpdates => 'تحديث الموقع تلقائياً';
+
+  @override
+  String get autoLocationSubtitle =>
+      'تحديث مواقيت الصلاة بناءً على موقعك الحالي';
+
+  @override
+  String get autoLocationEnabled => 'تم تفعيل التحديث التلقائي للموقع';
+
+  @override
+  String get autoLocationDisabled => 'تم تعطيل التحديث التلقائي للموقع';
+
+  @override
+  String versesCount(int count) {
+    return '$count آيات';
+  }
+
+  @override
+  String juzNumberLabel(int number) {
+    return 'الجزء $number';
+  }
+
+  @override
+  String hizbNumberLabel(int number) {
+    return 'الحزب $number';
+  }
+
+  @override
+  String ayahNumberLabel(int number) {
+    return 'الآية $number';
+  }
+
+  @override
+  String surahNumberLabel(int number) {
+    return 'سورة رقم $number';
+  }
+
+  @override
+  String get noResultsFound => 'لا توجد نتائج';
+
+  @override
+  String get emptyTafsirText => 'نص التفسير فارغ';
+
+  @override
+  String get failedSplitTafsir => 'فشل تقسيم نص التفسير';
+
+  @override
+  String get meaningLabel => 'المعنى';
+
+  @override
+  String get shareError => 'حدث خطأ أثناء المشاركة';
+
+  @override
+  String get namesOfAllahShareText =>
+      'أسماء الله الحسنى - مشاركة من تطبيق مُسَلِّم';
+
+  @override
+  String get sharedFromMuslimApp => 'تمت المشاركة من تطبيق مُسَلِّم';
+
+  @override
+  String get ayatText => 'الآيات';
+
+  @override
+  String get tourNext => 'التالي';
+
+  @override
+  String get tourSkip => 'تخطي';
+
+  @override
+  String get tourDone => 'فهمت';
+
+  @override
+  String get tourPrayerTimesTitle => 'مواقيت الصلاة والأذان';
+
+  @override
+  String get tourPrayerTimesMessage =>
+      'متابعة مواقيت الصلاة القادمة وإعدادات الموقع.';
+
+  @override
+  String get tourZakatTitle => 'حاسبة الزكاة';
+
+  @override
+  String get tourZakatMessage =>
+      'احسب زكاتك بسهولة وتعرف على مصارف الزكاة المستحقة.';
+
+  @override
+  String get tourServicesTitle => 'الخدمات الإسلامية';
+
+  @override
+  String get tourServicesMessage =>
+      'تصفح القرآن الكريم، الأحاديث، الأذكار، السبحة، وأسماء الله.';
+
+  @override
+  String get tourSettingsTitle => 'إعدادات التطبيق';
+
+  @override
+  String get tourSettingsMessage =>
+      'خصص اللغة، المظهر، حجم الخط، واختيار القارئ.';
+
+  @override
+  String get tourQuranTitle => 'القرآن الكريم';
+
+  @override
+  String get tourQuranMessage => 'تصفح السور والأجزاء والأحزاب بسهولة.';
+
+  @override
+  String get tourBookmarksTitle => 'الفواصل والتحفيظ';
+
+  @override
+  String get tourBookmarksMessage =>
+      'الوصول السريع إلى العلامات المرجعية المحفوظة.';
+
+  @override
+  String get tourHadithTitle => 'موسوعة الأحاديث';
+
+  @override
+  String get tourHadithMessage => 'استكشف كتب الحديث الشريف والحديث اليومي.';
+
+  @override
+  String get tourSavedHadithTitle => 'الأحاديث المحفوظة';
+
+  @override
+  String get tourSavedHadithMessage =>
+      'استعرض الأحاديث النبوية التي قمت بحفظها.';
+
+  @override
+  String get tourSebhaTitle => 'السبحة الإلكترونية';
+
+  @override
+  String get tourSebhaMessage => 'اضغط على الزر لتسبيح الله وحساب الأذكار.';
+
+  @override
+  String get tourAddZikrTitle => 'إضافة ذكر خاص';
+
+  @override
+  String get tourAddZikrMessage => 'أضف أذكارك الخاصة وحدد الأهداف اليومية.';
+
+  @override
+  String get tourAzkarTitle => 'الأذكار اليومية';
+
+  @override
+  String get tourAzkarMessage =>
+      'أذكار الصباح والمساء والمناسبات مرتبة ومبوبة.';
+
+  @override
+  String get tourNamesOfAllahTitle => 'أسماء الله الحسنى';
+
+  @override
+  String get tourNamesOfAllahMessage =>
+      'اقرأ المعاني وشارك بطاقات أسماء الله الحسنى.';
+
+  @override
+  String get tourQiblahTitle => 'بوصلة القبلة';
+
+  @override
+  String get tourQiblahMessage =>
+      'وجه جهازك للتعرف على اتجاه الكعبة المشرفة بدقة.';
 }

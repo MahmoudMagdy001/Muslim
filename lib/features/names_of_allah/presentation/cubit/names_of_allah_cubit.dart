@@ -1,18 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
-import 'package:muslim/features/names_of_allah/domain/usecases/get_names_of_allah_use_case.dart';
+import 'package:muslim/features/names_of_allah/domain/repositories/names_of_allah_repository.dart';
 import 'package:muslim/features/names_of_allah/presentation/cubit/names_of_allah_state.dart';
 
 class NamesOfAllahCubit extends Cubit<NamesOfAllahState> {
-  NamesOfAllahCubit({required this.getNamesOfAllahUseCase})
+  NamesOfAllahCubit({required this.repository})
     : super(NamesOfAllahInitial());
 
-  final GetNamesOfAllahUseCase getNamesOfAllahUseCase;
+  final NamesOfAllahRepository repository;
 
   Future<void> getNamesOfAllah() async {
     emit(NamesOfAllahLoading());
-    final result = await getNamesOfAllahUseCase(NoParams());
+    final result = await repository.getNamesOfAllah();
     result.fold(
       (failure) => emit(NamesOfAllahError(failure.message)),
       (names) => emit(NamesOfAllahLoaded(names)),

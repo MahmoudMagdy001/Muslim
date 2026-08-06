@@ -25,7 +25,7 @@ class SurahListCubit extends Cubit<SurahsListState> {
 
   Timer? _debounceTimer;
 
-  Future<void> loadSurahs({required bool isArabic}) async {
+  Future<void> loadSurahs({bool isArabic = true}) async {
     try {
       if (!isClosed) emit(state.copyWith(status: SurahsListStatus.loading));
       final allSurahs = await surahRepository.getAllSurahs(isArabic: isArabic);

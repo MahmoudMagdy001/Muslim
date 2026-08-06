@@ -3,50 +3,27 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/permissions_sevice.dart';
-import 'package:muslim/core/usecases/usecase.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_notification_repository.dart';
+import 'package:muslim/features/prayer_times/domain/repositories/prayer_times_repository.dart';
 import 'package:muslim/features/prayer_times/domain/usecases/calculate_next_prayer_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/get_cached_coordinates_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/get_notification_settings_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/get_prayer_times_for_date_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/get_prayer_times_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/schedule_notifications_usecase.dart';
-import 'package:muslim/features/prayer_times/domain/usecases/set_prayer_enabled_usecase.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
-
-export '../../domain/usecases/get_prayer_times_usecase.dart'
-    show GetPrayerTimesParams;
 
 /// Cubit managing prayer times state, notification scheduling,
 /// and per-prayer notification settings.
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   PrayerTimesCubit({
     this.locationGranted = false,
-    GetPrayerTimesUseCase? getPrayerTimesUseCase,
-    GetPrayerTimesForDateUseCase? getPrayerTimesForDateUseCase,
-    GetCachedCoordinatesUseCase? getCachedCoordinatesUseCase,
-    ScheduleNotificationsUseCase? scheduleNotificationsUseCase,
-    GetNotificationSettingsUseCase? getNotificationSettingsUseCase,
-    SetPrayerEnabledUseCase? setPrayerEnabledUseCase,
+    PrayerTimesRepository? prayerTimesRepository,
+    PrayerNotificationRepository? prayerNotificationRepository,
     CalculateNextPrayerUseCase? calculateNextPrayerUseCase,
-  }) : _getPrayerTimes =
-           getPrayerTimesUseCase ?? getIt<GetPrayerTimesUseCase>(),
-       _getPrayerTimesForDate =
-           getPrayerTimesForDateUseCase ??
-           getIt<GetPrayerTimesForDateUseCase>(),
-       _getCachedCoordinates =
-           getCachedCoordinatesUseCase ?? getIt<GetCachedCoordinatesUseCase>(),
-       _scheduleNotifications =
-           scheduleNotificationsUseCase ??
-           getIt<ScheduleNotificationsUseCase>(),
-       _getNotificationSettings =
-           getNotificationSettingsUseCase ??
-           getIt<GetNotificationSettingsUseCase>(),
-       _setPrayerEnabled =
-           setPrayerEnabledUseCase ?? getIt<SetPrayerEnabledUseCase>(),
+  }) : _prayerTimesRepo =
+           prayerTimesRepository ?? getIt<PrayerTimesRepository>(),
+       _notificationRepo =
+           prayerNotificationRepository ?? getIt<PrayerNotificationRepository>(),
        _calculateNextPrayer =
            calculateNextPrayerUseCase ?? getIt<CalculateNextPrayerUseCase>(),
        super(const PrayerTimesState());
@@ -54,12 +31,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   // ponytail: allow locationGranted to be updated dynamically after post-frame permission request
   bool locationGranted;
 
-  final GetPrayerTimesUseCase _getPrayerTimes;
-  final GetPrayerTimesForDateUseCase _getPrayerTimesForDate;
-  final GetCachedCoordinatesUseCase _getCachedCoordinates;
-  final ScheduleNotificationsUseCase _scheduleNotifications;
-  final GetNotificationSettingsUseCase _getNotificationSettings;
-  final SetPrayerEnabledUseCase _setPrayerEnabled;
+  final PrayerTimesRepository _prayerTimesRepo;
+  final PrayerNotificationRepository _notificationRepo;
   final CalculateNextPrayerUseCase _calculateNextPrayer;
 
   Timer? _timer;
@@ -67,14 +40,14 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   Timer? _midnightTimer;
 
   /// Initializes prayer times and loads notification settings.
-  Future<void> init({required bool isArabic}) async {
+  Future<void> init({bool isArabic = true}) async {
     await loadNotificationSettings();
     await fetchPrayerTimes(isArabic: isArabic);
   }
 
   /// Checks if data is loaded, if not, initializes it.
   /// Call this in the UI (e.g., BlocBuilder or onInit of the view)
-  Future<void> checkInitialData({required bool isArabic}) async {
+  Future<void> checkInitialData({bool isArabic = true}) async {
     if (state.status == RequestStatus.initial) {
       await init(isArabic: isArabic);
     }
@@ -100,17 +73,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   /// Fetches prayer times for today. Only fetches location-based times if permission was granted.
-  Future<void> fetchPrayerTimes({required bool isArabic}) async {
+  Future<void> fetchPrayerTimes({bool isArabic = true}) async {
     if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
 
-    final result = await _getPrayerTimes(
-      GetPrayerTimesParams(isArabic: isArabic, useLocation: locationGranted),
-    );
-
-    result.fold(
-      (failure) => _handlePrayerTimesError(failure.message),
-      _handlePrayerTimesSuccess,
-    );
+    try {
+      final times = await _prayerTimesRepo.getPrayerTimes(
+        isArabic: isArabic,
+        useLocation: locationGranted,
+      );
+      await _handlePrayerTimesSuccess(times);
+    } on Object catch (e) {
+      _handlePrayerTimesError(e.toString());
+    }
   }
 
   /// Handles successful prayer times fetch — schedules notifications
@@ -119,32 +93,31 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     final allScheduledTimes = <LocalPrayerTimes>[times];
 
     try {
-      final coordinatesResult = await _getCachedCoordinates(NoParams());
-      await coordinatesResult.fold((failure) => null, (coordinates) async {
-        if (coordinates != null) {
-          final now = DateTime.now();
-          for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
-            final nextDate = now.add(Duration(days: i));
-            final nextDayTimesResult = await _getPrayerTimesForDate(
-              GetPrayerTimesForDateParams(
-                coordinates: coordinates,
-                date: nextDate,
-                cityName: times.city,
-              ),
+      final coordinates = await _prayerTimesRepo.getCachedCoordinates();
+      if (coordinates != null) {
+        final now = DateTime.now();
+        for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
+          final nextDate = now.add(Duration(days: i));
+          try {
+            final nextDayTimes = await _prayerTimesRepo.getPrayerTimesForDate(
+              coordinates,
+              nextDate,
+              cityName: times.city,
             );
-
-            nextDayTimesResult.fold(
-              (failure) => null,
-              allScheduledTimes.add,
-            );
-          }
+            allScheduledTimes.add(nextDayTimes);
+          } on Object catch (_) {}
         }
-      });
+      }
     } on Object catch (e) {
       logWarning('تعذر جلب أوقات الأيام القادمة في الـ Cubit: $e');
     }
 
-    await _scheduleNotifications(allScheduledTimes);
+    try {
+      await _notificationRepo.scheduleNotifications(allScheduledTimes);
+    } on Object catch (e) {
+      logWarning('تعذر جدولة الإشعارات: $e');
+    }
+    
     _updateStateWithPrayerTimes(times);
     _startCountdown();
   }
@@ -217,14 +190,12 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   /// Loads per-prayer notification settings into state.
   Future<void> loadNotificationSettings() async {
-    final result = await _getNotificationSettings(NoParams());
-    result.fold(
-      (failure) =>
-          logWarning('تعذر تحميل إعدادات الإشعارات: ${failure.message}'),
-      (settings) {
-        if (!isClosed) emit(state.copyWith(notificationSettings: settings));
-      },
-    );
+    try {
+      final settings = await _notificationRepo.getSettings();
+      if (!isClosed) emit(state.copyWith(notificationSettings: settings));
+    } on Object catch (e) {
+      logWarning('تعذر تحميل إعدادات الإشعارات: $e');
+    }
   }
 
   /// Toggles notification for a specific prayer and reschedules.
@@ -240,40 +211,39 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     if (!isClosed) emit(state.copyWith(notificationSettings: updatedSettings));
 
     // Persist and reschedule
-    await _setPrayerEnabled(
-      SetPrayerEnabledParams(prayerType: type, enabled: enabled),
-    );
+    try {
+      await _notificationRepo.setPrayerEnabled(type, enabled: enabled);
+    } on Object catch (e) {
+      logWarning('تعذر حفظ إعدادات الإشعارات: $e');
+    }
 
     if (state.localPrayerTimes != null) {
       final times = <LocalPrayerTimes>[state.localPrayerTimes!];
       try {
-        final coordinatesResult = await _getCachedCoordinates(NoParams());
-        await coordinatesResult.fold((failure) => null, (coordinates) async {
-          if (coordinates != null) {
-            final now = DateTime.now();
-            for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
-              final date = now.add(Duration(days: i));
-              final result = await _getPrayerTimesForDate(
-                GetPrayerTimesForDateParams(
-                  coordinates: coordinates,
-                  date: date,
-                  cityName: state.localPrayerTimes!.city,
-                ),
+        final coordinates = await _prayerTimesRepo.getCachedCoordinates();
+        if (coordinates != null) {
+          final now = DateTime.now();
+          for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
+            final date = now.add(Duration(days: i));
+            try {
+              final nextDayTimes = await _prayerTimesRepo.getPrayerTimesForDate(
+                coordinates,
+                date,
+                cityName: state.localPrayerTimes!.city,
               );
-              result.fold(
-                (failure) => null,
-                times.add,
-              );
-            }
+              times.add(nextDayTimes);
+            } on Object catch (_) {}
           }
-        });
+        }
       } on Object catch (_) {}
-      await _scheduleNotifications(times);
+      try {
+        await _notificationRepo.scheduleNotifications(times);
+      } on Object catch (_) {}
     }
   }
 
   /// Manual refresh of prayer times.
-  Future<void> refreshPrayerTimes({required bool isArabic}) async {
+  Future<void> refreshPrayerTimes({bool isArabic = true}) async {
     logInfo('🔄 تحديث يدوي لمواعيد الصلاة...');
     // ponytail: update locationGranted status dynamically when refreshing
     locationGranted = await requestAllPermissions();

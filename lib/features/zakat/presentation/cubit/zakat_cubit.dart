@@ -1,18 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:muslim/core/usecases/usecase.dart';
-import 'package:muslim/features/zakat/domain/usecases/get_gold_price_use_case.dart';
+import 'package:muslim/features/zakat/domain/repositories/zakat_repository.dart';
 import 'package:muslim/features/zakat/presentation/cubit/zakat_state.dart';
 
 class ZakatCubit extends Cubit<ZakatState> {
-  ZakatCubit({required this.getGoldPriceUseCase}) : super(const ZakatState());
+  ZakatCubit({required this.repository}) : super(const ZakatState());
 
-  final GetGoldPriceUseCase getGoldPriceUseCase;
+  final ZakatRepository repository;
 
   Future<void> loadGoldPrice() async {
     emit(state.copyWith(status: ZakatRequestStatus.loading));
 
-    final result = await getGoldPriceUseCase(NoParams());
+    final result = await repository.getGoldPricePerGramInEgp();
 
     result.fold(
       (failure) => emit(

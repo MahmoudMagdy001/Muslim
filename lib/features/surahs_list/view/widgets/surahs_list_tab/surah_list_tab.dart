@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
-import 'package:muslim/features/quran/repository/quran_repository.dart';
+import 'package:muslim/features/quran/service/quran_service.dart';
 import 'package:muslim/features/quran/view/quran_view.dart';
 import 'package:muslim/features/quran/viewmodel/last_played_cubit/last_played.dart';
 import 'package:muslim/features/surahs_list/model/quran_view_type.dart';
@@ -22,14 +22,12 @@ import 'package:quran/quran.dart' as quran;
 class SurahListTab extends StatefulWidget {
   const SurahListTab({
     required this.selectedReciter,
-    required this.isArabic,
     required this.localizations,
     this.forceViewType,
     super.key,
   });
 
   final String selectedReciter;
-  final bool isArabic;
   final AppLocalizations localizations;
   final QuranViewType? forceViewType;
 
@@ -80,14 +78,14 @@ class _SurahListTabState extends State<SurahListTab> {
     int? fromPage,
     int? toPage,
   }) async {
-    final repository = GetIt.instance<QuranRepository>();
+    final quranService = GetIt.instance<QuranService>();
     var targetAyah = ayah;
 
     // Smart Resume: If opening from list (ayah == 1) and same surah/reciter is playing, resume from current ayah
     if (ayah == 1 &&
-        repository.currentSurah == surah &&
-        repository.currentReciter == widget.selectedReciter) {
-      targetAyah = (repository.currentIndex ?? 0) + 1;
+        quranService.currentSurah == surah &&
+        quranService.currentReciter == widget.selectedReciter) {
+      targetAyah = (quranService.audioPlayer.currentIndex ?? 0) + 1;
     }
 
     await navigateWithTransition<void>(
@@ -155,7 +153,6 @@ class _SurahListTabState extends State<SurahListTab> {
               else
                 SurahList(
                   surahs: state.filteredSurahs,
-                  isArabic: widget.isArabic,
                   navigateToSurah:
                       ({required surah, required ayah}) async {
                         // For Surah, we restrict to the pages of that Surah
@@ -175,7 +172,6 @@ class _SurahListTabState extends State<SurahListTab> {
             ] else if (currentViewType == QuranViewType.juz) ...[
               JuzListView(
                 juzs: state.juzs,
-                isArabic: widget.isArabic,
                 navigateToJuz: ({required surah, required ayah}) async {
                   // For Juz, we restrict to the pages of that Juz.
                   final juzModel = state.juzs.firstWhere(
@@ -216,7 +212,6 @@ class _SurahListTabState extends State<SurahListTab> {
             ] else if (currentViewType == QuranViewType.hizb) ...[
               HizbListView(
                 hizbs: state.hizbs,
-                isArabic: widget.isArabic,
                 navigateToHizb:
                     ({required surah, required ayah}) async {
                       final hizbModel = state.hizbs.firstWhere(
