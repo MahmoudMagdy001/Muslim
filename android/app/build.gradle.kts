@@ -54,10 +54,12 @@ android {
         }
 
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
+
+
 
 flutter {
     source = "../.."
@@ -65,4 +67,5 @@ flutter {
 
 dependencies {
     implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("com.google.android.material:material:1.12.0")
 }

@@ -1,21 +1,25 @@
 package com.mahmoud.muslim
 
-import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.content.Intent
 import android.os.Bundle
+import android.os.Build
 import android.util.Log
+import android.graphics.Color
 import com.ryanheise.audioservice.AudioServiceActivity
 import androidx.core.view.WindowCompat
-import android.graphics.Color
 
 
 class MainActivity : AudioServiceActivity() {
     private val CHANNEL = "com.mahmoud.muslim/notification_click"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable edge-to-edge display
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+
         super.onCreate(savedInstanceState)
         handleIntent(intent)
     }

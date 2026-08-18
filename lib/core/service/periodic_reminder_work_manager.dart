@@ -36,7 +36,7 @@ void periodicReminderCallbackDispatcher() {
         await AwesomeNotifications().cancelSchedule(
           PeriodicReminderConstants.periodicReminderNotificationId,
         );
-        return Future.value(true);
+        return true;
       }
 
       // Cancel existing and reschedule with native interval
@@ -67,10 +67,10 @@ void periodicReminderCallbackDispatcher() {
       logSuccess(
         '✅ Periodic reminder rescheduled: every $intervalMinutes minutes',
       );
-      return Future.value(true);
+      return true;
     } on Object catch (e, s) {
       logError('❌ Error in Periodic Reminder WorkManager', e, s);
-      return Future.value(false);
+      return false;
     }
   });
 }

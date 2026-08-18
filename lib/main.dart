@@ -25,27 +25,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Phase 1: Critical initialization only - must complete before runApp
+  // === Phase 1: Critical only — must complete before runApp ===
+  // DI registration (all lazy singletons/factories, effectively sync)
   await setupServiceLocator();
+  // Required by InternetStateManagerInitializer widget constructor
   await InternetStateManagerInitializer.initialize();
-
-  // Initialize notification channels early (required before any notification scheduling)
-  await _initializeNotificationChannels();
-
-  // Get cached preferences for immediate theme/language
+  // Cached preferences for immediate theme/language/font
   final prefs = await SharedPreferences.getInstance();
   final initialLocale = _getLocaleFromPrefs(prefs);
   final initialMode = _getThemeFromPrefs(prefs);
   final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
 
-  // ponytail: check location permission status without showing a blocking prompt
-  final locationGranted = await isLocationPermissionGranted();
-
+  // === runApp — show UI as fast as possible ===
   runApp(
     InternetStateManagerInitializer(
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => getIt<PrayerTimesCubit>()..locationGranted = locationGranted),
+          // locationGranted defaults to false; updated post-frame after permission check
+          BlocProvider(create: (_) => getIt<PrayerTimesCubit>()),
           BlocProvider(create: (_) {
             final cubit = getIt<FontSizeCubit>();
             unawaited(cubit.setFontSize(initialFontSize));
@@ -72,17 +69,20 @@ Future<void> main() async {
     ),
   );
 
-  // Phase 2: Non-critical initialization after first frame
+  // === Phase 2: Non-critical — after first frame renders ===
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     try {
+      // Deferred initializations (were blocking startup before)
+      unawaited(_initializeNotificationChannels());
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-      // ponytail: request permissions asynchronously post-frame so it doesn't block splash/startup
-      final newlyGranted = await requestAllPermissions();
+      // Request permissions asynchronously post-frame
+      await requestAllPermissions();
 
-      // ponytail: if location is newly granted, trigger refresh on cubit
+      // Always refresh prayer times — cubit started with locationGranted=false,
+      // so initial fetch shows "غير معروف". This re-fetches with actual location.
       final navContext = navigatorKey.currentContext;
-      if (navContext != null && navContext.mounted && newlyGranted) {
+      if (navContext != null && navContext.mounted) {
         unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes());
       }
 

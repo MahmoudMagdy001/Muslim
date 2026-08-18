@@ -33,7 +33,11 @@ abstract class PrayerTimesLocalDataSource {
     Coordinates? coordinates,
   });
 
-  Future<LocalPrayerTimes> getPrayerTimesForDate(Coordinates coordinates, DateTime date, {String? cityName});
+  Future<LocalPrayerTimes> getPrayerTimesForDate(
+    Coordinates coordinates,
+    DateTime date, {
+    String? cityName,
+  });
 
   Future<Coordinates?> getCachedCoordinates();
 }
@@ -54,9 +58,17 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     Coordinates? coordinates,
   }) {
     if (forMonth) {
-      return getMonthlyPrayerTimes(isArabic: isArabic, useLocation: useLocation, coordinates: coordinates);
+      return getMonthlyPrayerTimes(
+        isArabic: isArabic,
+        useLocation: useLocation,
+        coordinates: coordinates,
+      );
     }
-    return getDailyPrayerTimes(isArabic: isArabic, useLocation: useLocation, coordinates: coordinates);
+    return getDailyPrayerTimes(
+      isArabic: isArabic,
+      useLocation: useLocation,
+      coordinates: coordinates,
+    );
   }
 
   @override
@@ -71,9 +83,12 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         useLocation: useLocation,
         coordinates: coordinates,
       );
-      if (resolved == null) return _getDefaultPrayerTimes();
+      if (resolved == null) return await _getDefaultPrayerTimes();
 
-      return await _calculatePrayerTimes(resolved.coordinates, cityName: resolved.cityName);
+      return await _calculatePrayerTimes(
+        resolved.coordinates,
+        cityName: resolved.cityName,
+      );
     } on Object catch (error) {
       logError('خطأ في الحصول على مواقيت الصلاة', error);
       return _getDefaultPrayerTimes();
@@ -94,7 +109,10 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       );
       if (resolved == null) return [await _getDefaultPrayerTimes()];
 
-      return await _calculateMonthlyPrayerTimes(resolved.coordinates, cityName: resolved.cityName);
+      return await _calculateMonthlyPrayerTimes(
+        resolved.coordinates,
+        cityName: resolved.cityName,
+      );
     } on Object catch (error) {
       logError('خطأ في الحصول على مواقيت الصلاة', error);
       return [await _getDefaultPrayerTimes()];
@@ -108,27 +126,52 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     required bool useLocation,
     Coordinates? coordinates,
   }) async {
-    final coords = useLocation ? (coordinates ?? await _getCachedOrFreshCoordinates()) : null;
-    if (coords == null) return null;
-
     final prefs = await SharedPreferences.getInstance();
-    final cachedCity = prefs.getString(_cityNameKey);
 
-    // Fire-and-forget: update city name in background without blocking
-    unawaited(_refreshCityNameIfNeeded(coords, isArabic, prefs));
+    if (useLocation) {
+      final coords = coordinates ?? await _getCachedOrFreshCoordinates();
+      if (coords == null) return null;
 
-    return _ResolvedLocation(coordinates: coords, cityName: cachedCity);
+      final cachedCity = prefs.getString(_cityNameKey);
+
+      // Fire-and-forget: update city name in background without blocking
+      unawaited(_refreshCityNameIfNeeded(coords, isArabic, prefs));
+
+      return _ResolvedLocation(coordinates: coords, cityName: cachedCity);
+    }
+
+    // No location permission — try cached coordinates + cached city name
+    // so the user sees their real last-known city instead of "القاهرة"
+    final cached = await getCachedCoordinates();
+    if (cached != null) {
+      final cachedCity = prefs.getString(_cityNameKey);
+      return _ResolvedLocation(coordinates: cached, cityName: cachedCity);
+    }
+
+    return null;
   }
 
   @override
-  Future<LocalPrayerTimes> getPrayerTimesForDate(Coordinates coordinates, DateTime date, {String? cityName}) async =>
+  Future<LocalPrayerTimes> getPrayerTimesForDate(
+    Coordinates coordinates,
+    DateTime date, {
+    String? cityName,
+  }) async =>
       _calculatePrayerTimes(coordinates, date: date, cityName: cityName);
 
-  Future<LocalPrayerTimes> _calculatePrayerTimes(Coordinates coordinates, {DateTime? date, String? cityName}) async {
+  Future<LocalPrayerTimes> _calculatePrayerTimes(
+    Coordinates coordinates, {
+    DateTime? date,
+    String? cityName,
+  }) async {
     final calculationParams = _getCalculationParameters();
     final targetDate = date ?? DateTime.now();
 
-    final prayerTimes = PrayerTimes(coordinates, DateComponents.from(targetDate), calculationParams);
+    final prayerTimes = PrayerTimes(
+      coordinates,
+      DateComponents.from(targetDate),
+      calculationParams,
+    );
 
     // Ensure prayer times are in local timezone to avoid DST issues
     final fajrLocal = prayerTimes.fajr.toLocal();
@@ -157,7 +200,10 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     );
   }
 
-  Future<List<LocalPrayerTimes>> _calculateMonthlyPrayerTimes(Coordinates coordinates, {String? cityName}) async {
+  Future<List<LocalPrayerTimes>> _calculateMonthlyPrayerTimes(
+    Coordinates coordinates, {
+    String? cityName,
+  }) async {
     final calculationParams = _getCalculationParameters();
     final now = DateTime.now();
 
@@ -166,7 +212,11 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
 
     for (var day = 1; day <= daysInMonth; day++) {
       final date = DateTime(now.year, now.month, day);
-      final prayerTimes = PrayerTimes(coordinates, DateComponents.from(date), calculationParams);
+      final prayerTimes = PrayerTimes(
+        coordinates,
+        DateComponents.from(date),
+        calculationParams,
+      );
 
       // Ensure prayer times are in local timezone to avoid DST issues
       final fajrLocal = prayerTimes.fajr.toLocal();
@@ -203,7 +253,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   CalculationParameters _getCalculationParameters() =>
       CalculationMethod.egyptian.getParameters()..madhab = Madhab.shafi;
 
-  String _formatTime(DateTime dateTime) => _timeFormatter.format(dateTime.toLocal());
+  String _formatTime(DateTime dateTime) =>
+      _timeFormatter.format(dateTime.toLocal());
 
   /// Fallback used when no location is available or an error occurs.
   /// Deliberately NOT persisted to the location cache: doing so would
@@ -214,7 +265,11 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     final cairoCoordinates = Coordinates(30.0444, 31.2357);
     final calculationParams = _getCalculationParameters();
     final now = DateTime.now();
-    final prayerTimes = PrayerTimes(cairoCoordinates, DateComponents.from(now), calculationParams);
+    final prayerTimes = PrayerTimes(
+      cairoCoordinates,
+      DateComponents.from(now),
+      calculationParams,
+    );
 
     // Ensure prayer times are in local timezone to avoid DST issues
     final fajrLocal = prayerTimes.fajr.toLocal();
@@ -267,7 +322,9 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       final position = await _getCurrentPosition();
       final prefs = await SharedPreferences.getInstance();
       await _cacheCoordinates(prefs, position.latitude, position.longitude);
-      logSuccess('📍 GPS محدّث في الخلفية: ${position.latitude}, ${position.longitude}');
+      logSuccess(
+        '📍 GPS محدّث في الخلفية: ${position.latitude}, ${position.longitude}',
+      );
       return Coordinates(position.latitude, position.longitude);
     } on Object catch (e) {
       logWarning('فشل GPS في الخلفية: $e');
@@ -276,7 +333,11 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   }
 
   /// Refreshes city name via geocoding in background and caches it for next launch.
-  Future<void> _refreshCityNameIfNeeded(Coordinates coords, bool isArabic, SharedPreferences prefs) async {
+  Future<void> _refreshCityNameIfNeeded(
+    Coordinates coords,
+    bool isArabic,
+    SharedPreferences prefs,
+  ) async {
     try {
       // ponytail: Use Geocoding instance for compatibility with v5.0.0
       final geocoding = geo.Geocoding();
@@ -287,7 +348,9 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       );
       if (placemarks.isNotEmpty) {
         final place = placemarks.first;
-        final city = place.locality?.isNotEmpty ?? false ? place.locality : place.administrativeArea;
+        final city = place.locality?.isNotEmpty ?? false
+            ? place.locality
+            : place.administrativeArea;
         if (city != null) {
           await prefs.setString(_cityNameKey, city);
           logInfo('🏙️ تم تحديث اسم المدينة في الخلفية: $city');
@@ -314,7 +377,11 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     return Geolocator.getCurrentPosition();
   }
 
-  Future<void> _cacheCoordinates(SharedPreferences prefs, double latitude, double longitude) async {
+  Future<void> _cacheCoordinates(
+    SharedPreferences prefs,
+    double latitude,
+    double longitude,
+  ) async {
     await prefs.setDouble(_latitudeKey, latitude);
     await prefs.setDouble(_longitudeKey, longitude);
     await prefs.setInt(_lastUpdatedKey, DateTime.now().millisecondsSinceEpoch);

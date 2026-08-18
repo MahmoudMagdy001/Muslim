@@ -34,6 +34,11 @@
 -keep class me.carda.awesome_notifications.** { *; }
 -keep enum me.carda.awesome_notifications.enumerators.** { *; }
 
+# AudioService & JustAudio
+-keep class com.ryanheise.audioservice.** { *; }
+-dontwarn com.ryanheise.audioservice.**
+
+
 # WorkManager - Critical for periodic reminders in release mode
 -keep class androidx.work.** { *; }
 -keep class androidx.work.impl.** { *; }
