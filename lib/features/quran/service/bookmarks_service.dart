@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:muslim/features/quran/model/bookmark_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +21,5 @@ class BookmarksService {
     final prefs = await SharedPreferences.getInstance();
     final encoded = json.encode(bookmarks.map((b) => b.toJson()).toList());
     await prefs.setString(_prefsKey, encoded);
-    debugPrint(encoded);
   }
 }

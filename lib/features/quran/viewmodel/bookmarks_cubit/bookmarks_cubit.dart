@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:muslim/core/di/service_locator.dart';
+import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/quran/model/bookmark_model.dart';
 import 'package:muslim/features/quran/service/bookmarks_service.dart';
 import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_state.dart';
@@ -27,11 +26,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
     }
   }
 
-  Future<void> addBookmark({
-    required int surah,
-    required int ayah,
-    required String ayahText,
-  }) async {
+  Future<void> addBookmark({required int surah, required int ayah, required String ayahText}) async {
     try {
       final updated = List<AyahBookmark>.from(state.bookmarks)
         ..removeWhere((b) => b.surahNumber == surah && b.ayahNumber == ayah)
@@ -48,8 +43,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
     } on Object catch (e) {
-      // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
-      debugPrint('Error adding bookmark: $e');
+      logError('Error adding bookmark', e);
     }
   }
 
@@ -61,8 +55,7 @@ class BookmarksCubit extends Cubit<BookmarksState> {
       if (!isClosed) emit(state.copyWith(bookmarks: updated));
       await _service.saveBookmarks(updated);
     } on Object catch (e) {
-      // يمكنك إصدار حالة خطأ هنا إذا لزم الأمر
-      debugPrint('Error removing bookmark: $e');
+      logError('Error removing bookmark', e);
     }
   }
 }
