@@ -13,7 +13,9 @@ import 'package:muslim/features/azkar/presentation/views/widgets/azkar_category_
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 
 class AzkarView extends StatefulWidget {
-  const AzkarView({super.key});
+  const AzkarView({this.showAppBar = true, super.key});
+
+  final bool showAppBar;
 
   @override
   State<AzkarView> createState() => _AzkarViewState();
@@ -38,20 +40,22 @@ class _AzkarViewState extends State<AzkarView> {
       return cubit;
     },
     child: Scaffold(
-      appBar: AppBar(
-        key: AppTourKeys.azkarTitleKey,
-        title: Text(context.l10n.azkar),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () => unawaited(
-              AppTourHelper.showAzkarTour(context, force: true),
-            ),
-            icon: const Icon(Icons.explore_outlined),
-            tooltip: context.l10n.tourAzkarTitle,
-          ),
-        ],
-      ),
+      appBar: widget.showAppBar
+          ? AppBar(
+              key: AppTourKeys.azkarTitleKey,
+              title: Text(context.l10n.azkar),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  onPressed: () => unawaited(
+                    AppTourHelper.showAzkarTour(context, force: true),
+                  ),
+                  icon: const Icon(Icons.explore_outlined),
+                  tooltip: context.l10n.tourAzkarTitle,
+                ),
+              ],
+            )
+          : null,
       body: Builder(
         builder: (context) => InternetStateManager(
           noInternetScreen: const NoInternetScreen(),

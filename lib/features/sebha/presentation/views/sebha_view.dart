@@ -16,7 +16,9 @@ import 'package:muslim/features/sebha/presentation/views/widgets/sebha_button.da
 import 'package:muslim/features/sebha/presentation/views/widgets/sebha_controls.dart';
 
 class SebhaView extends StatefulWidget {
-  const SebhaView({super.key});
+  const SebhaView({this.showAppBar = true, super.key});
+
+  final bool showAppBar;
 
   @override
   State<SebhaView> createState() => _SebhaViewState();
@@ -53,25 +55,26 @@ class _SebhaViewState extends State<SebhaView> {
         _showCompleteDialog(context, state.customGoal ?? 0);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.sebhaTitle),
-          elevation: 0,
-          actions: [
-            IconButton(
-              onPressed: () => unawaited(
-                AppTourHelper.showSebhaTour(context, force: true),
-              ),
-              icon: const Icon(Icons.explore_outlined),
-              tooltip: l10n.tourSebhaTitle,
-            ),
-            IconButton(
-              key: AppTourKeys.sebhaAddKey,
-              onPressed: () => _showAddCustomZikrDialog(context),
-              icon: const Icon(Icons.add_rounded),
-            ),
-          ],
-        ),
-
+        appBar: widget.showAppBar
+            ? AppBar(
+                title: Text(l10n.sebhaTitle),
+                elevation: 0,
+                actions: [
+                  IconButton(
+                    onPressed: () => unawaited(
+                      AppTourHelper.showSebhaTour(context, force: true),
+                    ),
+                    icon: const Icon(Icons.explore_outlined),
+                    tooltip: l10n.tourSebhaTitle,
+                  ),
+                  IconButton(
+                    key: AppTourKeys.sebhaAddKey,
+                    onPressed: () => _showAddCustomZikrDialog(context),
+                    icon: const Icon(Icons.add_rounded),
+                  ),
+                ],
+              )
+            : null,
         body: SafeArea(
           child: Column(
             children: [

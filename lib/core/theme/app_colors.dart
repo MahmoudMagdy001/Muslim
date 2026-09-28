@@ -5,11 +5,11 @@ class AppColors {
   const AppColors._();
 
   // ================== Base Colors ==================
-  static const Color primary = Color(0xff4C406F);
-  static const Color secondary = Color(0xffE0FF50);
+  static const Color primary = Color(0xff1A3B34); // Deep Emerald
+  static const Color secondary = Color(0xffD4AF37); // Warm Sacred Gold
 
-  static const Color primaryDark = Color(0xff362C54);
-  static const Color secondaryDark = Color(0xffB6CC3F);
+  static const Color primaryDark = Color(0xff0E231F); // Midnight Emerald
+  static const Color secondaryDark = Color(0xffE5C467); // Luminous Warm Gold
 
   static const Color white = Colors.white;
   static const Color black87 = Colors.black87;
@@ -19,29 +19,29 @@ class AppColors {
   static const Color errorLight = Color(0xFFE74C3C);
   static const Color errorDark = Color(0xFFFF9A8B);
 
-  static const Color darkBackground = Color(0xFF201A2B); // Deep purple-black
-  static const Color darkSurface = Color(0xFF2A2342); // Slightly lighter
-  static const Color darkCard = Color(0xFF2A2342);
-  static const Color darkInputFill = Color(0xFF382E59);
-  static const Color darkInactiveTrack = Color(0xFF4A5568);
+  static const Color darkBackground = Color(0xFF101715); // Deep emerald slate
+  static const Color darkSurface = Color(0xFF182421); // Elevated emerald surface
+  static const Color darkCard = Color(0xFF182421);
+  static const Color darkInputFill = Color(0xFF22302D);
+  static const Color darkInactiveTrack = Color(0xFF3B4E49);
 
-  static const Color lightInputFill = Color(0xFFF5F5F5);
-  static const Color lightInactiveTrack = Color(0xFFE2E8F0);
+  static const Color lightInputFill = Color(0xFFF4F7F5);
+  static const Color lightInactiveTrack = Color(0xFFDCE5E2);
   static const Color lightCard = Color(0xFFFFFFFF);
 
   // ================== Text Colors ==================
-  static const Color textPrimary = Color(0xFF2D3436);
-  static const Color textSecondary = Color(0xFF636E72);
+  static const Color textPrimary = Color(0xFF192522);
+  static const Color textSecondary = Color(0xFF5D716C);
 
   // ================== Private Gradients ==================
   static const List<Color> _cardGradientLight = [
-    Color(0xff7C6FB3),
-    Color(0xff4C406F),
+    Color(0xff2A574E),
+    Color(0xff1A3B34),
   ];
 
   static const List<Color> _cardGradientDark = [
-    Color(0xff4C406F),
-    Color(0xff2A2342),
+    Color(0xff1A3B34),
+    Color(0xff0E231F),
   ];
 
   // ================== Public Smart Gradient ==================

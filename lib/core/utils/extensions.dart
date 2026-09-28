@@ -37,7 +37,7 @@ extension ContextExtension on BuildContext {
   List<Color> get cardGradient {
     final isDark = theme.brightness == Brightness.dark;
     return isDark
-        ? [const Color(0xff4C406F), const Color(0xff2A2342)]
-        : [const Color(0xff7C6FB3), const Color(0xff4C406F)];
+        ? [const Color(0xff1A3B34), const Color(0xff0E231F)]
+        : [const Color(0xff2A574E), const Color(0xff1A3B34)];
   }
 }

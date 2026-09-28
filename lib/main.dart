@@ -30,19 +30,23 @@ Future<void> main() async {
   await setupServiceLocator();
   // Required by InternetStateManagerInitializer widget constructor
   await InternetStateManagerInitializer.initialize();
+  // Initialize notification channels before runApp to prevent scheduling race conditions
+  await _initializeNotificationChannels();
   // Cached preferences for immediate theme/language/font
   final prefs = await SharedPreferences.getInstance();
   final initialLocale = _getLocaleFromPrefs(prefs);
   final initialMode = _getThemeFromPrefs(prefs);
   final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
+  final locationGranted = await isLocationPermissionGranted();
 
   // === runApp — show UI as fast as possible ===
   runApp(
     InternetStateManagerInitializer(
       child: MultiBlocProvider(
         providers: [
-          // locationGranted defaults to false; updated post-frame after permission check
-          BlocProvider(create: (_) => getIt<PrayerTimesCubit>()),
+          BlocProvider(
+            create: (_) => getIt<PrayerTimesCubit>()..locationGranted = locationGranted,
+          ),
           BlocProvider(create: (_) {
             final cubit = getIt<FontSizeCubit>();
             unawaited(cubit.setFontSize(initialFontSize));
@@ -72,17 +76,13 @@ Future<void> main() async {
   // === Phase 2: Non-critical — after first frame renders ===
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     try {
-      // Deferred initializations (were blocking startup before)
-      unawaited(_initializeNotificationChannels());
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-      // Request permissions asynchronously post-frame
-      await requestAllPermissions();
+      // Request permissions asynchronously post-frame if not already granted
+      final newlyGranted = await requestAllPermissions();
 
-      // Always refresh prayer times — cubit started with locationGranted=false,
-      // so initial fetch shows "غير معروف". This re-fetches with actual location.
       final navContext = navigatorKey.currentContext;
-      if (navContext != null && navContext.mounted) {
+      if (navContext != null && navContext.mounted && newlyGranted && !locationGranted) {
         unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes());
       }
 

@@ -245,8 +245,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// Manual refresh of prayer times.
   Future<void> refreshPrayerTimes({bool isArabic = true}) async {
     logInfo('🔄 تحديث يدوي لمواعيد الصلاة...');
-    // ponytail: update locationGranted status dynamically when refreshing
-    locationGranted = await requestAllPermissions();
+    locationGranted = await isLocationPermissionGranted();
     await init(isArabic: isArabic);
   }
 

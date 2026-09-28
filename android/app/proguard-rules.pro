@@ -32,7 +32,11 @@
 
 # Awesome Notifications
 -keep class me.carda.awesome_notifications.** { *; }
+-keep class me.carda.awesome_notifications_core.** { *; }
 -keep enum me.carda.awesome_notifications.enumerators.** { *; }
+-keep enum me.carda.awesome_notifications_core.enumerators.** { *; }
+-dontwarn me.carda.awesome_notifications.**
+-dontwarn me.carda.awesome_notifications_core.**
 
 # AudioService & JustAudio
 -keep class com.ryanheise.audioservice.** { *; }

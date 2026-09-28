@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,12 +19,13 @@ Future<bool> requestAllPermissions() async {
 Future<bool> isLocationPermissionGranted() async => Permission.locationWhenInUse.isGranted;
 
 Future<void> checkNotificationPermission() async {
-  final status = await Permission.notification.status;
-  if (status.isDenied) {
-    await Permission.notification.request();
-  }
-  if (status.isPermanentlyDenied) {
-    await openAppSettings();
+  try {
+    final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      await AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  } on Object catch (e) {
+    debugPrint('Notification permission request error: $e');
   }
 }
 

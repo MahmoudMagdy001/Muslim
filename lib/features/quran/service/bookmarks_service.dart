@@ -12,9 +12,7 @@ class BookmarksService {
     if (jsonString == null || jsonString.isEmpty) return [];
 
     final list = json.decode(jsonString) as List<dynamic>;
-    return list
-        .map((e) => AyahBookmark.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return list.map((e) => AyahBookmark.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<void> saveBookmarks(List<AyahBookmark> bookmarks) async {
