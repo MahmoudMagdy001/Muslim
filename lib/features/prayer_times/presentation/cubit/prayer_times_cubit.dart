@@ -38,6 +38,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   Timer? _timer;
   Timer? _initialDelayTimer;
   Timer? _midnightTimer;
+  bool _isScheduling = false;
 
   /// Initializes prayer times and loads notification settings.
   Future<void> init({bool isArabic = true}) async {
@@ -82,6 +83,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         useLocation: locationGranted,
       );
       await _handlePrayerTimesSuccess(times);
+      _scheduleMidnightTimer(isArabic: isArabic);
     } on Object catch (e) {
       _handlePrayerTimesError(e.toString());
     }
@@ -90,7 +92,14 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   /// Handles successful prayer times fetch — schedules notifications
   /// and updates state.
   Future<void> _handlePrayerTimesSuccess(LocalPrayerTimes times) async {
-    final allScheduledTimes = <LocalPrayerTimes>[times];
+    await _scheduleUpcomingNotifications(times);
+    _updateStateWithPrayerTimes(times);
+    _startCountdown();
+  }
+
+  /// Helper to fetch and schedule upcoming days' notifications without code duplication
+  Future<void> _scheduleUpcomingNotifications(LocalPrayerTimes currentTimes) async {
+    final allScheduledTimes = <LocalPrayerTimes>[currentTimes];
 
     try {
       final coordinates = await _prayerTimesRepo.getCachedCoordinates();
@@ -102,7 +111,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
             final nextDayTimes = await _prayerTimesRepo.getPrayerTimesForDate(
               coordinates,
               nextDate,
-              cityName: times.city,
+              cityName: currentTimes.city,
             );
             allScheduledTimes.add(nextDayTimes);
           } on Object catch (_) {}
@@ -117,14 +126,22 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     } on Object catch (e) {
       logWarning('تعذر جدولة الإشعارات: $e');
     }
-    
-    _updateStateWithPrayerTimes(times);
-    _startCountdown();
+  }
+
+  /// Schedules a timer to reload prayer times shortly after midnight
+  void _scheduleMidnightTimer({bool isArabic = true}) {
+    _midnightTimer?.cancel();
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1, 0, 0, 5);
+    final delay = tomorrow.difference(now);
+    _midnightTimer = Timer(delay, () {
+      logInfo('🌙 منتصف الليل — جاري تحديث مواقيت الصلاة لليوم الجديد...');
+      unawaited(fetchPrayerTimes(isArabic: isArabic));
+    });
   }
 
   /// Updates state with prayer calculation results.
   void _updateStateWithPrayerTimes(LocalPrayerTimes times) {
-    // using calculateSync because we need it immediately for state update
     final calculation = _calculateNextPrayer.calculateSync(times);
 
     if (!isClosed) {
@@ -175,8 +192,21 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         (state.timeLeft?.inSeconds != calculation.timeLeft.inSeconds);
 
     if (calculation.timeLeft.inSeconds <= 0) {
-      logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الجدولة...');
-      unawaited(_handlePrayerTimesSuccess(currentTimes));
+      if (!_isScheduling) {
+        _isScheduling = true;
+        logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الحساب...');
+        final isToday = currentTimes.date.day == DateTime.now().day;
+        if (!isToday) {
+          unawaited(fetchPrayerTimes().whenComplete(() => _isScheduling = false));
+        } else {
+          _updateStateWithPrayerTimes(currentTimes);
+          unawaited(
+            _scheduleUpcomingNotifications(currentTimes).whenComplete(() {
+              _isScheduling = false;
+            }),
+          );
+        }
+      }
     } else if (shouldEmit && !isClosed) {
       emit(
         state.copyWith(
@@ -218,27 +248,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     }
 
     if (state.localPrayerTimes != null) {
-      final times = <LocalPrayerTimes>[state.localPrayerTimes!];
-      try {
-        final coordinates = await _prayerTimesRepo.getCachedCoordinates();
-        if (coordinates != null) {
-          final now = DateTime.now();
-          for (var i = 1; i < NotificationConstants.scheduleDaysAhead; i++) {
-            final date = now.add(Duration(days: i));
-            try {
-              final nextDayTimes = await _prayerTimesRepo.getPrayerTimesForDate(
-                coordinates,
-                date,
-                cityName: state.localPrayerTimes!.city,
-              );
-              times.add(nextDayTimes);
-            } on Object catch (_) {}
-          }
-        }
-      } on Object catch (_) {}
-      try {
-        await _notificationRepo.scheduleNotifications(times);
-      } on Object catch (_) {}
+      await _scheduleUpcomingNotifications(state.localPrayerTimes!);
     }
   }
 

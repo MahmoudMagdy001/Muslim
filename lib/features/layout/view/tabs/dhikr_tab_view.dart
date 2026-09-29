@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/features/azkar/presentation/views/azkar_view.dart';
 import 'package:muslim/features/sebha/presentation/views/sebha_view.dart';
@@ -11,6 +13,7 @@ class DhikrTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final colors = context.colors;
 
     return DefaultTabController(
       length: 2,
@@ -28,18 +31,26 @@ class DhikrTabView extends StatelessWidget {
             ),
           ],
           bottom: TabBar(
-            indicatorColor: const Color(0xFFD4AF37),
+            indicatorColor: colors.secondary,
             indicatorWeight: 3,
-            labelColor: const Color(0xFFD4AF37),
+            labelColor: colors.secondary,
             unselectedLabelColor: Colors.white70,
+            labelStyle: context.typography.titleSmall.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 13.sp,
+            ),
+            unselectedLabelStyle: context.typography.titleSmall.copyWith(
+              fontWeight: FontWeight.normal,
+              fontSize: 13.sp,
+            ),
             tabs: [
               Tab(
                 text: isArabic ? 'أذكار المسلم' : 'Azkar',
-                icon: const Icon(Icons.auto_stories_rounded, size: 20),
+                icon: Icon(Icons.auto_stories_rounded, size: 20.r),
               ),
               Tab(
                 text: isArabic ? 'السبحة الإلكترونية' : 'Digital Tasbih',
-                icon: const Icon(Icons.fingerprint_rounded, size: 20),
+                icon: Icon(Icons.fingerprint_rounded, size: 20.r),
               ),
             ],
           ),

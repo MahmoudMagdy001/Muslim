@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_classes_with_only_static_members
-
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 
 class VerseOptionsMenu {
@@ -17,19 +16,37 @@ class VerseOptionsMenu {
       overlay.size.width - position.dx,
       overlay.size.height - position.dy,
     );
+    final colors = context.colors;
 
     return showMenu<String>(
       context: context,
       position: menuPosition,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: colors.surface,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        side: BorderSide(
+          color: colors.border,
+          width: 0.8,
+        ),
+      ),
       items: [
         PopupMenuItem(
           value: 'play',
           child: Row(
             children: [
-              const Icon(Icons.play_arrow_rounded),
-              const SizedBox(width: 12),
-              Text(localizations.playVerseSound),
+              Icon(
+                Icons.play_circle_outline_rounded,
+                color: colors.secondary,
+                size: 20.r,
+              ),
+              SizedBox(width: 12.w),
+              Text(
+                localizations.playVerseSound,
+                style: context.typography.titleSmall.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
@@ -37,9 +54,18 @@ class VerseOptionsMenu {
           value: 'bookmark',
           child: Row(
             children: [
-              const Icon(Icons.bookmark_border_rounded),
-              const SizedBox(width: 12),
-              Text(localizations.bookmarkVerse),
+              Icon(
+                Icons.bookmark_border_rounded,
+                color: colors.secondary,
+                size: 20.r,
+              ),
+              SizedBox(width: 12.w),
+              Text(
+                localizations.bookmarkVerse,
+                style: context.typography.titleSmall.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
@@ -47,9 +73,18 @@ class VerseOptionsMenu {
           value: 'tafseer',
           child: Row(
             children: [
-              const Icon(Icons.menu_book_rounded),
-              const SizedBox(width: 12),
-              Text(localizations.tafsirVerse),
+              Icon(
+                Icons.menu_book_rounded,
+                color: colors.secondary,
+                size: 20.r,
+              ),
+              SizedBox(width: 12.w),
+              Text(
+                localizations.tafsirVerse,
+                style: context.typography.titleSmall.copyWith(
+                  color: colors.textPrimary,
+                ),
+              ),
             ],
           ),
         ),

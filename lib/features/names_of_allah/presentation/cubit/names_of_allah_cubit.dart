@@ -10,8 +10,10 @@ class NamesOfAllahCubit extends Cubit<NamesOfAllahState> {
   final NamesOfAllahRepository repository;
 
   Future<void> getNamesOfAllah() async {
+    if (isClosed) return;
     emit(NamesOfAllahLoading());
     final result = await repository.getNamesOfAllah();
+    if (isClosed) return;
     result.fold(
       (failure) => emit(NamesOfAllahError(failure.message)),
       (names) => emit(NamesOfAllahLoaded(names)),

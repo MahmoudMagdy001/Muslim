@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
@@ -16,13 +15,8 @@ class HadithCubit extends Cubit<HadithState> {
   String? _chapterNumber;
   String? _chapterName;
 
-  final Map<String, ValueNotifier<bool>> _hadithSavedMap = {};
-
   bool isHadithSaved(String hadithId) =>
-      _hadithSavedMap[hadithId]?.value ?? false;
-
-  ValueNotifier<bool>? getHadithNotifier(String hadithId) =>
-      _hadithSavedMap[hadithId];
+      state.savedHadithIds.contains(hadithId);
 
   Future<void> initializeData(
     String bookSlug,
@@ -37,16 +31,19 @@ class HadithCubit extends Cubit<HadithState> {
 
     final savedResult = await repository.getSavedHadiths();
     var savedHadiths = <Map<String, dynamic>>[];
+    final savedIds = <String>{};
+
     savedResult.fold((failure) => null, (data) {
       savedHadiths = data;
       for (final h in data) {
-        _hadithSavedMap[h['id'].toString()] = ValueNotifier(true);
+        final id = h['id']?.toString();
+        if (id != null) savedIds.add(id);
       }
     });
 
     final hadithsResult = await repository.getHadithsOfChapter(bookSlug, chapterNumber);
 
-    await hadithsResult.fold(
+    hadithsResult.fold(
       (failure) {
         if (!isClosed) {
           emit(
@@ -57,14 +54,14 @@ class HadithCubit extends Cubit<HadithState> {
           );
         }
       },
-      (hadiths) async {
-        await _prepareHadithData(hadiths);
+      (hadiths) {
         if (!isClosed) {
           emit(
             state.copyWith(
               status: HadithStatus.success,
               hadiths: hadiths,
               savedHadiths: savedHadiths,
+              savedHadithIds: savedIds,
               dataLoaded: true,
             ),
           );
@@ -79,35 +76,31 @@ class HadithCubit extends Cubit<HadithState> {
     }
   }
 
-  Future<void> _prepareHadithData(List<HadithEntity> hadiths) async {
-    for (final hadith in hadiths) {
-      final id = hadith.id;
-      if (!_hadithSavedMap.containsKey(id)) {
-        _hadithSavedMap[id] = ValueNotifier(false);
-      }
-    }
-  }
-
   Future<void> toggleHadithSave(HadithEntity hadith, {required bool isArabic}) async {
     if (_bookSlug == null || _chapterNumber == null || _chapterName == null) {
       return;
     }
 
     final id = hadith.id;
-
-    if (!_hadithSavedMap.containsKey(id)) {
-      _hadithSavedMap[id] = ValueNotifier(false);
-    }
-
-    final notifier = _hadithSavedMap[id]!;
-    final isCurrentlySaved = notifier.value;
+    final isCurrentlySaved = isHadithSaved(id);
+    final previousSavedIds = Set<String>.from(state.savedHadithIds);
+    final updatedIds = Set<String>.from(state.savedHadithIds);
 
     if (isCurrentlySaved) {
+      updatedIds.remove(id);
+      if (!isClosed) emit(state.copyWith(savedHadithIds: updatedIds));
+
       final result = await repository.removeHadith(id);
-      result.fold((failure) => null, (_) {
-        notifier.value = false;
-      });
+      result.fold(
+        (failure) {
+          if (!isClosed) emit(state.copyWith(savedHadithIds: previousSavedIds));
+        },
+        (_) => null,
+      );
     } else {
+      updatedIds.add(id);
+      if (!isClosed) emit(state.copyWith(savedHadithIds: updatedIds));
+
       final data = {
         'id': id,
         'heading': isArabic
@@ -123,10 +116,14 @@ class HadithCubit extends Cubit<HadithState> {
         'chapterNumber': _chapterNumber!,
         'chapterName': _chapterName!,
       };
+
       final result = await repository.saveHadith(data);
-      result.fold((failure) => null, (_) {
-        notifier.value = true;
-      });
+      result.fold(
+        (failure) {
+          if (!isClosed) emit(state.copyWith(savedHadithIds: previousSavedIds));
+        },
+        (_) => null,
+      );
     }
   }
 

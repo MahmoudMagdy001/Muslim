@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/utils/extensions.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:muslim/features/quran/repository/tafsir_repository.dart';
 import 'package:muslim/l10n/app_localizations.dart';
@@ -16,34 +16,36 @@ class TafsirSelectionDialog extends StatelessWidget {
   static Future<Map<String, dynamic>?> show(
     BuildContext context, {
     required AppLocalizations localizations,
-  }) => showDialog<Map<String, dynamic>>(
-    context: context,
-    builder: (context) =>
-        TafsirSelectionDialog(localizations: localizations),
-  );
+  }) =>
+      showDialog<Map<String, dynamic>>(
+        context: context,
+        builder: (context) => TafsirSelectionDialog(localizations: localizations),
+      );
 
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final colors = context.colors;
 
     return BaseAppDialog(
+      icon: Icons.menu_book_rounded,
+      iconColor: colors.secondary,
       title: localizations.selectTafsir,
       content: SizedBox(
-        width: context.screenWidth * 0.8,
+        width: context.screenWidth * 0.85,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Divider(),
-            const SizedBox(height: 15),
+            SizedBox(height: 8.h),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: TafsirRepository.tafasirList.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 2.2,
+                crossAxisSpacing: 10.w,
+                mainAxisSpacing: 10.h,
+                childAspectRatio: 2.3,
               ),
               itemBuilder: (context, index) {
                 final tafsir = TafsirRepository.tafasirList[index];
@@ -51,28 +53,33 @@ class TafsirSelectionDialog extends StatelessWidget {
                     ? tafsir['name_ar']
                     : tafsir['name_en']) as String;
 
-                // Extract just the name if it contains "تفسير"
                 var displayableName = tafsirName;
                 if (displayableName.startsWith('تفسير ')) {
                   displayableName = displayableName.substring(6);
                 }
 
-                return InkWell(
-                  onTap: () => Navigator.pop(context, tafsir),
-                  borderRadius: BorderRadius.circular(15),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.primary,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                      child: Text(
-                        displayableName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: context.colorScheme.onPrimary,
-                          fontSize: 18.toSp,
-                          fontWeight: FontWeight.w500,
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context, tafsir),
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: colors.border,
+                          width: 0.8,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          displayableName,
+                          textAlign: TextAlign.center,
+                          style: context.typography.titleSmall.copyWith(
+                            color: colors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -83,6 +90,15 @@ class TafsirSelectionDialog extends StatelessWidget {
           ],
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          style: TextButton.styleFrom(
+            foregroundColor: colors.textSecondary,
+          ),
+          child: Text(localizations.cancel),
+        ),
+      ],
     );
   }
 }

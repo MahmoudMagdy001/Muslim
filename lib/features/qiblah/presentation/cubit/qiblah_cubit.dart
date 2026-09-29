@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -35,7 +34,7 @@ class QiblahCubit extends Cubit<QiblahState> {
   static const double _degreesToRadians = pi / 180;
 
   /// Initializes listeners
-  Future<void> init([BuildContext? context]) async {
+  Future<void> init() async {
     if (_isInitialized) return;
     _isInitialized = true;
 
@@ -46,7 +45,7 @@ class QiblahCubit extends Cubit<QiblahState> {
     }
 
     _setupLocationServiceListener();
-    await _startIfGranted(context);
+    await _startIfGranted();
   }
 
   // ✅ setup location service listener
@@ -85,9 +84,9 @@ class QiblahCubit extends Cubit<QiblahState> {
   }
 
   // ✅ Start if permissions are granted
-  Future<void> _startIfGranted([BuildContext? context]) async {
+  Future<void> _startIfGranted() async {
     try {
-      final status = await locationService.checkLocationStatus(context);
+      final status = await locationService.checkLocationStatus();
 
       if (status.isGranted) {
         await _startQiblahCompass();

@@ -42,111 +42,118 @@ class CurrentPrayerCard extends StatelessWidget {
         final localPrayerTimes = state.localPrayerTimes;
         final next = state.nextPrayer;
 
-        return ColoredBox(
-          color: theme.colorScheme.primary,
-          child: Stack(
-            children: [
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Image.asset('assets/home/vactor.png', fit: BoxFit.fill),
-              ),
-              Skeletonizer(
-                enabled: state.status == RequestStatus.loading,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    children: [
-                      // Top Info: Day, Date, City
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.toW),
-                        child: Row(
-                          mainAxisAlignment: .spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: .start,
-                              children: [
-                                Text(
-                                  '$dayName - $hijriDate',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 4.toH),
-                                _CityText(theme),
-                              ],
-                            ),
-                             _RefreshButton(
-                               localizations: localizations,
-                             ),
-                          ],
-                        ),
-                      ),
-
-                      // Center: Circular Progress & Next Prayer
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.toH),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // ponytail: isolates countdown tick rebuilds to just the progress arc
-                            _PrayerProgressArc(theme: theme),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                 _NextPrayerName(theme: theme),
-                                 SizedBox(height: 4.toH),
-                                 _TimeLeftText(theme: theme),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Bottom: All Prayer Times Row
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 12.toH),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.toW),
-                          child: Row(
-                            children: PrayerType.values
-                                .where(
-                                  (prayer) => prayerVisuals.containsKey(prayer),
-                                )
-                                .map((prayer) {
-                                  final isNext = prayer == next;
-                                  final timing =
-                                      localPrayerTimes?.timeForPrayer(prayer) ??
-                                      '';
-                                  final visual = prayerVisuals[prayer]!;
-
-                                  return Expanded(
-                                    child: _PrayerSmallCard(
-                                      label: prayer.displayName(
-                                        isArabic: isArabic,
-                                      ),
-                                       time: formatTo12Hour(
-                                         timing,
-                                         isArabic: isArabic,
-                                       ),
-                                      isNext: isNext,
-                                      theme: theme,
-                                      iconPath: visual.assetPath,
-                                    ),
-                                  );
-                                })
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                    ],
+        return ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(24.toR),
+          ),
+          child: ColoredBox(
+            color: theme.colorScheme.primary,
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Image.asset(
+                    'assets/home/vactor.png',
+                    fit: BoxFit.fill,
                   ),
                 ),
+                Skeletonizer(
+                  enabled: state.status == RequestStatus.loading,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 8.toH),
+                        // Top Info: Day, Date, City
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.toW),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '$dayName - $hijriDate',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.toH),
+                                  _CityText(theme),
+                                ],
+                              ),
+                              _RefreshButton(
+                                localizations: localizations,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Center: Circular Progress & Next Prayer
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12.toH),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // isolates countdown tick rebuilds to just the progress arc
+                              _PrayerProgressArc(theme: theme),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _NextPrayerName(theme: theme),
+                                  SizedBox(height: 4.toH),
+                                  _TimeLeftText(theme: theme),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Bottom: All Prayer Times Row
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 16.toH),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.toW),
+                            child: Row(
+                              children: PrayerType.values
+                                  .where(
+                                    (prayer) => prayerVisuals.containsKey(prayer),
+                                  )
+                                  .map((prayer) {
+                                    final isNext = prayer == next;
+                                    final timing =
+                                        localPrayerTimes?.timeForPrayer(prayer) ??
+                                        '';
+                                    final visual = prayerVisuals[prayer]!;
+
+                                    return Expanded(
+                                      child: _PrayerSmallCard(
+                                        label: prayer.displayName(
+                                          isArabic: isArabic,
+                                        ),
+                                        time: formatTo12Hour(
+                                          timing,
+                                          isArabic: isArabic,
+                                        ),
+                                        isNext: isNext,
+                                        theme: theme,
+                                        iconPath: visual.assetPath,
+                                      ),
+                                    );
+                                  })
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
+            ),
+          );
       },
     );
   }
@@ -169,45 +176,52 @@ class _PrayerSmallCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(horizontal: 2.toW),
-    padding: EdgeInsets.symmetric(vertical: 6.toH),
+    margin: EdgeInsets.symmetric(horizontal: 3.toW),
+    padding: EdgeInsets.symmetric(vertical: 8.toH, horizontal: 2.toW),
     decoration: BoxDecoration(
       color: isNext
-          ? theme.colorScheme.secondary.withAlpha((0.2 * 255).toInt())
-          : Colors.transparent,
-      borderRadius: BorderRadius.circular(16.toR),
+          ? theme.colorScheme.secondary.withValues(alpha: 0.22)
+          : Colors.white.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(14.toR),
       border: Border.all(
-        color: isNext ? theme.colorScheme.secondary : Colors.white24,
-        width: 1.toW,
+        color: isNext
+            ? theme.colorScheme.secondary
+            : Colors.white.withValues(alpha: 0.15),
+        width: isNext ? 1.5 : 1,
       ),
     ),
     child: Column(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: isNext ? Colors.white : Colors.white70,
-            fontWeight: isNext ? .bold : .normal,
+            color: isNext ? theme.colorScheme.secondary : Colors.white.withValues(alpha: 0.85),
+            fontWeight: isNext ? FontWeight.bold : FontWeight.w500,
+            fontSize: 11.toSp,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 4.toH),
+        SizedBox(height: 6.toH),
         Image.asset(
           iconPath,
-          height: 24.toH,
-          width: 24.toW,
-          // ponytail: DPR-aware image caching to avoid decoding full resolution
+          height: 22.toH,
+          width: 22.toW,
           cacheWidth: 72,
           cacheHeight: 72,
           color: isNext ? theme.colorScheme.secondary : Colors.white,
         ),
-        SizedBox(height: 4.toH),
+        SizedBox(height: 6.toH),
         Text(
           time,
           style: theme.textTheme.bodySmall?.copyWith(
             color: Colors.white,
-            fontWeight: .bold,
+            fontWeight: FontWeight.bold,
+            fontSize: 11.toSp,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     ),

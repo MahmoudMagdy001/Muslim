@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:muslim/core/theme/design_system.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 
@@ -39,10 +41,10 @@ class _SebhaButtonState extends State<SebhaButton>
     // Ripple effect on tap
     _rippleController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500),
     );
     _rippleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _rippleController, curve: Curves.easeOut),
+      CurvedAnimation(parent: _rippleController, curve: Curves.easeOutCubic),
     );
     _rippleOpacity = Tween<double>(begin: 0.4, end: 0.0).animate(
       CurvedAnimation(parent: _rippleController, curve: Curves.easeOut),
@@ -51,10 +53,10 @@ class _SebhaButtonState extends State<SebhaButton>
     // Continuous ambient glow
     _glowController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 2400),
     );
     unawaited(_glowController.repeat(reverse: true));
-    _glowAnimation = Tween<double>(begin: 0.3, end: 0.7).animate(
+    _glowAnimation = Tween<double>(begin: 0.2, end: 0.6).animate(
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
   }
@@ -75,7 +77,8 @@ class _SebhaButtonState extends State<SebhaButton>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
+    final isDark = colors.isDark;
     final buttonSize = context.screenWidth * 0.65;
     final progressValue = widget.goal != null && widget.goal! > 0
         ? (widget.counter / widget.goal!).clamp(0.0, 1.0)
@@ -84,26 +87,23 @@ class _SebhaButtonState extends State<SebhaButton>
     return AnimatedBuilder(
       animation: Listenable.merge([_rippleAnimation, _glowAnimation]),
       builder: (context, child) => SizedBox(
-        width: buttonSize + 40,
-        height: buttonSize + 40,
+        width: buttonSize + 40.w,
+        height: buttonSize + 40.h,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Ambient glow
+            // Ambient sacred glow
             Container(
-              width: buttonSize + 20,
-              height: buttonSize + 20,
+              width: buttonSize + 16.w,
+              height: buttonSize + 16.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color:
-                        (isDark
-                                ? context.colorScheme.secondary
-                                : context.colorScheme.primary)
-                            .withAlpha((_glowAnimation.value * 80).toInt()),
-                    blurRadius: 30,
-                    spreadRadius: 5,
+                    color: colors.secondary
+                        .withValues(alpha: _glowAnimation.value * 0.35),
+                    blurRadius: 28,
+                    spreadRadius: 4,
                   ),
                 ],
               ),
@@ -112,44 +112,46 @@ class _SebhaButtonState extends State<SebhaButton>
             // Ripple effect
             if (_rippleController.isAnimating)
               Container(
-                width: (buttonSize + 20) * (1 + _rippleAnimation.value * 0.3),
-                height: (buttonSize + 20) * (1 + _rippleAnimation.value * 0.3),
+                width: (buttonSize + 16.w) * (1 + _rippleAnimation.value * 0.25),
+                height: (buttonSize + 16.h) * (1 + _rippleAnimation.value * 0.25),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color:
-                        (isDark
-                                ? context.colorScheme.secondary
-                                : context.colorScheme.primary)
-                            .withAlpha((_rippleOpacity.value * 255).toInt()),
-                    width: 2,
+                    color: colors.secondary.withValues(
+                      alpha: _rippleOpacity.value,
+                    ),
+                    width: 1.5,
                   ),
                 ),
               ),
 
             // Progress ring
             SizedBox(
-              width: buttonSize + 16,
-              height: buttonSize + 16,
+              width: buttonSize + 16.w,
+              height: buttonSize + 16.h,
               child: CustomPaint(
                 painter: _ProgressRingPainter(
                   progress: progressValue,
                   isDark: isDark,
-                  primaryColor: context.colorScheme.primary,
-                  secondaryColor: context.colorScheme.secondary,
+                  primaryColor: colors.primary,
+                  secondaryColor: colors.secondary,
                 ),
               ),
             ),
 
             // Main button
-            _buildMainButton(context, buttonSize, isDark),
+            _buildMainButton(context, buttonSize, colors),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMainButton(BuildContext context, double size, bool isDark) {
+  Widget _buildMainButton(
+    BuildContext context,
+    double size,
+    AppSemanticColors colors,
+  ) {
     final l10n = context.l10n;
 
     return GestureDetector(
@@ -162,15 +164,16 @@ class _SebhaButtonState extends State<SebhaButton>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: isDark
-                ? [const Color(0xFF3D2E6B), const Color(0xFF251A45)]
-                : [const Color(0xFF7C6FB3), context.colorScheme.primary],
+            colors: [
+              colors.primaryContainer,
+              colors.primary,
+            ],
           ),
           boxShadow: [
             BoxShadow(
-              color: context.colorScheme.primary.withAlpha(80),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: colors.primary.withValues(alpha: 0.35),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -179,10 +182,10 @@ class _SebhaButtonState extends State<SebhaButton>
           children: [
             // Counter
             AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 250),
               transitionBuilder: (child, animation) => SlideTransition(
                 position: Tween<Offset>(
-                  begin: const Offset(0, 0.3),
+                  begin: const Offset(0, 0.25),
                   end: Offset.zero,
                 ).animate(animation),
                 child: FadeTransition(opacity: animation, child: child),
@@ -190,29 +193,32 @@ class _SebhaButtonState extends State<SebhaButton>
               child: Text(
                 convertToArabicNumbers(widget.counter.toString()),
                 key: ValueKey(widget.counter),
-                style: context.textTheme.headlineLarge?.copyWith(
+                style: context.typography.counter.copyWith(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 40,
+                  fontSize: 44.sp,
                 ),
               ),
             ),
             if (widget.goal != null) ...[
-              const SizedBox(height: 4),
+              SizedBox(height: 6.h),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 3.h,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(25),
-                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(
+                    color: colors.secondary.withValues(alpha: 0.4),
+                    width: 0.8,
+                  ),
                 ),
                 child: Text(
                   '${l10n.goal}: ${convertToArabicNumbers(widget.goal.toString())}',
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
-                    fontSize: 13,
+                  style: context.typography.caption.copyWith(
+                    color: Colors.white.withValues(alpha: 0.95),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -245,7 +251,7 @@ class _ProgressRingPainter extends CustomPainter {
 
     // Track
     final trackPaint = Paint()
-      ..color = (isDark ? Colors.white : primaryColor).withAlpha(30)
+      ..color = (isDark ? Colors.white24 : primaryColor.withValues(alpha: 0.15))
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -253,7 +259,7 @@ class _ProgressRingPainter extends CustomPainter {
 
     if (progress <= 0) return;
 
-    // Progress arc with gradient
+    // Progress arc with noble gold gradient
     final rect = Rect.fromCircle(center: center, radius: radius);
     final progressPaint = Paint()
       ..style = PaintingStyle.stroke
@@ -261,18 +267,16 @@ class _ProgressRingPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..shader = SweepGradient(
         transform: const GradientRotation(-pi / 2),
-        colors: isDark
-            ? [
-                secondaryColor,
-                secondaryColor.withAlpha(180),
-                const Color(0xFF7C6FB3),
-              ]
-            : [primaryColor, const Color(0xFF7C6FB3), secondaryColor],
+        colors: [
+          secondaryColor,
+          secondaryColor.withValues(alpha: 0.6),
+          secondaryColor,
+        ],
       ).createShader(rect);
 
     canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, progressPaint);
 
-    // Glow dot at the end of the progress
+    // Subtle glow dot at the tip of progress
     if (progress > 0.01) {
       final angle = -pi / 2 + 2 * pi * progress;
       final dotCenter = Offset(
@@ -281,13 +285,12 @@ class _ProgressRingPainter extends CustomPainter {
       );
 
       final dotGlow = Paint()
-        ..color = (isDark ? secondaryColor : secondaryColor).withAlpha(100)
+        ..color = secondaryColor.withValues(alpha: 0.5)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
       canvas.drawCircle(dotCenter, 6, dotGlow);
 
-      final dotPaint = Paint()
-        ..color = isDark ? secondaryColor : secondaryColor;
-      canvas.drawCircle(dotCenter, 3, dotPaint);
+      final dotPaint = Paint()..color = secondaryColor;
+      canvas.drawCircle(dotCenter, 3.5, dotPaint);
     }
   }
 

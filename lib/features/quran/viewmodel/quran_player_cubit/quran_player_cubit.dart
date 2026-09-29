@@ -13,7 +13,9 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
           currentAyah: _quranService.audioPlayer.currentIndex != null
               ? _quranService.audioPlayer.currentIndex! + 1
               : null,
-          isPlaying: _quranService.audioPlayer.playing,
+          isPlaying: _quranService.isQuranPlaying,
+          currentPosition: _quranService.audioPlayer.position,
+          totalDuration: _quranService.audioPlayer.duration ?? Duration.zero,
         ),
       ) {
     _initializeListeners();
@@ -55,7 +57,9 @@ class QuranPlayerCubit extends Cubit<QuranPlayerState> {
   void _listenToPlayerState() {
     _subscriptions.add(
       _quranService.audioPlayer.playerStateStream.listen((playerState) {
-        if (!isClosed) emit(state.copyWith(isPlaying: playerState.playing));
+        if (!isClosed) {
+          emit(state.copyWith(isPlaying: _quranService.isQuranPlaying));
+        }
       }),
     );
   }

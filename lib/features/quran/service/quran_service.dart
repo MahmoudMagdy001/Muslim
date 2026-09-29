@@ -42,6 +42,12 @@ class QuranService {
     return null;
   }
 
+  bool get isQuranPlaying {
+    final service = _getMetadataFromPlayer('service') as String?;
+    final surah = _getMetadataFromPlayer('surah') as int?;
+    return _audioPlayer.playing && (service == 'quran' || surah != null);
+  }
+
   dynamic _getMetadataFromPlayer(String key) {
     final tag = _audioPlayer.sequenceState.currentSource?.tag;
     if (tag is MediaItem) {
@@ -211,9 +217,6 @@ class QuranService {
     unawaited(_indexSubscription?.cancel());
     _currentSurah = null;
     _currentReciter = null;
-    unawaited(_lastPlayedController.close()); // إغلاق الـ StreamController
-    // ponytail: close notification controller as well to avoid leaks
-    unawaited(_notificationClickController.close());
   }
 
   // ------------------ Internal Helpers ------------------ //
@@ -254,7 +257,7 @@ class QuranService {
         album: 'سورة $surahName',
         title: 'سورة $surahName - آية رقم: $verseNumber',
         artist: 'القارئ: ${getReciterName(reciter)}',
-        extras: {'surah': surahNumber, 'reciter': reciter},
+        extras: {'surah': surahNumber, 'reciter': reciter, 'service': 'quran'},
       ),
     );
   }

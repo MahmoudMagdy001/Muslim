@@ -9,10 +9,12 @@ class ZakatCubit extends Cubit<ZakatState> {
   final ZakatRepository repository;
 
   Future<void> loadGoldPrice() async {
+    if (isClosed) return;
     emit(state.copyWith(status: ZakatRequestStatus.loading));
 
     final result = await repository.getGoldPricePerGramInEgp();
 
+    if (isClosed) return;
     result.fold(
       (failure) => emit(
         state.copyWith(
@@ -30,6 +32,7 @@ class ZakatCubit extends Cubit<ZakatState> {
   }
 
   void setManualGoldPrice(double price) {
+    if (isClosed) return;
     emit(
       state.copyWith(
         status: ZakatRequestStatus.success,

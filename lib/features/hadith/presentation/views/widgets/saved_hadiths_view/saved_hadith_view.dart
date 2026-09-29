@@ -126,53 +126,34 @@ class _SavedHadithViewState extends State<SavedHadithView> {
                       ),
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                    confirmDismiss: (direction) async =>
-                        BaseAppDialog.show<bool>(
-                          context,
-                          title: 'تأكيد الحذف',
-                          contentText:
-                              'هل انت متاكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟',
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('إلغاء'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: Text(
-                                'حذف',
-                                style: TextStyle(
-                                  color: context.colorScheme.error,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                    confirmDismiss: (direction) async {
+                      final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+                      return AppConfirmationDialog.show(
+                        context,
+                        title: isArabic ? 'تأكيد الحذف' : 'Confirm Delete',
+                        message: isArabic
+                            ? 'هل أنت متأكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟'
+                            : 'Are you sure you want to delete hadith #${hadith['id']} from saved?',
+                        confirmLabel: isArabic ? 'حذف' : 'Delete',
+                        cancelLabel: isArabic ? 'إلغاء' : 'Cancel',
+                        isDestructive: true,
+                      );
+                    },
                     onDismissed: (direction) => unawaited(_removeHadith(index)),
                     child: SavedHadithCard(
                       hadith: hadith,
                       onTap: () => _navigateToHadith(hadith),
                       onDelete: () async {
-                        final confirm = await BaseAppDialog.show<bool>(
+                        final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+                        final confirm = await AppConfirmationDialog.show(
                           context,
-                          title: 'تأكيد الحذف',
-                          contentText:
-                              'هل انت متاكد من حذف رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟',
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('إلغاء'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: Text(
-                                'حذف',
-                                style: TextStyle(
-                                  color: context.colorScheme.error,
-                                ),
-                              ),
-                            ),
-                          ],
+                          title: isArabic ? 'تأكيد الحذف' : 'Confirm Delete',
+                          message: isArabic
+                              ? 'هل أنت متأكد من حذف حديث رقم ${convertToArabicNumbers(hadith['id'].toString())} من المحفوظات؟'
+                              : 'Are you sure you want to delete hadith #${hadith['id']} from saved?',
+                          confirmLabel: isArabic ? 'حذف' : 'Delete',
+                          cancelLabel: isArabic ? 'إلغاء' : 'Cancel',
+                          isDestructive: true,
                         );
                         if (confirm ?? false) {
                           await _removeHadith(index);

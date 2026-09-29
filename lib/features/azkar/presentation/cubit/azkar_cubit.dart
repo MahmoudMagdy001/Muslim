@@ -10,9 +10,11 @@ class AzkarCubit extends Cubit<AzkarState> {
   final AzkarRepository _repository;
 
   Future<void> loadAzkar() async {
-    if (!isClosed) emit(state.copyWith(status: RequestStatus.loading));
+    if (isClosed) return;
+    emit(state.copyWith(status: RequestStatus.loading));
 
     final result = await _repository.getAzkarList();
+    if (isClosed) return;
 
     result.fold(
       (failure) {
@@ -51,21 +53,22 @@ class AzkarCubit extends Cubit<AzkarState> {
   }
 
   Future<void> loadAzkarContent(String url) async {
-    if (!isClosed) {
-      emit(
-        state.copyWith(
-          contentStatus: RequestStatus.loading,
-          currentContent: [],
-        ),
-      );
-    }
+    if (isClosed) return;
+    emit(
+      state.copyWith(
+        contentStatus: RequestStatus.loading,
+        currentContent: [],
+      ),
+    );
 
     await _repository.clearAzkarCountIfNewDay();
+    if (isClosed) return;
 
     final result = await _repository.getAzkarContent(url);
+    if (isClosed) return;
 
     await result.fold(
-      (failure) {
+      (failure) async {
         if (!isClosed) {
           emit(
             state.copyWith(
@@ -115,18 +118,20 @@ class AzkarCubit extends Cubit<AzkarState> {
   Future<void> decrementCount(String url, int index) async {
     final counts = Map<int, int>.from(state.currentCounts);
     if (counts.containsKey(index) && counts[index]! > 0) {
-      counts[index] = counts[index]! - 1;
-      await _repository.saveAzkarCount(url, index, counts[index]!);
+      final newCount = counts[index]! - 1;
+      counts[index] = newCount;
       if (!isClosed) emit(state.copyWith(currentCounts: counts));
+      await _repository.saveAzkarCount(url, index, newCount);
     }
   }
 
   Future<void> resetCount(String url, int index) async {
     final counts = Map<int, int>.from(state.currentCounts);
     if (index < state.currentContent.length) {
-      counts[index] = state.currentContent[index].repeat;
-      await _repository.saveAzkarCount(url, index, counts[index]!);
+      final resetVal = state.currentContent[index].repeat;
+      counts[index] = resetVal;
       if (!isClosed) emit(state.copyWith(currentCounts: counts));
+      await _repository.saveAzkarCount(url, index, resetVal);
     }
   }
 }

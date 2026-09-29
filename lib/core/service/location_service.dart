@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:muslim/core/widgets/location_disclosure_dialog.dart';
 
 class LocationService {
   Stream<ServiceStatus> get serviceStatusStream =>
@@ -9,49 +7,22 @@ class LocationService {
   Future<bool> isLocationEnabled() async =>
       Geolocator.isLocationServiceEnabled();
 
-  Future<LocationStatus> checkLocationStatus([BuildContext? context]) async {
+  Future<LocationStatus> checkLocationStatus() async {
     final enabled = await Geolocator.isLocationServiceEnabled();
     var permission = await Geolocator.checkPermission();
 
-    if (permission == LocationPermission.denied && context != null) {
-      final shouldShow = await LocationDisclosureDialog.shouldShow();
-      if (shouldShow) {
-        if (!context.mounted) {
-          return LocationStatus(enabled: enabled, permission: permission);
-        }
-        final accepted = await showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => LocationDisclosureDialog(
-            isArabic: Localizations.localeOf(context).languageCode == 'ar',
-          ),
-        );
-
-        if (accepted ?? false) {
-          await LocationDisclosureDialog.markAsShown();
-          permission = await Geolocator.requestPermission();
-        }
-      } else {
-        permission = await Geolocator.requestPermission();
-      }
-    } else if (permission == LocationPermission.denied) {
-      // If no context provided and denied, we can't show disclosure but we can still request if already shown before
-      // or just return denied. To be safe for Play Store, we don't request here if disclosure is needed.
-      // permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
     }
 
     return LocationStatus(enabled: enabled, permission: permission);
   }
 
-  /// ✅ احصل على الموقع الحالي مع التحقق من الصلاحيات
-  Future<Position?> getCurrentLocate([BuildContext? context]) async {
-    final status = await checkLocationStatus(context);
+  /// Get current position if location service and permissions are active
+  Future<Position?> getCurrentLocate() async {
+    final status = await checkLocationStatus();
 
-    if (!status.enabled) {
-      return null;
-    }
-
-    if (!status.isGranted) {
+    if (!status.enabled || !status.isGranted) {
       return null;
     }
 

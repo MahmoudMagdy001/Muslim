@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
@@ -47,7 +48,7 @@ class _MushafViewState extends State<MushafView> {
   StreamSubscription<QuranPlayerState>? _playerSub;
   final ValueNotifier<int?> currentAyahNotifier = ValueNotifier(null);
   final ValueNotifier<int?> currentSurahNotifier = ValueNotifier(null);
-  final TafsirRepository _tafsirRepository = TafsirRepository();
+  final TafsirRepository _tafsirRepository = getIt<TafsirRepository>();
   final Map<String, GlobalKey> _ayahKeys = {};
   bool _initialScrollDone = false;
 
@@ -551,8 +552,9 @@ class _OptimizedMushafText extends StatelessWidget {
           TextSpan(
             text: '$text ',
             style: TextStyle(
-              color: isCurrent ? context.colorScheme.error : null,
-              backgroundColor: isCurrent ? context.colorScheme.error.withValues(alpha: 0.1) : null,
+              color: isCurrent ? context.colors.primary : null,
+              backgroundColor: isCurrent ? context.colors.primary.withValues(alpha: 0.12) : null,
+              fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
             ),
             recognizer: recognizers[keyString],
           ),

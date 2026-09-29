@@ -5,6 +5,7 @@ import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/zakat/presentation/cubit/zakat_cubit.dart';
 import 'package:muslim/features/zakat/presentation/cubit/zakat_state.dart';
@@ -151,37 +152,35 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
     final controller = TextEditingController();
     final cubit = context
         .read<ZakatCubit>(); // Capture Cubit here using parent context
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        // Rename inner context to avoid confusion
-        title: Text(localizations.enterGoldPriceManually),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: localizations.goldPricePerGram,
-            hintText: 'e.g. 3500',
-            suffixText: 'EGP',
-          ),
+    await BaseAppDialog.show<void>(
+      context,
+      icon: Icons.monetization_on_outlined,
+      title: localizations.enterGoldPriceManually,
+      content: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: localizations.goldPricePerGram,
+          hintText: 'e.g. 3500',
+          suffixText: 'EGP',
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(localizations.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              final price = double.tryParse(controller.text);
-              if (price != null && price > 0) {
-                Navigator.pop(dialogContext);
-                cubit.setManualGoldPrice(price); // Use captured cubit
-              }
-            },
-            child: Text(localizations.confirm),
-          ),
-        ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(localizations.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final price = double.tryParse(controller.text);
+            if (price != null && price > 0) {
+              Navigator.pop(context);
+              cubit.setManualGoldPrice(price);
+            }
+          },
+          child: Text(localizations.confirm),
+        ),
+      ],
     );
     controller.dispose();
   }
@@ -304,8 +303,9 @@ class _ManualPriceDialogState extends State<_ManualPriceDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-    title: Text(widget.localizations.enterGoldPriceManually),
+  Widget build(BuildContext context) => BaseAppDialog(
+    icon: Icons.monetization_on_outlined,
+    title: widget.localizations.enterGoldPriceManually,
     content: TextField(
       controller: _controller,
       keyboardType: TextInputType.number,

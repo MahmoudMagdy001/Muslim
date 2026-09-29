@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/features/layout/view/tabs/dhikr_tab_view.dart';
@@ -34,7 +35,7 @@ class _LayoutViewState extends State<LayoutView> {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final reciter = context.watch<ReciterCubit>().state.selectedReciter;
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
 
     final tabs = <Widget>[
       const HomeTabView(),
@@ -48,67 +49,79 @@ class _LayoutViewState extends State<LayoutView> {
         index: _currentIndex,
         children: tabs,
       ),
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          indicatorColor: const Color(0xFFD4AF37).withValues(alpha: 0.22),
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return const IconThemeData(color: Color(0xFFD4AF37), size: 24);
-            }
-            return IconThemeData(
-              color: isDark ? Colors.white60 : const Color(0xFF5D716C),
-              size: 24,
-            );
-          }),
-          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return TextStyle(
-                color: const Color(0xFFD4AF37),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                fontFamily: context.theme.textTheme.bodyMedium?.fontFamily,
-              );
-            }
-            return TextStyle(
-              color: isDark ? Colors.white60 : const Color(0xFF5D716C),
-              fontSize: 12,
-              fontWeight: FontWeight.normal,
-              fontFamily: context.theme.textTheme.bodyMedium?.fontFamily,
-            );
-          }),
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          border: Border(
+            top: BorderSide(
+              color: colors.border,
+              width: 0.8,
+            ),
+          ),
         ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            if (_currentIndex != index) {
-              setState(() => _currentIndex = index);
-            }
-          },
-          backgroundColor: isDark ? const Color(0xFF141C1A) : Colors.white,
-          elevation: 8,
-          shadowColor: Colors.black26,
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.home_outlined),
-              selectedIcon: const Icon(Icons.home_rounded),
-              label: isArabic ? 'الرئيسية' : 'Home',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.menu_book_outlined),
-              selectedIcon: const Icon(Icons.menu_book_rounded),
-              label: isArabic ? 'المصحف' : 'Quran',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.auto_stories_outlined),
-              selectedIcon: const Icon(Icons.auto_stories_rounded),
-              label: isArabic ? 'الأذكار' : 'Dhikr',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.grid_view_outlined),
-              selectedIcon: const Icon(Icons.grid_view_rounded),
-              label: isArabic ? 'الخدمات' : 'Tools',
-            ),
-          ],
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            height: 64.h,
+            indicatorColor: colors.secondary.withValues(alpha: 0.16),
+            iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+              if (states.contains(WidgetState.selected)) {
+                return IconThemeData(
+                  color: colors.secondary,
+                  size: 24.r,
+                );
+              }
+              return IconThemeData(
+                color: colors.textSecondary,
+                size: 24.r,
+              );
+            }),
+            labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+              if (states.contains(WidgetState.selected)) {
+                return context.typography.caption.copyWith(
+                  color: colors.secondary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 11.5.sp,
+                );
+              }
+              return context.typography.caption.copyWith(
+                color: colors.textSecondary,
+                fontWeight: FontWeight.w500,
+                fontSize: 11.sp,
+              );
+            }),
+          ),
+          child: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) {
+              if (_currentIndex != index) {
+                setState(() => _currentIndex = index);
+              }
+            },
+            backgroundColor: colors.surface,
+            elevation: 0,
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home_rounded),
+                label: isArabic ? 'الرئيسية' : 'Home',
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.menu_book_outlined),
+                selectedIcon: const Icon(Icons.menu_book_rounded),
+                label: isArabic ? 'المصحف' : 'Quran',
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.auto_stories_outlined),
+                selectedIcon: const Icon(Icons.auto_stories_rounded),
+                label: isArabic ? 'الأذكار' : 'Dhikr',
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.grid_view_outlined),
+                selectedIcon: const Icon(Icons.grid_view_rounded),
+                label: isArabic ? 'الخدمات' : 'Tools',
+              ),
+            ],
+          ),
         ),
       ),
     );

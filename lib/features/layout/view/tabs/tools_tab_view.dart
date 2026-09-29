@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/hadith/presentation/views/hadith_books_view.dart';
 import 'package:muslim/features/names_of_allah/presentation/views/names_of_allah_screen.dart';
 import 'package:muslim/features/qiblah/presentation/views/qiblah_view.dart';
@@ -17,7 +17,7 @@ class ToolsTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
 
     final toolItems = [
       _ServiceItem(
@@ -77,26 +77,27 @@ class ToolsTabView extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 14.toW, vertical: 12.toH),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         itemCount: toolItems.length,
         itemBuilder: (context, index) {
           final item = toolItems[index];
 
           return Padding(
-            padding: EdgeInsets.only(bottom: 10.toH),
+            padding: EdgeInsets.only(bottom: 8.h),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF182421) : Colors.white,
-                borderRadius: BorderRadius.circular(16.toR),
+                color: colors.surface,
+                borderRadius: context.radius.mdBorder,
                 border: Border.all(
-                  color: isDark
-                      ? const Color(0xFF253531)
-                      : const Color(0xFFE2EBE8),
+                  color: colors.border,
+                  width: 0.8,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 8,
+                    color: Colors.black.withValues(
+                      alpha: colors.isDark ? 0.2 : 0.03,
+                    ),
+                    blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
                 ],
@@ -113,23 +114,25 @@ class ToolsTabView extends StatelessWidget {
                       ),
                     );
                   },
-                  borderRadius: BorderRadius.circular(16.toR),
+                  borderRadius: context.radius.mdBorder,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 16.toW,
-                      vertical: 14.toH,
+                      horizontal: 16.w,
+                      vertical: 14.h,
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 50.toW,
-                          height: 50.toH,
-                          padding: EdgeInsets.all(8.toR),
+                          width: 48.r,
+                          height: 48.r,
+                          padding: EdgeInsets.all(8.r),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.05)
-                                : const Color(0xFFF0F5F3),
-                            borderRadius: BorderRadius.circular(14.toR),
+                            color: colors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(14.r),
+                            border: Border.all(
+                              color: colors.border,
+                              width: 0.6,
+                            ),
                           ),
                           child: item.asset != null
                               ? Image.asset(
@@ -137,15 +140,19 @@ class ToolsTabView extends StatelessWidget {
                                   fit: BoxFit.contain,
                                   errorBuilder:
                                       (context, error, stackTrace) =>
-                                          const Icon(Icons.apps_rounded),
+                                          Icon(
+                                            Icons.apps_rounded,
+                                            color: colors.secondary,
+                                            size: 22.r,
+                                          ),
                                 )
                               : Icon(
                                   item.iconData ?? Icons.widgets_rounded,
-                                  color: const Color(0xFFD4AF37),
-                                  size: 26,
+                                  color: colors.secondary,
+                                  size: 24.r,
                                 ),
                         ),
-                        SizedBox(width: 14.toW),
+                        SizedBox(width: 14.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,34 +160,28 @@ class ToolsTabView extends StatelessWidget {
                             children: [
                               Text(
                                 item.title,
-                                style: context.textTheme.titleMedium?.copyWith(
+                                style: context.typography.titleMedium.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? Colors.white
-                                      : const Color(0xFF192522),
+                                  color: colors.textPrimary,
                                 ),
                               ),
-                              SizedBox(height: 3.toH),
+                              SizedBox(height: 3.h),
                               Text(
                                 item.subtitle,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: isDark
-                                      ? Colors.white70
-                                      : const Color(0xFF5D716C),
+                                style: context.typography.bodySmall.copyWith(
+                                  color: colors.textSecondary,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(width: 8.toW),
+                        SizedBox(width: 8.w),
                         Icon(
                           Icons.arrow_forward_ios_rounded,
-                          size: 16,
-                          color: isDark
-                              ? Colors.white54
-                              : const Color(0xFF8BA09B),
+                          size: 14.r,
+                          color: colors.textSecondary.withValues(alpha: 0.5),
                         ),
                       ],
                     ),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/surahs_list/model/hizb_model.dart';
 
 class HizbListTile extends StatelessWidget {
@@ -19,66 +18,84 @@ class HizbListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final l10n = context.l10n;
+    final colors = context.colors;
     final startSurahName = hizb.getStartSurahName(isArabic: isArabic);
     final endSurahName = hizb.getEndSurahName(isArabic: isArabic);
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 6.toH),
+      margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 10.w),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: context.cardGradient,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: colors.surface,
+        borderRadius: context.radius.mdBorder,
+        border: Border.all(
+          color: colors.border,
+          width: 0.8,
         ),
-        borderRadius: BorderRadius.circular(15.toR),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: colors.isDark ? 0.2 : 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(15.toR),
+        borderRadius: context.radius.mdBorder,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           child: Row(
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/quran/marker.png',
-                    width: 40.toW,
-                    height: 40.toH,
-                  ),
-                  Text(
-                    isArabic
-                        ? convertToArabicNumbers(hizb.number.toString())
-                        : hizb.number.toString(),
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: context.theme.primaryColor,
-                      fontWeight: FontWeight.bold,
+              // Hizb Number Badge with Islamic star marker
+              SizedBox(
+                width: 44.r,
+                height: 44.r,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/quran/marker.png',
+                      width: 44.r,
+                      height: 44.r,
+                      cacheWidth: 132,
+                      cacheHeight: 132,
                     ),
-                  ),
-                ],
+                    Text(
+                      isArabic
+                          ? convertToArabicNumbers(hizb.number.toString())
+                          : hizb.number.toString(),
+                      style: context.typography.titleSmall.copyWith(
+                        color: colors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(width: 16.toW),
+              SizedBox(width: 14.w),
+
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       l10n.hizbNumberLabel(hizb.number),
-                      style: context.textTheme.bodyLarge?.copyWith(
-                        color: context.colorScheme.onPrimary,
+                      style: context.typography.titleMedium.copyWith(
+                        color: colors.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4.toH),
+                    SizedBox(height: 3.h),
                     Text(
                       isArabic
                           ? '$startSurahName: ${convertToArabicNumbers(hizb.startAyah.toString())} - $endSurahName: ${convertToArabicNumbers(hizb.endAyah.toString())}'
                           : '$startSurahName: ${hizb.startAyah} - $endSurahName: ${hizb.endAyah}',
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onPrimary.withAlpha(180),
+                      style: context.typography.bodySmall.copyWith(
+                        color: colors.textSecondary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -86,10 +103,11 @@ class HizbListTile extends StatelessWidget {
                   ],
                 ),
               ),
+
               Icon(
-                isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
-                color: context.colorScheme.onPrimary,
-                size: 16.toR,
+                Icons.arrow_forward_ios_rounded,
+                color: colors.textSecondary.withValues(alpha: 0.5),
+                size: 14.r,
               ),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:muslim/core/error/exceptions.dart';
@@ -38,7 +38,11 @@ class ZakatRemoteDataSourceImpl implements ZakatRemoteDataSource {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as Map<String, dynamic>;
-      return GoldPriceModel.fromJson(data);
+      final model = GoldPriceModel.fromJson(data);
+      if (model.priceInUsd <= 0) {
+        throw const ServerException();
+      }
+      return model;
     } else {
       throw const ServerException();
     }
@@ -57,6 +61,9 @@ class ZakatRemoteDataSourceImpl implements ZakatRemoteDataSource {
       if (items != null && items.isNotEmpty) {
         final item = items[0] as Map<String, dynamic>;
         final price = (item['xauPrice'] as num?)?.toDouble() ?? 0.0;
+        if (price <= 0) {
+          throw const ServerException();
+        }
         return GoldPriceModel(priceInUsd: price, currency: 'USD');
       }
     }
@@ -73,7 +80,11 @@ class ZakatRemoteDataSourceImpl implements ZakatRemoteDataSource {
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         final rates = data['conversion_rates'] as Map<String, dynamic>?;
-        return (rates?['EGP'] as num?)?.toDouble() ?? 0.0;
+        final rate = (rates?['EGP'] as num?)?.toDouble() ?? 0.0;
+        if (rate <= 0) {
+          throw const ServerException();
+        }
+        return rate;
       } else {
         throw const ServerException();
       }

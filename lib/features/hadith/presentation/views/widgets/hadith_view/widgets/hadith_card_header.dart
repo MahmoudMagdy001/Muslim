@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
 
 class HadithCardHeader extends StatelessWidget {
   const HadithCardHeader({
@@ -18,33 +20,30 @@ class HadithCardHeader extends StatelessWidget {
   final VoidCallback onBookmarkPressed;
 
   @override
-  Widget build(BuildContext context) {
-    final notifier = cubit.getHadithNotifier(hadithId) ?? ValueNotifier(false);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            heading,
-            style: context.textTheme.titleMedium?.copyWith(
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.bold,
-            ),
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: Text(
+          heading,
+          style: context.typography.titleMedium.copyWith(
+            color: context.colors.textSecondary,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        ValueListenableBuilder<bool>(
-          valueListenable: notifier,
-          builder: (context, isSaved, _) => IconButton(
-            icon: Icon(
-              isSaved ? Icons.bookmark : Icons.bookmark_border,
-              color: isSaved ? Colors.amber : Colors.grey,
-              size: 28,
-            ),
-            onPressed: onBookmarkPressed,
+      ),
+      BlocSelector<HadithCubit, HadithState, bool>(
+        bloc: cubit,
+        selector: (state) => state.savedHadithIds.contains(hadithId),
+        builder: (context, isSaved) => IconButton(
+          icon: Icon(
+            isSaved ? Icons.bookmark : Icons.bookmark_border,
+            color: isSaved ? Colors.amber : context.colors.textSecondary,
+            size: 28,
           ),
+          onPressed: onBookmarkPressed,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }

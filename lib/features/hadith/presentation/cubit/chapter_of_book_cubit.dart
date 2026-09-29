@@ -10,17 +10,16 @@ class ChapterOfBookCubit extends Cubit<ChapterOfBookState> {
   final HadithRepository repository;
 
   Future<void> loadChapters(String bookSlug) async {
-    if (state.status == ChapterOfBookStatus.initial) {
-      emit(state.copyWith(status: ChapterOfBookStatus.loading));
-    }
+    if (!isClosed) emit(state.copyWith(status: ChapterOfBookStatus.loading));
 
     final result = await repository.getChaptersOfBook(bookSlug);
+    if (isClosed) return;
 
     result.fold(
       (failure) => emit(
         state.copyWith(
           status: ChapterOfBookStatus.failure,
-          errorMessage: 'Failed to load chapters for book $bookSlug',
+          errorMessage: failure.message,
         ),
       ),
       (chapters) => emit(
@@ -30,6 +29,6 @@ class ChapterOfBookCubit extends Cubit<ChapterOfBookState> {
   }
 
   void updateSearchText(String text) {
-    emit(state.copyWith(searchText: text));
+    if (!isClosed) emit(state.copyWith(searchText: text));
   }
 }

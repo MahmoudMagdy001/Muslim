@@ -26,3 +26,39 @@ class CacheFailure extends Failure {
   @override
   List<Object?> get props => [message, properties];
 }
+
+class NetworkFailure extends Failure {
+  const NetworkFailure([this.message = 'Network Error']) : super();
+  @override
+  final String message;
+
+  @override
+  List<Object?> get props => [message, properties];
+}
+
+class AuthenticationFailure extends Failure {
+  const AuthenticationFailure([this.message = 'Authentication Failure']) : super();
+  @override
+  final String message;
+
+  @override
+  List<Object?> get props => [message, properties];
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure([this.message = 'Validation Error']) : super();
+  @override
+  final String message;
+
+  @override
+  List<Object?> get props => [message, properties];
+}
+
+class DataParsingFailure extends Failure {
+  const DataParsingFailure([this.message = 'Data Parsing Error']) : super();
+  @override
+  final String message;
+
+  @override
+  List<Object?> get props => [message, properties];
+}

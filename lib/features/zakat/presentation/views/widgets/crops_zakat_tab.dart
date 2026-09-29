@@ -112,14 +112,14 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
             SizedBox(height: 20.toH),
 
             // Input Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: theme.primaryColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
+            Material(
+              color: theme.primaryColor,
+              borderRadius: BorderRadius.circular(20),
+              clipBehavior: Clip.antiAlias,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ValueListenableBuilder<bool>(
@@ -220,6 +220,7 @@ class _CropsZakatTabState extends State<CropsZakatTab> {
                 ],
               ),
             ),
+          ),
 
             // Result Card
             ValueListenableBuilder<double?>(

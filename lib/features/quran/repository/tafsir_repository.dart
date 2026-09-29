@@ -3,6 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class TafsirRepository {
+  TafsirRepository({http.Client? client}) : _client = client;
+
+  final http.Client? _client;
+  final Map<String, String> _cache = {};
+
+  http.Client get _httpClient => _client ?? http.Client();
+
   /// 🕌 قائمة المفسرين المدعومين
   static const List<Map<String, dynamic>> tafasirList = [
     {'id': 1, 'name_ar': 'تفسير الميسر', 'name_en': 'Tafsir Al-Muyassar'},
@@ -13,12 +20,19 @@ class TafsirRepository {
 
   /// ✅ جلب التفسير من API
   Future<String?> fetchTafsirById(int tafsirId, int surah, int ayah) async {
+    final cacheKey = '$tafsirId-$surah-$ayah';
+    if (_cache.containsKey(cacheKey)) {
+      return _cache[cacheKey];
+    }
+
     try {
       final url = Uri.parse(
-        'http://api.quran-tafseer.com/tafseer/$tafsirId/$surah/$ayah/$ayah',
+        'https://api.quran-tafseer.com/tafseer/$tafsirId/$surah/$ayah/$ayah',
       );
 
-      final response = await http.get(url);
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode != 200) {
         return 'حدث خطأ أثناء تحميل التفسير (${response.statusCode}).';
@@ -34,7 +48,10 @@ class TafsirRepository {
 
       // ignore: avoid_dynamic_calls
       final text = tafsir['text']?.toString().trim() ?? '';
-      return text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
+      final result =
+          text.isNotEmpty ? text : 'لم يتم العثور على تفسير لهذه الآية.';
+      _cache[cacheKey] = result;
+      return result;
     } on Object catch (e) {
       debugPrint('===========> $e');
       return 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.';

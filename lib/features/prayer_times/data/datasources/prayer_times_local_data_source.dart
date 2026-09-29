@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
@@ -43,6 +44,15 @@ abstract class PrayerTimesLocalDataSource {
 }
 
 class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
+  PrayerTimesLocalDataSourceImpl({
+    SettingsService? settingsService,
+    LocationService? locationService,
+  }) : _settingsService = settingsService ?? getIt<SettingsService>(),
+       _locationService = locationService ?? getIt<LocationService>();
+
+  final SettingsService _settingsService;
+  final LocationService _locationService;
+
   static const String _latitudeKey = 'lat';
   static const String _longitudeKey = 'lng';
   static const String _lastUpdatedKey = 'last_updated';
@@ -316,8 +326,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   }
 
   Future<Coordinates?> _refreshGpsInBackground() async {
-    final settingsService = SettingsService();
-    if (!await settingsService.getAutoLocationEnabled()) return null;
+    if (!await _settingsService.getAutoLocationEnabled()) return null;
     try {
       final position = await _getCurrentPosition();
       final prefs = await SharedPreferences.getInstance();
@@ -371,8 +380,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   }
 
   Future<Position> _getCurrentPosition() async {
-    final locationService = LocationService();
-    final position = await locationService.getCurrentLocate();
+    final position = await _locationService.getCurrentLocate();
     if (position != null) return position;
     return Geolocator.getCurrentPosition();
   }

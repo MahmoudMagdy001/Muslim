@@ -10,17 +10,11 @@ import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
 import 'package:muslim/features/prayer_times/presentation/views/widgets/current_prayer_card_widget.dart';
-import 'package:muslim/l10n/app_localizations.dart';
 
 class PrayerTimesView extends StatefulWidget {
   const PrayerTimesView({
-    required this.scaffoldContext,
-    required this.localizations,
     super.key,
   });
-
-  final BuildContext scaffoldContext;
-  final AppLocalizations localizations;
 
   @override
   State<PrayerTimesView> createState() => _PrayerTimesViewState();
@@ -30,32 +24,32 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
   @override
   void initState() {
     super.initState();
-    final isArabic = widget.localizations.localeName == 'ar';
-    unawaited(context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+        unawaited(context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic));
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final isArabic = locale.languageCode == 'ar';
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return BlocSelector<PrayerTimesCubit, PrayerTimesState, RequestStatus>(
-      selector: (state) => state.status,
-      builder: (context, status) {
-        if (status == RequestStatus.failure) {
-          final message = context.select<PrayerTimesCubit, String>(
-            (cubit) =>
-                cubit.state.message ?? widget.localizations.errorMain,
-          );
-          return _PrayerErrorSliver(
-            message: message,
-            localizations: widget.localizations,
+    return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+      buildWhen: (prev, curr) =>
+          prev.status != curr.status ||
+          prev.message != curr.message ||
+          prev.localPrayerTimes != curr.localPrayerTimes,
+      builder: (context, state) {
+        if (state.status == RequestStatus.failure) {
+          return _PrayerErrorCard(
+            message: state.message ?? context.l10n.errorMain,
             isArabic: isArabic,
           );
         }
 
-        return _PrayerSuccessSliver(
-          localizations: widget.localizations,
+        return _PrayerSuccessCard(
           isArabic: isArabic,
         );
       },
@@ -63,15 +57,13 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
   }
 }
 
-class _PrayerErrorSliver extends StatelessWidget {
-  const _PrayerErrorSliver({
+class _PrayerErrorCard extends StatelessWidget {
+  const _PrayerErrorCard({
     required this.message,
-    required this.localizations,
     required this.isArabic,
   });
 
   final String message;
-  final AppLocalizations localizations;
   final bool isArabic;
 
   @override
@@ -84,8 +76,8 @@ class _PrayerErrorSliver extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: context.colorScheme.error,
+            style: context.typography.titleMedium.copyWith(
+              color: context.colors.error,
               fontSize: 16.toSp,
             ),
           ),
@@ -97,7 +89,7 @@ class _PrayerErrorSliver extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.refresh),
-            label: Text(localizations.retry),
+            label: Text(context.l10n.retry),
           ),
         ],
       ),
@@ -105,12 +97,11 @@ class _PrayerErrorSliver extends StatelessWidget {
   );
 }
 
-class _PrayerSuccessSliver extends StatelessWidget {
-  const _PrayerSuccessSliver({
-    required this.localizations,
+class _PrayerSuccessCard extends StatelessWidget {
+  const _PrayerSuccessCard({
     required this.isArabic,
   });
-  final AppLocalizations localizations;
+
   final bool isArabic;
 
   @override
@@ -125,7 +116,7 @@ class _PrayerSuccessSliver extends StatelessWidget {
     return CurrentPrayerCard(
       hijriDate: hijriDate,
       theme: theme,
-      localizations: localizations,
+      localizations: context.l10n,
       dayName: dayName,
     );
   }

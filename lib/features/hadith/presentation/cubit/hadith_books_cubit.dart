@@ -16,16 +16,16 @@ class HadithBooksCubit extends Cubit<HadithBooksState> {
   final HadithRepository repository;
 
   Future<void> loadBooks() async {
-    if (state.status == HadithBooksStatus.initial) {
-      emit(state.copyWith(status: HadithBooksStatus.loading));
-    }
+    if (!isClosed) emit(state.copyWith(status: HadithBooksStatus.loading));
 
     final result = await repository.getHadithBooks();
+    if (isClosed) return;
+
     result.fold(
       (failure) => emit(
         state.copyWith(
           status: HadithBooksStatus.failure,
-          errorMessage: 'Failed to load books',
+          errorMessage: failure.message,
         ),
       ),
       (books) =>
@@ -34,9 +34,11 @@ class HadithBooksCubit extends Cubit<HadithBooksState> {
   }
 
   Future<void> loadRandomHadith() async {
-    emit(state.copyWith(randomHadithStatus: RandomHadithStatus.loading));
+    if (!isClosed) emit(state.copyWith(randomHadithStatus: RandomHadithStatus.loading));
 
     final result = await repository.getRandomHadith();
+    if (isClosed) return;
+
     result.fold(
       (failure) =>
           emit(state.copyWith(randomHadithStatus: RandomHadithStatus.failure)),
@@ -50,6 +52,6 @@ class HadithBooksCubit extends Cubit<HadithBooksState> {
   }
 
   void updateSearchText(String text) {
-    emit(state.copyWith(searchText: text));
+    if (!isClosed) emit(state.copyWith(searchText: text));
   }
 }

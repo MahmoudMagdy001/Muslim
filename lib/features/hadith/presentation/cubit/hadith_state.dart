@@ -9,6 +9,7 @@ class HadithState extends Equatable {
     this.status = HadithStatus.initial,
     this.hadiths = const [],
     this.savedHadiths = const [],
+    this.savedHadithIds = const {},
     this.dataLoaded = false,
     this.message = '',
   });
@@ -16,6 +17,7 @@ class HadithState extends Equatable {
   final HadithStatus status;
   final List<HadithEntity> hadiths;
   final List<Map<String, dynamic>> savedHadiths;
+  final Set<String> savedHadithIds;
   final bool dataLoaded;
   final String message;
 
@@ -23,12 +25,14 @@ class HadithState extends Equatable {
     HadithStatus? status,
     List<HadithEntity>? hadiths,
     List<Map<String, dynamic>>? savedHadiths,
+    Set<String>? savedHadithIds,
     bool? dataLoaded,
     String? message,
   }) => HadithState(
     status: status ?? this.status,
     hadiths: hadiths ?? this.hadiths,
     savedHadiths: savedHadiths ?? this.savedHadiths,
+    savedHadithIds: savedHadithIds ?? this.savedHadithIds,
     dataLoaded: dataLoaded ?? this.dataLoaded,
     message: message ?? this.message,
   );
@@ -38,6 +42,7 @@ class HadithState extends Equatable {
     status,
     hadiths,
     savedHadiths,
+    savedHadithIds,
     dataLoaded,
     message,
   ];

@@ -25,10 +25,7 @@ class LayoutContent extends StatelessWidget {
       SliverToBoxAdapter(
         child: KeyedSubtree(
           key: AppTourKeys.prayerTimesKey,
-          child: PrayerTimesView(
-            scaffoldContext: scaffoldContext,
-            localizations: localizations,
-          ),
+          child: const PrayerTimesView(),
         ),
       ),
       SliverPadding(

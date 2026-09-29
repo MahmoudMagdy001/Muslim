@@ -13,6 +13,7 @@ class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
   final AudioPlayer _audioPlayer;
   final StreamController<AzkarAudioState> _stateController =
       StreamController<AzkarAudioState>.broadcast();
+  StreamSubscription<PlayerState>? _playerSubscription;
 
   AzkarAudioState _state = const AzkarAudioState(
     status: AzkarAudioStatus.initial,
@@ -25,9 +26,20 @@ class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
   AzkarAudioState get currentState => _state;
 
   void _init() {
-    _audioPlayer.playerStateStream.listen((playerState) {
+    _playerSubscription = _audioPlayer.playerStateStream.listen((playerState) {
       final processingState = playerState.processingState;
       final playing = playerState.playing;
+
+      final currentService = _getMetadataFromPlayer('service');
+      final isOurService = currentService == 'azkar';
+
+      if (!isOurService) {
+        if (_state.status != AzkarAudioStatus.stopped &&
+            _state.status != AzkarAudioStatus.initial) {
+          _updateState(status: AzkarAudioStatus.stopped);
+        }
+        return;
+      }
 
       if (processingState == ProcessingState.completed ||
           processingState == ProcessingState.idle) {
@@ -110,6 +122,6 @@ class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
 
   @override
   void dispose() {
-    unawaited(_stateController.close());
+    unawaited(_playerSubscription?.cancel());
   }
 }

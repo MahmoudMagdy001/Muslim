@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
+import 'package:muslim/core/widgets/custom_modal_sheet.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
 import 'package:muslim/features/sebha/presentation/cubit/sebha_state.dart';
@@ -49,12 +51,13 @@ class _SebhaViewState extends State<SebhaView> {
         final isDark = context.theme.brightness == Brightness.dark;
 
         return BlocListener<SebhaCubit, SebhaState>(
-      listenWhen: (previous, current) =>
-          current.goalReached && !previous.goalReached,
-      listener: (context, state) {
-        _showCompleteDialog(context, state.customGoal ?? 0);
-      },
-      child: Scaffold(
+          listenWhen: (previous, current) =>
+              current.goalReached && !previous.goalReached,
+          listener: (context, state) {
+            _showCompleteDialog(context, state.customGoal ?? 0);
+            context.read<SebhaCubit>().consumeGoalReached();
+          },
+          child: Scaffold(
         appBar: widget.showAppBar
             ? AppBar(
                 title: Text(l10n.sebhaTitle),
@@ -157,7 +160,7 @@ class _SebhaViewState extends State<SebhaView> {
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: SebhaControls(
                   onReset: context.read<SebhaCubit>().reset,
-                  onSetGoal: () => _showGoalDialog(context),
+                  onSetGoal: () => unawaited(_showGoalDialog(context)),
                 ),
               ),
             ],
@@ -194,12 +197,12 @@ class _SebhaViewState extends State<SebhaView> {
     );
   }
 
-  void _showGoalDialog(BuildContext context) {
+  Future<void> _showGoalDialog(BuildContext context) async {
     final l10n = context.l10n;
     final controller = TextEditingController();
 
-    unawaited(
-      BaseAppDialog.show<void>(
+    try {
+      await BaseAppDialog.show<void>(
         context,
         title: l10n.chooseGoal,
         content: TextField(
@@ -232,8 +235,10 @@ class _SebhaViewState extends State<SebhaView> {
             child: Text(l10n.cancelButton),
           ),
         ],
-      ),
-    );
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   Future<void> _showAddCustomZikrDialog(BuildContext context) async {
@@ -295,66 +300,54 @@ class _SebhaViewState extends State<SebhaView> {
     if (!zikr.isCustom) return;
 
     final l10n = context.l10n;
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
 
     unawaited(
-      showModalBottomSheet<void>(
+      showCustomModalBottomSheet<void>(
         context: context,
-        backgroundColor: isDark ? context.colorScheme.surface : Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (bottomSheetContext) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withAlpha(40)
-                        : Colors.black.withAlpha(25),
-                    borderRadius: BorderRadius.circular(2),
+        builder: (bottomSheetContext) => Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(
+                  Icons.edit_rounded,
+                  color: colors.primary,
+                ),
+                title: Text(
+                  l10n.editTasbih,
+                  style: context.typography.titleMedium,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: context.radius.mdBorder,
+                ),
+                onTap: () {
+                  Navigator.pop(bottomSheetContext);
+                  unawaited(_showEditZikrDialog(context, zikr));
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.delete_outline_rounded,
+                  color: colors.error,
+                ),
+                title: Text(
+                  l10n.deleteTasbih,
+                  style: context.typography.titleMedium.copyWith(
+                    color: colors.error,
                   ),
                 ),
-                ListTile(
-                  leading: Icon(
-                    Icons.edit_rounded,
-                    color: isDark ? Colors.white70 : context.colorScheme.primary,
-                  ),
-                  title: Text(l10n.editTasbih),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  onTap: () {
-                    Navigator.pop(bottomSheetContext);
-                    unawaited(_showEditZikrDialog(context, zikr));
-                  },
+                shape: RoundedRectangleBorder(
+                  borderRadius: context.radius.mdBorder,
                 ),
-                ListTile(
-                  leading: Icon(
-                    Icons.delete_rounded,
-                    color: context.colorScheme.error,
-                  ),
-                  title: Text(
-                    l10n.deleteTasbih,
-                    style: TextStyle(color: context.colorScheme.error),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  onTap: () {
-                    Navigator.pop(bottomSheetContext);
-                    unawaited(_showDeleteZikrDialog(context, zikr));
-                  },
-                ),
-              ],
-            ),
+                onTap: () {
+                  Navigator.pop(bottomSheetContext);
+                  unawaited(_showDeleteZikrDialog(context, zikr));
+                },
+              ),
+              SizedBox(height: 12.h),
+            ],
           ),
         ),
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:muslim/core/theme/design_system.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 
-/// Context Extensions
+/// Context Extensions for Design System and Presentation
 extension ContextExtension on BuildContext {
   /// Returns MediaQuery size
   Size get screenSize => MediaQuery.of(this).size;
@@ -33,11 +33,27 @@ extension ContextExtension on BuildContext {
     FocusScope.of(this).unfocus();
   }
 
+  /// Design System Semantic Colors
+  AppSemanticColors get colors =>
+      theme.brightness == Brightness.dark
+          ? AppSemanticColors.dark
+          : AppSemanticColors.light;
+
+  /// Design System Typography
+  AppTypography get typography => AppTypography(textTheme, colors);
+
+  /// Design System Radiuses
+  AppRadius get radius => const AppRadius();
+
+  /// Design System Durations
+  AppDurations get durations => const AppDurations();
+
+  /// Design System Spacing Tokens
+  AppSpacing get spacing => const AppSpacing();
+
+  /// Design System Sizes Tokens
+  AppSizes get sizes => const AppSizes();
+
   /// Returns theme-aware card gradient colors
-  List<Color> get cardGradient {
-    final isDark = theme.brightness == Brightness.dark;
-    return isDark
-        ? [const Color(0xff1A3B34), const Color(0xff0E231F)]
-        : [const Color(0xff2A574E), const Color(0xff1A3B34)];
-  }
+  List<Color> get cardGradient => colors.cardGradient;
 }

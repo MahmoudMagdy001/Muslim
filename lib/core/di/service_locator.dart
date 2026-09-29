@@ -87,7 +87,7 @@ Future<void> setupServiceLocator() async {
   // Repositories
     ..registerLazySingleton<PrayerTimesRepository>(() => PrayerTimesRepositoryImpl(dataSource: getIt<PrayerTimesLocalDataSource>()))
     ..registerLazySingleton<PrayerNotificationRepository>(() => PrayerNotificationRepositoryImpl(localDataSource: getIt<PrayerNotificationLocalDataSource>(), settingsService: getIt<SettingsService>()))
-    ..registerLazySingleton<TafsirRepository>(TafsirRepository.new)
+    ..registerLazySingleton<TafsirRepository>(() => TafsirRepository(client: getIt<http.Client>()))
     ..registerLazySingleton<SurahsListRepository>(SurahsListRepositoryImpl.new)
     ..registerLazySingleton<AzkarRepository>(() => AzkarRepositoryImpl(getIt<AzkarRemoteDataSource>(), getIt<AzkarLocalDataSource>(), getIt<AzkarAudioDataSource>()))
     ..registerLazySingleton<HadithRepository>(() => HadithRepositoryImpl(remoteDataSource: getIt<HadithRemoteDataSource>(), localDataSource: getIt<HadithLocalDataSource>()))

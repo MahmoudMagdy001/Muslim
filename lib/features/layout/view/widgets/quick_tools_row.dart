@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/widgets/section_header.dart';
 import 'package:muslim/features/hadith/presentation/views/hadith_books_view.dart';
 import 'package:muslim/features/names_of_allah/presentation/views/names_of_allah_screen.dart';
 import 'package:muslim/features/qiblah/presentation/views/qiblah_view.dart';
@@ -15,7 +16,7 @@ class QuickToolsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
 
     final tools = [
       _ToolItem(
@@ -41,39 +42,34 @@ class QuickToolsRow extends StatelessWidget {
     ];
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.toW, vertical: 8.toH),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.toW, vertical: 4.toH),
-            child: Text(
-              isArabic ? 'خدمات إسلامية سريعة' : 'Quick Islamic Tools',
-              style: context.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF192522),
-              ),
-            ),
+          SectionHeader(
+            title: isArabic ? 'خدمات إسلامية سريعة' : 'Quick Islamic Tools',
+            padding: EdgeInsets.symmetric(vertical: 4.h),
           ),
-          SizedBox(height: 6.toH),
+          SizedBox(height: 6.h),
           Row(
             children: [
               for (final tool in tools)
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.toW),
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF182421) : Colors.white,
-                        borderRadius: BorderRadius.circular(16.toR),
+                        color: colors.surface,
+                        borderRadius: context.radius.mdBorder,
                         border: Border.all(
-                          color: isDark
-                              ? const Color(0xFF253531)
-                              : const Color(0xFFE2EBE8),
+                          color: colors.border,
+                          width: 0.8,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Colors.black.withValues(
+                              alpha: colors.isDark ? 0.2 : 0.03,
+                            ),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -91,43 +87,48 @@ class QuickToolsRow extends StatelessWidget {
                               ),
                             );
                           },
-                          borderRadius: BorderRadius.circular(16.toR),
+                          borderRadius: context.radius.mdBorder,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 4.toW,
-                              vertical: 12.toH,
+                              horizontal: 4.w,
+                              vertical: 12.h,
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  width: 44.toW,
-                                  height: 44.toH,
-                                  padding: EdgeInsets.all(6.toR),
+                                  width: 44.r,
+                                  height: 44.r,
+                                  padding: EdgeInsets.all(7.r),
                                   decoration: BoxDecoration(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.05)
-                                        : const Color(0xFFF0F5F3),
-                                    borderRadius: BorderRadius.circular(12.toR),
+                                    color: colors.surfaceVariant,
+                                    borderRadius: BorderRadius.circular(12.r),
+                                    border: Border.all(
+                                      color: colors.border,
+                                      width: 0.6,
+                                    ),
                                   ),
                                   child: Image.asset(
                                     tool.asset,
                                     fit: BoxFit.contain,
                                     errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.star_rounded, size: 24),
+                                        Icon(
+                                          Icons.star_rounded,
+                                          size: 22.r,
+                                          color: colors.secondary,
+                                        ),
                                   ),
                                 ),
-                                SizedBox(height: 6.toH),
+                                SizedBox(height: 8.h),
                                 Text(
                                   tool.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
-                                  style: context.textTheme.labelMedium?.copyWith(
+                                  style: context.typography.titleSmall.copyWith(
                                     fontWeight: FontWeight.w600,
-                                    color: isDark
-                                        ? Colors.white
-                                        : const Color(0xFF192522),
+                                    fontSize: 12.sp,
+                                    color: colors.textPrimary,
                                   ),
                                 ),
                               ],

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/quran/service/quran_service.dart';
 import 'package:muslim/features/quran/view/quran_view.dart';
 import 'package:muslim/features/quran/viewmodel/bookmarks_cubit/bookmarks_cubit.dart';
@@ -21,6 +21,7 @@ class ContinueReadingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final reciter = context.watch<ReciterCubit>().state.selectedReciter;
+    final colors = context.colors;
 
     return BlocBuilder<BookmarksCubit, BookmarksState>(
       builder: (context, bookmarkState) {
@@ -52,20 +53,20 @@ class ContinueReadingCard extends StatelessWidget {
             : 'Juz $juz';
 
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.toW, vertical: 6.toH),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.toR),
-              gradient: LinearGradient(
-                begin: AlignmentDirectional.topStart,
-                end: AlignmentDirectional.bottomEnd,
-                colors: context.cardGradient,
+              color: colors.surface,
+              borderRadius: context.radius.lgBorder,
+              border: Border.all(
+                color: colors.border,
+                width: 0.8,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: Colors.black.withValues(alpha: colors.isDark ? 0.2 : 0.04),
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -85,31 +86,34 @@ class ContinueReadingCard extends StatelessWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(20.toR),
+                borderRadius: context.radius.lgBorder,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 14.toH),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                   child: Row(
                     children: [
-                      // Quran Artwork Thumbnail
+                      // Quran Artwork Frame
                       Container(
-                        width: 58.toW,
-                        height: 58.toH,
-                        padding: EdgeInsets.all(8.toR),
+                        width: 52.r,
+                        height: 52.r,
+                        padding: EdgeInsets.all(10.r),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(16.toR),
+                          color: colors.secondary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
-                            color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
+                            color: colors.secondary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Image.asset(
                           'assets/home/quran.png',
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.menu_book, color: Colors.white),
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.menu_book_rounded,
+                            color: colors.secondary,
+                            size: 24.r,
+                          ),
                         ),
                       ),
-                      SizedBox(width: 14.toW),
+                      SizedBox(width: 14.w),
 
                       // Text Metadata
                       Expanded(
@@ -121,70 +125,68 @@ class ContinueReadingCard extends StatelessWidget {
                               children: [
                                 Text(
                                   isArabic ? 'متابعة الورد القرآني' : 'Continue Reading',
-                                  style: context.textTheme.labelMedium?.copyWith(
-                                    color: const Color(0xFFE5C467),
+                                  style: context.typography.caption.copyWith(
+                                    color: colors.secondary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const Spacer(),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 8.toW,
-                                    vertical: 2.toH,
+                                    horizontal: 8.w,
+                                    vertical: 2.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(10.toR),
+                                    color: colors.surfaceVariant,
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    border: Border.all(
+                                      color: colors.border,
+                                      width: 0.6,
+                                    ),
                                   ),
                                   child: Text(
                                     juzText,
-                                    style: context.textTheme.labelSmall?.copyWith(
-                                      color: Colors.white,
+                                    style: context.typography.caption.copyWith(
+                                      color: colors.textSecondary,
                                       fontWeight: FontWeight.w600,
+                                      fontSize: 10.5.sp,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 4.toH),
+                            SizedBox(height: 3.h),
                             Text(
                               isArabic ? 'سورة $surahName' : 'Surah $surahName',
-                              style: context.textTheme.titleMedium?.copyWith(
-                                color: Colors.white,
+                              style: context.typography.titleMedium.copyWith(
+                                color: colors.textPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 2.toH),
+                            SizedBox(height: 2.h),
                             Text(
                               ayahText,
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.85),
+                              style: context.typography.bodySmall.copyWith(
+                                color: colors.textSecondary,
                               ),
                             ),
                           ],
                         ),
                       ),
 
-                      SizedBox(width: 10.toW),
+                      SizedBox(width: 10.w),
 
                       // Action Button Icon
                       Container(
-                        padding: EdgeInsets.all(10.toR),
+                        padding: EdgeInsets.all(9.r),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD4AF37),
+                          color: colors.primary,
                           shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.arrow_forward_ios_rounded,
-                          size: 16,
-                          color: Color(0xFF1A3B34),
+                          size: 14.r,
+                          color: Colors.white,
                         ),
                       ),
                     ],

@@ -69,10 +69,10 @@ class CompassWidget extends StatelessWidget {
       height: compassSize.height,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isDark ? const Color(0xFF201A2B) : Colors.white,
+        color: context.colors.surface,
         border: Border.all(
-          color: isAligned ? primary : (isDark ? const Color(0xFF4C406F) : primary),
-          width: isAligned ? 4.0 : 3.0,
+          color: isAligned ? primary : context.colors.border,
+          width: isAligned ? 4.0 : 2.0,
         ),
         boxShadow: [
           if (isAligned)

@@ -23,29 +23,38 @@ class AppThemeFactory {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.white,
+      scaffoldBackgroundColor: AppColors.lightBackground,
       fontFamily: GoogleFonts.cairo().fontFamily,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
-        elevation: 5,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
+        titleTextStyle: textStyles.title.copyWith(
+          color: AppColors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-      tabBarTheme: _lightTabBarTheme(textStyles), // إضافة tab bar theme
+      tabBarTheme: _lightTabBarTheme(textStyles),
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
+        primaryContainer: Color(0xFF1C4C42),
         secondary: AppColors.secondary,
         error: AppColors.errorLight,
-        onSecondary: AppColors.black87,
-        onSurface: AppColors.black87,
+        onSecondary: AppColors.white,
+        onSurface: AppColors.textPrimary,
       ),
       textTheme: _buildLightTextTheme(textStyles),
       sliderTheme: _lightSliderTheme,
       elevatedButtonTheme: _lightElevatedButtonTheme(textStyles),
-      cardTheme: _cardTheme.copyWith(color: AppColors.lightCard),
+      cardTheme: _cardTheme.copyWith(
+        color: AppColors.lightCard,
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.04),
+      ),
       inputDecorationTheme: _lightInputDecorationTheme(textStyles),
-      scrollbarTheme: _lightScrollbarTheme, // إضافة scrollbar theme
+      scrollbarTheme: _lightScrollbarTheme,
       snackBarTheme: _lightSnackBarTheme(textStyles),
       switchTheme: _lightSwitchTheme,
     );
@@ -63,12 +72,17 @@ class AppThemeFactory {
         backgroundColor: AppColors.primaryDark,
         foregroundColor: AppColors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: textStyles.title.copyWith(color: AppColors.white),
+        titleTextStyle: textStyles.title.copyWith(
+          color: AppColors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       tabBarTheme: _darkTabBarTheme(textStyles),
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primaryDark,
+        primaryContainer: Color(0xFF14332C),
         secondary: AppColors.secondaryDark,
         surface: AppColors.darkSurface,
         error: AppColors.errorDark,
@@ -79,7 +93,10 @@ class AppThemeFactory {
       sliderTheme: _darkSliderTheme,
       elevatedButtonTheme: _darkElevatedButtonTheme(textStyles),
       switchTheme: _darkSwitchTheme,
-      cardTheme: _cardTheme.copyWith(color: AppColors.darkCard),
+      cardTheme: _cardTheme.copyWith(
+        color: AppColors.darkCard,
+        elevation: 0,
+      ),
       inputDecorationTheme: _darkInputDecorationTheme(textStyles),
       scrollbarTheme: _darkScrollbarTheme,
       snackBarTheme: _darkSnackBarTheme(textStyles),
@@ -89,10 +106,10 @@ class AppThemeFactory {
   // Tab Bar Themes
   TabBarThemeData _lightTabBarTheme(AppTextStyles styles) => TabBarThemeData(
     indicator: const BoxDecoration(
-      border: Border(bottom: BorderSide(color: AppColors.white, width: 3)),
+      border: Border(bottom: BorderSide(color: AppColors.secondary, width: 3)),
     ),
     labelColor: AppColors.white,
-    unselectedLabelColor: AppColors.black54,
+    unselectedLabelColor: AppColors.white70,
     labelStyle: styles.titleSmall.copyWith(fontWeight: FontWeight.bold),
     unselectedLabelStyle: styles.titleSmall.copyWith(
       fontWeight: FontWeight.normal,
@@ -102,7 +119,7 @@ class AppThemeFactory {
 
   TabBarThemeData _darkTabBarTheme(AppTextStyles styles) => TabBarThemeData(
     indicator: const BoxDecoration(
-      border: Border(bottom: BorderSide(color: AppColors.secondary, width: 3)),
+      border: Border(bottom: BorderSide(color: AppColors.secondaryDark, width: 3)),
     ),
     labelColor: AppColors.white,
     unselectedLabelColor: AppColors.white70,
@@ -114,20 +131,18 @@ class AppThemeFactory {
   // Text Themes
   TextTheme _buildLightTextTheme(AppTextStyles styles) =>
       GoogleFonts.cairoTextTheme().copyWith(
-        headlineLarge: styles.headlineLarge.copyWith(color: AppColors.white),
-        headlineMedium: styles.headlineMedium.copyWith(
-          color: AppColors.black87,
-        ),
-        headlineSmall: styles.headlineSmall.copyWith(color: AppColors.black87),
-        titleLarge: styles.titleLarge.copyWith(color: AppColors.black87),
-        titleMedium: styles.titleMedium.copyWith(color: AppColors.black87),
-        titleSmall: styles.titleSmall.copyWith(color: AppColors.black87),
-        bodyLarge: styles.bodyLarge.copyWith(color: AppColors.black87),
-        bodyMedium: styles.bodyMedium.copyWith(color: AppColors.black54),
-        bodySmall: styles.bodySmall.copyWith(color: AppColors.black54),
-        labelLarge: styles.labelLarge.copyWith(color: AppColors.black87),
-        labelMedium: styles.labelMedium.copyWith(color: AppColors.black54),
-        displayMedium: styles.quranText.copyWith(color: AppColors.black87),
+        headlineLarge: styles.headlineLarge.copyWith(color: AppColors.textPrimary),
+        headlineMedium: styles.headlineMedium.copyWith(color: AppColors.textPrimary),
+        headlineSmall: styles.headlineSmall.copyWith(color: AppColors.textPrimary),
+        titleLarge: styles.titleLarge.copyWith(color: AppColors.textPrimary),
+        titleMedium: styles.titleMedium.copyWith(color: AppColors.textPrimary),
+        titleSmall: styles.titleSmall.copyWith(color: AppColors.textPrimary),
+        bodyLarge: styles.bodyLarge.copyWith(color: AppColors.textPrimary),
+        bodyMedium: styles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        bodySmall: styles.bodySmall.copyWith(color: AppColors.textSecondary),
+        labelLarge: styles.labelLarge.copyWith(color: AppColors.textPrimary),
+        labelMedium: styles.labelMedium.copyWith(color: AppColors.textSecondary),
+        displayMedium: styles.quranText.copyWith(color: AppColors.textPrimary),
       );
 
   TextTheme _buildDarkTextTheme(AppTextStyles styles) =>
@@ -155,9 +170,9 @@ class AppThemeFactory {
   );
 
   static const SliderThemeData _darkSliderTheme = SliderThemeData(
-    activeTrackColor: AppColors.secondary,
+    activeTrackColor: AppColors.secondaryDark,
     inactiveTrackColor: AppColors.darkInactiveTrack,
-    thumbColor: AppColors.secondary,
+    thumbColor: AppColors.secondaryDark,
     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
   );
 
@@ -166,21 +181,29 @@ class AppThemeFactory {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
-          textStyle: styles.titleSmall,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 2,
+          textStyle: styles.titleSmall.copyWith(fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
       );
 
   SnackBarThemeData _lightSnackBarTheme(AppTextStyles styles) =>
-      const SnackBarThemeData(
+      SnackBarThemeData(
+        backgroundColor: AppColors.primary,
+        contentTextStyle: styles.bodyMedium.copyWith(color: Colors.white),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 4,
         showCloseIcon: true,
       );
+
   SnackBarThemeData _darkSnackBarTheme(AppTextStyles styles) =>
-      const SnackBarThemeData(
+      SnackBarThemeData(
+        backgroundColor: AppColors.darkSurface,
+        contentTextStyle: styles.bodyMedium.copyWith(color: Colors.white),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 4,
         showCloseIcon: true,
       );
@@ -188,17 +211,21 @@ class AppThemeFactory {
   ElevatedButtonThemeData _darkElevatedButtonTheme(AppTextStyles styles) =>
       ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary.withAlpha((0.2 * 255).toInt()),
+          backgroundColor: AppColors.primaryDark,
           foregroundColor: AppColors.white,
-          textStyle: styles.titleSmall,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 2,
+          textStyle: styles.titleSmall.copyWith(fontWeight: FontWeight.bold),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
       );
 
   static final CardThemeData _cardTheme = CardThemeData(
-    elevation: 2,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+      side: const BorderSide(color: Color(0xFFE2ECE8), width: 0.8),
+    ),
   );
 
   InputDecorationTheme _lightInputDecorationTheme(AppTextStyles styles) =>
@@ -206,14 +233,23 @@ class AppThemeFactory {
         filled: true,
         fillColor: AppColors.lightInputFill,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFFE2ECE8), width: 0.8),
         ),
-        labelStyle: styles.bodyLarge.copyWith(color: AppColors.black54),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.errorLight, width: 1.2),
+        ),
+        labelStyle: styles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       );
 
   InputDecorationTheme _darkInputDecorationTheme(AppTextStyles styles) =>
@@ -221,14 +257,23 @@ class AppThemeFactory {
         filled: true,
         fillColor: AppColors.darkInputFill,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFF253732), width: 0.8),
         ),
-        labelStyle: styles.bodyLarge.copyWith(color: AppColors.white70),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.secondaryDark, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.errorDark, width: 1.2),
+        ),
+        labelStyle: styles.bodyMedium.copyWith(color: AppColors.white70),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       );
 
   static final SwitchThemeData _lightSwitchTheme = SwitchThemeData(
@@ -239,7 +284,7 @@ class AppThemeFactory {
     ),
     trackColor: WidgetStateProperty.resolveWith<Color>(
       (states) => states.contains(WidgetState.selected)
-          ? AppColors.primary.withAlpha((0.3 * 255).toInt())
+          ? AppColors.primary.withAlpha((0.25 * 255).toInt())
           : AppColors.lightInactiveTrack,
     ),
   );
@@ -247,25 +292,24 @@ class AppThemeFactory {
   static final SwitchThemeData _darkSwitchTheme = SwitchThemeData(
     thumbColor: WidgetStateProperty.resolveWith<Color>(
       (states) => states.contains(WidgetState.selected)
-          ? AppColors.secondary
+          ? AppColors.secondaryDark
           : Colors.grey,
     ),
     trackColor: WidgetStateProperty.resolveWith<Color>(
       (states) => states.contains(WidgetState.selected)
-          ? AppColors.secondary.withAlpha((0.3 * 255).toInt())
+          ? AppColors.secondaryDark.withAlpha((0.25 * 255).toInt())
           : AppColors.darkInactiveTrack,
     ),
   );
 
   static final ScrollbarThemeData _lightScrollbarTheme = ScrollbarThemeData(
-    thickness: WidgetStateProperty.all(8.0),
+    thickness: WidgetStateProperty.all(6.0),
     radius: const Radius.circular(16),
     thumbColor: WidgetStateProperty.all(
-      AppColors.primary.withAlpha((0.5 * 255).toInt()),
+      AppColors.primary.withAlpha((0.35 * 255).toInt()),
     ),
-    thumbVisibility: WidgetStateProperty.all(true),
-    trackVisibility: WidgetStateProperty.all(true),
-
+    thumbVisibility: WidgetStateProperty.all(false),
+    trackVisibility: WidgetStateProperty.all(false),
     crossAxisMargin: 2.0,
     mainAxisMargin: 4.0,
     minThumbLength: 50.0,
@@ -273,14 +317,13 @@ class AppThemeFactory {
   );
 
   static final ScrollbarThemeData _darkScrollbarTheme = ScrollbarThemeData(
-    thickness: WidgetStateProperty.all(8.0),
+    thickness: WidgetStateProperty.all(6.0),
     radius: const Radius.circular(16),
     thumbColor: WidgetStateProperty.all(
-      AppColors.primaryDark.withAlpha((0.7 * 255).toInt()),
+      AppColors.secondaryDark.withAlpha((0.35 * 255).toInt()),
     ),
-    thumbVisibility: WidgetStateProperty.all(true),
-    trackVisibility: WidgetStateProperty.all(true),
-
+    thumbVisibility: WidgetStateProperty.all(false),
+    trackVisibility: WidgetStateProperty.all(false),
     crossAxisMargin: 2.0,
     mainAxisMargin: 4.0,
     minThumbLength: 50.0,

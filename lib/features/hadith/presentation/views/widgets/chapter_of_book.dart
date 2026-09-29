@@ -247,53 +247,62 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
         : chapter.chapterNumber;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 6.toH),
+      margin: EdgeInsets.symmetric(vertical: 5.toH),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: context.cardGradient,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: context.colors.surface,
+        borderRadius: BorderRadius.circular(16.toR),
+        border: Border.all(
+          color: context.colors.border,
         ),
-        borderRadius: BorderRadius.circular(15.toR),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(15.toR),
+        borderRadius: BorderRadius.circular(16.toR),
         onTap: () =>
             _navigateToHadithView(context, chapter, chapterName, chapterNumber),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 14.toH),
           child: Row(
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    'assets/quran/marker.png',
-                    width: 40.toW,
-                    height: 40.toH,
-                  ),
-                  Text(
-                    chapterNumber,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.bold,
+              SizedBox(
+                width: 44.toW,
+                height: 44.toH,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/quran/marker.png',
+                      width: 44.toW,
+                      height: 44.toH,
+                      cacheWidth: 132,
+                      cacheHeight: 132,
                     ),
-                  ),
-                ],
+                    Text(
+                      chapterNumber,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: context.colors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(width: 16.toW),
               Expanded(
                 child: Text(
                   chapterName,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: context.colors.textPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16.toR),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: context.colors.textSecondary,
+                size: 14.toR,
+              ),
             ],
           ),
         ),

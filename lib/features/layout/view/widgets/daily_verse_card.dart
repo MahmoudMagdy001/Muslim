@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
-import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/quran/view/quran_view.dart';
 import 'package:muslim/features/settings/view_model/rectire/rectire_cubit.dart';
 import 'package:quran/quran.dart' as quran;
@@ -51,14 +50,11 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
 
   void _generateDailyVerse() {
     final now = DateTime.now();
-    // A deterministic seed per day
     final seed = now.year * 10000 + now.month * 100 + now.day;
     final random = Random(seed);
 
-    // Pick a random Surah (1 to 114)
     final surahNum = random.nextInt(114) + 1;
     final verseCount = quran.getVerseCount(surahNum);
-    // Pick a random Ayah (1 to verseCount)
     final ayahNum = random.nextInt(verseCount) + 1;
 
     _ayahNumber = ayahNum;
@@ -77,103 +73,120 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
   @override
   Widget build(BuildContext context) {
     final ayahStr = convertToArabicNumbers(_ayahNumber.toString());
+    final colors = context.colors;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 6.w),
+      margin: EdgeInsets.symmetric(horizontal: 14.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.toR),
-        gradient: LinearGradient(
-          begin: AlignmentDirectional.topCenter,
-          end: AlignmentDirectional.bottomCenter,
-          colors: context.cardGradient,
-        ),
+        borderRadius: context.radius.xlBorder,
+        color: colors.primary,
+        boxShadow: [
+          BoxShadow(
+            color: colors.primary.withValues(alpha: 0.25),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: () {
-          final reciter = context.read<ReciterCubit>().state.selectedReciter;
-          unawaited(
-            navigateWithTransition<void>(
-              context,
-              QuranView(
-                surahNumber: _surah.number,
-                reciter: reciter,
-                currentAyah: _ayahNumber,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            final reciter = context.read<ReciterCubit>().state.selectedReciter;
+            unawaited(
+              navigateWithTransition<void>(
+                context,
+                QuranView(
+                  surahNumber: _surah.number,
+                  reciter: reciter,
+                  currentAyah: _ayahNumber,
+                ),
+                type: TransitionType.fade,
               ),
-              type: TransitionType.fade,
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(24.toR),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            );
+          },
+          borderRadius: context.radius.xlBorder,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'ورد اليوم',
-                      style: context.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          width: 8.r,
+                          height: 8.r,
+                          decoration: BoxDecoration(
+                            color: colors.secondary,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          isArabic ? 'آية اليوم وتدبر' : 'Verse of the Day',
+                          style: context.typography.titleMedium.copyWith(
+                            color: colors.secondary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 4.toH),
-                    Text(
-                      'سورة ${_surah.nameArabic} - آية $ayahStr',
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
-                      textDirection: TextDirection.rtl,
-                    ),
-                    SizedBox(height: 12.toH),
-                    Text(
-                      _ayahText,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.amiri(
-                        fontSize: 18.sp,
-                        color: Colors.white,
-                        height: 1.4,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textDirection: TextDirection.rtl,
-                    ),
-                    SizedBox(height: 16.toH),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.toW,
-                        vertical: 8.toH,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                       decoration: BoxDecoration(
-                        color: context.colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(20.toR),
+                        color: Colors.white.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Text(
-                        'اقرأ المزيد',
-                        style: context.textTheme.bodyMedium?.copyWith(
-                          color: context.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
+                        'سورة ${_surah.nameArabic} - آية $ayahStr',
+                        style: context.typography.caption.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontWeight: FontWeight.w600,
                         ),
+                        textDirection: TextDirection.rtl,
                       ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(width: 8.toW),
-              Image.asset(
-                'assets/home/quran.png',
-                height: 80.toH,
-                // ponytail: cache height to save memory at runtime
-                cacheHeight: 240,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.menu_book,
-                  size: 60,
-                  color: Colors.white70,
+                SizedBox(height: 14.h),
+                Text(
+                  _ayahText,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.amiri(
+                    fontSize: 20.sp,
+                    color: Colors.white,
+                    height: 1.8,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textDirection: TextDirection.rtl,
                 ),
-              ),
-            ],
+                SizedBox(height: 14.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      isArabic ? 'فتح السورة' : 'Read Surah',
+                      style: context.typography.caption.copyWith(
+                        color: colors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 14.r,
+                      color: colors.secondary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

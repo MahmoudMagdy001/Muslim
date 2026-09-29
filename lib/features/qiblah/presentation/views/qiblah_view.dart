@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
+import 'package:muslim/core/widgets/location_disclosure_dialog.dart';
 import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
 import 'package:muslim/features/qiblah/presentation/cubit/qiblah_state.dart';
 import 'package:muslim/features/qiblah/presentation/views/widgets/qiblah_error_widget.dart';
@@ -21,9 +22,12 @@ class _QiblahViewState extends State<QiblahView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        unawaited(AppTourHelper.showQiblahTour(context));
+        await LocationDisclosureDialog.showIfNeeded(context);
+        if (mounted) {
+          unawaited(AppTourHelper.showQiblahTour(context));
+        }
       }
     });
   }
@@ -50,8 +54,7 @@ class _QiblahViewState extends State<QiblahView> {
       ),
       body: KeyedSubtree(
         key: AppTourKeys.qiblahCompassKey,
-        child: BlocSelector<QiblahCubit, QiblahState, QiblahState>(
-          selector: (state) => state,
+        child: BlocBuilder<QiblahCubit, QiblahState>(
           builder: (context, state) {
             if (state.status == QiblahStatus.error) {
               return QiblahErrorWidget(message: state.message ?? '');

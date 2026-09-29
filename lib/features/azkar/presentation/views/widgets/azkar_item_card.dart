@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
 import 'package:muslim/features/azkar/presentation/cubit/azkar_audio_cubit.dart';
@@ -28,7 +30,6 @@ class AzkarItemCard extends StatefulWidget {
 }
 
 class _AzkarItemCardState extends State<AzkarItemCard> {
-  // Resolved once in initState to avoid a service-locator lookup on every build.
   late final AzkarAudioCubit _audioCubit;
 
   @override
@@ -36,46 +37,59 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
     super.initState();
     _audioCubit = getIt<AzkarAudioCubit>();
   }
+
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
+    final colors = context.colors;
     final isFinished = widget.currentCount <= 0;
     final totalCount = widget.content.repeat;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: context.durations.normal,
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(20.r),
+        color: colors.surface,
+        borderRadius: context.radius.lgBorder,
         border: Border.all(
-          color: isFinished ? theme.colorScheme.secondary : Colors.transparent,
-          width: 2.0,
+          color: isFinished ? colors.secondary : colors.border,
+          width: isFinished ? 1.5 : 0.8,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(
+              alpha: colors.isDark ? 0.2 : 0.03,
+            ),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.all(16.r),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 12.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   widget.content.arabicText,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.titleLarge?.copyWith(
+                  style: GoogleFonts.amiri(
+                    fontSize: 20.sp,
                     height: 1.8,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: colors.textPrimary,
                   ),
                   textDirection: TextDirection.rtl,
                 ),
                 if (widget.content.translatedText.isNotEmpty) ...[
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 12.h),
                   Text(
                     widget.content.translatedText,
                     textAlign: TextAlign.justify,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70,
+                    style: context.typography.body.copyWith(
+                      color: colors.textSecondary,
                       height: 1.6,
                     ),
                     textDirection: TextDirection.rtl,
@@ -85,13 +99,13 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+            padding: EdgeInsets.fromLTRB(14.w, 0, 14.w, 14.h),
             child: Row(
               children: [
-                // زر التسبيح - ياخد أكبر مساحة
+                // Big Tasbih Counter Button
                 Expanded(
                   child: SizedBox(
-                    height: 48.h,
+                    height: 46.h,
                     child: ElevatedButton(
                       onPressed: isFinished
                           ? null
@@ -100,22 +114,36 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
                               widget.onIncrement();
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.secondary,
-                        foregroundColor: theme.colorScheme.onSecondary,
+                        backgroundColor: isFinished
+                            ? colors.surfaceVariant
+                            : colors.primary,
+                        foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.r),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
-                        disabledBackgroundColor: Colors.grey.withValues(
-                          alpha: 0.2,
-                        ),
+                        disabledBackgroundColor: colors.surfaceVariant,
                       ),
-                      child: Text(
-                        context.l10n.tasbih,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isFinished ? Colors.white38 : null,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            isFinished
+                                ? Icons.check_circle_rounded
+                                : Icons.touch_app_rounded,
+                            size: 18.r,
+                            color: isFinished ? colors.secondary : Colors.white,
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            isFinished
+                                ? (isArabic ? 'اكتمل' : 'Completed')
+                                : context.l10n.tasbih,
+                            style: context.typography.labelLarge.copyWith(
+                              color: isFinished ? colors.secondary : Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -123,7 +151,7 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
 
                 SizedBox(width: 8.w),
 
-                // زر الصوت
+                // Audio Button
                 BlocBuilder<AzkarAudioCubit, AzkarAudioState>(
                   bloc: _audioCubit,
                   builder: (context, audioState) {
@@ -149,60 +177,84 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
                       },
                       icon: isLoading
                           ? SizedBox(
-                              width: 24.r,
-                              height: 24.r,
+                              width: 20.r,
+                              height: 20.r,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.r,
-                                color: Colors.white,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  colors.secondary,
+                                ),
                               ),
                             )
                           : Icon(
-                              isPlaying ? Icons.stop_circle : Icons.play_circle,
-                              color: Colors.white,
+                              isPlaying
+                                  ? Icons.stop_circle_rounded
+                                  : Icons.volume_up_rounded,
+                              color: colors.secondary,
                             ),
-                      iconSize: 32.r,
-                      tooltip: isPlaying ? 'إيقاف' : 'تشغيل',
+                      iconSize: 26.r,
+                      tooltip: isPlaying
+                          ? (isArabic ? 'إيقاف' : 'Stop')
+                          : (isArabic ? 'استماع' : 'Listen'),
                     );
                   },
                 ),
-                SizedBox(width: 4.w),
 
-                // زر الإعادة - في النص
+                // Reset Button
                 IconButton(
                   onPressed: () async {
                     await HapticFeedback.lightImpact();
                     widget.onReset();
                   },
-                  icon: const Icon(Icons.refresh, color: Colors.white),
-                  iconSize: 28.r,
-                  tooltip: 'إعادة العداد',
+                  icon: Icon(
+                    Icons.replay_rounded,
+                    color: colors.textSecondary,
+                  ),
+                  iconSize: 22.r,
+                  tooltip: isArabic ? 'إعادة' : 'Reset',
                 ),
 
-                SizedBox(width: 8.w),
+                SizedBox(width: 4.w),
 
-                // الأرقام - في الآخر
-                Row(
-                  children: [
-                    Text(
-                      widget.currentCount.toString(),
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                // Counter numbers
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(10.r),
+                    border: Border.all(
+                      color: colors.border,
+                      width: 0.6,
                     ),
-                    Text(
-                      ' / ',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white70,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        isArabic
+                            ? convertToArabicNumbers(widget.currentCount.toString())
+                            : widget.currentCount.toString(),
+                        style: context.typography.titleMedium.copyWith(
+                          color: isFinished ? colors.secondary : colors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      totalCount.toString(),
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white70,
+                      Text(
+                        ' / ',
+                        style: context.typography.caption.copyWith(
+                          color: colors.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
+                      Text(
+                        isArabic
+                            ? convertToArabicNumbers(totalCount.toString())
+                            : totalCount.toString(),
+                        style: context.typography.caption.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

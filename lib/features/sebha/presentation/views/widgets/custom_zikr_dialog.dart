@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
@@ -70,42 +71,18 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isEditing = widget.zikr != null;
-    final isDark = context.theme.brightness == Brightness.dark;
-    final primaryColor = context.colorScheme.primary;
+    final colors = context.colors;
 
     return BaseAppDialog(
-      titleWidget: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: primaryColor.withAlpha(20),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              isEditing ? Icons.edit_rounded : Icons.add_rounded,
-              color: primaryColor,
-              size: 22,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              isEditing ? l10n.editTasbih : l10n.addCustomTasbih,
-              style: context.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.colorScheme.onSurface,
-              ),
-            ),
-          ),
-        ],
-      ),
+      icon: isEditing ? Icons.edit_rounded : Icons.add_rounded,
+      iconColor: colors.secondary,
+      title: isEditing ? l10n.editTasbih : l10n.addCustomTasbih,
       content: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             TextFormField(
               controller: _textArController,
               decoration: InputDecoration(
@@ -113,42 +90,14 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
                 hintText: l10n.tasbihTextArHint,
                 prefixIcon: Icon(
                   Icons.text_fields_rounded,
-                  color: primaryColor.withAlpha(150),
-                ),
-                filled: true,
-                fillColor: primaryColor.withAlpha(10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor.withAlpha(30)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor, width: 1.5),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: context.colorScheme.error),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(
-                    color: context.colorScheme.error,
-                    width: 1.5,
-                  ),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+                  color: colors.secondary,
+                  size: 20.r,
                 ),
               ),
               validator: _validateRequired,
               textDirection: TextDirection.rtl,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 14.h),
             TextFormField(
               controller: _goalController,
               decoration: InputDecoration(
@@ -156,36 +105,8 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
                 hintText: l10n.tasbihGoalHint,
                 prefixIcon: Icon(
                   Icons.flag_rounded,
-                  color: primaryColor.withAlpha(150),
-                ),
-                filled: true,
-                fillColor: primaryColor.withAlpha(10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor.withAlpha(30)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: primaryColor, width: 1.5),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: context.colorScheme.error),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(
-                    color: context.colorScheme.error,
-                    width: 1.5,
-                  ),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+                  color: colors.secondary,
+                  size: 20.r,
                 ),
               ),
               keyboardType: TextInputType.number,
@@ -198,13 +119,8 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
         TextButton(
           onPressed: () => Navigator.pop(context),
           style: TextButton.styleFrom(
-            foregroundColor: isDark
-                ? Colors.white60
-                : context.colorScheme.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            foregroundColor: colors.textSecondary,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           ),
           child: Text(l10n.cancelButton),
         ),
@@ -212,15 +128,15 @@ class _CustomZikrDialogState extends State<CustomZikrDialog> {
           onPressed: _save,
           icon: Icon(
             isEditing ? Icons.check_rounded : Icons.add_rounded,
-            size: 18,
+            size: 16.r,
           ),
           label: Text(l10n.save),
           style: FilledButton.styleFrom(
-            backgroundColor: primaryColor,
+            backgroundColor: colors.primary,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
         ),
