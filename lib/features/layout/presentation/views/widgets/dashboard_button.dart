@@ -1,0 +1,55 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/layout/data/models/dashboard_item_model.dart';
+
+class DashboardButton extends StatelessWidget {
+  const DashboardButton({required this.item, super.key});
+
+  final DashboardItemModel item;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: () => unawaited(navigateWithTransition<void>(context, item.route)),
+    borderRadius: .circular(20.toR),
+    child: Container(
+      decoration: BoxDecoration(
+        color: context.theme.brightness == Brightness.dark
+            ? item.darkColor
+            : item.color,
+        borderRadius: .circular(20.toR),
+      ),
+      padding: .all(12.toW),
+      child: Column(
+        mainAxisAlignment: .spaceBetween,
+        children: [
+          Text(
+            item.label,
+            style: context.textTheme.titleSmall?.copyWith(
+              fontWeight: .bold,
+              color: context.theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black87,
+            ),
+            textAlign: .center,
+          ),
+          Expanded(
+            child: Center(
+              child: Image.asset(
+                item.image,
+                fit: BoxFit.cover,
+                height: 80.toH,
+                // ponytail: cache height to save memory at runtime
+                cacheHeight: 240,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}

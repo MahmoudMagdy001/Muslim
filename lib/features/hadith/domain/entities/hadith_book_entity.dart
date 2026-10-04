@@ -1,19 +1,16 @@
-class HadithBookEntity {
-  const HadithBookEntity({
-    required this.id,
-    required this.bookName,
-    required this.writerName,
-    required this.hadithCount,
-    required this.chapterCount,
-    required this.writerDeath,
-    required this.bookSlug,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String bookName;
-  final String writerName;
-  final String hadithCount;
-  final String chapterCount;
-  final String writerDeath;
-  final String bookSlug;
+part 'hadith_book_entity.freezed.dart';
+
+@freezed
+abstract class HadithBookEntity with _$HadithBookEntity {
+  const factory HadithBookEntity({
+    required String id,
+    required String bookName,
+    required String writerName,
+    required String hadithCount,
+    required String chapterCount,
+    required String writerDeath,
+    required String bookSlug,
+  }) = _HadithBookEntity;
 }

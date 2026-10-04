@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/format_helper.dart';
+import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/features/quran/data/models/bookmark_model.dart';
+import 'package:muslim/l10n/app_localizations.dart';
+import 'package:quran/quran.dart' as quran;
+
+class BookmarkCard extends StatelessWidget {
+  const BookmarkCard({
+    required this.bookmark,
+    required this.localizations,
+    required this.reciter,
+    required this.onOpen,
+    required this.onDelete,
+    super.key,
+  });
+
+  final AyahBookmark bookmark;
+  final AppLocalizations localizations;
+  final String reciter;
+  final VoidCallback onOpen;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = context.l10n;
+
+    final surahName = isArabic
+        ? quran.getSurahNameArabic(bookmark.surahNumber)
+        : quran.getSurahName(bookmark.surahNumber);
+
+    final ayahText = isArabic
+        ? quran.getVerse(
+            bookmark.surahNumber,
+            bookmark.ayahNumber,
+            verseEndSymbol: true,
+          )
+        : quran.getVerseTranslation(bookmark.surahNumber, bookmark.ayahNumber);
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 6.toH, horizontal: 8.toW),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: context.cardGradient,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15.toR),
+      ),
+      child: InkWell(
+        onTap: onOpen,
+        borderRadius: BorderRadius.circular(15.toR),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.toW, vertical: 12.toH),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/quran/marker.png',
+                        width: 40.toW,
+                        height: 40.toH,
+                      ),
+                      Text(
+                        isArabic
+                            ? convertToArabicNumbers(
+                                bookmark.surahNumber.toString(),
+                              )
+                            : bookmark.surahNumber.toString(),
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.theme.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 16.toW),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          surahName,
+                          style: context.textTheme.bodyLarge?.copyWith(
+                            color: context.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4.toH),
+                        Text(
+                          l10n.ayahNumberLabel(bookmark.ayahNumber),
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            color: context.colorScheme.onPrimary.withAlpha(180),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.toH),
+              Text(
+                ayahText,
+                style: context.textTheme.displayMedium?.copyWith(
+                  color: context.colorScheme.onPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

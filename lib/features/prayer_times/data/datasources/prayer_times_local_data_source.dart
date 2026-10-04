@@ -9,7 +9,7 @@ import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
-import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/settings/data/services/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class PrayerTimesLocalDataSource {

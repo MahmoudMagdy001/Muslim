@@ -1,0 +1,58 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:quran/quran.dart' as quran;
+
+part 'juz_model.freezed.dart';
+
+@freezed
+abstract class JuzModel with _$JuzModel {
+  const JuzModel._();
+
+  const factory JuzModel({
+    required int number,
+    required int startSurah,
+    required int startAyah,
+    required int endSurah,
+    required int endAyah,
+    @Default('') String startSurahName,
+    @Default('') String endSurahName,
+  }) = _JuzModel;
+
+  String getStartSurahName({required bool isArabic}) =>
+      isArabic ? quran.getSurahNameArabic(startSurah) : quran.getSurahName(startSurah);
+
+  String getEndSurahName({required bool isArabic}) =>
+      isArabic ? quran.getSurahNameArabic(endSurah) : quran.getSurahName(endSurah);
+
+  static const List<Map<String, dynamic>> starts = [
+    {'surah': 1, 'ayah': 1}, // 1
+    {'surah': 2, 'ayah': 142}, // 2
+    {'surah': 2, 'ayah': 253}, // 3
+    {'surah': 3, 'ayah': 93}, // 4 (User requested 93)
+    {'surah': 4, 'ayah': 24}, // 5
+    {'surah': 4, 'ayah': 148}, // 6
+    {'surah': 5, 'ayah': 82}, // 7
+    {'surah': 6, 'ayah': 111}, // 8
+    {'surah': 7, 'ayah': 88}, // 9
+    {'surah': 8, 'ayah': 41}, // 10
+    {'surah': 9, 'ayah': 93}, // 11
+    {'surah': 11, 'ayah': 6}, // 12
+    {'surah': 12, 'ayah': 53}, // 13
+    {'surah': 15, 'ayah': 1}, // 14
+    {'surah': 17, 'ayah': 1}, // 15
+    {'surah': 18, 'ayah': 75}, // 16
+    {'surah': 21, 'ayah': 1}, // 17
+    {'surah': 23, 'ayah': 1}, // 18
+    {'surah': 25, 'ayah': 21}, // 19
+    {'surah': 27, 'ayah': 56}, // 20
+    {'surah': 29, 'ayah': 46}, // 21
+    {'surah': 33, 'ayah': 31}, // 22
+    {'surah': 36, 'ayah': 28}, // 23
+    {'surah': 39, 'ayah': 32}, // 24
+    {'surah': 41, 'ayah': 47}, // 25
+    {'surah': 46, 'ayah': 1}, // 26
+    {'surah': 51, 'ayah': 31}, // 27
+    {'surah': 58, 'ayah': 1}, // 28
+    {'surah': 67, 'ayah': 1}, // 29
+    {'surah': 78, 'ayah': 1}, // 30
+  ];
+}

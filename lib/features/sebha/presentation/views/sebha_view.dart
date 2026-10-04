@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +9,7 @@ import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:muslim/core/widgets/custom_modal_sheet.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
-import 'package:muslim/features/sebha/presentation/cubit/sebha_cubit.dart';
-import 'package:muslim/features/sebha/presentation/cubit/sebha_state.dart';
+import 'package:muslim/features/sebha/presentation/bloc/sebha_bloc.dart';
 import 'package:muslim/features/sebha/presentation/views/widgets/azkar_selector.dart';
 import 'package:muslim/features/sebha/presentation/views/widgets/custom_zikr_dialog.dart';
 import 'package:muslim/features/sebha/presentation/views/widgets/sebha_button.dart';
@@ -84,8 +82,8 @@ class _SebhaViewState extends State<SebhaView> {
               // Azkar selector at the top
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: BlocSelector<SebhaCubit, SebhaState, _AzkarSelectorData>(
-                  selector: (state) => _AzkarSelectorData(
+                child: BlocSelector<SebhaCubit, SebhaState, ({List<ZikrEntity> allAzkar, int currentIndex})>(
+                  selector: (state) => (
                     allAzkar: state.allAzkar,
                     currentIndex: state.currentIndex,
                   ),
@@ -140,8 +138,8 @@ class _SebhaViewState extends State<SebhaView> {
               // Center: Button takes the remaining space
               Expanded(
                 child: Center(
-                  child: BlocSelector<SebhaCubit, SebhaState, _CounterData>(
-                    selector: (state) => _CounterData(
+                  child: BlocSelector<SebhaCubit, SebhaState, ({int counter, int? goal})>(
+                    selector: (state) => (
                       counter: state.counter,
                       goal: state.customGoal,
                     ),
@@ -353,29 +351,4 @@ class _SebhaViewState extends State<SebhaView> {
       ),
     );
   }
-}
-
-/// Data class for BlocSelector to minimize rebuilds on the azkar selector.
-class _AzkarSelectorData extends Equatable {
-  const _AzkarSelectorData({
-    required this.allAzkar,
-    required this.currentIndex,
-  });
-
-  final List<ZikrEntity> allAzkar;
-  final int currentIndex;
-
-  @override
-  List<Object?> get props => [allAzkar, currentIndex];
-}
-
-/// Data class for BlocSelector to minimize rebuilds on the counter button.
-class _CounterData extends Equatable {
-  const _CounterData({required this.counter, required this.goal});
-
-  final int counter;
-  final int? goal;
-
-  @override
-  List<Object?> get props => [counter, goal];
 }

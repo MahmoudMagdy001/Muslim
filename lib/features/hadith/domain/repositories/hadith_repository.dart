@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';

@@ -6,8 +6,7 @@ import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/widgets/location_disclosure_dialog.dart';
-import 'package:muslim/features/qiblah/presentation/cubit/qiblah_cubit.dart';
-import 'package:muslim/features/qiblah/presentation/cubit/qiblah_state.dart';
+import 'package:muslim/features/qiblah/presentation/bloc/qiblah_bloc.dart';
 import 'package:muslim/features/qiblah/presentation/views/widgets/qiblah_error_widget.dart';
 import 'package:muslim/features/qiblah/presentation/views/widgets/qiblah_success_widget.dart';
 

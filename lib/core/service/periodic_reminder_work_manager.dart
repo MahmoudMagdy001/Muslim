@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/utils/app_logger.dart';
-import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/settings/data/services/settings_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// WorkManager callback dispatcher for periodic reminder background scheduling.

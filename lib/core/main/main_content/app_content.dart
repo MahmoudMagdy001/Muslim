@@ -10,13 +10,13 @@ import 'package:muslim/core/service/in_app_update.dart';
 import 'package:muslim/core/service/navigation_service.dart';
 import 'package:muslim/core/theme/app_theme.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
-import 'package:muslim/features/layout/view/layout_view.dart';
-import 'package:muslim/features/quran/service/quran_service.dart';
-import 'package:muslim/features/quran/view/quran_view.dart';
-import 'package:muslim/features/settings/view_model/font_size/font_size_cubit.dart';
-import 'package:muslim/features/settings/view_model/language/language_cubit.dart';
-import 'package:muslim/features/settings/view_model/language/language_state.dart';
-import 'package:muslim/features/settings/view_model/theme/theme_cubit.dart';
+import 'package:muslim/features/layout/presentation/views/layout_view.dart';
+import 'package:muslim/features/quran/data/services/quran_service.dart';
+import 'package:muslim/features/quran/presentation/views/quran_view.dart';
+import 'package:muslim/features/settings/presentation/bloc/font_size/font_size_bloc.dart';
+import 'package:muslim/features/settings/presentation/bloc/language/language_bloc.dart';
+import 'package:muslim/features/settings/presentation/bloc/language/language_state.dart';
+import 'package:muslim/features/settings/presentation/bloc/theme/theme_bloc.dart';
 
 class AppContent extends StatefulWidget {
   const AppContent({

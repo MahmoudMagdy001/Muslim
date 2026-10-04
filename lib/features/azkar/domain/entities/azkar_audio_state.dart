@@ -1,16 +1,13 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'azkar_audio_state.freezed.dart';
 
 enum AzkarAudioStatus { initial, loading, playing, stopped }
 
-class AzkarAudioState extends Equatable {
-  const AzkarAudioState({required this.status, this.url});
-
-  final AzkarAudioStatus status;
-  final String? url;
-
-  AzkarAudioState copyWith({AzkarAudioStatus? status, String? url}) =>
-      AzkarAudioState(status: status ?? this.status, url: url ?? this.url);
-
-  @override
-  List<Object?> get props => [status, url];
+@freezed
+abstract class AzkarAudioState with _$AzkarAudioState {
+  const factory AzkarAudioState({
+    required AzkarAudioStatus status,
+    String? url,
+  }) = _AzkarAudioState;
 }

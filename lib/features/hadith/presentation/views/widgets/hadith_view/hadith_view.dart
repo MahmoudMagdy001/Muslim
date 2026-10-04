@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:muslim/core/utils/extensions.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_body.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -86,7 +85,7 @@ class _HadithViewState extends State<HadithView> {
 
   void _handleStateChanges(HadithState state, HadithCubit cubit) {
     if (state.status == HadithStatus.error) {
-      _showErrorSnackBar(state.message);
+      _showErrorSnackBar(state.message ?? '');
     } else if (state.status == HadithStatus.success) {
       _scrollToInitialHadith(cubit);
     }

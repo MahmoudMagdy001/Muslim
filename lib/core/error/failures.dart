@@ -1,64 +1,18 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class Failure extends Equatable {
-  const Failure([this.properties = const <dynamic>[]]);
-  final List<dynamic> properties;
-  String get message;
+part 'failures.freezed.dart';
 
-  @override
-  List<Object?> get props => [properties];
-}
+@freezed
+sealed class Failure with _$Failure {
+  const Failure._();
 
-class ServerFailure extends Failure {
-  const ServerFailure([this.message = 'Server Error']) : super();
-  @override
-  final String message;
+  const factory Failure.server([@Default('Server Error') String message]) = ServerFailure;
+  const factory Failure.cache([@Default('Cache Error') String message]) = CacheFailure;
+  const factory Failure.network([@Default('Network Error') String message]) = NetworkFailure;
+  const factory Failure.authentication([@Default('Authentication Failure') String message]) = AuthenticationFailure;
+  const factory Failure.validation([@Default('Validation Error') String message]) = ValidationFailure;
+  const factory Failure.dataParsing([@Default('Data Parsing Error') String message]) = DataParsingFailure;
+  const factory Failure.unknown([@Default('Unknown Error') String message]) = UnknownFailure;
 
-  @override
-  List<Object?> get props => [message, properties];
-}
-
-class CacheFailure extends Failure {
-  const CacheFailure([this.message = 'Cache Error']) : super();
-  @override
-  final String message;
-
-  @override
-  List<Object?> get props => [message, properties];
-}
-
-class NetworkFailure extends Failure {
-  const NetworkFailure([this.message = 'Network Error']) : super();
-  @override
-  final String message;
-
-  @override
-  List<Object?> get props => [message, properties];
-}
-
-class AuthenticationFailure extends Failure {
-  const AuthenticationFailure([this.message = 'Authentication Failure']) : super();
-  @override
-  final String message;
-
-  @override
-  List<Object?> get props => [message, properties];
-}
-
-class ValidationFailure extends Failure {
-  const ValidationFailure([this.message = 'Validation Error']) : super();
-  @override
-  final String message;
-
-  @override
-  List<Object?> get props => [message, properties];
-}
-
-class DataParsingFailure extends Failure {
-  const DataParsingFailure([this.message = 'Data Parsing Error']) : super();
-  @override
-  final String message;
-
-  @override
-  List<Object?> get props => [message, properties];
+  List<dynamic> get properties => [message];
 }

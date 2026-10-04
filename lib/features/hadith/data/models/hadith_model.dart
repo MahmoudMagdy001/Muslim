@@ -1,15 +1,21 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
 
-class HadithModel extends HadithEntity {
-  const HadithModel({
-    required super.id,
-    required super.hadithNumber,
-    required super.hadithArabic,
-    required super.headingArabic,
-    required super.headingEnglish,
-    required super.hadithEnglish,
-    required super.status,
-  });
+part 'hadith_model.freezed.dart';
+
+@Freezed(toJson: false, fromJson: false)
+abstract class HadithModel with _$HadithModel {
+  const HadithModel._();
+
+  const factory HadithModel({
+    required String id,
+    required String hadithNumber,
+    required String hadithArabic,
+    required String hadithEnglish,
+    required String headingArabic,
+    required String headingEnglish,
+    required String status,
+  }) = _HadithModel;
 
   factory HadithModel.fromJson(Map<String, dynamic> json) => HadithModel(
     id: json['id']?.toString() ?? '',
@@ -19,6 +25,16 @@ class HadithModel extends HadithEntity {
     headingArabic: json['headingArabic']?.toString() ?? '',
     headingEnglish: json['headingEnglish']?.toString() ?? '',
     status: json['status']?.toString() ?? '',
+  );
+
+  HadithEntity toEntity() => HadithEntity(
+    id: id,
+    hadithNumber: hadithNumber,
+    hadithArabic: hadithArabic,
+    hadithEnglish: hadithEnglish,
+    headingArabic: headingArabic,
+    headingEnglish: headingEnglish,
+    status: status,
   );
 
   Map<String, dynamic> toJson() => {

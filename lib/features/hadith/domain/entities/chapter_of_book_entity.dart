@@ -1,13 +1,13 @@
-class ChapterOfBookEntity {
-  const ChapterOfBookEntity({
-    required this.id,
-    required this.chapterNameAr,
-    required this.chapterNumber,
-    required this.chapterNameEn,
-  });
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String id;
-  final String chapterNameAr;
-  final String chapterNameEn;
-  final String chapterNumber;
+part 'chapter_of_book_entity.freezed.dart';
+
+@freezed
+abstract class ChapterOfBookEntity with _$ChapterOfBookEntity {
+  const factory ChapterOfBookEntity({
+    required String id,
+    required String chapterNameAr,
+    required String chapterNameEn,
+    required String chapterNumber,
+  }) = _ChapterOfBookEntity;
 }

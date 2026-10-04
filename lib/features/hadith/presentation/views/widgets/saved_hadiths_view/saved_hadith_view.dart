@@ -9,10 +9,10 @@ import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/navigation_helper.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/hadith_view.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/saved_hadiths_view/widgets/saved_hadith_card.dart';
-import 'package:muslim/features/surahs_list/view/widgets/bookmark_tab/empty_bookmarks_state.dart';
+import 'package:muslim/features/surahs_list/presentation/views/widgets/bookmark_tab/empty_bookmarks_state.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -3,7 +3,7 @@ import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.
 import 'package:muslim/features/prayer_times/domain/entities/prayer_notification_settings.dart';
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 import 'package:muslim/features/prayer_times/domain/repositories/prayer_notification_repository.dart';
-import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/settings/data/services/settings_service.dart';
 
 /// Concrete implementation of [PrayerNotificationRepository].
 class PrayerNotificationRepositoryImpl implements PrayerNotificationRepository {

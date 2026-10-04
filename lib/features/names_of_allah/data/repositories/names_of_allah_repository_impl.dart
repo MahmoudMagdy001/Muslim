@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:muslim/core/error/exceptions.dart';
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/names_of_allah/data/datasources/names_of_allah_local_data_source.dart';
@@ -14,7 +14,7 @@ class NamesOfAllahRepositoryImpl implements NamesOfAllahRepository {
   Future<Either<Failure, List<NameOfAllahEntity>>> getNamesOfAllah() async {
     try {
       final localNames = await localDataSource.getNamesOfAllah();
-      return Right(localNames);
+      return Right(localNames.map((e) => e.toEntity()).toList());
     } on CacheException {
       return const Left(CacheFailure());
     }

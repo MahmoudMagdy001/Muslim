@@ -1,15 +1,21 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
 
-class HadithBookModel extends HadithBookEntity {
-  const HadithBookModel({
-    required super.id,
-    required super.bookName,
-    required super.writerName,
-    required super.hadithCount,
-    required super.chapterCount,
-    required super.writerDeath,
-    required super.bookSlug,
-  });
+part 'hadith_book_model.freezed.dart';
+
+@Freezed(toJson: false, fromJson: false)
+abstract class HadithBookModel with _$HadithBookModel {
+  const HadithBookModel._();
+
+  const factory HadithBookModel({
+    required String id,
+    required String bookName,
+    required String writerName,
+    required String hadithCount,
+    required String chapterCount,
+    required String writerDeath,
+    required String bookSlug,
+  }) = _HadithBookModel;
 
   factory HadithBookModel.fromJson(Map<String, dynamic> json) =>
       HadithBookModel(
@@ -21,6 +27,16 @@ class HadithBookModel extends HadithBookEntity {
         writerDeath: json['writerDeath'] as String? ?? '',
         bookSlug: json['bookSlug'] as String? ?? '',
       );
+
+  HadithBookEntity toEntity() => HadithBookEntity(
+    id: id,
+    bookName: bookName,
+    writerName: writerName,
+    hadithCount: hadithCount,
+    chapterCount: chapterCount,
+    writerDeath: writerDeath,
+    bookSlug: bookSlug,
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,

@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:muslim/core/error/exceptions.dart';
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/sebha/data/datasources/sebha_local_data_source.dart';
@@ -15,7 +15,7 @@ class SebhaRepositoryImpl implements SebhaRepository {
   Future<Either<Failure, List<ZikrEntity>>> getCustomAzkar() async {
     try {
       final customAzkar = await localDataSource.getCustomAzkar();
-      return Right(customAzkar);
+      return Right(customAzkar.map((e) => e.toEntity()).toList());
     } on CacheException {
       return const Left(CacheFailure());
     } on Object catch (_) {

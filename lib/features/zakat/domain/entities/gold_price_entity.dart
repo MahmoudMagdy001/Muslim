@@ -1,15 +1,11 @@
-// ponytail: simple domain entity for Gold Price
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class GoldPriceEntity extends Equatable {
-  const GoldPriceEntity({
-    required this.priceInUsd,
-    required this.currency,
-  });
+part 'gold_price_entity.freezed.dart';
 
-  final double priceInUsd;
-  final String currency;
-
-  @override
-  List<Object?> get props => [priceInUsd, currency];
+@freezed
+abstract class GoldPriceEntity with _$GoldPriceEntity {
+  const factory GoldPriceEntity({
+    required double priceInUsd,
+    required String currency,
+  }) = _GoldPriceEntity;
 }

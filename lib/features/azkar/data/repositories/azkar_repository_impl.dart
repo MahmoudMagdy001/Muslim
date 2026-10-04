@@ -1,4 +1,5 @@
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:muslim/core/error/exceptions.dart';
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/azkar/data/datasources/azkar_audio_data_source.dart';
 import 'package:muslim/features/azkar/data/datasources/azkar_local_data_source.dart';
@@ -24,11 +25,11 @@ class AzkarRepositoryImpl implements AzkarRepository {
       final json = await _localDataSource.loadAzkarFromAssets();
       final data = json['data'] as List<dynamic>;
       final result = data
-          .map((e) => AzkarModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => AzkarModel.fromJson(e as Map<String, dynamic>).toEntity())
           .toList();
       return Right(result);
-    } on Failure catch (e) {
-      return Left(e);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message ?? 'Cache Error'));
     } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -40,17 +41,16 @@ class AzkarRepositoryImpl implements AzkarRepository {
   ) async {
     try {
       final json = await _remoteDataSource.fetchAzkarContent(url);
-      // The API returns a map where the key is the title and value is a list of items
       if (json.isNotEmpty) {
         final data = json.values.first as List<dynamic>;
         final result = data
-            .map((e) => AzkarContentModel.fromJson(e as Map<String, dynamic>))
+            .map((e) => AzkarContentModel.fromJson(e as Map<String, dynamic>).toEntity())
             .toList();
         return Right(result);
       }
       return const Right([]);
-    } on Failure catch (e) {
-      return Left(e);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Server Error'));
     } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -65,8 +65,8 @@ class AzkarRepositoryImpl implements AzkarRepository {
     try {
       await _localDataSource.saveCount(sourceUrl, index, count);
       return const Right(null);
-    } on Failure catch (e) {
-      return Left(e);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message ?? 'Cache Error'));
     } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -80,8 +80,8 @@ class AzkarRepositoryImpl implements AzkarRepository {
     try {
       final count = await _localDataSource.getCount(sourceUrl, index);
       return Right(count);
-    } on Failure catch (e) {
-      return Left(e);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message ?? 'Cache Error'));
     } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -92,8 +92,8 @@ class AzkarRepositoryImpl implements AzkarRepository {
     try {
       await _localDataSource.clearIfNewDay();
       return const Right(null);
-    } on Failure catch (e) {
-      return Left(e);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message ?? 'Cache Error'));
     } on Object catch (e) {
       return Left(CacheFailure(e.toString()));
     }
@@ -104,8 +104,8 @@ class AzkarRepositoryImpl implements AzkarRepository {
     try {
       await _audioDataSource.play(url, title: title);
       return const Right(null);
-    } on Failure catch (e) {
-      return Left(e);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Audio Error'));
     } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -116,8 +116,8 @@ class AzkarRepositoryImpl implements AzkarRepository {
     try {
       await _audioDataSource.stop();
       return const Right(null);
-    } on Failure catch (e) {
-      return Left(e);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Audio Error'));
     } on Object catch (e) {
       return Left(ServerFailure(e.toString()));
     }

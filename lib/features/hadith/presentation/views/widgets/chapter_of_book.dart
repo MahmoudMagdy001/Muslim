@@ -10,9 +10,8 @@ import 'package:muslim/core/utils/navigation_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.dart';
-import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_cubit.dart';
-import 'package:muslim/features/hadith/presentation/cubit/chapter_of_book_state.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/bloc/chapter_of_book_bloc.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/hadith_view.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 

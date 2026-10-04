@@ -9,7 +9,7 @@ import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
-import 'package:muslim/features/azkar/presentation/cubit/azkar_audio_cubit.dart';
+import 'package:muslim/features/azkar/presentation/bloc/azkar_audio_bloc.dart';
 
 class AzkarItemCard extends StatefulWidget {
   const AzkarItemCard({

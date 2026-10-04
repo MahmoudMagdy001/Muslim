@@ -1,20 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class NameOfAllahEntity extends Equatable {
-  const NameOfAllahEntity({
-    required this.id,
-    required this.name,
-    required this.text,
-    required this.nameTranslation,
-    required this.textTranslation,
-  });
+part 'name_of_allah_entity.freezed.dart';
 
-  final int id;
-  final String name;
-  final String text;
-  final String nameTranslation;
-  final String textTranslation;
-
-  @override
-  List<Object?> get props => [id, name, text, nameTranslation, textTranslation];
+@freezed
+abstract class NameOfAllahEntity with _$NameOfAllahEntity {
+  const factory NameOfAllahEntity({
+    required int id,
+    required String name,
+    required String text,
+    required String nameTranslation,
+    required String textTranslation,
+  }) = _NameOfAllahEntity;
 }

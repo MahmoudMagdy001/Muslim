@@ -1,54 +1,28 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class AzkarEntity extends Equatable {
-  const AzkarEntity({
-    required this.id,
-    required this.title,
-    required this.engTitle,
-    required this.slug,
-    required this.isFavorite,
-    required this.category,
-    required this.audioUrl,
-    required this.textUrl,
-  });
+part 'azkar_entity.freezed.dart';
 
-  final int id;
-  final String title;
-  final String engTitle;
-  final String slug;
-  final bool isFavorite;
-  final String category;
-  final String audioUrl;
-  final String textUrl;
-
-  @override
-  List<Object?> get props => [
-    id,
-    title,
-    engTitle,
-    slug,
-    isFavorite,
-    category,
-    audioUrl,
-    textUrl,
-  ];
+@freezed
+abstract class AzkarEntity with _$AzkarEntity {
+  const factory AzkarEntity({
+    required int id,
+    required String title,
+    required String engTitle,
+    required String slug,
+    required bool isFavorite,
+    required String category,
+    required String audioUrl,
+    required String textUrl,
+  }) = _AzkarEntity;
 }
 
-class AzkarContentEntity extends Equatable {
-  const AzkarContentEntity({
-    required this.id,
-    required this.arabicText,
-    required this.translatedText,
-    required this.repeat,
-    required this.audio,
-  });
-
-  final int id;
-  final String arabicText;
-  final String translatedText;
-  final int repeat;
-  final String audio;
-
-  @override
-  List<Object?> get props => [id, arabicText, translatedText, repeat, audio];
+@freezed
+abstract class AzkarContentEntity with _$AzkarContentEntity {
+  const factory AzkarContentEntity({
+    required int id,
+    required String arabicText,
+    required String translatedText,
+    required int repeat,
+    required String audio,
+  }) = _AzkarContentEntity;
 }

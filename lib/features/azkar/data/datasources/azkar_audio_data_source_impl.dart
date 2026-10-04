@@ -62,7 +62,10 @@ class AzkarAudioDataSourceImpl implements AzkarAudioDataSource {
   }
 
   void _updateState({AzkarAudioStatus? status, String? url}) {
-    _state = _state.copyWith(status: status, url: url);
+    _state = _state.copyWith(
+      status: status ?? _state.status,
+      url: url ?? _state.url,
+    );
     if (!_stateController.isClosed) {
       _stateController.add(_state);
     }

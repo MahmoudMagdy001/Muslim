@@ -129,8 +129,7 @@ class AppThemeFactory {
   );
 
   // Text Themes
-  TextTheme _buildLightTextTheme(AppTextStyles styles) =>
-      GoogleFonts.cairoTextTheme().copyWith(
+  TextTheme _buildLightTextTheme(AppTextStyles styles) => TextTheme(
         headlineLarge: styles.headlineLarge.copyWith(color: AppColors.textPrimary),
         headlineMedium: styles.headlineMedium.copyWith(color: AppColors.textPrimary),
         headlineSmall: styles.headlineSmall.copyWith(color: AppColors.textPrimary),
@@ -145,8 +144,7 @@ class AppThemeFactory {
         displayMedium: styles.quranText.copyWith(color: AppColors.textPrimary),
       );
 
-  TextTheme _buildDarkTextTheme(AppTextStyles styles) =>
-      GoogleFonts.cairoTextTheme().copyWith(
+  TextTheme _buildDarkTextTheme(AppTextStyles styles) => TextTheme(
         headlineLarge: styles.headlineLarge.copyWith(color: AppColors.white),
         headlineMedium: styles.headlineMedium.copyWith(color: AppColors.white),
         headlineSmall: styles.headlineSmall.copyWith(color: AppColors.white),

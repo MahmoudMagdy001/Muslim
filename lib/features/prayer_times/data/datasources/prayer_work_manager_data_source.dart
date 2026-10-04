@@ -10,7 +10,7 @@ import 'package:muslim/features/prayer_times/data/datasources/prayer_times_local
 import 'package:muslim/features/prayer_times/domain/entities/local_prayer_times.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_channel_factory.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
-import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/settings/data/services/settings_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 /// WorkManager callback dispatcher for background prayer time updates.

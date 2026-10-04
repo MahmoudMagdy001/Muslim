@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:dartz/dartz.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/hadith/data/datasources/hadith_local_data_source.dart';
 import 'package:muslim/features/hadith/data/datasources/hadith_remote_data_source.dart';
@@ -30,7 +30,7 @@ class HadithRepositoryImpl implements HadithRepository {
           cached
               .map(
                 (json) =>
-                    HadithBookModel.fromJson(json as Map<String, dynamic>),
+                    HadithBookModel.fromJson(json as Map<String, dynamic>).toEntity(),
               )
               .toList(),
         );
@@ -40,7 +40,7 @@ class HadithRepositoryImpl implements HadithRepository {
       await localDataSource.saveCachedBooks(
         books.map((e) => e.toJson()).toList(),
       );
-      return Right(books);
+      return Right(books.map((e) => e.toEntity()).toList());
     } on Object catch (_) {
       return const Left(ServerFailure('Failed to load books'));
     }
@@ -57,7 +57,7 @@ class HadithRepositoryImpl implements HadithRepository {
           cached
               .map(
                 (json) =>
-                    ChapterOfBookModel.fromJson(json as Map<String, dynamic>),
+                    ChapterOfBookModel.fromJson(json as Map<String, dynamic>).toEntity(),
               )
               .toList(),
         );
@@ -68,7 +68,7 @@ class HadithRepositoryImpl implements HadithRepository {
         bookSlug,
         chapters.map((e) => e.toJson()).toList(),
       );
-      return Right(chapters);
+      return Right(chapters.map((e) => e.toEntity()).toList());
     } on Object catch (_) {
       return Left(ServerFailure('Failed to load chapters for book $bookSlug'));
     }
@@ -84,7 +84,7 @@ class HadithRepositoryImpl implements HadithRepository {
         bookSlug: bookSlug,
         chapterNumber: chapterNumber,
       );
-      return Right(hadiths);
+      return Right(hadiths.map((e) => e.toEntity()).toList());
     } on Object catch (_) {
       return const Left(ServerFailure('Failed to load hadiths'));
     }
@@ -107,8 +107,8 @@ class HadithRepositoryImpl implements HadithRepository {
       final random = Random();
 
       final booksEither = await getHadithBooks();
-      if (booksEither.isLeft()) return booksEither.map((r) => {});
-      final books = booksEither.getOrElse(() => []);
+      if (booksEither case Left(:final value)) return Left(value);
+      final books = booksEither.getOrElse((_) => []);
 
       final validBooks = books.where((b) {
         final count = int.tryParse(b.hadithCount) ?? 0;
@@ -123,8 +123,8 @@ class HadithRepositoryImpl implements HadithRepository {
       final bookName = book.bookName;
 
       final chaptersEither = await getChaptersOfBook(bookSlug);
-      if (chaptersEither.isLeft()) return chaptersEither.map((r) => {});
-      final chapters = chaptersEither.getOrElse(() => []);
+      if (chaptersEither case Left(:final value)) return Left(value);
+      final chapters = chaptersEither.getOrElse((_) => []);
 
       if (chapters.isEmpty) {
         return Left(ServerFailure('No chapters found for book $bookSlug'));

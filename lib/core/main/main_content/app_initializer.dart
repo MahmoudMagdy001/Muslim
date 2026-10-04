@@ -7,7 +7,7 @@ import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/prayer_times/data/datasources/prayer_work_manager_data_source.dart';
 import 'package:muslim/features/prayer_times/presentation/helper/notification_constants.dart';
-import 'package:muslim/features/settings/service/settings_service.dart';
+import 'package:muslim/features/settings/data/services/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 

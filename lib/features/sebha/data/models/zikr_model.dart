@@ -1,15 +1,21 @@
 import 'dart:convert';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
 
-class ZikrModel extends ZikrEntity {
-  const ZikrModel({
-    required super.id,
-    required super.textAr,
-    required super.textEn,
-    required super.count,
-    super.isCustom = false,
-  });
+part 'zikr_model.freezed.dart';
+
+@Freezed(toJson: false, fromJson: false)
+abstract class ZikrModel with _$ZikrModel {
+  const ZikrModel._();
+
+  const factory ZikrModel({
+    required String id,
+    required String textAr,
+    required String textEn,
+    required int count,
+    @Default(false) bool isCustom,
+  }) = _ZikrModel;
 
   factory ZikrModel.fromJson(Map<String, dynamic> json) => ZikrModel(
     id: json['id'] as String,
@@ -25,6 +31,14 @@ class ZikrModel extends ZikrEntity {
     textEn: entity.textEn,
     count: entity.count,
     isCustom: entity.isCustom,
+  );
+
+  ZikrEntity toEntity() => ZikrEntity(
+    id: id,
+    textAr: textAr,
+    textEn: textEn,
+    count: count,
+    isCustom: isCustom,
   );
 
   static const List<ZikrModel> defaultAzkar = [
@@ -63,18 +77,4 @@ class ZikrModel extends ZikrEntity {
   };
 
   String toJsonString() => json.encode(toJson());
-
-  ZikrModel copyWith({
-    String? id,
-    String? textAr,
-    String? textEn,
-    int? count,
-    bool? isCustom,
-  }) => ZikrModel(
-    id: id ?? this.id,
-    textAr: textAr ?? this.textAr,
-    textEn: textEn ?? this.textEn,
-    count: count ?? this.count,
-    isCustom: isCustom ?? this.isCustom,
-  );
 }

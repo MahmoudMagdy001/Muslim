@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class QiblahDirectionEntity extends Equatable {
-  const QiblahDirectionEntity({
-    required this.qiblah,
-    required this.direction,
-    required this.offset,
-  });
+part 'qiblah_direction_entity.freezed.dart';
 
-  final double qiblah;
-  final double direction;
-  final double offset;
-
-  @override
-  List<Object?> get props => [qiblah, direction, offset];
+@freezed
+abstract class QiblahDirectionEntity with _$QiblahDirectionEntity {
+  const factory QiblahDirectionEntity({
+    required double qiblah,
+    required double direction,
+    required double offset,
+  }) = _QiblahDirectionEntity;
 }

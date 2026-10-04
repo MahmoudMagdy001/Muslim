@@ -1,7 +1,7 @@
 name: muslim
 description: "Quran Reader & Player"
 publish_to: "none"
-version: 0.3.2+10
+version: 0.3.3+11
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -15,11 +15,11 @@ dependencies:
   intl: ^0.20.2
   http: ^1.6.0
   shared_preferences: ^2.5.5
-  google_fonts: ^8.0.2
+  google_fonts: ^9.0.0
   awesome_notifications: ^0.12.1
   just_audio_background: ^0.0.1-beta.17
   audio_service: ^0.18.18
-  permission_handler: ^12.0.1
+  permission_handler: ^13.0.2
   flutter_qiblah: ^3.2.0
   flutter_bloc: ^9.1.1
   geolocator: ^14.0.2
@@ -28,9 +28,9 @@ dependencies:
   geocoding: ^5.0.0
   disable_battery_optimization: ^1.1.2
   share_plus: ^13.2.0
-  skeletonizer: ^2.1.3
-  workmanager: ^0.9.0+3
-  syncfusion_flutter_sliders: ^34.1.30
+  skeletonizer: ^3.0.0
+  workmanager: ^0.10.10
+  syncfusion_flutter_sliders: ^35.1.37
   url_launcher: ^6.3.2
   package_info_plus: ^10.2.0
   path_provider: ^2.1.5
@@ -40,18 +40,20 @@ dependencies:
   internet_state_manager: ^1.10.1+3
   flutter_screenutil: ^5.9.3
   get_it: ^9.2.1
-  equatable: ^2.0.8
   quran: ^1.4.1
-  dartz: ^0.10.1
+  fpdart: ^1.1.1
+  freezed_annotation: 3.1.0
   rxdart: ^0.28.0
   upgrader: ^13.0.0
-  overmark: ^0.1.2
+  overmark: ^0.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  build_runner: 2.16.1
+  freezed: 4.0.2
 
 flutter:
   uses-material-design: true

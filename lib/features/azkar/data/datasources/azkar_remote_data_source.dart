@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/error/exceptions.dart';
 
 abstract class AzkarRemoteDataSource {
   Future<Map<String, dynamic>> fetchAzkarContent(String url);
@@ -23,12 +23,12 @@ class AzkarRemoteDataSourceImpl implements AzkarRemoteDataSource {
         }
         return json.decode(body) as Map<String, dynamic>;
       } else {
-        throw const ServerFailure('Failed to fetch from server');
+        throw const ServerException('Failed to fetch from server');
       }
-    } on ServerFailure {
+    } on ServerException {
       rethrow;
     } on Object catch (_) {
-      throw const ServerFailure('Failed to connect to server');
+      throw const ServerException('Failed to connect to server');
     }
   }
 }

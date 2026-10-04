@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:muslim/core/error/failures.dart';
+import 'package:muslim/core/error/exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AzkarLocalDataSource {
@@ -28,7 +28,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
       _cache = json.decode(response) as Map<String, dynamic>;
       return _cache!;
     } on Object catch (_) {
-      throw const CacheFailure('Failed to load azkar from cache');
+      throw const CacheException('Failed to load azkar from cache');
     }
   }
 
@@ -39,7 +39,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
       final key = _generateKey(sourceUrl, index);
       await prefs.setInt(key, count);
     } on Object catch (_) {
-      throw const CacheFailure('Failed to save azkar count');
+      throw const CacheException('Failed to save azkar count');
     }
   }
 
@@ -50,7 +50,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
       final key = _generateKey(sourceUrl, index);
       return prefs.getInt(key);
     } on Object catch (_) {
-      throw const CacheFailure('Failed to get azkar count');
+      throw const CacheException('Failed to get azkar count');
     }
   }
 
@@ -75,7 +75,7 @@ class AzkarLocalDataSourceImpl implements AzkarLocalDataSource {
         await prefs.setString(_lastUpdateDateKey, today);
       }
     } on Object catch (_) {
-      throw const CacheFailure('Failed to clear azkar counts');
+      throw const CacheException('Failed to clear azkar counts');
     }
   }
 

@@ -1,29 +1,16 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
-/// Result of calculating the next/previous prayer from [LocalPrayerTimes].
-class PrayerCalculationResult extends Equatable {
-  const PrayerCalculationResult({
-    required this.nextPrayer,
-    required this.nextPrayerDateTime,
-    required this.previousPrayerDateTime,
-    required this.timeLeft,
-    required this.areAllPrayersFinished,
-  });
+part 'prayer_calculation_result.freezed.dart';
 
-  final PrayerType nextPrayer;
-  final DateTime nextPrayerDateTime;
-  final DateTime previousPrayerDateTime;
-  final Duration timeLeft;
-  final bool areAllPrayersFinished;
-
-  @override
-  List<Object?> get props => [
-    nextPrayer,
-    nextPrayerDateTime,
-    previousPrayerDateTime,
-    timeLeft,
-    areAllPrayersFinished,
-  ];
+@freezed
+abstract class PrayerCalculationResult with _$PrayerCalculationResult {
+  const factory PrayerCalculationResult({
+    required PrayerType nextPrayer,
+    required DateTime nextPrayerDateTime,
+    required DateTime previousPrayerDateTime,
+    required Duration timeLeft,
+    required bool areAllPrayersFinished,
+  }) = _PrayerCalculationResult;
 }

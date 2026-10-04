@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_state.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_error.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_list.dart';
 import 'package:muslim/l10n/app_localizations.dart';
@@ -45,7 +44,7 @@ class HadithsBody extends StatelessWidget {
         );
       } else if (state.status == HadithStatus.error) {
         return ErrorState(
-          message: state.message,
+          message: state.message ?? '',
           localizations: localizations,
           onRetry: cubit.reloadData,
         );

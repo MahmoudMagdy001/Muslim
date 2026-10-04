@@ -1,32 +1,25 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:muslim/features/prayer_times/domain/entities/prayer_type.dart';
 
-/// Per-prayer notification enable/disable settings.
-///
-/// Each of the five daily prayers has its own toggle, allowing
-/// the user to selectively enable or disable notifications.
-class PrayerNotificationSettings extends Equatable {
-  const PrayerNotificationSettings({
-    this.fajrEnabled = true,
-    this.dhuhrEnabled = true,
-    this.asrEnabled = true,
-    this.maghribEnabled = true,
-    this.ishaEnabled = true,
-    this.jumuahEnabled = true,
-  });
+part 'prayer_notification_settings.freezed.dart';
 
-  final bool fajrEnabled;
-  final bool dhuhrEnabled;
-  final bool asrEnabled;
-  final bool maghribEnabled;
-  final bool ishaEnabled;
-  final bool jumuahEnabled;
+@freezed
+abstract class PrayerNotificationSettings with _$PrayerNotificationSettings {
+  const PrayerNotificationSettings._();
 
-  /// Check whether notifications are enabled for the given [type].
+  const factory PrayerNotificationSettings({
+    @Default(true) bool fajrEnabled,
+    @Default(true) bool dhuhrEnabled,
+    @Default(true) bool asrEnabled,
+    @Default(true) bool maghribEnabled,
+    @Default(true) bool ishaEnabled,
+    @Default(true) bool jumuahEnabled,
+  }) = _PrayerNotificationSettings;
+
   bool isEnabled(PrayerType type) => switch (type) {
     PrayerType.fajr => fajrEnabled,
-    PrayerType.sunrise => false, // Sunrise has no azan
+    PrayerType.sunrise => false,
     PrayerType.dhuhr => dhuhrEnabled,
     PrayerType.asr => asrEnabled,
     PrayerType.maghrib => maghribEnabled,
@@ -34,43 +27,16 @@ class PrayerNotificationSettings extends Equatable {
     PrayerType.jumuah => jumuahEnabled,
   };
 
-  /// Returns a copy with the [enabled] flag set for [type].
   PrayerNotificationSettings copyWithPrayer(
     PrayerType type, {
     required bool enabled,
   }) => switch (type) {
     PrayerType.fajr => copyWith(fajrEnabled: enabled),
-    PrayerType.sunrise => this, // Sunrise has no azan — no-op
+    PrayerType.sunrise => this,
     PrayerType.dhuhr => copyWith(dhuhrEnabled: enabled),
     PrayerType.asr => copyWith(asrEnabled: enabled),
     PrayerType.maghrib => copyWith(maghribEnabled: enabled),
     PrayerType.isha => copyWith(ishaEnabled: enabled),
     PrayerType.jumuah => copyWith(jumuahEnabled: enabled),
   };
-
-  PrayerNotificationSettings copyWith({
-    bool? fajrEnabled,
-    bool? dhuhrEnabled,
-    bool? asrEnabled,
-    bool? maghribEnabled,
-    bool? ishaEnabled,
-    bool? jumuahEnabled,
-  }) => PrayerNotificationSettings(
-    fajrEnabled: fajrEnabled ?? this.fajrEnabled,
-    dhuhrEnabled: dhuhrEnabled ?? this.dhuhrEnabled,
-    asrEnabled: asrEnabled ?? this.asrEnabled,
-    maghribEnabled: maghribEnabled ?? this.maghribEnabled,
-    ishaEnabled: ishaEnabled ?? this.ishaEnabled,
-    jumuahEnabled: jumuahEnabled ?? this.jumuahEnabled,
-  );
-
-  @override
-  List<Object?> get props => [
-    fajrEnabled,
-    dhuhrEnabled,
-    asrEnabled,
-    maghribEnabled,
-    ishaEnabled,
-    jumuahEnabled,
-  ];
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_card.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_empty.dart';
 import 'package:muslim/l10n/app_localizations.dart';

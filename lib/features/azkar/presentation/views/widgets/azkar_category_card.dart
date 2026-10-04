@@ -53,7 +53,6 @@ class _AzkarCategoryCardState extends State<AzkarCategoryCard> {
         padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 8.h),
         child: Material(
             color: colors.surface,
-            borderRadius: context.radius.mdBorder,
             elevation: 1,
             shadowColor: Colors.black.withValues(
               alpha: colors.isDark ? 0.2 : 0.03,

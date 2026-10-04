@@ -11,5 +11,6 @@ class QiblahRepositoryImpl implements QiblahRepository {
   @override
   Stream<QiblahDirectionEntity> getQiblahStream() => localDataSource
       .qiblahStream
-      .map(QiblahDirectionModel.fromFlutterQiblah);
+      .map(QiblahDirectionModel.fromFlutterQiblah)
+      .map((model) => model.toEntity());
 }

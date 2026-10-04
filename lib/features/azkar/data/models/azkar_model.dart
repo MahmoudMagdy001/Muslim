@@ -1,16 +1,22 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
 
-class AzkarModel extends AzkarEntity {
-  const AzkarModel({
-    required super.id,
-    required super.title,
-    required super.engTitle,
-    required super.slug,
-    required super.isFavorite,
-    required super.category,
-    required super.audioUrl,
-    required super.textUrl,
-  });
+part 'azkar_model.freezed.dart';
+
+@Freezed(toJson: false, fromJson: false)
+abstract class AzkarModel with _$AzkarModel {
+  const AzkarModel._();
+
+  const factory AzkarModel({
+    required int id,
+    required String title,
+    @Default('') String engTitle,
+    @Default('') String slug,
+    @Default(false) bool isFavorite,
+    @Default('General') String category,
+    @Default('') String audioUrl,
+    @Default('') String textUrl,
+  }) = _AzkarModel;
 
   factory AzkarModel.fromJson(Map<String, dynamic> json) => AzkarModel(
     id: json['ID'] as int,
@@ -22,16 +28,30 @@ class AzkarModel extends AzkarEntity {
     audioUrl: json['AUDIO_URL'] as String? ?? '',
     textUrl: json['TEXT'] as String? ?? '',
   );
+
+  AzkarEntity toEntity() => AzkarEntity(
+    id: id,
+    title: title,
+    engTitle: engTitle,
+    slug: slug,
+    isFavorite: isFavorite,
+    category: category,
+    audioUrl: audioUrl,
+    textUrl: textUrl,
+  );
 }
 
-class AzkarContentModel extends AzkarContentEntity {
-  const AzkarContentModel({
-    required super.id,
-    required super.arabicText,
-    required super.translatedText,
-    required super.repeat,
-    required super.audio,
-  });
+@Freezed(toJson: false, fromJson: false)
+abstract class AzkarContentModel with _$AzkarContentModel {
+  const AzkarContentModel._();
+
+  const factory AzkarContentModel({
+    required int id,
+    @Default('') String arabicText,
+    @Default('') String translatedText,
+    @Default(1) int repeat,
+    @Default('') String audio,
+  }) = _AzkarContentModel;
 
   factory AzkarContentModel.fromJson(Map<String, dynamic> json) =>
       AzkarContentModel(
@@ -41,4 +61,12 @@ class AzkarContentModel extends AzkarContentEntity {
         repeat: json['REPEAT'] as int? ?? 1,
         audio: json['AUDIO'] as String? ?? '',
       );
+
+  AzkarContentEntity toEntity() => AzkarContentEntity(
+    id: id,
+    arabicText: arabicText,
+    translatedText: translatedText,
+    repeat: repeat,
+    audio: audio,
+  );
 }

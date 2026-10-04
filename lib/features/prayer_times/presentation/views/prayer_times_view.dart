@@ -7,8 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
-import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
-import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/bloc/prayer_times_bloc.dart';
 import 'package:muslim/features/prayer_times/presentation/views/widgets/current_prayer_card_widget.dart';
 
 class PrayerTimesView extends StatefulWidget {

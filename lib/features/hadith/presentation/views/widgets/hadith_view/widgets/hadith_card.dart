@@ -5,7 +5,7 @@ import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
-import 'package:muslim/features/hadith/presentation/cubit/hadith_cubit.dart';
+import 'package:muslim/features/hadith/presentation/bloc/hadith_bloc.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_card_header.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_meta_data.dart';
 import 'package:muslim/features/hadith/presentation/views/widgets/hadith_view/widgets/hadith_text.dart';

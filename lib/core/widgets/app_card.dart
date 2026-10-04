@@ -39,7 +39,6 @@ class AppCard extends StatelessWidget {
 
     final card = Material(
       color: backgroundColor ?? colors.surface,
-      borderRadius: radius,
       elevation: elevation,
       shadowColor: Colors.black.withValues(alpha: colors.isDark ? 0.2 : 0.04),
       clipBehavior: Clip.antiAlias,

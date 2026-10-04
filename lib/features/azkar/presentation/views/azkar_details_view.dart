@@ -7,10 +7,9 @@ import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
-import 'package:muslim/features/azkar/presentation/cubit/azkar_cubit.dart';
-import 'package:muslim/features/azkar/presentation/cubit/azkar_state.dart';
+import 'package:muslim/features/azkar/presentation/bloc/azkar_bloc.dart';
 import 'package:muslim/features/azkar/presentation/views/widgets/azkar_item_card.dart';
-import 'package:muslim/features/prayer_times/presentation/cubit/prayer_times_state.dart';
+import 'package:muslim/features/prayer_times/presentation/bloc/prayer_times_state.dart';
 
 class AzkarDetailsView extends StatelessWidget {
   const AzkarDetailsView({required this.azkar, super.key});
