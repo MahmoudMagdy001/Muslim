@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/core/service/periodic_reminder_channel_factory.dart';
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/utils/app_logger.dart';
@@ -44,9 +45,13 @@ Future<bool> _handlePrayerTimesTask() async {
   );
 
   try {
-    final prayerDataSource = PrayerTimesLocalDataSourceImpl();
-    final notificationDataSource = PrayerNotificationLocalDataSourceImpl();
     final settingsService = SettingsService();
+    final locationService = LocationService();
+    final prayerDataSource = PrayerTimesLocalDataSourceImpl(
+      settingsService: settingsService,
+      locationService: locationService,
+    );
+    final notificationDataSource = PrayerNotificationLocalDataSourceImpl();
 
     // Load per-prayer settings
     final settings = await settingsService.getPrayerNotificationSettings();

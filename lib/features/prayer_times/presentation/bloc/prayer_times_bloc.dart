@@ -53,11 +53,13 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
   Timer? _initialDelayTimer;
   Timer? _midnightTimer;
   bool _isScheduling = false;
+  bool _isFetching = false;
 
   Future<void> _onInit(
     PrayerTimesInit event,
     Emitter<PrayerTimesState> emit,
   ) async {
+    if (_isFetching) return;
     await _loadNotificationSettingsInternal(emit);
     await _fetchPrayerTimesInternal(event.isArabic, emit);
   }
@@ -66,7 +68,7 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     PrayerTimesCheckInitialData event,
     Emitter<PrayerTimesState> emit,
   ) async {
-    if (state.status == RequestStatus.initial) {
+    if (state.status == RequestStatus.initial && !_isFetching) {
       add(PrayerTimesEvent.init(isArabic: event.isArabic));
     }
   }
@@ -101,7 +103,16 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     bool isArabic,
     Emitter<PrayerTimesState> emit,
   ) async {
+    if (_isFetching) {
+      logInfo('ℹ️ جاري جلب مواقيت الصلاة بالفعل، تم تجاهل الطلب المكرر');
+      return;
+    }
+    _isFetching = true;
     emit(state.copyWith(status: RequestStatus.loading));
+
+    if (!locationGranted) {
+      locationGranted = await isLocationPermissionGranted();
+    }
 
     try {
       final times = await _prayerTimesRepo.getPrayerTimes(
@@ -112,6 +123,8 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
       _scheduleMidnightTimer(isArabic: isArabic);
     } on Object catch (e) {
       _handlePrayerTimesError(e.toString(), emit);
+    } finally {
+      _isFetching = false;
     }
   }
 
@@ -296,6 +309,10 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     PrayerTimesRefreshPrayerTimes event,
     Emitter<PrayerTimesState> emit,
   ) async {
+    if (_isFetching) {
+      logInfo('ℹ️ جاري تحديث مواقيت الصلاة بالفعل، تم تجاهل الطلب المكرر');
+      return;
+    }
     logInfo('🔄 تحديث يدوي لمواعيد الصلاة...');
     locationGranted = await isLocationPermissionGranted();
     await _loadNotificationSettingsInternal(emit);
@@ -335,5 +352,3 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     return super.close();
   }
 }
-
-typedef PrayerTimesCubit = PrayerTimesBloc;

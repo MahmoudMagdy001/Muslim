@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:muslim/core/theme/design_system.dart';
 import 'package:muslim/core/utils/extensions.dart';
 
 class SebhaControls extends StatelessWidget {
@@ -14,19 +16,18 @@ class SebhaControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
+    final isDark = colors.isDark;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: context.radius.lgBorder,
         color: isDark
-            ? Colors.white.withAlpha(10)
-            : context.colorScheme.primary.withAlpha(10),
+            ? colors.surface
+            : colors.surfaceVariant,
         border: Border.all(
-          color: isDark
-              ? Colors.white.withAlpha(15)
-              : context.colorScheme.primary.withAlpha(20),
+          color: colors.border,
         ),
       ),
       child: Row(
@@ -36,20 +37,18 @@ class SebhaControls extends StatelessWidget {
             onPressed: onReset,
             icon: Icons.refresh_rounded,
             label: context.l10n.resetTasbeh,
-            isDark: isDark,
+            colors: colors,
           ),
           Container(
             width: 1,
-            height: 28,
-            color: isDark
-                ? Colors.white.withAlpha(20)
-                : context.colorScheme.primary.withAlpha(30),
+            height: 28.h,
+            color: colors.border,
           ),
           _ControlButton(
             onPressed: onSetGoal,
             icon: Icons.flag_rounded,
             label: context.l10n.goal,
-            isDark: isDark,
+            colors: colors,
           ),
         ],
       ),
@@ -62,26 +61,26 @@ class _ControlButton extends StatelessWidget {
     required this.onPressed,
     required this.icon,
     required this.label,
-    required this.isDark,
+    required this.colors,
   });
 
   final VoidCallback onPressed;
   final IconData icon;
   final String label;
-  final bool isDark;
+  final AppSemanticColors colors;
 
   @override
   Widget build(BuildContext context) => TextButton.icon(
     onPressed: onPressed,
-    icon: Icon(icon, size: 20),
+    icon: Icon(icon, size: 20.r, color: colors.primary),
     label: Text(label),
     style: TextButton.styleFrom(
-      foregroundColor: isDark ? Colors.white70 : context.colorScheme.primary,
-      textStyle: context.textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w500,
+      foregroundColor: colors.isDark ? colors.textPrimary : colors.primary,
+      textStyle: context.typography.titleSmall.copyWith(
+        fontWeight: FontWeight.w600,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      shape: RoundedRectangleBorder(borderRadius: context.radius.smBorder),
     ),
   );
 }

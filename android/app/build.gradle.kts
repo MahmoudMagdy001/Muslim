@@ -1,11 +1,11 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
-
-import java.util.Properties
-import java.io.FileInputStream
 
 android {
     val keystoreProperties = Properties()
@@ -16,7 +16,7 @@ android {
     }
 
     namespace = "com.mahmoud.muslim"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -68,8 +68,6 @@ android {
         }
     }
 }
-
-
 
 flutter {
     source = "../.."

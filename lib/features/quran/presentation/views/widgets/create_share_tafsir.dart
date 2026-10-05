@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:muslim/core/utils/widget_capture.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Result of a tafsir image share operation.
@@ -24,10 +24,6 @@ class TafsirShareResult {
 /// Handles text splitting, widget-to-image capture, temp file management,
 /// and invoking the platform share sheet.
 class TafsirShareService {
-  TafsirShareService({ScreenshotController? screenshotController})
-    : _screenshotController = screenshotController ?? ScreenshotController();
-
-  final ScreenshotController _screenshotController;
 
   // ---------------------------------------------------------------------------
   // Public API
@@ -145,7 +141,7 @@ class TafsirShareService {
     required MediaQueryData mediaQueryData,
     required String path,
   }) async {
-    final bytes = await _screenshotController.captureFromWidget(
+    final bytes = await WidgetCapture.captureFromWidget(
       Theme(
         data: themeData,
         child: MediaQuery(

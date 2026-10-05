@@ -12,7 +12,20 @@ class AzkarRemoteDataSourceImpl implements AzkarRemoteDataSource {
   @override
   Future<Map<String, dynamic>> fetchAzkarContent(String url) async {
     try {
-      final response = await http.get(Uri.parse(url));
+      var secureUrl = url;
+      if (secureUrl.startsWith('http://')) {
+        secureUrl = secureUrl.replaceFirst('http://', 'https://');
+      }
+
+      final response = await http.get(
+        Uri.parse(secureUrl),
+        headers: {
+          'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 10));
+
       if (response.statusCode == 200) {
         // Handle potential BOM (Byte Order Mark) or encoding issues
         var body = utf8.decode(response.bodyBytes);

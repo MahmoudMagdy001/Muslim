@@ -49,5 +49,3 @@ class FontSizeBloc extends Bloc<FontSizeEvent, FontSizeState> {
   Future<void> setFontSize(double value) async =>
       add(FontSizeEvent.setFontSize(value));
 }
-
-typedef FontSizeCubit = FontSizeBloc;

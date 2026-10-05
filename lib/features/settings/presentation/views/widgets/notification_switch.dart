@@ -158,7 +158,7 @@ class _PerPrayerSettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       BlocSelector<
-        PrayerTimesCubit,
+        PrayerTimesBloc,
         PrayerTimesState,
         PrayerNotificationSettings
       >(
@@ -205,7 +205,7 @@ class _PerPrayerSettingsSection extends StatelessWidget {
     }
 
     if (context.mounted) {
-      await context.read<PrayerTimesCubit>().togglePrayerNotification(
+      await context.read<PrayerTimesBloc>().togglePrayerNotification(
         prayer,
         enabled: value,
       );

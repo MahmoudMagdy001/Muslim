@@ -76,13 +76,13 @@ class _SavedHadithViewState extends State<SavedHadithView> {
         context,
         BlocProvider(
           create: (context) {
-            final cubit = getIt<HadithCubit>();
-            unawaited(cubit.initializeData(
+            final bloc = getIt<HadithBloc>();
+            unawaited(bloc.initializeData(
               hadith['bookSlug'] as String,
               hadith['chapterNumber'] as String,
               hadith['chapterName'] as String,
             ));
-            return cubit;
+            return bloc;
           },
           child: HadithView(
             bookSlug: hadith['bookSlug'] as String,

@@ -61,5 +61,3 @@ class ZakatBloc extends Bloc<ZakatEvent, ZakatState> {
     add(ZakatEvent.setManualGoldPrice(price));
   }
 }
-
-typedef ZakatCubit = ZakatBloc;

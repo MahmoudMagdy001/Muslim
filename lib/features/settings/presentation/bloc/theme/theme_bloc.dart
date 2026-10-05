@@ -66,5 +66,3 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   Future<void> setThemeMode(ThemeMode themeMode) async =>
       add(ThemeEvent.setThemeMode(themeMode));
 }
-
-typedef ThemeCubit = ThemeBloc;

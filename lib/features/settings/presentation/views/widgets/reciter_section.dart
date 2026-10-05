@@ -13,17 +13,17 @@ class ReciterSection extends StatelessWidget {
   final ThemeData theme;
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<ReciterCubit, ReciterState>(
+  Widget build(BuildContext context) => BlocBuilder<ReciterBloc, ReciterState>(
     builder: (context, state) {
       final reciterName = getReciterName(state.selectedReciter, context: context);
-      final cubit = context.read<ReciterCubit>();
+      final bloc = context.read<ReciterBloc>();
 
       return ListTile(
         leading: const Icon(Icons.headphones),
         title: Text(reciterName, style: theme.textTheme.titleMedium),
         trailing: const Icon(Icons.arrow_drop_down_rounded),
         onTap: () async {
-          final currentReciter = cubit.state.selectedReciter;
+          final currentReciter = bloc.state.selectedReciter;
 
           final result = await showCustomModalBottomSheet<String>(
             context: context,
@@ -36,7 +36,7 @@ class ReciterSection extends StatelessWidget {
           if (result != null && result != currentReciter) {
             if (!context.mounted) return;
             final changedReciterName = getReciterName(result, context: context);
-            await cubit.saveReciter(result);
+            await bloc.saveReciter(result);
 
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(

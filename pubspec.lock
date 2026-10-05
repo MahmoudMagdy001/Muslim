@@ -297,14 +297,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  disable_battery_optimization:
-    dependency: "direct main"
-    description:
-      name: disable_battery_optimization
-      sha256: "7fbda76cdd30d01d75e091db8869b8cf2fd4c7b7edef3abce0d7206569603051"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
   equatable:
     dependency: transitive
     description:
@@ -1101,14 +1093,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
-  screenshot:
-    dependency: "direct main"
-    description:
-      name: screenshot
-      sha256: "63817697a7835e6ce82add4228e15d233b74d42975c143ad8cfe07009fab866b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   scrollable_positioned_list:
     dependency: "direct main"
     description:

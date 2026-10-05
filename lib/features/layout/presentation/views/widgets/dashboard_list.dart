@@ -20,7 +20,7 @@ class DashboardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reciterCubit = context.watch<ReciterCubit>();
+    final reciterBloc = context.watch<ReciterBloc>();
 
     final items = <DashboardItemModel>[
       DashboardItemModel(
@@ -29,7 +29,7 @@ class DashboardGrid extends StatelessWidget {
         color: const Color(0xFFB1D4F3),
         darkColor: const Color(0xFF2C4A70),
         route: SurahsListView(
-          selectedReciter: reciterCubit.state.selectedReciter,
+          selectedReciter: reciterBloc.state.selectedReciter,
         ),
       ),
       DashboardItemModel(

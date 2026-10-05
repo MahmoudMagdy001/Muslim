@@ -49,5 +49,3 @@ class LastPlayedBloc extends Bloc<LastPlayedEvent, LastPlayedState> {
     return super.close();
   }
 }
-
-typedef LastPlayedCubit = LastPlayedBloc;

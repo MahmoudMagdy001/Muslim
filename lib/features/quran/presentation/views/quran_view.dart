@@ -3,12 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
+import 'package:muslim/core/utils/navigation_helper.dart';
 import 'package:muslim/features/quran/presentation/bloc/quran_player/quran_player_bloc.dart';
+import 'package:muslim/features/quran/presentation/models/quran_reader_settings.dart';
+import 'package:muslim/features/quran/presentation/views/bookmarks_view.dart';
 import 'package:muslim/features/quran/presentation/views/utils/quran_position_helper.dart';
 import 'package:muslim/features/quran/presentation/views/widgets/mushaf_view.dart';
 import 'package:muslim/features/quran/presentation/views/widgets/player_controls_widget.dart';
+import 'package:muslim/features/quran/presentation/views/widgets/reader_settings_dialog.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -30,7 +35,7 @@ class QuranView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => getIt<QuranPlayerCubit>(),
+    create: (context) => getIt<QuranPlayerBloc>(),
     child: QuranViewContent(
       surahNumber: surahNumber,
       reciter: reciter,
@@ -63,6 +68,7 @@ class QuranViewContent extends StatefulWidget {
 
 class _QuranViewContentState extends State<QuranViewContent> {
   late final ValueNotifier<(int, int?, int?)> _headerNotifier;
+  late final ValueNotifier<QuranReaderSettings> _readerSettingsNotifier;
 
   @override
   void initState() {
@@ -73,10 +79,19 @@ class _QuranViewContentState extends State<QuranViewContent> {
       getHizbForAyah(widget.surahNumber, widget.startAyah),
     ));
 
+    _readerSettingsNotifier = ValueNotifier(const QuranReaderSettings());
+    unawaited(
+      QuranReaderSettings.load().then((settings) {
+        if (mounted) {
+          _readerSettingsNotifier.value = settings;
+        }
+      }),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.fromPage != null && widget.toPage != null) {
         unawaited(
-          context.read<QuranPlayerCubit>().loadRange(
+          context.read<QuranPlayerBloc>().loadRange(
             fromPage: widget.fromPage!,
             toPage: widget.toPage!,
             reciter: widget.reciter,
@@ -86,7 +101,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
         );
       } else {
         unawaited(
-          context.read<QuranPlayerCubit>().loadSurah(
+          context.read<QuranPlayerBloc>().loadSurah(
             widget.surahNumber,
             widget.reciter,
             startAyah: widget.startAyah,
@@ -99,6 +114,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
   @override
   void dispose() {
     _headerNotifier.dispose();
+    _readerSettingsNotifier.dispose();
     super.dispose();
   }
 
@@ -106,73 +122,120 @@ class _QuranViewContentState extends State<QuranViewContent> {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final localizations = AppLocalizations.of(context);
+    final colors = context.colors;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: ValueListenableBuilder<(int, int?, int?)>(
-          valueListenable: _headerNotifier,
-          builder: (context, header, _) {
-            final (surahNum, juz, hizb) = header;
-            final surahName = isArabic
-                ? quran.getSurahNameArabic(surahNum)
-                : quran.getSurahName(surahNum);
-            return Column(
-              children: [
-                Text(
-                  surahName,
-                  style: context.textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (juz != null && hizb != null)
-                  Container(
-                    margin: EdgeInsets.only(top: 2.h),
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(20.r),
+    return ValueListenableBuilder<QuranReaderSettings>(
+      valueListenable: _readerSettingsNotifier,
+      builder: (context, readerSettings, _) => Scaffold(
+        backgroundColor: readerSettings.theme.backgroundColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: colors.isDark
+              ? const Color(0xFF142722)
+              : colors.primary,
+          elevation: 2,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: ValueListenableBuilder<(int, int?, int?)>(
+            valueListenable: _headerNotifier,
+            builder: (context, header, _) {
+              final (surahNum, juz, hizb) = header;
+              final surahName = isArabic
+                  ? quran.getSurahNameArabic(surahNum)
+                  : quran.getSurahName(surahNum);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    isArabic ? 'سُورَةُ $surahName' : 'Surah $surahName',
+                    style: GoogleFonts.amiri(
+                      color: const Color(0xFFFFE082),
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Text(
-                      '${localizations.juzNumberLabel(juz)} • ${localizations.hizbNumberLabel(hizb)}',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w600,
+                  ),
+                  if (juz != null && hizb != null)
+                    Container(
+                      margin: EdgeInsets.only(top: 2.h),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: const Color(0xFFC59F48).withValues(alpha: 0.35),
+                          width: 0.6,
+                        ),
+                      ),
+                      child: Text(
+                        '${localizations.juzNumberLabel(juz)} • ${localizations.hizbNumberLabel(hizb)}',
+                        style: GoogleFonts.cairo(
+                          color: const Color(0xFFFAF7EE),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            );
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: MushafView(
-                surahNumber: widget.surahNumber,
-                initialPage: quran.getPageNumber(
-                  widget.surahNumber,
-                  widget.startAyah,
-                ),
-                localizations: localizations,
-                fromPage: widget.fromPage,
-                toPage: widget.toPage,
-                onPartChanged: (newSurah, newJuz, newHizb) {
-                  final current = _headerNotifier.value;
-                  if (current.$1 != newSurah ||
-                      current.$2 != newJuz ||
-                      current.$3 != newHizb) {
-                    _headerNotifier.value = (newSurah, newJuz, newHizb);
-                  }
+                ],
+              );
+            },
+          ),
+          actions: [
+            // Reading appearance & font size settings
+            IconButton(
+              icon: const Icon(Icons.text_format_rounded, color: Colors.white),
+              tooltip: isArabic ? 'مظهر القراءة والخط' : 'Reader Settings',
+              onPressed: () => ReaderSettingsDialog.show(
+                context,
+                currentSettings: _readerSettingsNotifier.value,
+                onChanged: (newSettings) {
+                  _readerSettingsNotifier.value = newSettings;
                 },
               ),
             ),
-            const PlayerControlsWidget(),
+            // Bookmarks shortcut
+            IconButton(
+              icon: const Icon(Icons.bookmarks_outlined, color: Colors.white),
+              tooltip: localizations.bookmarksText,
+              onPressed: () => unawaited(
+                navigateWithTransition<void>(
+                  type: TransitionType.fade,
+                  context,
+                  BookmarksView(reciter: widget.reciter),
+                ),
+              ),
+            ),
+            SizedBox(width: 4.w),
           ],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: MushafView(
+                  surahNumber: widget.surahNumber,
+                  initialPage: quran.getPageNumber(
+                    widget.surahNumber,
+                    widget.startAyah,
+                  ),
+                  localizations: localizations,
+                  readerSettingsNotifier: _readerSettingsNotifier,
+                  fromPage: widget.fromPage,
+                  toPage: widget.toPage,
+                  onPartChanged: (newSurah, newJuz, newHizb) {
+                    final current = _headerNotifier.value;
+                    if (current.$1 != newSurah ||
+                        current.$2 != newJuz ||
+                        current.$3 != newHizb) {
+                      _headerNotifier.value = (newSurah, newJuz, newHizb);
+                    }
+                  },
+                ),
+              ),
+              const PlayerControlsWidget(),
+            ],
+          ),
         ),
       ),
     );

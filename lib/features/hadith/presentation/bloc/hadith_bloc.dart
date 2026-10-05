@@ -177,5 +177,3 @@ class HadithBloc extends Bloc<HadithEvent, HadithState> {
   String getStatus(String status, {bool isArabic = true}) =>
       isArabic ? _statusMap[status] ?? status : status;
 }
-
-typedef HadithCubit = HadithBloc;

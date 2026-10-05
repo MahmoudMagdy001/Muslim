@@ -183,5 +183,3 @@ class PeriodicReminderBloc extends Bloc<PeriodicReminderEvent, PeriodicReminderS
   Future<void> refresh() async =>
       add(const PeriodicReminderEvent.refresh());
 }
-
-typedef PeriodicReminderCubit = PeriodicReminderBloc;

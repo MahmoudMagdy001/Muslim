@@ -50,5 +50,3 @@ class ChapterOfBookBloc extends Bloc<ChapterOfBookEvent, ChapterOfBookState> {
   void updateSearchText(String text) =>
       add(ChapterOfBookEvent.updateSearchText(text));
 }
-
-typedef ChapterOfBookCubit = ChapterOfBookBloc;

@@ -26,7 +26,7 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-        unawaited(context.read<PrayerTimesCubit>().checkInitialData(isArabic: isArabic));
+        unawaited(context.read<PrayerTimesBloc>().checkInitialData(isArabic: isArabic));
       }
     });
   }
@@ -35,10 +35,11 @@ class _PrayerTimesViewState extends State<PrayerTimesView> {
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+    return BlocBuilder<PrayerTimesBloc, PrayerTimesState>(
       buildWhen: (prev, curr) =>
           prev.status != curr.status ||
           prev.message != curr.message ||
+          prev.city != curr.city ||
           prev.localPrayerTimes != curr.localPrayerTimes,
       builder: (context, state) {
         if (state.status == RequestStatus.failure) {
@@ -83,7 +84,7 @@ class _PrayerErrorCard extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () async {
-              await context.read<PrayerTimesCubit>().refreshPrayerTimes(
+              await context.read<PrayerTimesBloc>().refreshPrayerTimes(
                 isArabic: isArabic,
               );
             },

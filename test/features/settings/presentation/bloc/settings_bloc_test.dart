@@ -11,30 +11,30 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('Settings Cubits Tests', () {
-    test('FontSizeCubit initializes with default value and updates font size', () async {
-      final cubit = FontSizeCubit();
-      expect(cubit.state.fontSize, 18.0);
+  group('Settings Blocs Tests', () {
+    test('FontSizeBloc initializes with default value and updates font size', () async {
+      final bloc = FontSizeBloc();
+      expect(bloc.state.fontSize, 18.0);
 
-      await cubit.setFontSize(22.0);
-      expect(cubit.state.fontSize, 22.0);
+      await bloc.setFontSize(22.0);
+      expect(bloc.state.fontSize, 22.0);
 
       // Duplicate value does not trigger change
-      await cubit.setFontSize(22.0);
-      expect(cubit.state.fontSize, 22.0);
+      await bloc.setFontSize(22.0);
+      expect(bloc.state.fontSize, 22.0);
     });
 
-    test('ThemeCubit initializes with system mode and toggles/sets theme correctly', () async {
-      final cubit = ThemeCubit(ThemeMode.light);
-      expect(cubit.state.themeMode, ThemeMode.light);
-      expect(cubit.state.isDarkMode, isFalse);
+    test('ThemeBloc initializes with system mode and toggles/sets theme correctly', () async {
+      final bloc = ThemeBloc(ThemeMode.light);
+      expect(bloc.state.themeMode, ThemeMode.light);
+      expect(bloc.state.isDarkMode, isFalse);
 
-      await cubit.toggleTheme();
-      expect(cubit.state.themeMode, ThemeMode.dark);
-      expect(cubit.state.isDarkMode, isTrue);
+      await bloc.toggleTheme();
+      expect(bloc.state.themeMode, ThemeMode.dark);
+      expect(bloc.state.isDarkMode, isTrue);
 
-      await cubit.setThemeMode(ThemeMode.system);
-      expect(cubit.state.themeMode, ThemeMode.system);
+      await bloc.setThemeMode(ThemeMode.system);
+      expect(bloc.state.themeMode, ThemeMode.system);
     });
   });
 }

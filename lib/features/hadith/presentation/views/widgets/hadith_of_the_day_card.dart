@@ -167,9 +167,9 @@ class HadithOfTheDayCard extends StatelessWidget {
         context,
         BlocProvider(
           create: (context) {
-            final cubit = getIt<HadithCubit>();
-            unawaited(cubit.initializeData(bookSlug, chapterNumber, chapterName));
-            return cubit;
+            final bloc = getIt<HadithBloc>();
+            unawaited(bloc.initializeData(bookSlug, chapterNumber, chapterName));
+            return bloc;
           },
           child: HadithView(
             bookSlug: bookSlug,

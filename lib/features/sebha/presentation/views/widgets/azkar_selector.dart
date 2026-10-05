@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
@@ -21,15 +22,16 @@ class AzkarSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.theme.brightness == Brightness.dark;
+    final colors = context.colors;
+    final isDark = colors.isDark;
 
     return SizedBox(
-      height: 60,
+      height: 48.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: EdgeInsets.symmetric(horizontal: 4.w),
         itemCount: azkar.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => SizedBox(width: 8.w),
         itemBuilder: (context, index) {
           final text = isArabic ? azkar[index].textAr : azkar[index].textEn;
           final isSelected = currentIndex == index;
@@ -38,56 +40,50 @@ class AzkarSelector extends StatelessWidget {
             onTap: () => onSelect(index),
             onLongPress: () => onLongPress(azkar[index]),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: context.durations.normal,
               curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: context.radius.fullBorder,
                 gradient: isSelected
                     ? LinearGradient(
-                        colors: isDark
-                            ? [const Color(0xFF3D2E6B), const Color(0xFF251A45)]
-                            : [
-                                context.colorScheme.primary,
-                                const Color(0xFF7C6FB3),
-                              ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: colors.cardGradient,
                       )
                     : null,
                 color: isSelected
                     ? null
                     : (isDark
-                          ? Colors.white.withAlpha(15)
-                          : context.colorScheme.primary.withAlpha(15)),
+                          ? colors.surface
+                          : colors.surfaceVariant),
                 border: Border.all(
                   color: isSelected
-                      ? Colors.transparent
-                      : (isDark
-                            ? Colors.white.withAlpha(20)
-                            : context.colorScheme.primary.withAlpha(30)),
+                      ? colors.secondary.withValues(alpha: 0.7)
+                      : colors.border,
+                  width: isSelected ? 1.5 : 1,
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: context.colorScheme.primary.withAlpha(40),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
+                          color: colors.primary.withValues(alpha: 0.35),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
                       ]
                     : null,
               ),
               child: Center(
                 child: AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 300),
-                  style: context.textTheme.bodyMedium!.copyWith(
+                  duration: context.durations.normal,
+                  style: context.typography.labelLarge.copyWith(
                     color: isSelected
                         ? Colors.white
-                        : (isDark
-                              ? Colors.white70
-                              : context.colorScheme.primary.withAlpha(180)),
+                        : (isDark ? colors.textSecondary : colors.textPrimary),
                     fontWeight: isSelected
                         ? FontWeight.bold
-                        : FontWeight.normal,
-                    fontSize: isSelected ? 15 : 14,
+                        : FontWeight.w600,
+                    fontSize: isSelected ? 14.sp : 13.sp,
                   ),
                   child: Text(text),
                 ),

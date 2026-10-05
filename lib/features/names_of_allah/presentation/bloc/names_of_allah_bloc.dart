@@ -32,5 +32,3 @@ class NamesOfAllahBloc extends Bloc<NamesOfAllahEvent, NamesOfAllahState> {
     add(const NamesOfAllahEvent.getNamesOfAllah());
   }
 }
-
-typedef NamesOfAllahCubit = NamesOfAllahBloc;

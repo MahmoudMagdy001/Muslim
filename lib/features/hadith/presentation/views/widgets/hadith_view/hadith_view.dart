@@ -83,28 +83,28 @@ class _HadithViewState extends State<HadithView> {
     );
   }
 
-  void _handleStateChanges(HadithState state, HadithCubit cubit) {
+  void _handleStateChanges(HadithState state, HadithBloc bloc) {
     if (state.status == HadithStatus.error) {
       _showErrorSnackBar(state.message ?? '');
     } else if (state.status == HadithStatus.success) {
-      _scrollToInitialHadith(cubit);
+      _scrollToInitialHadith(bloc);
     }
   }
 
-  void _scrollToInitialHadith(HadithCubit cubit) {
+  void _scrollToInitialHadith(HadithBloc bloc) {
     if (!_initialScrollAttempted && widget.scrollToHadithId != null) {
       _initialScrollAttempted = true;
       // Delay slightly to ensure the list is built
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
-          _scrollToHadith(widget.scrollToHadithId!, cubit);
+          _scrollToHadith(widget.scrollToHadithId!, bloc);
         }
       });
     }
   }
 
-  void _scrollToHadith(int hadithId, HadithCubit cubit) {
-    final state = cubit.state;
+  void _scrollToHadith(int hadithId, HadithBloc bloc) {
+    final state = bloc.state;
     if (state.status == HadithStatus.success) {
       final index = state.hadiths.indexWhere(
         (h) => int.parse(h.id) == hadithId,
@@ -123,9 +123,9 @@ class _HadithViewState extends State<HadithView> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocListener<HadithCubit, HadithState>(
+  Widget build(BuildContext context) => BlocListener<HadithBloc, HadithState>(
         listener: (context, state) =>
-            _handleStateChanges(state, context.read<HadithCubit>()),
+            _handleStateChanges(state, context.read<HadithBloc>()),
         child: Scaffold(
           appBar: AppBar(
             title: Text(
@@ -134,11 +134,11 @@ class _HadithViewState extends State<HadithView> {
           ),
           body: InternetStateManager(
             onRestoreInternetConnection: () {
-              unawaited(context.read<HadithCubit>().reloadData());
+              unawaited(context.read<HadithBloc>().reloadData());
             },
             noInternetScreen: const NoInternetScreen(),
             child: RefreshIndicator(
-              onRefresh: () => context.read<HadithCubit>().reloadData(),
+              onRefresh: () => context.read<HadithBloc>().reloadData(),
               child: HadithsBody(
                 itemScrollController: _itemScrollController,
                 itemPositionsListener: _itemPositionsListener,

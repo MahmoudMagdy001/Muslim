@@ -19,9 +19,9 @@ class FontSizeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSizeCubit = context.read<FontSizeCubit>();
+    final fontSizeBloc = context.read<FontSizeBloc>();
 
-    return BlocBuilder<FontSizeCubit, FontSizeState>(
+    return BlocBuilder<FontSizeBloc, FontSizeState>(
       builder: (context, state) => ListTile(
         leading: const Icon(Icons.text_fields),
         title: Text(
@@ -32,7 +32,7 @@ class FontSizeSection extends StatelessWidget {
           _getLabelForFontSize(state.fontSize),
           style: theme.textTheme.bodySmall,
         ),
-        onTap: () => _showFontSizeModal(context, state.fontSize, fontSizeCubit),
+        onTap: () => _showFontSizeModal(context, state.fontSize, fontSizeBloc),
       ),
     );
   }
@@ -40,7 +40,7 @@ class FontSizeSection extends StatelessWidget {
   void _showFontSizeModal(
     BuildContext context,
     double currentSize,
-    FontSizeCubit cubit,
+    FontSizeBloc bloc,
   ) {
     unawaited(
       showCustomModalBottomSheet<void>(
@@ -61,7 +61,7 @@ class FontSizeSection extends StatelessWidget {
             value: 14,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) async {
-              await cubit.setFontSize(value!);
+              await bloc.setFontSize(value!);
               if (context.mounted) {
                 Navigator.pop(context);
               }
@@ -75,7 +75,7 @@ class FontSizeSection extends StatelessWidget {
             value: 18,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) async {
-              await cubit.setFontSize(value!);
+              await bloc.setFontSize(value!);
               if (context.mounted) {
                 Navigator.pop(context);
               }
@@ -89,7 +89,7 @@ class FontSizeSection extends StatelessWidget {
             value: 22,
             groupValue: currentSize.roundToDouble(),
             onChanged: (value) async {
-              await cubit.setFontSize(value!);
+              await bloc.setFontSize(value!);
               if (context.mounted) {
                 Navigator.pop(context);
               }

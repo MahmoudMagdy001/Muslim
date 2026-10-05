@@ -7,8 +7,8 @@
       "slug": "أذكار_الصباح_والمساء",
       "isFavorite": true,
       "CATEGORY": "أذكار الصباح والمساء",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_028.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/27.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_028.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/27.json"
     },
     {
       "ID": 28,
@@ -17,8 +17,8 @@
       "slug": "أذكار_النوم",
       "isFavorite": false,
       "CATEGORY": "النوم",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_029.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/28.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_029.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/28.json"
     },
     {
       "ID": 1,
@@ -27,8 +27,8 @@
       "slug": "أذكار_النوم",
       "isFavorite": false,
       "CATEGORY": "النوم",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_002.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/1.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_002.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/1.json"
     },
     {
       "ID": 6,
@@ -37,8 +37,8 @@
       "slug": "دعاء_دخول_الخلاء",
       "isFavorite": false,
       "CATEGORY": "الخلاء",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_007.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/6.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_007.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/6.json"
     },
     {
       "ID": 7,
@@ -47,8 +47,8 @@
       "slug": "دعاء_الخروج_من_الخلاء",
       "isFavorite": false,
       "CATEGORY": "الخلاء",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_008.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/7.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_008.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/7.json"
     },
     {
       "ID": 8,
@@ -57,8 +57,8 @@
       "slug": "الذكر_قبل_الوضوء",
       "isFavorite": false,
       "CATEGORY": "الوضوء",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_009.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/8.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_009.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/8.json"
     },
     {
       "ID": 9,
@@ -67,8 +67,8 @@
       "slug": "الذكر بعد الفراغ من الوضوء",
       "isFavorite": false,
       "CATEGORY": "الوضوء",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_010.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/9.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_010.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/9.json"
     },
     {
       "ID": 10,
@@ -77,8 +77,8 @@
       "slug": "الذكر_عند_الخروج_من_المنزل",
       "isFavorite": false,
       "CATEGORY": "دعاء المنزل",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_011.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/10.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_011.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/10.json"
     },
     {
       "ID": 11,
@@ -87,8 +87,8 @@
       "slug": "الذكر عند دخول المنزل",
       "isFavorite": false,
       "CATEGORY": "دعاء المنزل",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_012.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/11.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_012.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/11.json"
     },
     {
       "ID": 12,
@@ -97,8 +97,8 @@
       "slug": "دعاء_الذهاب_إلى_المسجد",
       "isFavorite": false,
       "CATEGORY": "المسجد",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_013.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/12.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_013.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/12.json"
     },
     {
       "ID": 13,
@@ -107,8 +107,8 @@
       "slug": "دعاء_دخول_المسجد",
       "isFavorite": false,
       "CATEGORY": "المسجد",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_014.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/13.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_014.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/13.json"
     },
     {
       "ID": 14,
@@ -117,8 +117,8 @@
       "slug": "دعاء_الخروج_من_المسجد",
       "isFavorite": false,
       "CATEGORY": "المسجد",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_015.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/14.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_015.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/14.json"
     },
     {
       "ID": 15,
@@ -127,8 +127,8 @@
       "slug": "أذكار الآذان",
       "isFavorite": false,
       "CATEGORY": " متنوع-المسجد",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_016.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/15.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_016.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/15.json"
     },
     {
       "ID": 2,
@@ -137,8 +137,8 @@
       "slug": "دعاء ُلبْس الثوب",
       "isFavorite": false,
       "CATEGORY": "متنوع- اللباس",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_003.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/2.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_003.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/2.json"
     },
     {
       "ID": 3,
@@ -147,8 +147,8 @@
       "slug": "دعاء ُلبْس الثوب الجديد",
       "isFavorite": false,
       "CATEGORY": "متنوع- اللباس",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_004.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/3.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_004.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/3.json"
     },
     {
       "ID": 4,
@@ -157,8 +157,8 @@
       "slug": "الدعاء لمن لبس ثوبا جديدا",
       "isFavorite": false,
       "CATEGORY": "متنوع- اللباس",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_005.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/4.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_005.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/4.json"
     },
     {
       "ID": 5,
@@ -167,8 +167,8 @@
       "slug": "ما يقول إذا وضع ثوبه",
       "isFavorite": false,
       "CATEGORY": "متنوع- اللباس",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_006.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/5.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_006.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/5.json"
     },
     {
       "ID": 16,
@@ -177,8 +177,8 @@
       "slug": "دعاء الاستفتاح",
       "isFavorite": false,
       "CATEGORY": "متنوع- الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_017.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/16.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_017.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/16.json"
     },
     {
       "ID": 17,
@@ -187,8 +187,8 @@
       "slug": "دعاء الركوع",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_018.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/17.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_018.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/17.json"
     },
     {
       "ID": 18,
@@ -197,8 +197,8 @@
       "slug": "دعاء الرفع من الركوع",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_019.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/18.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_019.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/18.json"
     },
     {
       "ID": 19,
@@ -207,8 +207,8 @@
       "slug": "دعاء السجود",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_020.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/19.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_020.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/19.json"
     },
     {
       "ID": 20,
@@ -217,8 +217,8 @@
       "slug": "دعاء الجلسة بين السجدتين",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_021.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/20.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_021.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/20.json"
     },
     {
       "ID": 21,
@@ -227,8 +227,8 @@
       "slug": "دعاء سجود التلاوة",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_022.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/21.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_022.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/21.json"
     },
     {
       "ID": 22,
@@ -237,8 +237,8 @@
       "slug": "التشهد",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_023.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/22.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_023.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/22.json"
     },
     {
       "ID": 23,
@@ -247,8 +247,8 @@
       "slug": "الصلاة على النبي بعد التشهد",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_024.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/23.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_024.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/23.json"
     },
     {
       "ID": 24,
@@ -257,8 +257,8 @@
       "slug": "الدعاء بعد التشهد الأخير قبل السلام",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_025.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/24.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_025.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/24.json"
     },
     {
       "ID": 25,
@@ -267,8 +267,8 @@
       "slug": "الأذكار بعد السلام من الصلاة",
       "isFavorite": false,
       "CATEGORY": "بعد الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_026.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/25.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_026.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/25.json"
     },
     {
       "ID": 26,
@@ -277,8 +277,8 @@
       "slug": "دعاء صلاة الاستخارة",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_027.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/26.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_027.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/26.json"
     },
     {
       "ID": 29,
@@ -287,8 +287,8 @@
       "slug": "الدعاء إذا تقلب اليل",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_030.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/29.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_030.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/29.json"
     },
     {
       "ID": 30,
@@ -297,8 +297,8 @@
       "slug": "دعاء الفزع في النوم و من بُلِيَ بالوحشة",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_031.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/30.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_031.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/30.json"
     },
     {
       "ID": 31,
@@ -307,8 +307,8 @@
       "slug": "ما يفعل من رأى الرؤيا أو الحلم",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_032.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/31.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_032.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/31.json"
     },
     {
       "ID": 32,
@@ -317,8 +317,8 @@
       "slug": "دعاء قنوت الوتر",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_033.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/32.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_033.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/32.json"
     },
     {
       "ID": 33,
@@ -327,8 +327,8 @@
       "slug": "الذكر عقب السلام من الوتر",
       "isFavorite": false,
       "CATEGORY": "متنوع - الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_034.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/33.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_034.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/33.json"
     },
     {
       "ID": 34,
@@ -337,8 +337,8 @@
       "slug": "دعاء الهم والحزن",
       "isFavorite": false,
       "CATEGORY": "الحزن والكرب",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_035.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/34.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_035.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/34.json"
     },
     {
       "ID": 35,
@@ -347,8 +347,8 @@
       "slug": "دعاء الكرب",
       "isFavorite": false,
       "CATEGORY": "الحزن والكرب",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_036.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/35.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_036.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/35.json"
     },
     {
       "ID": 36,
@@ -357,8 +357,8 @@
       "slug": "دعاء الكرب",
       "isFavorite": false,
       "CATEGORY": "متنوع الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_037.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/36.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_037.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/36.json"
     },
     {
       "ID": 37,
@@ -367,8 +367,8 @@
       "slug": "دعاء من خاف ظلم السلطان",
       "isFavorite": false,
       "CATEGORY": "متنوع الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_038.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/37.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_038.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/37.json"
     },
     {
       "ID": 38,
@@ -377,8 +377,8 @@
       "slug": "الدعاء على العدو",
       "isFavorite": false,
       "CATEGORY": "متنوع الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_039.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/38.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_039.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/38.json"
     },
     {
       "ID": 39,
@@ -387,8 +387,8 @@
       "slug": "ما يقول من خاف قوما",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_040.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/39.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_040.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/39.json"
     },
     {
       "ID": 40,
@@ -397,8 +397,8 @@
       "slug": "دعاء من أصابه وسوسة في الإيمان",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_041.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/40.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_041.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/40.json"
     },
     {
       "ID": 41,
@@ -407,8 +407,8 @@
       "slug": "دعاء قضاء الدين",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_042.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/41.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_042.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/41.json"
     },
     {
       "ID": 42,
@@ -417,8 +417,8 @@
       "slug": "عاء الوسوسة في الصلاة و القراءة",
       "isFavorite": false,
       "CATEGORY": "أثناء الصلاة",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_043.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/42.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_043.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/42.json"
     },
     {
       "ID": 43,
@@ -427,8 +427,8 @@
       "slug": "دعاء من استصعب عليه أمر",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_044.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/43.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_044.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/43.json"
     },
     {
       "ID": 44,
@@ -437,8 +437,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_045.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/44.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_045.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/44.json"
     },
     {
       "ID": 45,
@@ -447,8 +447,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_046.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/45.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_046.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/45.json"
     },
     {
       "ID": 46,
@@ -457,8 +457,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_047.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/46.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_047.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/46.json"
     },
     {
       "ID": 47,
@@ -467,8 +467,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_048.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/47.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_048.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/47.json"
     },
     {
       "ID": 48,
@@ -477,8 +477,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_049.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/48.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_049.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/48.json"
     },
     {
       "ID": 49,
@@ -487,8 +487,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_050.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/49.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_050.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/49.json"
     },
     {
       "ID": 50,
@@ -497,8 +497,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_051.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/50.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_051.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/50.json"
     },
     {
       "ID": 51,
@@ -507,8 +507,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_052.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/51.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_052.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/51.json"
     },
     {
       "ID": 52,
@@ -517,8 +517,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_053.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/52.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_053.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/52.json"
     },
     {
       "ID": 53,
@@ -527,8 +527,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_054.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/53.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_054.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/53.json"
     },
     {
       "ID": 54,
@@ -537,8 +537,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_055.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/54.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_055.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/54.json"
     },
     {
       "ID": 55,
@@ -547,8 +547,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_056.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/55.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_056.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/55.json"
     },
     {
       "ID": 56,
@@ -557,8 +557,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_057.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/56.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_057.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/56.json"
     },
     {
       "ID": 57,
@@ -567,8 +567,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_058.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/57.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_058.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/57.json"
     },
     {
       "ID": 58,
@@ -577,8 +577,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_059.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/58.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_059.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/58.json"
     },
     {
       "ID": 59,
@@ -587,8 +587,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_060.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/59.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_060.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/59.json"
     },
     {
       "ID": 60,
@@ -597,8 +597,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_061.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/60.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_061.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/60.json"
     },
     {
       "ID": 61,
@@ -607,8 +607,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_062.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/61.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_062.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/61.json"
     },
     {
       "ID": 62,
@@ -617,8 +617,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_063.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/62.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_063.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/62.json"
     },
     {
       "ID": 63,
@@ -627,8 +627,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_064.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/63.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_064.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/63.json"
     },
     {
       "ID": 64,
@@ -637,8 +637,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_065.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/64.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_065.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/64.json"
     },
     {
       "ID": 65,
@@ -647,8 +647,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_066.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/65.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_066.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/65.json"
     },
     {
       "ID": 66,
@@ -657,8 +657,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_067.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/66.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_067.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/66.json"
     },
     {
       "ID": 67,
@@ -667,8 +667,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_068.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/67.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_068.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/67.json"
     },
     {
       "ID": 68,
@@ -677,8 +677,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_069.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/68.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_069.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/68.json"
     },
     {
       "ID": 69,
@@ -687,8 +687,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_070.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/69.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_070.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/69.json"
     },
     {
       "ID": 70,
@@ -697,8 +697,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_071.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/70.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_071.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/70.json"
     },
     {
       "ID": 71,
@@ -707,8 +707,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_072.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/71.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_072.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/71.json"
     },
     {
       "ID": 72,
@@ -717,14 +717,14 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_073.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/72.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_073.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/72.json"
     },
     {
       "ID": 73,
       "TITLE": "الدعاء إذا أفطر عند أهل بيت",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_074.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/73.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_074.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/73.json"
     },
     {
       "ID": 74,
@@ -733,8 +733,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_075.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/74.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_075.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/74.json"
     },
     {
       "ID": 75,
@@ -743,8 +743,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_076.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/75.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_076.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/75.json"
     },
     {
       "ID": 76,
@@ -753,8 +753,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_077.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/76.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_077.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/76.json"
     },
     {
       "ID": 77,
@@ -763,8 +763,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_078.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/77.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_078.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/77.json"
     },
     {
       "ID": 78,
@@ -773,8 +773,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_079.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/78.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_079.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/78.json"
     },
     {
       "ID": 79,
@@ -783,8 +783,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_080.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/79.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_080.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/79.json"
     },
     {
       "ID": 80,
@@ -793,8 +793,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_081.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/80.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_081.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/80.json"
     },
     {
       "ID": 81,
@@ -803,8 +803,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_082.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/81.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_082.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/81.json"
     },
     {
       "ID": 82,
@@ -813,8 +813,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_083.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/82.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_083.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/82.json"
     },
     {
       "ID": 83,
@@ -823,8 +823,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_084.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/83.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_084.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/83.json"
     },
     {
       "ID": 84,
@@ -833,8 +833,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_085.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/84.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_085.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/84.json"
     },
     {
       "ID": 85,
@@ -843,8 +843,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_086.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/85.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_086.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/85.json"
     },
     {
       "ID": 86,
@@ -853,8 +853,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_087.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/87.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_087.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/87.json"
     },
     {
       "ID": 87,
@@ -863,8 +863,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_088.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/87.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_088.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/87.json"
     },
     {
       "ID": 88,
@@ -873,8 +873,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_089.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/88.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_089.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/88.json"
     },
     {
       "ID": 89,
@@ -883,8 +883,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_090.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/89.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_090.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/89.json"
     },
     {
       "ID": 90,
@@ -893,8 +893,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/90.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/90.json"
     },
     {
       "ID": 91,
@@ -903,8 +903,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/91.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_091.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/91.json"
     },
     {
       "ID": 92,
@@ -913,8 +913,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_092.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/92.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_092.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/92.json"
     },
     {
       "ID": 93,
@@ -923,8 +923,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_094.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/93.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_094.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/93.json"
     },
     {
       "ID": 94,
@@ -933,8 +933,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_095.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/94.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_095.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/94.json"
     },
     {
       "ID": 95,
@@ -943,8 +943,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_096.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/95.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_096.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/95.json"
     },
     {
       "ID": 96,
@@ -953,8 +953,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_097.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/96.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_097.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/96.json"
     },
     {
       "ID": 97,
@@ -963,8 +963,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_098.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/97.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_098.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/97.json"
     },
     {
       "ID": 98,
@@ -973,8 +973,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_099.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/98.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_099.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/98.json"
     },
     {
       "ID": 99,
@@ -983,8 +983,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_100.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/99.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_100.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/99.json"
     },
     {
       "ID": 100,
@@ -993,8 +993,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_101.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/100.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_101.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/100.json"
     },
     {
       "ID": 101,
@@ -1003,8 +1003,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_102.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/101.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_102.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/101.json"
     },
     {
       "ID": 102,
@@ -1013,8 +1013,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_103.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/102.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_103.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/102.json"
     },
     {
       "ID": 103,
@@ -1023,8 +1023,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_104.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/103.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_104.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/103.json"
     },
     {
       "ID": 104,
@@ -1033,8 +1033,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_105.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/104.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_105.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/104.json"
     },
     {
       "ID": 105,
@@ -1043,8 +1043,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_106.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/105.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_106.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/105.json"
     },
     {
       "ID": 106,
@@ -1053,8 +1053,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_107.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/106.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_107.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/106.json"
     },
     {
       "ID": 107,
@@ -1063,8 +1063,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_108.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/107.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_108.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/107.json"
     },
     {
       "ID": 108,
@@ -1073,8 +1073,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_109.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/108.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_109.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/108.json"
     },
     {
       "ID": 109,
@@ -1083,8 +1083,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_110.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/109.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_110.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/109.json"
     },
     {
       "ID": 110,
@@ -1093,8 +1093,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_111.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/110.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_111.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/110.json"
     },
     {
       "ID": 111,
@@ -1103,8 +1103,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_112.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/111.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_112.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/111.json"
     },
     {
       "ID": 112,
@@ -1113,8 +1113,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_113.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/112.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_113.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/112.json"
     },
     {
       "ID": 113,
@@ -1123,8 +1123,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_114.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/113.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_114.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/113.json"
     },
     {
       "ID": 114,
@@ -1133,8 +1133,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_115.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/114.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_115.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/114.json"
     },
     {
       "ID": 115,
@@ -1143,8 +1143,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_116.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/115.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_116.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/115.json"
     },
     {
       "ID": 116,
@@ -1153,8 +1153,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_117.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/116.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_117.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/116.json"
     },
     {
       "ID": 117,
@@ -1163,8 +1163,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_118.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/117.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_118.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/117.json"
     },
     {
       "ID": 118,
@@ -1173,8 +1173,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_119.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/118.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_119.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/118.json"
     },
     {
       "ID": 119,
@@ -1183,8 +1183,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_120.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/119.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_120.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/119.json"
     },
     {
       "ID": 120,
@@ -1193,8 +1193,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_121.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/120.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_121.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/120.json"
     },
     {
       "ID": 121,
@@ -1203,8 +1203,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_122.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/121.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_122.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/121.json"
     },
     {
       "ID": 122,
@@ -1213,8 +1213,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_123.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/122.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_123.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/122.json"
     },
     {
       "ID": 123,
@@ -1223,8 +1223,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_124.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/123.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_124.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/123.json"
     },
     {
       "ID": 124,
@@ -1233,8 +1233,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_125.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/124.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_125.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/124.json"
     },
     {
       "ID": 125,
@@ -1243,8 +1243,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_126.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/125.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_126.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/125.json"
     },
     {
       "ID": 126,
@@ -1253,8 +1253,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_127.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/126.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_127.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/126.json"
     },
     {
       "ID": 127,
@@ -1263,8 +1263,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_128.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/127.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_128.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/127.json"
     },
     {
       "ID": 128,
@@ -1273,8 +1273,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_129.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/128.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_129.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/128.json"
     },
     {
       "ID": 129,
@@ -1283,8 +1283,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_130.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/129.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_130.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/129.json"
     },
     {
       "ID": 130,
@@ -1293,8 +1293,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_131.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/130.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_131.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/130.json"
     },
     {
       "ID": 131,
@@ -1303,8 +1303,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_132.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/131.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_132.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/131.json"
     },
     {
       "ID": 132,
@@ -1313,8 +1313,8 @@
       "slug": "ما يقول ويفعل من أذنب ذنبا",
       "isFavorite": false,
       "CATEGORY": "متنوع-الأحوال",
-      "AUDIO_URL": "http://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_133.mp3",
-      "TEXT": "http://www.hisnmuslim.com/api/ar/132.json"
+      "AUDIO_URL": "https://www.hisnmuslim.com/audio/ar/ar_7esn_AlMoslem_by_Doors_133.mp3",
+      "TEXT": "https://www.hisnmuslim.com/api/ar/132.json"
     }
   ]
 }

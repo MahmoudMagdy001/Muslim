@@ -91,5 +91,3 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   Future<void> removeBookmark({required int surah, required int ayah}) async =>
       add(BookmarksEvent.removeBookmark(surah: surah, ayah: ayah));
 }
-
-typedef BookmarksCubit = BookmarksBloc;

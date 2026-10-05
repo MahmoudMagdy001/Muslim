@@ -35,18 +35,18 @@ class BookmarksTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<BookmarksCubit>();
+    final bloc = context.read<BookmarksBloc>();
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final l10n = context.l10n;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (cubit.state.bookmarks.isEmpty &&
-          cubit.state.status != BookmarksStatus.loading) {
-        unawaited(cubit.load());
+      if (bloc.state.bookmarks.isEmpty &&
+          bloc.state.status != BookmarksStatus.loading) {
+        unawaited(bloc.load());
       }
     });
 
-    return BlocBuilder<BookmarksCubit, BookmarksState>(
+    return BlocBuilder<BookmarksBloc, BookmarksState>(
       buildWhen: (previous, current) =>
           previous.bookmarks != current.bookmarks ||
           previous.status != current.status,
@@ -90,7 +90,7 @@ class BookmarksTab extends StatelessWidget {
                       localizations,
                     ),
                     onDismissed: (direction) async {
-                      await cubit.removeBookmark(
+                      await bloc.removeBookmark(
                         surah: bookmark.surahNumber,
                         ayah: bookmark.ayahNumber,
                       );
@@ -126,7 +126,7 @@ class BookmarksTab extends StatelessWidget {
                         );
 
                         if (confirmed ?? false) {
-                          await cubit.removeBookmark(
+                          await bloc.removeBookmark(
                             surah: bookmark.surahNumber,
                             ayah: bookmark.ayahNumber,
                           );

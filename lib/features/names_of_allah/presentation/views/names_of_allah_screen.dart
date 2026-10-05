@@ -7,6 +7,7 @@ import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
 import 'package:muslim/core/utils/responsive_helper.dart';
+import 'package:muslim/core/utils/widget_capture.dart';
 import 'package:muslim/core/widgets/custom_loading_indicator.dart';
 import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
 import 'package:muslim/features/names_of_allah/presentation/bloc/names_of_allah_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:muslim/features/names_of_allah/presentation/views/widgets/name_o
 import 'package:muslim/features/names_of_allah/presentation/views/widgets/shareable_name_of_allah_card.dart';
 import 'package:muslim/l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 class NamesOfAllahScreen extends StatelessWidget {
@@ -22,7 +22,7 @@ class NamesOfAllahScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (_) => getIt<NamesOfAllahCubit>(),
+    create: (_) => getIt<NamesOfAllahBloc>(),
     child: const _NamesOfAllahContent(),
   );
 }
@@ -36,7 +36,6 @@ class _NamesOfAllahContent extends StatefulWidget {
 
 class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
   final TextEditingController _searchController = TextEditingController();
-  final ScreenshotController _screenshotController = ScreenshotController();
   final ValueNotifier<String> searchQueryNotifier = ValueNotifier('');
   final ValueNotifier<bool> isSharingNotifier = ValueNotifier(false);
   final ValueNotifier<int?> sharingIndexNotifier = ValueNotifier(null);
@@ -44,7 +43,7 @@ class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<NamesOfAllahCubit>().getNamesOfAllah());
+    unawaited(context.read<NamesOfAllahBloc>().getNamesOfAllah());
     _searchController.addListener(() {
       searchQueryNotifier.value = _searchController.text.trim();
     });
@@ -76,7 +75,7 @@ class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
     try {
       // Small delay to ensure UI updates before capture
       await Future<void>.delayed(const Duration(milliseconds: 50));
-      final imageBytes = await _screenshotController.captureFromWidget(
+      final imageBytes = await WidgetCapture.captureFromWidget(
         ShareableNameOfAllahCard(data: data),
         delay: const Duration(milliseconds: 10),
       );
@@ -128,7 +127,7 @@ class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
           ),
         ],
       ),
-      body: BlocBuilder<NamesOfAllahCubit, NamesOfAllahState>(
+      body: BlocBuilder<NamesOfAllahBloc, NamesOfAllahState>(
         builder: (context, state) {
           if (state is NamesOfAllahLoaded) {
             final allData = state.names;

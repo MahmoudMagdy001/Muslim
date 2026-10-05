@@ -67,5 +67,3 @@ class ReciterBloc extends Bloc<ReciterEvent, ReciterState> {
   Future<void> saveReciter(String reciterId) async =>
       add(ReciterEvent.saveReciter(reciterId));
 }
-
-typedef ReciterCubit = ReciterBloc;

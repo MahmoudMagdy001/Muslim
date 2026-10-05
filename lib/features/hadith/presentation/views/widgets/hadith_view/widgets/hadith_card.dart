@@ -15,21 +15,21 @@ class HadithCard extends StatelessWidget {
   const HadithCard({
     required this.hadith,
     required this.localizations,
-    required this.cubit,
+    required this.bloc,
     required this.onShowSnackBar,
     super.key,
   });
 
   final HadithEntity hadith;
   final AppLocalizations localizations;
-  final HadithCubit cubit;
+  final HadithBloc bloc;
   final void Function(String) onShowSnackBar;
 
   void _onBookmarkPressed(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     unawaited(
-      cubit.toggleHadithSave(hadith, isArabic: isArabic).then((_) {
-        final isSaved = cubit.isHadithSaved(hadith.id);
+      bloc.toggleHadithSave(hadith, isArabic: isArabic).then((_) {
+        final isSaved = bloc.isHadithSaved(hadith.id);
         final message = isSaved
             ? 'تم حفظ الحديث رقم: ${convertToArabicNumbers(hadith.id)}'
             : 'تم إزالة الحديث رقم: ${convertToArabicNumbers(hadith.id)}';
@@ -43,7 +43,7 @@ class HadithCard extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final heading = isArabic ? hadith.headingArabic : hadith.headingEnglish;
     final text = isArabic ? hadith.hadithArabic : hadith.hadithEnglish;
-    final status = cubit.getStatus(hadith.status, isArabic: isArabic);
+    final status = bloc.getStatus(hadith.status, isArabic: isArabic);
 
     return RepaintBoundary(
       child: Card(
@@ -57,7 +57,7 @@ class HadithCard extends StatelessWidget {
                 heading: heading,
                 hadithId: hadith.id,
                 onBookmarkPressed: () => _onBookmarkPressed(context),
-                cubit: cubit,
+                bloc: bloc,
               ),
               const SizedBox(height: 12),
               HadithText(text: text),

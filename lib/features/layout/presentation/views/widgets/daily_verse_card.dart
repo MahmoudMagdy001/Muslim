@@ -93,7 +93,7 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            final reciter = context.read<ReciterCubit>().state.selectedReciter;
+            final reciter = context.read<ReciterBloc>().state.selectedReciter;
             unawaited(
               navigateWithTransition<void>(
                 context,

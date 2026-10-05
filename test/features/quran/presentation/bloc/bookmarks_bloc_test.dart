@@ -17,18 +17,18 @@ class FakeBookmarksService extends BookmarksService {
 }
 
 void main() {
-  group('BookmarksCubit Tests', () {
+  group('BookmarksBloc Tests', () {
     late FakeBookmarksService fakeService;
-    late BookmarksCubit cubit;
+    late BookmarksBloc bloc;
 
     setUp(() {
       fakeService = FakeBookmarksService();
-      cubit = BookmarksCubit(fakeService);
+      bloc = BookmarksBloc(fakeService);
     });
 
     test('initial state has default status and empty list', () {
-      expect(cubit.state.status, BookmarksStatus.initial);
-      expect(cubit.state.bookmarks, isEmpty);
+      expect(bloc.state.status, BookmarksStatus.initial);
+      expect(bloc.state.bookmarks, isEmpty);
     });
 
     test('load loads bookmarks successfully into state', () async {
@@ -41,30 +41,30 @@ void main() {
         ),
       ];
 
-      await cubit.load();
+      await bloc.load();
 
-      expect(cubit.state.status, BookmarksStatus.ready);
-      expect(cubit.state.bookmarks.length, 1);
-      expect(cubit.state.bookmarks.first.surahNumber, 1);
+      expect(bloc.state.status, BookmarksStatus.ready);
+      expect(bloc.state.bookmarks.length, 1);
+      expect(bloc.state.bookmarks.first.surahNumber, 1);
     });
 
     test('addBookmark adds and persists a bookmark', () async {
-      await cubit.addBookmark(surah: 2, ayah: 255, ayahText: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ');
+      await bloc.addBookmark(surah: 2, ayah: 255, ayahText: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ');
 
-      expect(cubit.state.bookmarks.length, 1);
-      expect(cubit.state.bookmarks.first.surahNumber, 2);
-      expect(cubit.state.bookmarks.first.ayahNumber, 255);
+      expect(bloc.state.bookmarks.length, 1);
+      expect(bloc.state.bookmarks.first.surahNumber, 2);
+      expect(bloc.state.bookmarks.first.ayahNumber, 255);
       expect(fakeService.storage.length, 1);
     });
 
     test('removeBookmark removes existing bookmark and persists', () async {
-      await cubit.addBookmark(surah: 2, ayah: 255, ayahText: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ');
+      await bloc.addBookmark(surah: 2, ayah: 255, ayahText: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ');
 
-      expect(cubit.state.bookmarks.length, 1);
+      expect(bloc.state.bookmarks.length, 1);
 
-      await cubit.removeBookmark(surah: 2, ayah: 255);
+      await bloc.removeBookmark(surah: 2, ayah: 255);
 
-      expect(cubit.state.bookmarks, isEmpty);
+      expect(bloc.state.bookmarks, isEmpty);
       expect(fakeService.storage, isEmpty);
     });
   });

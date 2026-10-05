@@ -1,18 +1,29 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:disable_battery_optimization/disable_battery_optimization.dart';
 import 'package:flutter/foundation.dart';
+import 'package:muslim/core/service/native_battery_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<bool> requestAllPermissions() async {
   try {
     await checkNotificationPermission();
-    final locationGranted = await checkLocationPermission();
-    await checkBatteryOptimization();
-    return locationGranted;
   } on Object catch (e) {
-    debugPrint('Permission request error: $e');
-    return false;
+    debugPrint('Notification permission error: $e');
   }
+
+  var locationGranted = false;
+  try {
+    locationGranted = await checkLocationPermission();
+  } on Object catch (e) {
+    debugPrint('Location permission error: $e');
+  }
+
+  try {
+    await checkBatteryOptimization();
+  } on Object catch (e) {
+    debugPrint('Battery optimization check error: $e');
+  }
+
+  return locationGranted;
 }
 
 // ponytail: check location permission status without showing a blocking prompt
@@ -43,15 +54,5 @@ Future<bool> checkLocationPermission() async {
 }
 
 Future<void> checkBatteryOptimization() async {
-  try {
-    final isDisabled = await DisableBatteryOptimization.isBatteryOptimizationDisabled;
-
-    if (isDisabled == false) {
-      await DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
-    } else {
-      debugPrint('✅ التطبيق غير محسن (Unrestricted)');
-    }
-  } on Object catch (e) {
-    debugPrint('⚠️ خطأ في التحقق من Battery Optimization: $e');
-  }
+  await NativeBatteryService.requestIfNeeded();
 }

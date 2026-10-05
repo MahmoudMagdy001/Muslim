@@ -19,9 +19,9 @@ class ZakatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (context) {
-      final cubit = getIt<ZakatCubit>();
-      unawaited(cubit.loadGoldPrice());
-      return cubit;
+      final bloc = getIt<ZakatBloc>();
+      unawaited(bloc.loadGoldPrice());
+      return bloc;
     },
     child: const _ZakatViewBody(),
   );
@@ -53,7 +53,7 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
     final textTheme = context.textTheme;
     final localizations = AppLocalizations.of(context);
 
-    return BlocSelector<ZakatCubit, ZakatState, ZakatState>(
+    return BlocSelector<ZakatBloc, ZakatState, ZakatState>(
       selector: (state) => state,
       builder: (context, state) {
         if (state.status == ZakatRequestStatus.loading) {
@@ -87,7 +87,7 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
             body: _GoldPriceInputView(
               localizations: localizations,
               onConfirm: (price) =>
-                  context.read<ZakatCubit>().setManualGoldPrice(price),
+                  context.read<ZakatBloc>().setManualGoldPrice(price),
             ),
           );
         }
@@ -149,8 +149,8 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
     AppLocalizations localizations,
   ) async {
     final controller = TextEditingController();
-    final cubit = context
-        .read<ZakatCubit>(); // Capture Cubit here using parent context
+    final bloc = context
+        .read<ZakatBloc>(); // Capture Bloc here using parent context
     await BaseAppDialog.show<void>(
       context,
       icon: Icons.monetization_on_outlined,
@@ -174,7 +174,7 @@ class _ZakatViewBodyState extends State<_ZakatViewBody>
             final price = double.tryParse(controller.text);
             if (price != null && price > 0) {
               Navigator.pop(context);
-              cubit.setManualGoldPrice(price);
+              bloc.setManualGoldPrice(price);
             }
           },
           child: Text(localizations.confirm),

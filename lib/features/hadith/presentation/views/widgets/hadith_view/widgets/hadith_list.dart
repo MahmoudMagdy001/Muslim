@@ -12,7 +12,7 @@ class HadithsList extends StatelessWidget {
     required this.itemPositionsListener,
     required this.hadiths,
     required this.localizations,
-    required this.cubit,
+    required this.bloc,
     required this.onShowSnackBar,
     super.key,
   });
@@ -21,7 +21,7 @@ class HadithsList extends StatelessWidget {
   final ItemPositionsListener itemPositionsListener;
   final List<HadithEntity> hadiths;
   final AppLocalizations localizations;
-  final HadithCubit cubit;
+  final HadithBloc bloc;
   final void Function(String) onShowSnackBar;
 
   @override
@@ -46,7 +46,7 @@ class HadithsList extends StatelessWidget {
           return HadithCard(
             hadith: hadith,
             localizations: localizations,
-            cubit: cubit,
+            bloc: bloc,
             onShowSnackBar: onShowSnackBar,
           );
         },

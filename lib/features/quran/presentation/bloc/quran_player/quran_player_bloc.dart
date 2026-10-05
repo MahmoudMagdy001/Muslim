@@ -255,5 +255,3 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
     return super.close();
   }
 }
-
-typedef QuranPlayerCubit = QuranPlayerBloc;

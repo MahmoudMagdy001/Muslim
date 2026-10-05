@@ -22,13 +22,13 @@ class HadithsBody extends StatelessWidget {
   final ItemPositionsListener itemPositionsListener;
   final AppLocalizations localizations;
   final int? scrollToHadithId;
-  final void Function(HadithCubit) onScrollToHadith;
+  final void Function(HadithBloc) onScrollToHadith;
   final void Function(String) onShowSnackBar;
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<HadithCubit, HadithState>(
+  Widget build(BuildContext context) => BlocBuilder<HadithBloc, HadithState>(
     builder: (context, state) {
-      final cubit = context.read<HadithCubit>();
+      final bloc = context.read<HadithBloc>();
 
       if (state.status == HadithStatus.initial ||
           state.status == HadithStatus.loading) {
@@ -39,14 +39,14 @@ class HadithsBody extends StatelessWidget {
           itemPositionsListener: itemPositionsListener,
           hadiths: state.hadiths,
           localizations: localizations,
-          cubit: cubit,
+          bloc: bloc,
           onShowSnackBar: onShowSnackBar,
         );
       } else if (state.status == HadithStatus.error) {
         return ErrorState(
           message: state.message ?? '',
           localizations: localizations,
-          onRetry: cubit.reloadData,
+          onRetry: bloc.reloadData,
         );
       } else {
         return const CustomLoadingIndicator(text: 'جاري تحميل الأحاديث');

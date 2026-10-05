@@ -28,9 +28,9 @@ class ChapterOfBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (context) {
-      final cubit = getIt<ChapterOfBookCubit>();
-      unawaited(cubit.loadChapters(bookSlug));
-      return cubit;
+      final bloc = getIt<ChapterOfBookBloc>();
+      unawaited(bloc.loadChapters(bookSlug));
+      return bloc;
     },
     child: _ChapterOfBookContent(bookSlug: bookSlug, bookName: bookName),
   );
@@ -79,9 +79,9 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
         context,
         BlocProvider(
           create: (context) {
-            final cubit = getIt<HadithCubit>();
-            unawaited(cubit.initializeData(widget.bookSlug, chapter.chapterNumber, chapterName));
-            return cubit;
+            final bloc = getIt<HadithBloc>();
+            unawaited(bloc.initializeData(widget.bookSlug, chapter.chapterNumber, chapterName));
+            return bloc;
           },
           child: HadithView(
             bookSlug: widget.bookSlug,
@@ -109,14 +109,14 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
       body: InternetStateManager(
         noInternetScreen: const NoInternetScreen(),
         onRestoreInternetConnection: () {
-          unawaited(context.read<ChapterOfBookCubit>().loadChapters(widget.bookSlug));
+          unawaited(context.read<ChapterOfBookBloc>().loadChapters(widget.bookSlug));
         },
         child: SafeArea(
           child: Column(
             children: [
               _buildSearchField(localization, isArabic, theme, context),
               Expanded(
-                child: BlocBuilder<ChapterOfBookCubit, ChapterOfBookState>(
+                child: BlocBuilder<ChapterOfBookBloc, ChapterOfBookState>(
                   builder: (context, state) {
                     if (state.status == ChapterOfBookStatus.loading ||
                         state.status == ChapterOfBookStatus.initial) {
@@ -139,7 +139,7 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        await context.read<ChapterOfBookCubit>().loadChapters(
+                        await context.read<ChapterOfBookBloc>().loadChapters(
                           widget.bookSlug,
                         );
                         await Future<void>.delayed(const Duration(milliseconds: 500));
@@ -165,7 +165,7 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
     padding: EdgeInsets.symmetric(horizontal: 12.toW, vertical: 8.toH),
     child: TextField(
       onChanged: (text) =>
-          context.read<ChapterOfBookCubit>().updateSearchText(text),
+          context.read<ChapterOfBookBloc>().updateSearchText(text),
       textAlign: isArabic ? TextAlign.right : TextAlign.left,
       decoration: InputDecoration(
         hintText: localization.chaptersSearch,

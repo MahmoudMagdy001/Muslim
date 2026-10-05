@@ -149,5 +149,3 @@ class AzkarBloc extends Bloc<AzkarEvent, AzkarState> {
   Future<void> resetCount(String url, int index) async =>
       add(AzkarEvent.resetCount(url, index));
 }
-
-typedef AzkarCubit = AzkarBloc;

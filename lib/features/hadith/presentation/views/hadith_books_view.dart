@@ -24,7 +24,7 @@ class HadithBooksView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-    create: (context) => getIt<HadithBooksCubit>(),
+    create: (context) => getIt<HadithBooksBloc>(),
     child: const _HadithBooksViewContent(),
   );
 }
@@ -117,8 +117,8 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
       body: InternetStateManager(
         noInternetScreen: const NoInternetScreen(),
         onRestoreInternetConnection: () {
-          unawaited(context.read<HadithBooksCubit>().loadBooks());
-          unawaited(context.read<HadithBooksCubit>().loadRandomHadith());
+          unawaited(context.read<HadithBooksBloc>().loadBooks());
+          unawaited(context.read<HadithBooksBloc>().loadRandomHadith());
         },
         child: SafeArea(
           child: Column(
@@ -189,14 +189,14 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
                     filled: true,
                   ),
                   onChanged: (text) =>
-                      context.read<HadithBooksCubit>().updateSearchText(text),
+                      context.read<HadithBooksBloc>().updateSearchText(text),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 ),
               ),
 
               // ====== Books List ======
               Expanded(
-                child: BlocSelector<HadithBooksCubit, HadithBooksState, HadithBooksState>(
+                child: BlocSelector<HadithBooksBloc, HadithBooksState, HadithBooksState>(
                   selector: (state) => state,
                   builder: (context, state) {
                     if (state.status == HadithBooksStatus.loading ||
@@ -228,9 +228,9 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        final cubit = context.read<HadithBooksCubit>();
-                        await cubit.loadBooks();
-                        await cubit.loadRandomHadith();
+                        final bloc = context.read<HadithBooksBloc>();
+                        await bloc.loadBooks();
+                        await bloc.loadRandomHadith();
                         // Optional: Could return a future that completes when state status changes, but just waiting briefly works for UI.
                         await Future<void>.delayed(const Duration(milliseconds: 500));
                       },

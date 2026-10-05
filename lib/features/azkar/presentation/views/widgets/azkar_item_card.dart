@@ -30,12 +30,12 @@ class AzkarItemCard extends StatefulWidget {
 }
 
 class _AzkarItemCardState extends State<AzkarItemCard> {
-  late final AzkarAudioCubit _audioCubit;
+  late final AzkarAudioBloc _audioBloc;
 
   @override
   void initState() {
     super.initState();
-    _audioCubit = getIt<AzkarAudioCubit>();
+    _audioBloc = getIt<AzkarAudioBloc>();
   }
 
   @override
@@ -152,8 +152,8 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
                 SizedBox(width: 8.w),
 
                 // Audio Button
-                BlocBuilder<AzkarAudioCubit, AzkarAudioState>(
-                  bloc: _audioCubit,
+                BlocBuilder<AzkarAudioBloc, AzkarAudioState>(
+                  bloc: _audioBloc,
                   builder: (context, audioState) {
                     final isThisPlaying = audioState.url == widget.content.audio;
                     final isLoading =
@@ -167,9 +167,9 @@ class _AzkarItemCardState extends State<AzkarItemCard> {
                       onPressed: () async {
                         await HapticFeedback.lightImpact();
                         if (isPlaying) {
-                          await _audioCubit.stopAudio();
+                          await _audioBloc.stopAudio();
                         } else {
-                          await _audioCubit.playAudio(
+                          await _audioBloc.playAudio(
                             widget.content.audio,
                             title: widget.content.arabicText,
                           );

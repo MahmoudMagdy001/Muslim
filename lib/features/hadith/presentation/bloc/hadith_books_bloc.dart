@@ -73,5 +73,3 @@ class HadithBooksBloc extends Bloc<HadithBooksEvent, HadithBooksState> {
   Future<void> loadRandomHadith() async => add(const HadithBooksEvent.loadRandomHadith());
   void updateSearchText(String text) => add(HadithBooksEvent.updateSearchText(text));
 }
-
-typedef HadithBooksCubit = HadithBooksBloc;

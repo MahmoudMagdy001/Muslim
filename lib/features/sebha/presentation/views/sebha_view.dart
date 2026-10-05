@@ -38,9 +38,9 @@ class _SebhaViewState extends State<SebhaView> {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) {
-      final cubit = getIt<SebhaCubit>();
-      unawaited(cubit.loadCustomAzkar());
-      return cubit;
+      final bloc = getIt<SebhaBloc>();
+      unawaited(bloc.loadCustomAzkar());
+      return bloc;
     },
     child: Builder(
       builder: (context) {
@@ -48,30 +48,38 @@ class _SebhaViewState extends State<SebhaView> {
         final isArabic = Localizations.localeOf(context).languageCode == 'ar';
         final isDark = context.theme.brightness == Brightness.dark;
 
-        return BlocListener<SebhaCubit, SebhaState>(
+        return BlocListener<SebhaBloc, SebhaState>(
           listenWhen: (previous, current) =>
               current.goalReached && !previous.goalReached,
           listener: (context, state) {
             _showCompleteDialog(context, state.customGoal ?? 0);
-            context.read<SebhaCubit>().consumeGoalReached();
+            context.read<SebhaBloc>().consumeGoalReached();
           },
           child: Scaffold(
         appBar: widget.showAppBar
             ? AppBar(
-                title: Text(l10n.sebhaTitle),
+                title: Text(
+                  l10n.sebhaTitle,
+                  style: context.typography.titleLarge.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                backgroundColor: context.colors.primary,
+                centerTitle: true,
                 elevation: 0,
                 actions: [
                   IconButton(
                     onPressed: () => unawaited(
                       AppTourHelper.showSebhaTour(context, force: true),
                     ),
-                    icon: const Icon(Icons.explore_outlined),
+                    icon: const Icon(Icons.explore_outlined, color: Colors.white),
                     tooltip: l10n.tourSebhaTitle,
                   ),
                   IconButton(
                     key: AppTourKeys.sebhaAddKey,
                     onPressed: () => _showAddCustomZikrDialog(context),
-                    icon: const Icon(Icons.add_rounded),
+                    icon: const Icon(Icons.add_rounded, color: Colors.white),
                   ),
                 ],
               )
@@ -81,8 +89,8 @@ class _SebhaViewState extends State<SebhaView> {
             children: [
               // Azkar selector at the top
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: BlocSelector<SebhaCubit, SebhaState, ({List<ZikrEntity> allAzkar, int currentIndex})>(
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+                child: BlocSelector<SebhaBloc, SebhaState, ({List<ZikrEntity> allAzkar, int currentIndex})>(
                   selector: (state) => (
                     allAzkar: state.allAzkar,
                     currentIndex: state.currentIndex,
@@ -93,15 +101,15 @@ class _SebhaViewState extends State<SebhaView> {
                         azkar: data.allAzkar,
                         currentIndex: data.currentIndex,
                         isArabic: isArabic,
-                        onSelect: context.read<SebhaCubit>().selectZikr,
+                        onSelect: context.read<SebhaBloc>().selectZikr,
                         onLongPress: (zikr) =>
                             _showZikrOptions(context, zikr),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 20.h),
                       // Current zikr text with animated transitions
                       if (data.currentIndex < data.allAzkar.length)
                         AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 400),
+                          duration: context.durations.normal,
                           switchInCurve: Curves.easeOutCubic,
                           switchOutCurve: Curves.easeInCubic,
                           transitionBuilder: (child, animation) =>
@@ -121,11 +129,11 @@ class _SebhaViewState extends State<SebhaView> {
                                 : data.allAzkar[data.currentIndex].textEn,
                             key: ValueKey(data.allAzkar[data.currentIndex].id),
                             textAlign: TextAlign.center,
-                            style: context.textTheme.headlineMedium?.copyWith(
+                            style: context.typography.h2.copyWith(
                               fontWeight: FontWeight.bold,
                               color: isDark
-                                  ? Colors.white
-                                  : context.colorScheme.primary,
+                                  ? context.colors.textPrimary
+                                  : context.colors.primary,
                               letterSpacing: isArabic ? 0 : 0.5,
                             ),
                           ),
@@ -138,14 +146,14 @@ class _SebhaViewState extends State<SebhaView> {
               // Center: Button takes the remaining space
               Expanded(
                 child: Center(
-                  child: BlocSelector<SebhaCubit, SebhaState, ({int counter, int? goal})>(
+                  child: BlocSelector<SebhaBloc, SebhaState, ({int counter, int? goal})>(
                     selector: (state) => (
                       counter: state.counter,
                       goal: state.customGoal,
                     ),
                     builder: (context, data) => SebhaButton(
                       key: AppTourKeys.sebhaButtonKey,
-                      onPressed: context.read<SebhaCubit>().increment,
+                      onPressed: context.read<SebhaBloc>().increment,
                       counter: data.counter,
                       goal: data.goal,
                     ),
@@ -157,7 +165,7 @@ class _SebhaViewState extends State<SebhaView> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: SebhaControls(
-                  onReset: context.read<SebhaCubit>().reset,
+                  onReset: context.read<SebhaBloc>().reset,
                   onSetGoal: () => unawaited(_showGoalDialog(context)),
                 ),
               ),
@@ -182,7 +190,7 @@ class _SebhaViewState extends State<SebhaView> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.read<SebhaCubit>().reset();
+              context.read<SebhaBloc>().reset();
             },
             child: Text(l10n.resetTasbeh),
           ),
@@ -212,7 +220,7 @@ class _SebhaViewState extends State<SebhaView> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.read<SebhaCubit>().setGoal(null);
+              context.read<SebhaBloc>().setGoal(null);
             },
             child: Text(l10n.clear),
           ),
@@ -221,7 +229,7 @@ class _SebhaViewState extends State<SebhaView> {
               if (controller.text.isNotEmpty) {
                 final value = int.tryParse(controller.text);
                 if (value != null && value > 0) {
-                  context.read<SebhaCubit>().setGoal(value);
+                  context.read<SebhaBloc>().setGoal(value);
                 }
               }
               Navigator.pop(context);
@@ -246,7 +254,7 @@ class _SebhaViewState extends State<SebhaView> {
     );
 
     if (result != null && context.mounted) {
-      await context.read<SebhaCubit>().addCustomZikr(result);
+      await context.read<SebhaBloc>().addCustomZikr(result);
     }
   }
 
@@ -260,7 +268,7 @@ class _SebhaViewState extends State<SebhaView> {
     );
 
     if (result != null && context.mounted) {
-      await context.read<SebhaCubit>().editCustomZikr(result);
+      await context.read<SebhaBloc>().editCustomZikr(result);
     }
   }
 
@@ -290,7 +298,7 @@ class _SebhaViewState extends State<SebhaView> {
     );
 
     if ((confirmed ?? false) && context.mounted) {
-      await context.read<SebhaCubit>().deleteCustomZikr(zikr.id);
+      await context.read<SebhaBloc>().deleteCustomZikr(zikr.id);
     }
   }
 

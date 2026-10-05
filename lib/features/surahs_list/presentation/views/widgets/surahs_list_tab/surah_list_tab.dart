@@ -56,7 +56,7 @@ class _SurahListTabState extends State<SurahListTab> {
 
   void _onSearchChanged(String value) {
     unawaited(
-      context.read<SurahListCubit>().searchInQuran(
+      context.read<SurahListBloc>().searchInQuran(
             value,
             partial: !exactSearchNotifier.value,
           ),
@@ -101,14 +101,14 @@ class _SurahListTabState extends State<SurahListTab> {
       ),
     );
     if (mounted) {
-      await context.read<LastPlayedCubit>().initialize();
+      await context.read<LastPlayedBloc>().initialize();
     }
   }
 
   @override
   Widget build(BuildContext context) => Scrollbar(
     controller: _scrollController,
-    child: BlocBuilder<SurahListCubit, SurahsListState>(
+    child: BlocBuilder<SurahListBloc, SurahsListState>(
       builder: (context, state) {
         final currentViewType = widget.forceViewType ?? state.currentViewType;
         return CustomScrollView(

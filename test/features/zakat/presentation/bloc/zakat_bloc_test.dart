@@ -17,19 +17,19 @@ class FakeZakatRepositoryFailure implements ZakatRepository {
 }
 
 void main() {
-  group('ZakatCubit Tests', () {
+  group('ZakatBloc Tests', () {
     test('initial state has default status initial', () {
-      final cubit = ZakatCubit(repository: FakeZakatRepositorySuccess());
-      expect(cubit.state.status, ZakatRequestStatus.initial);
-      expect(cubit.state.goldPricePerGram, 0.0);
+      final bloc = ZakatBloc(repository: FakeZakatRepositorySuccess());
+      expect(bloc.state.status, ZakatRequestStatus.initial);
+      expect(bloc.state.goldPricePerGram, 0.0);
     });
 
     test('loadGoldPrice emits loading then success on repository success', () async {
-      final cubit = ZakatCubit(repository: FakeZakatRepositorySuccess());
+      final bloc = ZakatBloc(repository: FakeZakatRepositorySuccess());
 
       unawaited(
         expectLater(
-          cubit.stream,
+          bloc.stream,
           emitsInOrder([
             const ZakatState(status: ZakatRequestStatus.loading),
             const ZakatState(status: ZakatRequestStatus.success, goldPricePerGram: 3500.0),
@@ -37,15 +37,15 @@ void main() {
         ),
       );
 
-      await cubit.loadGoldPrice();
+      await bloc.loadGoldPrice();
     });
 
     test('loadGoldPrice emits loading then error on repository failure', () async {
-      final cubit = ZakatCubit(repository: FakeZakatRepositoryFailure());
+      final bloc = ZakatBloc(repository: FakeZakatRepositoryFailure());
 
       unawaited(
         expectLater(
-          cubit.stream,
+          bloc.stream,
           emitsInOrder([
             const ZakatState(status: ZakatRequestStatus.loading),
             const ZakatState(status: ZakatRequestStatus.error, errorMessage: 'Network error'),
@@ -53,20 +53,20 @@ void main() {
         ),
       );
 
-      await cubit.loadGoldPrice();
+      await bloc.loadGoldPrice();
     });
 
     test('setManualGoldPrice emits success with custom gold price', () async {
-      final cubit = ZakatCubit(repository: FakeZakatRepositorySuccess());
+      final bloc = ZakatBloc(repository: FakeZakatRepositorySuccess());
 
       unawaited(
         expectLater(
-          cubit.stream,
+          bloc.stream,
           emits(const ZakatState(status: ZakatRequestStatus.success, goldPricePerGram: 4000.0)),
         ),
       );
 
-      cubit.setManualGoldPrice(4000.0);
+      bloc.setManualGoldPrice(4000.0);
     });
   });
 }

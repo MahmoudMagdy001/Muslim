@@ -56,7 +56,7 @@ class QiblahErrorWidget extends StatelessWidget {
             ),
             SizedBox(height: 28.h),
             FilledButton.icon(
-              onPressed: () => context.read<QiblahCubit>().init(),
+              onPressed: () => context.read<QiblahBloc>().init(),
               icon: Icon(Icons.refresh_rounded, size: 18.r),
               label: Text(l10n.retry),
               style: FilledButton.styleFrom(

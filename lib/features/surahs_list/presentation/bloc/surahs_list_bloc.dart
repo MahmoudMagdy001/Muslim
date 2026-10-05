@@ -197,5 +197,3 @@ class SurahListBloc extends Bloc<SurahsListEvent, SurahsListState> {
     return super.close();
   }
 }
-
-typedef SurahListCubit = SurahListBloc;

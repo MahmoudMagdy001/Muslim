@@ -40,8 +40,20 @@ class AzkarRepositoryImpl implements AzkarRepository {
     String url,
   ) async {
     try {
+      // 1. Try local bundled assets / local cache first for instant offline access
+      final localJson = await _localDataSource.getAzkarContent(url);
+      if (localJson != null && localJson.isNotEmpty) {
+        final data = localJson.values.first as List<dynamic>;
+        final result = data
+            .map((e) => AzkarContentModel.fromJson(e as Map<String, dynamic>).toEntity())
+            .toList();
+        return Right(result);
+      }
+
+      // 2. Fallback to remote data source
       final json = await _remoteDataSource.fetchAzkarContent(url);
       if (json.isNotEmpty) {
+        await _localDataSource.cacheAzkarContent(url, json);
         final data = json.values.first as List<dynamic>;
         final result = data
             .map((e) => AzkarContentModel.fromJson(e as Map<String, dynamic>).toEntity())

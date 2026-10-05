@@ -8,14 +8,14 @@ class HadithCardHeader extends StatelessWidget {
   const HadithCardHeader({
     required this.heading,
     required this.hadithId,
-    required this.cubit,
+    required this.bloc,
     required this.onBookmarkPressed,
     super.key,
   });
 
   final String heading;
   final String hadithId;
-  final HadithCubit cubit;
+  final HadithBloc bloc;
   final VoidCallback onBookmarkPressed;
 
   @override
@@ -31,8 +31,8 @@ class HadithCardHeader extends StatelessWidget {
           ),
         ),
       ),
-      BlocSelector<HadithCubit, HadithState, bool>(
-        bloc: cubit,
+      BlocSelector<HadithBloc, HadithState, bool>(
+        bloc: bloc,
         selector: (state) => state.savedHadithIds.contains(hadithId),
         builder: (context, isSaved) => IconButton(
           icon: Icon(

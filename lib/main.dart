@@ -45,25 +45,25 @@ Future<void> main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => getIt<PrayerTimesCubit>()..locationGranted = locationGranted,
+            create: (_) => getIt<PrayerTimesBloc>()..locationGranted = locationGranted,
           ),
           BlocProvider(create: (_) {
-            final cubit = getIt<FontSizeCubit>();
-            unawaited(cubit.setFontSize(initialFontSize));
-            return cubit;
+            final bloc = getIt<FontSizeBloc>();
+            unawaited(bloc.setFontSize(initialFontSize));
+            return bloc;
           }),
           BlocProvider(create: (_) {
-            final cubit = getIt<ThemeCubit>();
-            unawaited(cubit.setThemeMode(initialMode));
-            return cubit;
+            final bloc = getIt<ThemeBloc>();
+            unawaited(bloc.setThemeMode(initialMode));
+            return bloc;
           }),
           BlocProvider(create: (_) {
-            final cubit = getIt<LanguageCubit>();
-            unawaited(cubit.changeLanguage(initialLocale));
-            return cubit;
+            final bloc = getIt<LanguageBloc>();
+            unawaited(bloc.changeLanguage(initialLocale));
+            return bloc;
           }),
-          BlocProvider(create: (_) => getIt<ReciterCubit>()),
-          BlocProvider(create: (_) => getIt<BookmarksCubit>()),
+          BlocProvider(create: (_) => getIt<ReciterBloc>()),
+          BlocProvider(create: (_) => getIt<BookmarksBloc>()),
         ],
         child: const AppContent(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -79,11 +79,15 @@ Future<void> main() async {
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
       // Request permissions asynchronously post-frame if not already granted
-      final newlyGranted = await requestAllPermissions();
+      final isLocationGrantedNow = await requestAllPermissions();
 
-      final navContext = navigatorKey.currentContext;
-      if (navContext != null && navContext.mounted && newlyGranted && !locationGranted) {
-        unawaited(navContext.read<PrayerTimesCubit>().refreshPrayerTimes());
+      // Only refresh prayer times if location permission was NOT granted initially,
+      // but was newly granted after user interaction in this session.
+      if (isLocationGrantedNow && !locationGranted) {
+        final navContext = navigatorKey.currentContext;
+        if (navContext != null && navContext.mounted) {
+          unawaited(navContext.read<PrayerTimesBloc>().refreshPrayerTimes());
+        }
       }
 
       final initializer = AppInitializer(prefs);

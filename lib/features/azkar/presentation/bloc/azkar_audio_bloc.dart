@@ -66,5 +66,3 @@ class AzkarAudioBloc extends Bloc<AzkarAudioEvent, AzkarAudioState> {
     return super.close();
   }
 }
-
-typedef AzkarAudioCubit = AzkarAudioBloc;

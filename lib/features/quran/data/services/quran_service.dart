@@ -262,12 +262,30 @@ class QuranService {
     );
   }
 
+  Future<void> saveLastPlayed({
+    required int surah,
+    required int verse,
+    String? reciter,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final activeReciter = reciter ?? prefs.getString('lastReciter') ?? _currentReciter ?? 'ar.alafasy';
+    await prefs.setInt('lastSurah', surah);
+    await prefs.setInt('lastVerse', verse);
+    await prefs.setString('lastReciter', activeReciter);
+
+    _lastPlayedController.add({
+      'surah': surah,
+      'verse': verse,
+      'reciter': activeReciter,
+    });
+  }
+
   Future<Map<String, dynamic>?> getLastPlayed() async {
     final prefs = await SharedPreferences.getInstance();
     final surah = prefs.getInt('lastSurah');
     final verse = prefs.getInt('lastVerse');
-    final reciter = prefs.getString('lastReciter');
-    if (surah == null || verse == null || reciter == null) return null;
+    final reciter = prefs.getString('lastReciter') ?? _currentReciter ?? 'ar.alafasy';
+    if (surah == null || verse == null) return null;
 
     return {'surah': surah, 'verse': verse, 'reciter': reciter};
   }

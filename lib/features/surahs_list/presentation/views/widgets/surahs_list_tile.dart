@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/format_helper.dart';
 import 'package:muslim/features/surahs_list/data/models/surahs_list_model.dart';
+import 'package:quran/quran.dart' as quran;
 
+/// Modern Islamic Luxury Tile for presenting a Surah in the list
 class SurahListTile extends StatelessWidget {
   const SurahListTile({
     required this.surah,
@@ -23,6 +26,8 @@ class SurahListTile extends StatelessWidget {
     final isMeccan = surah.locationArabic.contains('مك') ||
         surah.locationArabic.toLowerCase().contains('makk');
 
+    final pageNumber = quran.getPageNumber(surah.number, 1);
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 4.h, horizontal: 10.w),
       decoration: BoxDecoration(
@@ -34,8 +39,8 @@ class SurahListTile extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: colors.isDark ? 0.2 : 0.03),
-            blurRadius: 6,
+            color: Colors.black.withValues(alpha: colors.isDark ? 0.25 : 0.03),
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -46,7 +51,7 @@ class SurahListTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: context.radius.mdBorder,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
             child: Row(
               children: [
                 // Surah Number Emblem with Islamic star marker
@@ -62,15 +67,16 @@ class SurahListTile extends StatelessWidget {
                         height: 44.r,
                         cacheWidth: 132,
                         cacheHeight: 132,
+                        color: colors.secondary,
                       ),
                       Text(
                         isArabic
                             ? convertToArabicNumbers(surah.number.toString())
                             : surah.number.toString(),
-                        style: context.typography.titleSmall.copyWith(
+                        style: GoogleFonts.cairo(
                           color: colors.primary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12.sp,
+                          fontSize: 11.5.sp,
                         ),
                       ),
                     ],
@@ -78,17 +84,19 @@ class SurahListTile extends StatelessWidget {
                 ),
                 SizedBox(width: 14.w),
 
-                // Surah Name and Info
+                // Surah Name and Metadata
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        surah.surahName,
-                        style: context.typography.titleMedium.copyWith(
-                          color: colors.textPrimary,
+                        isArabic ? 'سُورَةُ ${surah.surahName}' : 'Surah ${surah.surahName}',
+                        style: GoogleFonts.amiri(
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
+                          color: colors.textPrimary,
+                          height: 1.3,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -96,31 +104,35 @@ class SurahListTile extends StatelessWidget {
                       SizedBox(height: 3.h),
                       Row(
                         children: [
+                          // Meccan / Medinan chip
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 6.w,
-                              vertical: 1.5.h,
+                              horizontal: 7.w,
+                              vertical: 2.h,
                             ),
                             decoration: BoxDecoration(
                               color: isMeccan
                                   ? colors.secondary.withValues(alpha: 0.12)
                                   : colors.primary.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(4.r),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               surah.locationArabic,
-                              style: context.typography.caption.copyWith(
+                              style: GoogleFonts.cairo(
                                 color: isMeccan ? colors.secondary : colors.primary,
                                 fontSize: 10.5.sp,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                           SizedBox(width: 8.w),
+
+                          // Ayah count
                           Text(
                             l10n.versesCount(surah.ayahCount),
                             style: context.typography.bodySmall.copyWith(
                               color: colors.textSecondary,
+                              fontSize: 11.sp,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -131,10 +143,34 @@ class SurahListTile extends StatelessWidget {
                   ),
                 ),
 
+                // Page number chip & arrow
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: colors.surfaceVariant.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: colors.border,
+                      width: 0.6,
+                    ),
+                  ),
+                  child: Text(
+                    isArabic
+                        ? 'ص ${convertToArabicNumbers(pageNumber.toString())}'
+                        : 'p. $pageNumber',
+                    style: GoogleFonts.cairo(
+                      fontSize: 10.5.sp,
+                      color: colors.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 6.w),
+
                 Icon(
                   Icons.arrow_forward_ios_rounded,
-                  color: colors.textSecondary.withValues(alpha: 0.5),
-                  size: 14.r,
+                  color: colors.textSecondary.withValues(alpha: 0.4),
+                  size: 13.r,
                 ),
               ],
             ),

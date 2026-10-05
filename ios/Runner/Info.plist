@@ -72,5 +72,12 @@
 		<string>audio</string>
 		<string>fetch</string>
 	</array>
+
+	<!-- App Transport Security for HTTP APIs -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

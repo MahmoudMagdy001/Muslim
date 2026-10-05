@@ -17,51 +17,63 @@ abstract class PrayerNotificationLocalDataSource {
 
 class PrayerNotificationLocalDataSourceImpl
     implements PrayerNotificationLocalDataSource {
+  bool _isScheduling = false;
+
   @override
   Future<void> scheduleAll(
     List<LocalPrayerTimes> days,
     PrayerNotificationSettings settings,
   ) async {
-    final now = DateTime.now();
-    await cancelAll();
-    logInfo('تم مسح أي إشعارات قديمة...');
-
-    var totalScheduled = 0;
-
-    for (final times in days) {
-      final date = times.date;
-
-      logInfo('📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}');
-
-      for (final prayer in PrayerType.values) {
-        // Skip prayers that don't have an azan (e.g., sunrise)
-        if (!prayer.hasAzan) continue;
-
-        if (!settings.isEnabled(prayer)) {
-          logInfo(
-            '⏭️ تخطي ${prayer.arabicName} — الإشعار معطل بواسطة المستخدم',
-          );
-          continue;
-        }
-
-        final timeStr = times.timeForPrayer(prayer);
-        final prayerDateTimeObj = times.dateTimeForPrayer(prayer);
-        final scheduled = await _scheduleSinglePrayer(
-          prayer,
-          timeStr,
-          date,
-          now,
-          prayerDateTimeObj,
-        );
-        if (scheduled) totalScheduled++;
-      }
+    if (_isScheduling) {
+      logWarning('⚠️ جدولة الإشعارات جارية بالفعل، تم تجاهل الطلب المكرر');
+      return;
     }
+    _isScheduling = true;
 
-    logSuccess('تم جدولة إجمالي $totalScheduled إشعار بنجاح لأيام متعددة!');
+    try {
+      final now = DateTime.now();
+      await cancelAll();
+      logInfo('تم مسح أي إشعارات قديمة...');
 
-    // Schedule a fallback update reminder if nothing was scheduled
-    if (totalScheduled == 0) {
-      await _scheduleUpdateNotification(now);
+      var totalScheduled = 0;
+
+      for (final times in days) {
+        final date = times.date;
+
+        logInfo('📅 جدولة صلوات يوم: ${date.toLocal().toString().split(' ')[0]}');
+
+        for (final prayer in PrayerType.values) {
+          // Skip prayers that don't have an azan (e.g., sunrise)
+          if (!prayer.hasAzan) continue;
+
+          if (!settings.isEnabled(prayer)) {
+            logInfo(
+              '⏭️ تخطي ${prayer.arabicName} — الإشعار معطل بواسطة المستخدم',
+            );
+            continue;
+          }
+
+          final timeStr = times.timeForPrayer(prayer);
+          final prayerDateTimeObj = times.dateTimeForPrayer(prayer);
+          final scheduled = await _scheduleSinglePrayer(
+            prayer,
+            timeStr,
+            date,
+            now,
+            prayerDateTimeObj,
+          );
+          if (scheduled) totalScheduled++;
+        }
+      }
+
+      logSuccess('تم جدولة إجمالي $totalScheduled إشعار بنجاح لأيام متعددة!');
+
+      // Schedule a fallback update reminder if nothing was scheduled
+      if (totalScheduled == 0) {
+        await _scheduleUpdateNotification(now);
+      }
+    } finally {
+      _isScheduling = false;
     }
   }
 

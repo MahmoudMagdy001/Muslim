@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/core/utils/overmark_helper.dart';
@@ -34,9 +33,9 @@ class _AzkarViewState extends State<AzkarView> {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (context) {
-      final cubit = getIt<AzkarCubit>();
-      unawaited(cubit.loadAzkar());
-      return cubit;
+      final bloc = getIt<AzkarBloc>();
+      unawaited(bloc.loadAzkar());
+      return bloc;
     },
     child: Scaffold(
       appBar: widget.showAppBar
@@ -55,55 +54,78 @@ class _AzkarViewState extends State<AzkarView> {
               ],
             )
           : null,
-      body: Builder(
-        builder: (context) => InternetStateManager(
-          noInternetScreen: const NoInternetScreen(),
-          onRestoreInternetConnection: () =>
-              context.read<AzkarCubit>().loadAzkar(),
-          child: BlocSelector<AzkarCubit, AzkarState, AzkarState>(
-            selector: (state) => state,
-            builder: (context, state) {
-              if (state.status == RequestStatus.loading) {
-                return Center(
-                  child: CustomLoadingIndicator(
-                    text: context.l10n.azkarLoadingText,
-                  ),
-                );
-              }
+      body: BlocSelector<AzkarBloc, AzkarState, AzkarState>(
+        selector: (state) => state,
+        builder: (context, state) {
+          if (state.status == RequestStatus.loading) {
+            return Center(
+              child: CustomLoadingIndicator(
+                text: context.l10n.azkarLoadingText,
+              ),
+            );
+          }
 
-              if (state.status == RequestStatus.failure) {
-                return Center(
-                  child: Text(
-                    state.message ?? context.l10n.azkarError,
-                    style: context.textTheme.bodyLarge,
-                  ),
-                );
-              }
+          if (state.status == RequestStatus.failure) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      state.message ?? context.l10n.azkarError,
+                      style: context.typography.body.copyWith(
+                        color: context.colors.textPrimary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16.h),
+                    ElevatedButton(
+                      onPressed: () => context.read<AzkarBloc>().loadAzkar(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.colors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: context.radius.mdBorder,
+                        ),
+                      ),
+                      child: Text(context.l10n.retry),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
 
-              if (state.groupedAzkar.isEmpty) {
-                return Center(child: Text(context.l10n.azkarError));
-              }
+          if (state.groupedAzkar.isEmpty) {
+            return Center(
+              child: Text(
+                context.l10n.azkarError,
+                style: context.typography.body.copyWith(
+                  color: context.colors.textSecondary,
+                ),
+              ),
+            );
+          }
 
-              final categories = state.groupedAzkar.keys.toList();
+          final categories = state.groupedAzkar.keys.toList();
 
-              return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 12.h),
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  final azkar = state.groupedAzkar[category]!;
-                  return AzkarCategoryCard(
-                    category: category,
-                    count: azkar.length,
-                    index: index + 1,
-                    onTap: () {},
-                    items: azkar,
-                  );
-                },
+          return ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 12.h),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final azkar = state.groupedAzkar[category]!;
+              return AzkarCategoryCard(
+                category: category,
+                count: azkar.length,
+                index: index + 1,
+                onTap: () {},
+                items: azkar,
               );
             },
-          ),
-        ),
+          );
+        },
       ),
     ),
   );

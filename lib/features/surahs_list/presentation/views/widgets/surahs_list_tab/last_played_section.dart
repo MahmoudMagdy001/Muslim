@@ -21,7 +21,7 @@ class LastPlayedSection extends StatelessWidget {
         top: 12.toH,
       ),
       child:
-          BlocSelector<LastPlayedCubit, LastPlayedState, Map<String, dynamic>?>(
+          BlocSelector<LastPlayedBloc, LastPlayedState, Map<String, dynamic>?>(
             selector: (state) => state.lastPlayed,
             builder: (context, lastPlayed) {
               if (lastPlayed == null) return const SizedBox.shrink();

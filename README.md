@@ -112,7 +112,7 @@ Whether you're looking for high-quality Quran recitations, precise prayer timing
 | Category | Technology |
 | :--- | :--- |
 | **Framework** | [Flutter](https://flutter.dev/) v3.10+ |
-| **State Management** | [flutter_bloc](https://pub.dev/packages/flutter_bloc) (BLoC/Cubit) |
+| **State Management** | [flutter_bloc](https://pub.dev/packages/flutter_bloc) (BLoC) |
 | **Audio Engine** | [just_audio](https://pub.dev/packages/just_audio) + [audio_service](https://pub.dev/packages/audio_service) |
 | **Prayer Times** | [adhan](https://pub.dev/packages/adhan) + [hijri](https://pub.dev/packages/hijri) |
 | **Location & Qibla** | [geolocator](https://pub.dev/packages/geolocator) + [flutter_qiblah](https://pub.dev/packages/flutter_qiblah) |

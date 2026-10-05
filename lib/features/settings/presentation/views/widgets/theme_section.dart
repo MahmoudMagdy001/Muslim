@@ -17,7 +17,7 @@ class ThemeSection extends StatelessWidget {
   final ThemeData theme;
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
+  Widget build(BuildContext context) => BlocBuilder<ThemeBloc, ThemeState>(
     builder: (context, state) {
       final currentMode = state.themeMode;
 
@@ -38,7 +38,7 @@ class ThemeSection extends StatelessWidget {
         ),
         trailing: Text(title, style: theme.textTheme.bodySmall),
         onTap: () {
-          final cubit = context.read<ThemeCubit>();
+          final bloc = context.read<ThemeBloc>();
 
           unawaited(
             showCustomModalBottomSheet<void>(
@@ -64,7 +64,7 @@ class ThemeSection extends StatelessWidget {
                       groupValue: currentMode,
                       onChanged: (value) async {
                         if (value != null) {
-                          await cubit.setThemeMode(value);
+                          await bloc.setThemeMode(value);
                           if (context.mounted) {
                             Navigator.pop(context);
                           }

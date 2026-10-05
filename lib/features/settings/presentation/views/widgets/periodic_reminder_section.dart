@@ -23,9 +23,9 @@ class PeriodicReminderSection extends StatelessWidget {
     final l10n = context.l10n;
 
     return BlocProvider(
-      create: (_) => getIt<PeriodicReminderCubit>(),
+      create: (_) => getIt<PeriodicReminderBloc>(),
       child: Builder(
-        builder: (context) => BlocBuilder<PeriodicReminderCubit, PeriodicReminderState>(
+        builder: (context) => BlocBuilder<PeriodicReminderBloc, PeriodicReminderState>(
           builder: (context, state) => ListTile(
             leading: const Icon(Icons.timer_rounded),
             title: Text(
@@ -60,7 +60,7 @@ class PeriodicReminderSection extends StatelessWidget {
       await requestAllPermissions();
     }
     if (context.mounted) {
-      await context.read<PeriodicReminderCubit>().toggleEnabled(enabled: value);
+      await context.read<PeriodicReminderBloc>().toggleEnabled(enabled: value);
     }
   }
 
@@ -68,7 +68,7 @@ class PeriodicReminderSection extends StatelessWidget {
     BuildContext context,
     PeriodicReminderState state,
   ) {
-    final cubit = context.read<PeriodicReminderCubit>();
+    final bloc = context.read<PeriodicReminderBloc>();
     unawaited(
       showCustomModalBottomSheet<void>(
         context: context,
@@ -76,7 +76,7 @@ class PeriodicReminderSection extends StatelessWidget {
           theme: theme,
           currentInterval: state.intervalMinutes,
           onIntervalSelected: (minutes) async {
-            await cubit.setInterval(minutes);
+            await bloc.setInterval(minutes);
             if (modalContext.mounted) {
               Navigator.of(modalContext).pop();
             }

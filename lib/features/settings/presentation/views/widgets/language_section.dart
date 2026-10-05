@@ -20,7 +20,7 @@ class LanguageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocBuilder<LanguageCubit, LanguageState>(
+      BlocBuilder<LanguageBloc, LanguageState>(
         builder: (context, state) {
           final currentLocale = state.locale;
 
@@ -42,7 +42,7 @@ class LanguageSection extends StatelessWidget {
 
   void _showLanguageBottomSheet(BuildContext context, Locale currentLocale) {
     final theme = context.theme;
-    final cubit = context.read<LanguageCubit>();
+    final bloc = context.read<LanguageBloc>();
 
     unawaited(
       showCustomModalBottomSheet<void>(
@@ -63,7 +63,7 @@ class LanguageSection extends StatelessWidget {
             groupValue: currentLocale,
             onChanged: (value) async {
               if (value != null) {
-                await cubit.changeLanguage(value);
+                await bloc.changeLanguage(value);
                 if (context.mounted) {
                   Navigator.pop(context);
                 }
@@ -79,7 +79,7 @@ class LanguageSection extends StatelessWidget {
             groupValue: currentLocale,
             onChanged: (value) async {
               if (value != null) {
-                await cubit.changeLanguage(value);
+                await bloc.changeLanguage(value);
                 if (context.mounted) {
                   Navigator.pop(context);
                 }

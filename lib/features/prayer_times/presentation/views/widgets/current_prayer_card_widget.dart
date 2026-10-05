@@ -31,15 +31,20 @@ class CurrentPrayerCard extends StatelessWidget {
     final isArabic = locale.languageCode == 'ar';
 
     // ponytail: restrict rebuilds of outer widget to only status and prayer-time changes (avoid 1s ticks)
-    return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+    return BlocBuilder<PrayerTimesBloc, PrayerTimesState>(
       buildWhen: (previous, current) =>
           previous.status != current.status ||
           previous.localPrayerTimes != current.localPrayerTimes ||
+          previous.city != current.city ||
           previous.nextPrayer != current.nextPrayer ||
           previous.previousPrayerDateTime != current.previousPrayerDateTime,
       builder: (context, state) {
         final localPrayerTimes = state.localPrayerTimes;
         final next = state.nextPrayer;
+        final isLoading = state.status == RequestStatus.loading ||
+            state.status == RequestStatus.initial ||
+            state.city == null ||
+            localPrayerTimes == null;
 
         return ClipRRect(
           borderRadius: BorderRadius.vertical(
@@ -59,7 +64,7 @@ class CurrentPrayerCard extends StatelessWidget {
                   ),
                 ),
                 Skeletonizer(
-                  enabled: state.status == RequestStatus.loading,
+                  enabled: isLoading,
                   child: Column(
                     children: [
                       SizedBox(height: 8.toH),
@@ -233,7 +238,7 @@ class _CityText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocSelector<PrayerTimesCubit, PrayerTimesState, String?>(
+      BlocSelector<PrayerTimesBloc, PrayerTimesState, String?>(
         selector: (state) => state.city,
         builder: (context, city) => Text(
           city ?? '--------------',
@@ -248,7 +253,7 @@ class _NextPrayerName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocSelector<PrayerTimesCubit, PrayerTimesState, PrayerType?>(
+      BlocSelector<PrayerTimesBloc, PrayerTimesState, PrayerType?>(
         selector: (state) => state.nextPrayer,
         builder: (context, nextPrayer) => Text(
           nextPrayer?.localizedName(context.l10n) ?? '------',
@@ -267,7 +272,7 @@ class _TimeLeftText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    return BlocSelector<PrayerTimesCubit, PrayerTimesState, Duration?>(
+    return BlocSelector<PrayerTimesBloc, PrayerTimesState, Duration?>(
       selector: (state) => state.timeLeft,
       builder: (context, timeLeft) => Text(
         formatTimeLeft(
@@ -290,7 +295,7 @@ class _RefreshButton extends StatelessWidget {
       await HapticFeedback.heavyImpact();
       if (context.mounted) {
         final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-        await context.read<PrayerTimesCubit>().refreshPrayerTimes(
+        await context.read<PrayerTimesBloc>().refreshPrayerTimes(
           isArabic: isArabic,
         );
       }
@@ -345,7 +350,7 @@ class _PrayerProgressArc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+      BlocBuilder<PrayerTimesBloc, PrayerTimesState>(
         buildWhen: (previous, current) =>
             previous.timeLeft != current.timeLeft ||
             previous.previousPrayerDateTime != current.previousPrayerDateTime ||

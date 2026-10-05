@@ -34,9 +34,9 @@ class _QiblahViewState extends State<QiblahView> {
   @override
   Widget build(BuildContext context) => BlocProvider(
     create: (_) {
-      final cubit = getIt<QiblahCubit>();
-      unawaited(cubit.init());
-      return cubit;
+      final bloc = getIt<QiblahBloc>();
+      unawaited(bloc.init());
+      return bloc;
     },
     child: Scaffold(
       appBar: AppBar(
@@ -53,7 +53,7 @@ class _QiblahViewState extends State<QiblahView> {
       ),
       body: KeyedSubtree(
         key: AppTourKeys.qiblahCompassKey,
-        child: BlocBuilder<QiblahCubit, QiblahState>(
+        child: BlocBuilder<QiblahBloc, QiblahState>(
           builder: (context, state) {
             if (state.status == QiblahStatus.error) {
               return QiblahErrorWidget(message: state.message ?? '');

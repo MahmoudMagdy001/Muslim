@@ -186,5 +186,3 @@ class SebhaBloc extends Bloc<SebhaEvent, SebhaState> {
   Future<void> editCustomZikr(ZikrEntity zikr) async => add(SebhaEvent.editCustomZikr(zikr));
   Future<void> deleteCustomZikr(String id) async => add(SebhaEvent.deleteCustomZikr(id));
 }
-
-typedef SebhaCubit = SebhaBloc;

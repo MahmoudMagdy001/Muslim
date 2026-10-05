@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:adhan/adhan.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:geolocator/geolocator.dart';
+import 'package:internet_state_manager/internet_state_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
@@ -47,8 +49,14 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   PrayerTimesLocalDataSourceImpl({
     SettingsService? settingsService,
     LocationService? locationService,
-  }) : _settingsService = settingsService ?? getIt<SettingsService>(),
-       _locationService = locationService ?? getIt<LocationService>();
+  }) : _settingsService = settingsService ??
+            (getIt.isRegistered<SettingsService>()
+                ? getIt<SettingsService>()
+                : SettingsService()),
+       _locationService = locationService ??
+            (getIt.isRegistered<LocationService>()
+                ? getIt<LocationService>()
+                : LocationService());
 
   final SettingsService _settingsService;
   final LocationService _locationService;
@@ -57,6 +65,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   static const String _longitudeKey = 'lng';
   static const String _lastUpdatedKey = 'last_updated';
   static const String _cityNameKey = 'city_name';
+
+  static final Coordinates _cairoCoordinates = Coordinates(30.0444, 31.2357);
 
   final DateFormat _timeFormatter = DateFormat.Hm();
 
@@ -93,7 +103,6 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         useLocation: useLocation,
         coordinates: coordinates,
       );
-      if (resolved == null) return await _getDefaultPrayerTimes();
 
       return await _calculatePrayerTimes(
         resolved.coordinates,
@@ -101,7 +110,7 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       );
     } on Object catch (error) {
       logError('خطأ في الحصول على مواقيت الصلاة', error);
-      return _getDefaultPrayerTimes();
+      return _getDefaultPrayerTimes(isArabic: isArabic);
     }
   }
 
@@ -117,7 +126,6 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         useLocation: useLocation,
         coordinates: coordinates,
       );
-      if (resolved == null) return [await _getDefaultPrayerTimes()];
 
       return await _calculateMonthlyPrayerTimes(
         resolved.coordinates,
@@ -125,49 +133,170 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       );
     } on Object catch (error) {
       logError('خطأ في الحصول على مواقيت الصلاة', error);
-      return [await _getDefaultPrayerTimes()];
+      return [await _getDefaultPrayerTimes(isArabic: isArabic)];
     }
   }
 
-  /// ponytail: cache-first — resolves coordinates and the best-known city
-  /// name immediately, then refreshes the city name in the background.
-  Future<_ResolvedLocation?> _resolveCoordinatesAndCityName({
+  /// Resolves location and city name according to requirements:
+  /// 1. If internet is available: wait for city name to load via geocoding.
+  /// 2. If no internet: fetch from cache.
+  /// 3. If cache is empty: fallback to Cairo.
+  Future<_ResolvedLocation> _resolveCoordinatesAndCityName({
     required bool isArabic,
     required bool useLocation,
     Coordinates? coordinates,
   }) async {
     final prefs = await SharedPreferences.getInstance();
 
-    if (useLocation) {
-      final coords = coordinates ?? await _getCachedOrFreshCoordinates();
-      if (coords == null) return null;
+    final hasInternet = await _hasInternetConnection();
 
-      final cachedCity = prefs.getString(_cityNameKey);
-
-      // Fire-and-forget: update city name in background without blocking
-      unawaited(_refreshCityNameIfNeeded(coords, isArabic, prefs));
-
-      return _ResolvedLocation(coordinates: coords, cityName: cachedCity);
+    // 1. If no internet: fetch from cache, else fallback to Cairo
+    if (!hasInternet) {
+      logInfo('📶 لا يوجد اتصال بالإنترنت — محاولة القراءة من الكاش...');
+      final cached = await _getCachedLocation(prefs, isArabic);
+      if (cached != null) {
+        logSuccess('📦 تم استرجاع مواقيت الصلاة والمدينة من الكاش: ${cached.cityName}');
+        return cached;
+      }
+      logWarning('⚠️ لا يوجد بيانات في الكاش ولا يوجد إنترنت — الرجوع للقاهرة');
+      return _getCairoLocation(isArabic);
     }
 
-    // No location permission — try cached coordinates + cached city name
-    // so the user sees their real last-known city instead of "القاهرة"
-    final cached = await getCachedCoordinates();
+    // 2. If internet is available: resolve coordinates and await city name geocoding
+    var targetCoords = coordinates;
+
+    if (targetCoords == null && useLocation) {
+      if (await _settingsService.getAutoLocationEnabled()) {
+        try {
+          final position = await _getCurrentPosition();
+          if (position != null) {
+            targetCoords = Coordinates(position.latitude, position.longitude);
+          }
+        } on Object catch (e) {
+          logWarning('تعذر تحديد موقع GPS: $e');
+        }
+      }
+    }
+
+    // If we have coordinates, resolve city name with geocoding
+    if (targetCoords != null) {
+      String? cityName;
+      try {
+        cityName = await _geocodeCityName(targetCoords, isArabic);
+      } on Object catch (e) {
+        logWarning('فشل geocoding أثناء توفر الإنترنت: $e');
+      }
+
+      // If geocoding didn't return a city, retain previously cached city or localized fallback
+      final cachedCity = (await _getCachedLocation(prefs, isArabic))?.cityName;
+      final effectiveCity = (cityName != null && cityName.trim().isNotEmpty)
+          ? cityName.trim()
+          : (cachedCity != null && cachedCity.isNotEmpty)
+              ? cachedCity
+              : (isArabic ? 'موقعي الحالي' : 'Current Location');
+
+      await _cacheCoordinates(prefs, targetCoords.latitude, targetCoords.longitude);
+      if (cityName != null && cityName.trim().isNotEmpty) {
+        await prefs.setString(_cityNameKey, cityName.trim());
+        await prefs.setString('${_cityNameKey}_${isArabic ? "ar" : "en"}', cityName.trim());
+      }
+
+      logSuccess('🏙️ تم اعتماد إحداثيات وموقع الصلاة: $effectiveCity (${targetCoords.latitude}, ${targetCoords.longitude})');
+      return _ResolvedLocation(coordinates: targetCoords, cityName: effectiveCity);
+    }
+
+    // 3. If GPS or geocoding failed: fallback to cache, else Cairo
+    final cached = await _getCachedLocation(prefs, isArabic);
     if (cached != null) {
-      final cachedCity = prefs.getString(_cityNameKey);
-      return _ResolvedLocation(coordinates: cached, cityName: cachedCity);
+      logInfo('📦 الرجوع إلى الكاش لعدم اكتمال بيانات الموقع الجديد: ${cached.cityName}');
+      return cached;
     }
 
+    logWarning('⚠️ تعذر تحديد الموقع والكاش فارغ — الرجوع إلى القاهرة');
+    return _getCairoLocation(isArabic);
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com')
+          .timeout(const Duration(seconds: 3));
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on Object catch (_) {}
+
+    try {
+      return await InternetStateManagerInitializer.checkConnection()
+          .timeout(const Duration(seconds: 2));
+    } on Object catch (_) {
+      return false;
+    }
+  }
+
+  Future<String?> _geocodeCityName(Coordinates coords, bool isArabic) async {
+    try {
+      final geocoding = geo.Geocoding();
+      final placemarks = await geocoding.placemarkFromCoordinates(
+        coords.latitude,
+        coords.longitude,
+        locale: Locale(isArabic ? 'ar' : 'en'),
+      ).timeout(const Duration(seconds: 10));
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        final city = (place.locality?.isNotEmpty ?? false)
+            ? place.locality
+            : (place.subAdministrativeArea?.isNotEmpty ?? false)
+                ? place.subAdministrativeArea
+                : (place.administrativeArea?.isNotEmpty ?? false)
+                    ? place.administrativeArea
+                    : null;
+        if (city != null && city.trim().isNotEmpty) {
+          return city.trim();
+        }
+      }
+    } on Object catch (e) {
+      logWarning('فشل _geocodeCityName: $e');
+    }
     return null;
   }
+
+  Future<_ResolvedLocation?> _getCachedLocation(
+    SharedPreferences prefs,
+    bool isArabic,
+  ) async {
+    final lat = prefs.getDouble(_latitudeKey);
+    final lng = prefs.getDouble(_longitudeKey);
+    final cityLocaleKey = '${_cityNameKey}_${isArabic ? "ar" : "en"}';
+    final city = prefs.getString(cityLocaleKey) ?? prefs.getString(_cityNameKey);
+
+    if (lat != null && lng != null && city != null && city.trim().isNotEmpty) {
+      return _ResolvedLocation(
+        coordinates: Coordinates(lat, lng),
+        cityName: city.trim(),
+      );
+    }
+    return null;
+  }
+
+  _ResolvedLocation _getCairoLocation(bool isArabic) => _ResolvedLocation(
+    coordinates: _cairoCoordinates,
+    cityName: isArabic ? 'القاهرة' : 'Cairo',
+  );
 
   @override
   Future<LocalPrayerTimes> getPrayerTimesForDate(
     Coordinates coordinates,
     DateTime date, {
     String? cityName,
-  }) async =>
-      _calculatePrayerTimes(coordinates, date: date, cityName: cityName);
+  }) async {
+    var city = cityName;
+    if (city == null) {
+      final prefs = await SharedPreferences.getInstance();
+      city = prefs.getString(_cityNameKey) ?? 'القاهرة';
+    }
+    return _calculatePrayerTimes(coordinates, date: date, cityName: city);
+  }
 
   Future<LocalPrayerTimes> _calculatePrayerTimes(
     Coordinates coordinates, {
@@ -183,7 +312,6 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       calculationParams,
     );
 
-    // Ensure prayer times are in local timezone to avoid DST issues
     final fajrLocal = prayerTimes.fajr.toLocal();
     final sunriseLocal = prayerTimes.sunrise.toLocal();
     final dhuhrLocal = prayerTimes.dhuhr.toLocal();
@@ -198,9 +326,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       asr: _formatTime(asrLocal),
       maghrib: _formatTime(maghribLocal),
       isha: _formatTime(ishaLocal),
-      city: cityName ?? 'غير معروف',
+      city: cityName ?? 'القاهرة',
       date: targetDate,
-      // Store DateTime objects for accurate timezone-aware scheduling
       fajrDateTime: fajrLocal,
       sunriseDateTime: sunriseLocal,
       dhuhrDateTime: dhuhrLocal,
@@ -228,7 +355,6 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
         calculationParams,
       );
 
-      // Ensure prayer times are in local timezone to avoid DST issues
       final fajrLocal = prayerTimes.fajr.toLocal();
       final sunriseLocal = prayerTimes.sunrise.toLocal();
       final dhuhrLocal = prayerTimes.dhuhr.toLocal();
@@ -244,9 +370,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
           asr: _formatTime(asrLocal),
           maghrib: _formatTime(maghribLocal),
           isha: _formatTime(ishaLocal),
-          city: cityName ?? 'غير معروف',
+          city: cityName ?? 'القاهرة',
           date: date,
-          // Store DateTime objects for accurate timezone-aware scheduling
           fajrDateTime: fajrLocal,
           sunriseDateTime: sunriseLocal,
           dhuhrDateTime: dhuhrLocal,
@@ -266,22 +391,15 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
   String _formatTime(DateTime dateTime) =>
       _timeFormatter.format(dateTime.toLocal());
 
-  /// Fallback used when no location is available or an error occurs.
-  /// Deliberately NOT persisted to the location cache: doing so would
-  /// silently overwrite a previously-known real location and cause
-  /// subsequent cache-first reads to serve Cairo times instead of the
-  /// user's actual last-known location.
-  Future<LocalPrayerTimes> _getDefaultPrayerTimes() async {
-    final cairoCoordinates = Coordinates(30.0444, 31.2357);
+  Future<LocalPrayerTimes> _getDefaultPrayerTimes({bool isArabic = true}) async {
     final calculationParams = _getCalculationParameters();
     final now = DateTime.now();
     final prayerTimes = PrayerTimes(
-      cairoCoordinates,
+      _cairoCoordinates,
       DateComponents.from(now),
       calculationParams,
     );
 
-    // Ensure prayer times are in local timezone to avoid DST issues
     final fajrLocal = prayerTimes.fajr.toLocal();
     final sunriseLocal = prayerTimes.sunrise.toLocal();
     final dhuhrLocal = prayerTimes.dhuhr.toLocal();
@@ -296,9 +414,8 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       asr: _formatTime(asrLocal),
       maghrib: _formatTime(maghribLocal),
       isha: _formatTime(ishaLocal),
-      city: 'القاهرة',
+      city: isArabic ? 'القاهرة' : 'Cairo',
       date: now,
-      // Store DateTime objects for accurate timezone-aware scheduling
       fajrDateTime: fajrLocal,
       sunriseDateTime: sunriseLocal,
       dhuhrDateTime: dhuhrLocal,
@@ -306,68 +423,6 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
       maghribDateTime: maghribLocal,
       ishaDateTime: ishaLocal,
     );
-  }
-
-  /// ponytail: cache-first — return cached coords instantly, then update GPS
-  /// in background. On first launch (nothing cached yet) we await a single
-  /// GPS fetch instead of firing it twice.
-  Future<Coordinates?> _getCachedOrFreshCoordinates() async {
-    final cached = await getCachedCoordinates();
-
-    if (cached != null) {
-      logInfo('📍 كاش فوري (Cached): ${cached.latitude}, ${cached.longitude}');
-      // Fire-and-forget GPS refresh so next launch gets fresh coords.
-      unawaited(_refreshGpsInBackground());
-      return cached;
-    }
-
-    // First launch only: nothing cached, so we must wait for a single GPS fix.
-    return _refreshGpsInBackground();
-  }
-
-  Future<Coordinates?> _refreshGpsInBackground() async {
-    if (!await _settingsService.getAutoLocationEnabled()) return null;
-    try {
-      final position = await _getCurrentPosition();
-      final prefs = await SharedPreferences.getInstance();
-      await _cacheCoordinates(prefs, position.latitude, position.longitude);
-      logSuccess(
-        '📍 GPS محدّث في الخلفية: ${position.latitude}, ${position.longitude}',
-      );
-      return Coordinates(position.latitude, position.longitude);
-    } on Object catch (e) {
-      logWarning('فشل GPS في الخلفية: $e');
-      return null;
-    }
-  }
-
-  /// Refreshes city name via geocoding in background and caches it for next launch.
-  Future<void> _refreshCityNameIfNeeded(
-    Coordinates coords,
-    bool isArabic,
-    SharedPreferences prefs,
-  ) async {
-    try {
-      // ponytail: Use Geocoding instance for compatibility with v5.0.0
-      final geocoding = geo.Geocoding();
-      final placemarks = await geocoding.placemarkFromCoordinates(
-        coords.latitude,
-        coords.longitude,
-        locale: Locale(isArabic ? 'ar' : 'en'),
-      );
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
-        final city = place.locality?.isNotEmpty ?? false
-            ? place.locality
-            : place.administrativeArea;
-        if (city != null) {
-          await prefs.setString(_cityNameKey, city);
-          logInfo('🏙️ تم تحديث اسم المدينة في الخلفية: $city');
-        }
-      }
-    } on Object catch (e) {
-      logWarning('فشل geocoding في الخلفية: $e');
-    }
   }
 
   @override
@@ -379,10 +434,16 @@ class PrayerTimesLocalDataSourceImpl implements PrayerTimesLocalDataSource {
     return Coordinates(lat, lng);
   }
 
-  Future<Position> _getCurrentPosition() async {
+  Future<Position?> _getCurrentPosition() async {
     final position = await _locationService.getCurrentLocate();
     if (position != null) return position;
-    return Geolocator.getCurrentPosition();
+
+    try {
+      final lastKnown = await _locationService.getLastKnownPosition();
+      if (lastKnown != null) return lastKnown;
+    } on Object catch (_) {}
+
+    return null;
   }
 
   Future<void> _cacheCoordinates(
@@ -400,5 +461,5 @@ class _ResolvedLocation {
   const _ResolvedLocation({required this.coordinates, required this.cityName});
 
   final Coordinates coordinates;
-  final String? cityName;
+  final String cityName;
 }

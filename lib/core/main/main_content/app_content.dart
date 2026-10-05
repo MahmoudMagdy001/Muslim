@@ -112,10 +112,10 @@ class _AppContentState extends State<AppContent> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<ThemeCubit, ThemeState>(
-    builder: (context, themeState) => BlocBuilder<FontSizeCubit, FontSizeState>(
+  Widget build(BuildContext context) => BlocBuilder<ThemeBloc, ThemeState>(
+    builder: (context, themeState) => BlocBuilder<FontSizeBloc, FontSizeState>(
       builder: (context, fontSizeState) =>
-          BlocBuilder<LanguageCubit, LanguageState>(
+          BlocBuilder<LanguageBloc, LanguageState>(
             builder: (context, languageState) => ScreenUtilInit(
               minTextAdapt: true,
               splitScreenMode: true,

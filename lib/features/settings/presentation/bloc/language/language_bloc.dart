@@ -34,5 +34,3 @@ class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
   Future<void> changeLanguage(Locale newLocale) async =>
       add(LanguageEvent.changeLanguage(newLocale));
 }
-
-typedef LanguageCubit = LanguageBloc;

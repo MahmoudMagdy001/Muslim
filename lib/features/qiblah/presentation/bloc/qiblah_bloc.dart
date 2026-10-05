@@ -189,5 +189,3 @@ class QiblahBloc extends Bloc<QiblahEvent, QiblahState> {
     return super.close();
   }
 }
-
-typedef QiblahCubit = QiblahBloc;
