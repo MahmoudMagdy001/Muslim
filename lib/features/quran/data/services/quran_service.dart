@@ -87,24 +87,31 @@ class QuranService {
 
     final playlist = _buildPlaylist(surahNumber, reciter);
 
-    await _audioPlayer.stop();
-    await _audioPlayer.setAudioSources(playlist);
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.setAudioSources(playlist);
+    } on Object catch (_) {
+      // Safe fallback when offline or host cannot be resolved
+    }
 
     await _indexSubscription?.cancel();
-    _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
-      if (index != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt('lastSurah', surahNumber);
-        await prefs.setInt('lastVerse', index + 1);
-        await prefs.setString('lastReciter', reciter);
+    _indexSubscription = _audioPlayer.currentIndexStream.listen(
+      (index) async {
+        if (index != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('lastSurah', surahNumber);
+          await prefs.setInt('lastVerse', index + 1);
+          await prefs.setString('lastReciter', reciter);
 
-        _lastPlayedController.add({
-          'surah': surahNumber,
-          'verse': index + 1,
-          'reciter': reciter,
-        });
-      }
-    });
+          _lastPlayedController.add({
+            'surah': surahNumber,
+            'verse': index + 1,
+            'reciter': reciter,
+          });
+        }
+      },
+      onError: (_) {},
+    );
   }
 
   /// تحضير قائمة تشغيل لنطاق صفحات (للأحزاب والأجزاء)
@@ -150,44 +157,70 @@ class QuranService {
       _currentSurah = ayahMap.first.surah;
     }
 
-    await _audioPlayer.stop();
-    await _audioPlayer.setAudioSources(audioSources);
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.setAudioSources(audioSources);
+    } on Object catch (_) {
+      // Safe fallback when offline or host cannot be resolved
+    }
 
     await _indexSubscription?.cancel();
-    _indexSubscription = _audioPlayer.currentIndexStream.listen((index) async {
-      if (index != null && index < _rangeAyahMap.length) {
-        final entry = _rangeAyahMap[index];
-        _currentSurah = entry.surah;
+    _indexSubscription = _audioPlayer.currentIndexStream.listen(
+      (index) async {
+        if (index != null && index < _rangeAyahMap.length) {
+          final entry = _rangeAyahMap[index];
+          _currentSurah = entry.surah;
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt('lastSurah', entry.surah);
-        await prefs.setInt('lastVerse', entry.ayah);
-        await prefs.setString('lastReciter', reciter);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt('lastSurah', entry.surah);
+          await prefs.setInt('lastVerse', entry.ayah);
+          await prefs.setString('lastReciter', reciter);
 
-        _lastPlayedController.add({
-          'surah': entry.surah,
-          'verse': entry.ayah,
-          'reciter': reciter,
-        });
-      }
-    });
+          _lastPlayedController.add({
+            'surah': entry.surah,
+            'verse': entry.ayah,
+            'reciter': reciter,
+          });
+        }
+      },
+      onError: (_) {},
+    );
   }
 
   /// تشغيل الصوت
-  Future<void> play() => _audioPlayer.play();
+  Future<void> play() async {
+    try {
+      await _audioPlayer.play();
+    } on Object catch (_) {}
+  }
 
   /// إيقاف مؤقت
-  Future<void> pause() => _audioPlayer.pause();
+  Future<void> pause() async {
+    try {
+      await _audioPlayer.pause();
+    } on Object catch (_) {}
+  }
 
   /// الانتقال إلى موضع أو آية معينة
-  Future<void> seek(Duration position, {int? index}) =>
-      _audioPlayer.seek(position, index: index);
+  Future<void> seek(Duration position, {int? index}) async {
+    try {
+      await _audioPlayer.seek(position, index: index);
+    } on Object catch (_) {}
+  }
 
   /// الانتقال إلى الآية التالية
-  Future<void> seekToNext() => _audioPlayer.seekToNext();
+  Future<void> seekToNext() async {
+    try {
+      await _audioPlayer.seekToNext();
+    } on Object catch (_) {}
+  }
 
   /// الانتقال إلى الآية السابقة
-  Future<void> seekToPrevious() => _audioPlayer.seekToPrevious();
+  Future<void> seekToPrevious() async {
+    try {
+      await _audioPlayer.seekToPrevious();
+    } on Object catch (_) {}
+  }
 
   /// الحصول على Stream لتحديثات آخر استماع
   Stream<Map<String, dynamic>?> get lastPlayedStream =>
@@ -213,7 +246,7 @@ class QuranService {
 
   /// تنظيف الموارد
   void dispose() {
-    unawaited(_audioPlayer.stop());
+    unawaited(_audioPlayer.stop().catchError((_) {}));
     unawaited(_indexSubscription?.cancel());
     _currentSurah = null;
     _currentReciter = null;

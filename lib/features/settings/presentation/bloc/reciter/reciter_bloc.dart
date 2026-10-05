@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/settings/presentation/bloc/reciter/reciter_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +15,7 @@ abstract class ReciterState with _$ReciterState {
 }
 
 // Bloc class
-class ReciterBloc extends Bloc<ReciterEvent, ReciterState> {
+class ReciterBloc extends SafeBloc<ReciterEvent, ReciterState> {
   ReciterBloc() : super(const ReciterState(selectedReciter: _defaultReciter)) {
     on<ReciterInitialize>(_onInitialize);
     on<ReciterSaveReciter>(_onSaveReciter);
@@ -65,5 +65,5 @@ class ReciterBloc extends Bloc<ReciterEvent, ReciterState> {
 
   // Convenience method
   Future<void> saveReciter(String reciterId) async =>
-      add(ReciterEvent.saveReciter(reciterId));
+      safeAdd(ReciterEvent.saveReciter(reciterId));
 }

@@ -6,19 +6,18 @@ import 'package:muslim/features/quran/data/repositories/tafsir_repository.dart';
 
 void main() {
   group('TafsirRepository', () {
-    test('fetches tafsir successfully from Map response', () async {
+    test('fetches tafsir successfully from QuranCDN primary endpoint', () async {
       final mockClient = MockClient((request) async {
-        expect(request.url.scheme, 'http');
-        expect(request.url.host, 'api.quran-tafseer.com');
-        expect(request.url.path, '/tafseer/1/1/1');
+        expect(request.url.scheme, 'https');
+        expect(request.url.host, 'api.qurancdn.com');
+        expect(request.url.path, '/api/v4/tafsirs/ar-tafsir-muyassar/by_ayah/1:1');
 
         return http.Response(
           jsonEncode({
-            'tafseer_id': 1,
-            'tafseer_name': 'التفسير الميسر',
-            'ayah_url': '/quran/1/1/',
-            'ayah_number': 1,
-            'text': 'سورة الفاتحة سميت هذه السورة بالفاتحة...',
+            'tafsir': {
+              'id': 1,
+              'text': 'سورة الفاتحة سميت هذه السورة بالفاتحة...',
+            },
           }),
           200,
           headers: {'content-type': 'application/json'},
@@ -31,9 +30,36 @@ void main() {
       expect(result, 'سورة الفاتحة سميت هذه السورة بالفاتحة...');
     });
 
-    test('fetches tafsir successfully from List response', () async {
+    test('falls back to QuranEnc when QuranCDN fails', () async {
       final mockClient = MockClient((request) async {
-        expect(request.url.scheme, 'http');
+        if (request.url.host == 'api.qurancdn.com') {
+          return http.Response('Error', 500);
+        }
+        if (request.url.host == 'quranenc.com') {
+          return http.Response(
+            jsonEncode({
+              'result': {
+                'translation': 'تفسير مجمع الملك فهد',
+              },
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        return http.Response('Not Found', 404);
+      });
+
+      final repository = TafsirRepository(client: mockClient);
+      final result = await repository.fetchTafsirById(1, 1, 1);
+
+      expect(result, 'تفسير مجمع الملك فهد');
+    });
+
+    test('falls back to legacy API with List response when CDN and QuranEnc fail', () async {
+      final mockClient = MockClient((request) async {
+        if (request.url.host == 'api.qurancdn.com' || request.url.host == 'quranenc.com') {
+          return http.Response('Error', 500);
+        }
         return http.Response(
           jsonEncode([
             {
@@ -58,7 +84,9 @@ void main() {
       final mockClient = MockClient((request) async {
         requestCount++;
         return http.Response(
-          jsonEncode({'text': 'تفسير محفوظ'}),
+          jsonEncode({
+            'tafsir': {'text': 'تفسير محفوظ'},
+          }),
           200,
           headers: {'content-type': 'application/json'},
         );
@@ -73,7 +101,7 @@ void main() {
       expect(requestCount, 1);
     });
 
-    test('returns error message when HTTP response is not 200', () async {
+    test('returns error message when all HTTP responses fail', () async {
       final mockClient = MockClient(
         (request) async => http.Response('Internal Server Error', 500),
       );
@@ -81,13 +109,13 @@ void main() {
       final repository = TafsirRepository(client: mockClient);
       final result = await repository.fetchTafsirById(1, 1, 1);
 
-      expect(result, 'حدث خطأ أثناء تحميل التفسير (500).');
+      expect(result, 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.');
     });
 
-    test('returns fallback message when response text is empty', () async {
+    test('returns fallback message when response text is empty across endpoints', () async {
       final mockClient = MockClient(
         (request) async => http.Response(
-          jsonEncode({'text': ''}),
+          jsonEncode({'tafsir': {'text': ''}, 'result': {'translation': ''}, 'text': ''}),
           200,
           headers: {'content-type': 'application/json'},
         ),
@@ -96,7 +124,7 @@ void main() {
       final repository = TafsirRepository(client: mockClient);
       final result = await repository.fetchTafsirById(1, 1, 1);
 
-      expect(result, 'لم يتم العثور على تفسير لهذه الآية.');
+      expect(result, 'تعذر جلب التفسير. تأكد من الاتصال بالإنترنت.');
     });
 
     test('returns fallback message when exception is thrown', () async {

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/features/quran/data/services/quran_service.dart';
@@ -9,7 +9,7 @@ import 'package:muslim/features/quran/presentation/bloc/last_played/last_played_
 
 export 'last_played_event.dart';
 
-class LastPlayedBloc extends Bloc<LastPlayedEvent, LastPlayedState> {
+class LastPlayedBloc extends SafeBloc<LastPlayedEvent, LastPlayedState> {
   LastPlayedBloc([QuranService? quranService])
     : _quranService = quranService ?? getIt<QuranService>(),
       super(const LastPlayedState()) {
@@ -28,9 +28,12 @@ class LastPlayedBloc extends Bloc<LastPlayedEvent, LastPlayedState> {
     emit(LastPlayedState(lastPlayed: lastPlayed));
 
     await _lastPlayedSubscription?.cancel();
-    _lastPlayedSubscription = _quranService.lastPlayedStream.listen((data) {
-      add(LastPlayedEvent.dataReceived(data));
-    });
+    _lastPlayedSubscription = _quranService.lastPlayedStream.listen(
+      (data) {
+        safeAdd(LastPlayedEvent.dataReceived(data));
+      },
+      onError: (_) {},
+    );
   }
 
   void _onDataReceived(
@@ -41,7 +44,7 @@ class LastPlayedBloc extends Bloc<LastPlayedEvent, LastPlayedState> {
   }
 
   // Convenience method
-  Future<void> initialize() async => add(const LastPlayedEvent.initialize());
+  Future<void> initialize() async => safeAdd(const LastPlayedEvent.initialize());
 
   @override
   Future<void> close() async {

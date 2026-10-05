@@ -1,5 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/zakat/domain/repositories/zakat_repository.dart';
 import 'package:muslim/features/zakat/presentation/bloc/zakat_event.dart';
 import 'package:muslim/features/zakat/presentation/bloc/zakat_state.dart';
@@ -7,7 +6,7 @@ import 'package:muslim/features/zakat/presentation/bloc/zakat_state.dart';
 export 'zakat_event.dart';
 export 'zakat_state.dart';
 
-class ZakatBloc extends Bloc<ZakatEvent, ZakatState> {
+class ZakatBloc extends SafeBloc<ZakatEvent, ZakatState> {
   ZakatBloc({required this.repository}) : super(const ZakatState()) {
     on<ZakatLoadGoldPrice>(_onLoadGoldPrice);
     on<ZakatSetManualGoldPrice>(_onSetManualGoldPrice);
@@ -53,11 +52,13 @@ class ZakatBloc extends Bloc<ZakatEvent, ZakatState> {
 
   // Convenience dispatch methods
   Future<void> loadGoldPrice() async {
-    add(const ZakatEvent.loadGoldPrice());
-    await stream.firstWhere((s) => s.status != ZakatRequestStatus.loading);
+    await safeDispatch(
+      const ZakatEvent.loadGoldPrice(),
+      until: (s) => s.status != ZakatRequestStatus.loading,
+    );
   }
 
   void setManualGoldPrice(double price) {
-    add(ZakatEvent.setManualGoldPrice(price));
+    safeAdd(ZakatEvent.setManualGoldPrice(price));
   }
 }

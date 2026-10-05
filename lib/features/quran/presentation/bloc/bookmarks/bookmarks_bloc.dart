@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/utils/app_logger.dart';
 import 'package:muslim/features/quran/data/models/bookmark_model.dart';
@@ -8,7 +8,7 @@ import 'package:muslim/features/quran/presentation/bloc/bookmarks/bookmarks_stat
 
 export 'bookmarks_event.dart';
 
-class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
+class BookmarksBloc extends SafeBloc<BookmarksEvent, BookmarksState> {
   BookmarksBloc([BookmarksService? service])
     : _service = service ?? getIt<BookmarksService>(),
       super(const BookmarksState()) {
@@ -73,8 +73,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
   // Convenience methods
   Future<void> load() async {
-    add(const BookmarksEvent.load());
-    await stream.firstWhere((s) => s.status != BookmarksStatus.loading);
+    await safeDispatch(
+      const BookmarksEvent.load(),
+      until: (s) => s.status != BookmarksStatus.loading,
+    );
   }
   Future<void> addBookmark({
     required int surah,

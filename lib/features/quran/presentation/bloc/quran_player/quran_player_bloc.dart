@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/quran/data/services/quran_service.dart';
 import 'package:muslim/features/quran/presentation/bloc/quran_player/quran_player_event.dart';
@@ -8,7 +8,7 @@ import 'package:muslim/features/quran/presentation/bloc/quran_player/quran_playe
 
 export 'quran_player_event.dart';
 
-class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
+class QuranPlayerBloc extends SafeBloc<QuranPlayerEvent, QuranPlayerState> {
   QuranPlayerBloc(this._quranService, {int? initialSurah})
     : super(
         QuranPlayerState(
@@ -43,31 +43,52 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
 
   void _initializeListeners() {
     _subscriptions.add(
-      _quranService.audioPlayer.positionStream.listen((position) {
-        add(QuranPlayerEvent.positionChanged(position));
-      }),
+      _quranService.audioPlayer.positionStream.listen(
+        (position) {
+          add(QuranPlayerEvent.positionChanged(position));
+        },
+        onError: (_) {},
+      ),
     );
 
     _subscriptions.add(
-      _quranService.audioPlayer.durationStream.listen((duration) {
-        if (duration != null && duration.inMilliseconds > 0) {
-          add(QuranPlayerEvent.durationChanged(duration));
-        }
-      }),
+      _quranService.audioPlayer.durationStream.listen(
+        (duration) {
+          if (duration != null && duration.inMilliseconds > 0) {
+            add(QuranPlayerEvent.durationChanged(duration));
+          }
+        },
+        onError: (_) {},
+      ),
     );
 
     _subscriptions.add(
-      _quranService.audioPlayer.playerStateStream.listen((_) {
-        add(QuranPlayerEvent.playerStateChanged(isPlaying: _quranService.isQuranPlaying));
-      }),
+      _quranService.audioPlayer.playerStateStream.listen(
+        (_) {
+          add(QuranPlayerEvent.playerStateChanged(isPlaying: _quranService.isQuranPlaying));
+        },
+        onError: (_) {},
+      ),
     );
 
     _subscriptions.add(
-      _quranService.audioPlayer.currentIndexStream.listen((index) {
-        if (index != null) {
-          add(QuranPlayerEvent.currentIndexChanged(index));
-        }
-      }),
+      _quranService.audioPlayer.currentIndexStream.listen(
+        (index) {
+          if (index != null) {
+            add(QuranPlayerEvent.currentIndexChanged(index));
+          }
+        },
+        onError: (_) {},
+      ),
+    );
+
+    _subscriptions.add(
+      _quranService.audioPlayer.playbackEventStream.listen(
+        (_) {},
+        onError: (_) {
+          add(const QuranPlayerEvent.playerStateChanged(isPlaying: false));
+        },
+      ),
     );
   }
 
@@ -117,19 +138,21 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
     Emitter<QuranPlayerState> emit,
   ) async {
     _isRangeMode = false;
-    await _quranService.prepareSurahPlaylist(
-      surahNumber: event.surah,
-      reciter: event.reciter,
-    );
+    try {
+      await _quranService.prepareSurahPlaylist(
+        surahNumber: event.surah,
+        reciter: event.reciter,
+      );
 
-    final targetIndex = event.startAyah - 1;
-    final isAlreadyAtTarget =
-        _quranService.currentSurah == event.surah &&
-        _quranService.audioPlayer.currentIndex == targetIndex;
+      final targetIndex = event.startAyah - 1;
+      final isAlreadyAtTarget =
+          _quranService.currentSurah == event.surah &&
+          _quranService.audioPlayer.currentIndex == targetIndex;
 
-    if (event.startAyah > 1 && !isAlreadyAtTarget) {
-      await _quranService.seek(Duration.zero, index: targetIndex);
-    }
+      if (event.startAyah > 1 && !isAlreadyAtTarget) {
+        await _quranService.seek(Duration.zero, index: targetIndex);
+      }
+    } on Object catch (_) {}
     emit(state.copyWith(currentSurah: event.surah, currentAyah: event.startAyah));
   }
 
@@ -138,25 +161,27 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
     Emitter<QuranPlayerState> emit,
   ) async {
     _isRangeMode = true;
-    await _quranService.prepareRangePlaylist(
-      fromPage: event.fromPage,
-      toPage: event.toPage,
-      reciter: event.reciter,
-    );
+    try {
+      await _quranService.prepareRangePlaylist(
+        fromPage: event.fromPage,
+        toPage: event.toPage,
+        reciter: event.reciter,
+      );
 
-    var targetIndex = 0;
-    for (var i = 0; ; i++) {
-      final entry = _quranService.getAyahAtIndex(i);
-      if (entry == null) break;
-      if (entry.surah == event.startSurah && entry.ayah == event.startAyah) {
-        targetIndex = i;
-        break;
+      var targetIndex = 0;
+      for (var i = 0; ; i++) {
+        final entry = _quranService.getAyahAtIndex(i);
+        if (entry == null) break;
+        if (entry.surah == event.startSurah && entry.ayah == event.startAyah) {
+          targetIndex = i;
+          break;
+        }
       }
-    }
 
-    if (targetIndex > 0) {
-      await _quranService.seek(Duration.zero, index: targetIndex);
-    }
+      if (targetIndex > 0) {
+        await _quranService.seek(Duration.zero, index: targetIndex);
+      }
+    } on Object catch (_) {}
 
     emit(state.copyWith(currentSurah: event.startSurah, currentAyah: event.startAyah));
   }
@@ -165,61 +190,77 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
     QuranPlayerPlay event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    await _quranService.play();
+    try {
+      await _quranService.play();
+    } on Object catch (_) {
+      emit(state.copyWith(isPlaying: false));
+    }
   }
 
   Future<void> _onPause(
     QuranPlayerPause event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    await _quranService.pause();
+    try {
+      await _quranService.pause();
+    } on Object catch (_) {
+      emit(state.copyWith(isPlaying: false));
+    }
   }
 
   Future<void> _onSeek(
     QuranPlayerSeek event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    await _quranService.seek(event.position, index: event.index);
-    if (event.surah != null) emit(state.copyWith(currentSurah: event.surah));
+    try {
+      await _quranService.seek(event.position, index: event.index);
+      if (event.surah != null) emit(state.copyWith(currentSurah: event.surah));
+    } on Object catch (_) {}
   }
 
   Future<void> _onSeekToAyah(
     QuranPlayerSeekToAyah event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    if (_isRangeMode) {
-      for (var i = 0; ; i++) {
-        final entry = _quranService.getAyahAtIndex(i);
-        if (entry == null) break;
-        if (entry.surah == event.surah && entry.ayah == event.ayah) {
-          await _quranService.seek(Duration.zero, index: i);
-          emit(state.copyWith(currentSurah: event.surah, currentAyah: event.ayah));
-          return;
+    try {
+      if (_isRangeMode) {
+        for (var i = 0; ; i++) {
+          final entry = _quranService.getAyahAtIndex(i);
+          if (entry == null) break;
+          if (entry.surah == event.surah && entry.ayah == event.ayah) {
+            await _quranService.seek(Duration.zero, index: i);
+            emit(state.copyWith(currentSurah: event.surah, currentAyah: event.ayah));
+            return;
+          }
         }
+      } else {
+        await _quranService.seek(Duration.zero, index: event.ayah - 1);
+        emit(state.copyWith(currentSurah: event.surah, currentAyah: event.ayah));
       }
-    } else {
-      await _quranService.seek(Duration.zero, index: event.ayah - 1);
-      emit(state.copyWith(currentSurah: event.surah, currentAyah: event.ayah));
-    }
+    } on Object catch (_) {}
   }
 
   Future<void> _onSeekToNext(
     QuranPlayerSeekToNext event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    await _quranService.seekToNext();
+    try {
+      await _quranService.seekToNext();
+    } on Object catch (_) {}
   }
 
   Future<void> _onSeekToPrevious(
     QuranPlayerSeekToPrevious event,
     Emitter<QuranPlayerState> emit,
   ) async {
-    await _quranService.seekToPrevious();
+    try {
+      await _quranService.seekToPrevious();
+    } on Object catch (_) {}
   }
 
   // Convenience methods
   Future<void> loadSurah(int surah, String reciter, {int startAyah = 1}) async =>
-      add(QuranPlayerEvent.loadSurah(surah: surah, reciter: reciter, startAyah: startAyah));
+      safeAdd(QuranPlayerEvent.loadSurah(surah: surah, reciter: reciter, startAyah: startAyah));
 
   Future<void> loadRange({
     required int fromPage,
@@ -228,7 +269,7 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
     required int startSurah,
     required int startAyah,
   }) async =>
-      add(
+      safeAdd(
         QuranPlayerEvent.loadRange(
           fromPage: fromPage,
           toPage: toPage,
@@ -238,14 +279,14 @@ class QuranPlayerBloc extends Bloc<QuranPlayerEvent, QuranPlayerState> {
         ),
       );
 
-  Future<void> play() async => add(const QuranPlayerEvent.play());
-  Future<void> pause() async => add(const QuranPlayerEvent.pause());
+  Future<void> play() async => safeAdd(const QuranPlayerEvent.play());
+  Future<void> pause() async => safeAdd(const QuranPlayerEvent.pause());
   Future<void> seek(Duration position, {int? index, int? surah}) async =>
-      add(QuranPlayerEvent.seek(position: position, index: index, surah: surah));
+      safeAdd(QuranPlayerEvent.seek(position: position, index: index, surah: surah));
   Future<void> seekToAyah(int surah, int ayah) async =>
-      add(QuranPlayerEvent.seekToAyah(surah: surah, ayah: ayah));
-  Future<void> seekToNext() async => add(const QuranPlayerEvent.seekToNext());
-  Future<void> seekToPrevious() async => add(const QuranPlayerEvent.seekToPrevious());
+      safeAdd(QuranPlayerEvent.seekToAyah(surah: surah, ayah: ayah));
+  Future<void> seekToNext() async => safeAdd(const QuranPlayerEvent.seekToNext());
+  Future<void> seekToPrevious() async => safeAdd(const QuranPlayerEvent.seekToPrevious());
 
   @override
   Future<void> close() async {

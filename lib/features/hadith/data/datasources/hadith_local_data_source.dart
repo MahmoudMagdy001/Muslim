@@ -15,6 +15,9 @@ abstract class HadithLocalDataSource {
 
   Future<void> saveCachedChapters(String bookSlug, List<dynamic> chapters);
   Future<List<dynamic>?> getCachedChapters(String bookSlug);
+
+  Future<void> saveCachedHadiths(String bookSlug, String chapterNumber, List<dynamic> hadiths);
+  Future<List<dynamic>?> getCachedHadiths(String bookSlug, String chapterNumber);
 }
 
 class HadithLocalDataSourceImpl implements HadithLocalDataSource {
@@ -24,6 +27,7 @@ class HadithLocalDataSourceImpl implements HadithLocalDataSource {
   static const String _randomHadithKey = 'random_hadith';
   static const String _cachedBooksKey = 'cached_hadith_books';
   static const String _cachedChaptersPrefix = 'cached_hadith_chapters_';
+  static const String _cachedHadithsPrefix = 'cached_hadiths_';
 
   @override
   Future<List<Map<String, dynamic>>> loadSavedHadiths() async {
@@ -122,6 +126,30 @@ class HadithLocalDataSourceImpl implements HadithLocalDataSource {
   Future<List<dynamic>?> getCachedChapters(String bookSlug) async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString('$_cachedChaptersPrefix$bookSlug');
+    if (saved == null) return null;
+    return json.decode(saved) as List<dynamic>;
+  }
+
+  @override
+  Future<void> saveCachedHadiths(
+    String bookSlug,
+    String chapterNumber,
+    List<dynamic> hadiths,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      '$_cachedHadithsPrefix${bookSlug}_$chapterNumber',
+      json.encode(hadiths),
+    );
+  }
+
+  @override
+  Future<List<dynamic>?> getCachedHadiths(
+    String bookSlug,
+    String chapterNumber,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('$_cachedHadithsPrefix${bookSlug}_$chapterNumber');
     if (saved == null) return null;
     return json.decode(saved) as List<dynamic>;
   }

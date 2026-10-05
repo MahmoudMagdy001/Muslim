@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/azkar/domain/entities/azkar_audio_state.dart';
 import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
@@ -8,7 +8,7 @@ import 'package:muslim/features/azkar/presentation/bloc/azkar_audio_event.dart';
 
 export 'azkar_audio_event.dart';
 
-class AzkarAudioBloc extends Bloc<AzkarAudioEvent, AzkarAudioState> {
+class AzkarAudioBloc extends SafeBloc<AzkarAudioEvent, AzkarAudioState> {
   AzkarAudioBloc(this._repository)
     : super(const AzkarAudioState(status: AzkarAudioStatus.initial)) {
     on<AzkarAudioStarted>(_onStarted);
@@ -16,7 +16,7 @@ class AzkarAudioBloc extends Bloc<AzkarAudioEvent, AzkarAudioState> {
     on<AzkarAudioPlayRequested>(_onPlayRequested);
     on<AzkarAudioStopRequested>(_onStopRequested);
 
-    add(const AzkarAudioEvent.started());
+    safeAdd(const AzkarAudioEvent.started());
   }
 
   final AzkarRepository _repository;
@@ -29,7 +29,7 @@ class AzkarAudioBloc extends Bloc<AzkarAudioEvent, AzkarAudioState> {
     emit(_repository.currentAudioState);
     unawaited(_subscription?.cancel());
     _subscription = _repository.getAudioStateStream().listen((audioState) {
-      add(AzkarAudioEvent.stateUpdated(audioState));
+      safeAdd(AzkarAudioEvent.stateUpdated(audioState));
     });
   }
 
@@ -56,9 +56,9 @@ class AzkarAudioBloc extends Bloc<AzkarAudioEvent, AzkarAudioState> {
 
   // Convenience methods
   Future<void> playAudio(String url, {String? title}) async =>
-      add(AzkarAudioEvent.playRequested(url, title: title));
+      safeAdd(AzkarAudioEvent.playRequested(url, title: title));
 
-  Future<void> stopAudio() async => add(const AzkarAudioEvent.stopRequested());
+  Future<void> stopAudio() async => safeAdd(const AzkarAudioEvent.stopRequested());
 
   @override
   Future<void> close() {

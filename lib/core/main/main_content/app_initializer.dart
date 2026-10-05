@@ -98,6 +98,12 @@ class AppInitializer {
     }
 
     try {
+      final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+      if (!isAllowed) {
+        logInfo('ℹ️ إشعارات القرآن: التنبيهات غير مفعلة بالنظام، تخطي الجدولة.');
+        return;
+      }
+
       await AwesomeNotifications().cancelSchedulesByChannelKey(NotificationConstants.quranChannelKey);
 
       final now = DateTime.now();

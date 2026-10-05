@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/sebha/data/models/zikr_model.dart';
 import 'package:muslim/features/sebha/domain/entities/zikr_entity.dart';
@@ -11,7 +11,7 @@ import 'package:muslim/features/sebha/presentation/bloc/sebha_state.dart';
 export 'sebha_event.dart';
 export 'sebha_state.dart';
 
-class SebhaBloc extends Bloc<SebhaEvent, SebhaState> {
+class SebhaBloc extends SafeBloc<SebhaEvent, SebhaState> {
   SebhaBloc({
     required SebhaRepository repository,
   }) : _repository = repository,
@@ -176,13 +176,13 @@ class SebhaBloc extends Bloc<SebhaEvent, SebhaState> {
   }
 
   // Convenience methods
-  Future<void> loadCustomAzkar() async => add(const SebhaEvent.loadCustomAzkar());
-  void increment() => add(const SebhaEvent.increment());
-  void reset() => add(const SebhaEvent.reset());
-  void consumeGoalReached() => add(const SebhaEvent.consumeGoalReached());
-  Future<void> selectZikr(int index) async => add(SebhaEvent.selectZikr(index));
-  void setGoal(int? goal) => add(SebhaEvent.setGoal(goal));
-  Future<void> addCustomZikr(ZikrEntity zikr) async => add(SebhaEvent.addCustomZikr(zikr));
-  Future<void> editCustomZikr(ZikrEntity zikr) async => add(SebhaEvent.editCustomZikr(zikr));
-  Future<void> deleteCustomZikr(String id) async => add(SebhaEvent.deleteCustomZikr(id));
+  Future<void> loadCustomAzkar() async => safeAdd(const SebhaEvent.loadCustomAzkar());
+  void increment() => safeAdd(const SebhaEvent.increment());
+  void reset() => safeAdd(const SebhaEvent.reset());
+  void consumeGoalReached() => safeAdd(const SebhaEvent.consumeGoalReached());
+  Future<void> selectZikr(int index) async => safeAdd(SebhaEvent.selectZikr(index));
+  void setGoal(int? goal) => safeAdd(SebhaEvent.setGoal(goal));
+  Future<void> addCustomZikr(ZikrEntity zikr) async => safeAdd(SebhaEvent.addCustomZikr(zikr));
+  Future<void> editCustomZikr(ZikrEntity zikr) async => safeAdd(SebhaEvent.editCustomZikr(zikr));
+  Future<void> deleteCustomZikr(String id) async => safeAdd(SebhaEvent.deleteCustomZikr(id));
 }

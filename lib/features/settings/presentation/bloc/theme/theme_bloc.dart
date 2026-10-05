@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/settings/presentation/bloc/theme/theme_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +19,7 @@ abstract class ThemeState with _$ThemeState {
 }
 
 // Bloc class
-class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
+class ThemeBloc extends SafeBloc<ThemeEvent, ThemeState> {
   ThemeBloc([ThemeMode initialMode = ThemeMode.system])
     : super(ThemeState(themeMode: initialMode)) {
     on<ThemeToggleTheme>(_onToggleTheme);
@@ -62,7 +62,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   }
 
   // Convenience methods
-  Future<void> toggleTheme() async => add(const ThemeEvent.toggleTheme());
+  Future<void> toggleTheme() async => safeAdd(const ThemeEvent.toggleTheme());
   Future<void> setThemeMode(ThemeMode themeMode) async =>
-      add(ThemeEvent.setThemeMode(themeMode));
+      safeAdd(ThemeEvent.setThemeMode(themeMode));
 }

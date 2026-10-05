@@ -79,7 +79,7 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
     String chapterNumber,
     int page,
   ) => Uri.parse(
-    'https://hadithapi.com/api/hadiths/?apiKey=$apiKey&book=$bookSlug&chapter=$chapterNumber&page=$page',
+    'https://hadithapi.com/api/hadiths?apiKey=$apiKey&book=$bookSlug&chapter=$chapterNumber&paginate=100&page=$page',
   );
 
   @override
@@ -137,18 +137,21 @@ class HadithRemoteDataSourceImpl implements HadithRemoteDataSource {
             : i + _maxConcurrentRequests,
       );
 
-      final requests = chunk
-          .map(
-            (page) => client
-                .get(_buildApiUrl(bookSlug, chapterNumber, page))
-                .timeout(const Duration(seconds: _timeoutSeconds)),
-          )
-          .toList();
+      final requests = chunk.map((page) async {
+        try {
+          return await client
+              .get(_buildApiUrl(bookSlug, chapterNumber, page))
+              .timeout(const Duration(seconds: _timeoutSeconds));
+        } on Object catch (e) {
+          debugPrint('Error fetching page $page for $bookSlug: $e');
+          return null;
+        }
+      }).toList();
 
       final responses = await Future.wait(requests);
 
       for (final response in responses) {
-        if (response.statusCode == 200) {
+        if (response != null && response.statusCode == 200) {
           final data = await compute(_decodeJson, response.body);
           final hadithsMap = data['hadiths'] as Map<String, dynamic>? ?? {};
           final hadithsJson = (hadithsMap['data'] as List?) ?? [];

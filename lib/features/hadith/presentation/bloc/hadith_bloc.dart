@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
 import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
@@ -8,7 +8,7 @@ import 'package:muslim/features/hadith/presentation/bloc/hadith_state.dart';
 export 'hadith_event.dart';
 export 'hadith_state.dart';
 
-class HadithBloc extends Bloc<HadithEvent, HadithState> {
+class HadithBloc extends SafeBloc<HadithEvent, HadithState> {
   HadithBloc({
     required this.repository,
   }) : super(const HadithState()) {
@@ -58,7 +58,7 @@ class HadithBloc extends Bloc<HadithEvent, HadithState> {
         emit(
           state.copyWith(
             status: HadithStatus.error,
-            message: 'Failed to load hadiths',
+            message: failure.message,
           ),
         );
       },
@@ -81,7 +81,7 @@ class HadithBloc extends Bloc<HadithEvent, HadithState> {
     Emitter<HadithState> emit,
   ) async {
     if (_bookSlug != null && _chapterNumber != null && _chapterName != null) {
-      add(
+      safeAdd(
         HadithEvent.initializeData(
           bookSlug: _bookSlug!,
           chapterNumber: _chapterNumber!,
@@ -151,7 +151,7 @@ class HadithBloc extends Bloc<HadithEvent, HadithState> {
     String chapterNumber,
     String chapterName,
   ) async {
-    add(
+    safeAdd(
       HadithEvent.initializeData(
         bookSlug: bookSlug,
         chapterNumber: chapterNumber,
@@ -160,10 +160,10 @@ class HadithBloc extends Bloc<HadithEvent, HadithState> {
     );
   }
 
-  Future<void> reloadData() async => add(const HadithEvent.reloadData());
+  Future<void> reloadData() async => safeAdd(const HadithEvent.reloadData());
 
   Future<void> toggleHadithSave(HadithEntity hadith, {required bool isArabic}) async =>
-      add(HadithEvent.toggleHadithSave(hadith: hadith, isArabic: isArabic));
+      safeAdd(HadithEvent.toggleHadithSave(hadith: hadith, isArabic: isArabic));
 
   static const Map<String, String> _statusMap = {
     'Sahih': 'صحيح',

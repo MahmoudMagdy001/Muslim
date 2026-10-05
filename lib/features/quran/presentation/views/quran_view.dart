@@ -14,7 +14,6 @@ import 'package:muslim/features/quran/presentation/views/utils/quran_position_he
 import 'package:muslim/features/quran/presentation/views/widgets/mushaf_view.dart';
 import 'package:muslim/features/quran/presentation/views/widgets/player_controls_widget.dart';
 import 'package:muslim/features/quran/presentation/views/widgets/reader_settings_dialog.dart';
-import 'package:muslim/l10n/app_localizations.dart';
 import 'package:quran/quran.dart' as quran;
 
 class QuranView extends StatelessWidget {
@@ -121,7 +120,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final localizations = AppLocalizations.of(context);
+    final localizations = context.l10n;
     final colors = context.colors;
 
     return ValueListenableBuilder<QuranReaderSettings>(
@@ -129,6 +128,7 @@ class _QuranViewContentState extends State<QuranViewContent> {
       builder: (context, readerSettings, _) => Scaffold(
         backgroundColor: readerSettings.theme.backgroundColor,
         appBar: AppBar(
+          toolbarHeight: 70.h,
           centerTitle: true,
           backgroundColor: colors.isDark
               ? const Color(0xFF142722)
@@ -147,36 +147,42 @@ class _QuranViewContentState extends State<QuranViewContent> {
                   : quran.getSurahName(surahNum);
               return Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     isArabic ? 'سُورَةُ $surahName' : 'Surah $surahName',
                     style: GoogleFonts.amiri(
                       color: const Color(0xFFFFE082),
-                      fontSize: 19.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
+                      height: 1.2,
                     ),
                   ),
-                  if (juz != null && hizb != null)
-                    Container(
-                      margin: EdgeInsets.only(top: 2.h),
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
+                  if (juz != null && hizb != null) ...[
+                    SizedBox(height: 3.h),
+                    DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.25),
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: context.radius.mdBorder,
                         border: Border.all(
                           color: const Color(0xFFC59F48).withValues(alpha: 0.35),
                           width: 0.6,
                         ),
                       ),
-                      child: Text(
-                        '${localizations.juzNumberLabel(juz)} • ${localizations.hizbNumberLabel(hizb)}',
-                        style: GoogleFonts.cairo(
-                          color: const Color(0xFFFAF7EE),
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w600,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
+                        child: Text(
+                          '${localizations.juzNumberLabel(juz)} • ${localizations.hizbNumberLabel(hizb)}',
+                          style: GoogleFonts.cairo(
+                            color: const Color(0xFFFAF7EE),
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                            height: 1.2,
+                          ),
                         ),
                       ),
                     ),
+                  ],
                 ],
               );
             },

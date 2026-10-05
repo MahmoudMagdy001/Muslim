@@ -115,7 +115,7 @@ class _AzkarViewState extends State<AzkarView> {
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final category = categories[index];
-              final azkar = state.groupedAzkar[category]!;
+              final azkar = state.groupedAzkar[category] ?? const [];
               return AzkarCategoryCard(
                 category: category,
                 count: azkar.length,

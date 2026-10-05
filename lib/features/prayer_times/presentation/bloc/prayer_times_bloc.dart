@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/permissions_sevice.dart';
 import 'package:muslim/core/utils/app_logger.dart';
@@ -18,7 +18,7 @@ export 'prayer_times_state.dart';
 
 /// Bloc managing prayer times state, notification scheduling,
 /// and per-prayer notification settings.
-class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
+class PrayerTimesBloc extends SafeBloc<PrayerTimesEvent, PrayerTimesState> {
   PrayerTimesBloc({
     this.locationGranted = false,
     PrayerTimesRepository? prayerTimesRepository,
@@ -69,7 +69,7 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     Emitter<PrayerTimesState> emit,
   ) async {
     if (state.status == RequestStatus.initial && !_isFetching) {
-      add(PrayerTimesEvent.init(isArabic: event.isArabic));
+      safeAdd(PrayerTimesEvent.init(isArabic: event.isArabic));
     }
   }
 
@@ -174,7 +174,7 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     final delay = tomorrow.difference(now);
     _midnightTimer = Timer(delay, () {
       logInfo('🌙 منتصف الليل — جاري تحديث مواقيت الصلاة لليوم الجديد...');
-      add(PrayerTimesEvent.fetchPrayerTimes(isArabic: isArabic));
+      safeAdd(PrayerTimesEvent.fetchPrayerTimes(isArabic: isArabic));
     });
   }
 
@@ -221,7 +221,7 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
     _initialDelayTimer?.cancel();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      add(const PrayerTimesEvent.countdownTicked());
+      safeAdd(const PrayerTimesEvent.countdownTicked());
     });
   }
 
@@ -244,7 +244,7 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
         logInfo('🔄 انتهى وقت الصلاة، جاري تحديث الحساب...');
         final isToday = currentTimes.date.day == DateTime.now().day;
         if (!isToday) {
-          add(const PrayerTimesEvent.fetchPrayerTimes());
+          safeAdd(const PrayerTimesEvent.fetchPrayerTimes());
           _isScheduling = false;
         } else {
           _updateStateWithPrayerTimes(currentTimes, emit);
@@ -321,28 +321,28 @@ class PrayerTimesBloc extends Bloc<PrayerTimesEvent, PrayerTimesState> {
 
   // Convenience methods
   Future<void> init({bool isArabic = true}) async =>
-      add(PrayerTimesEvent.init(isArabic: isArabic));
+      safeAdd(PrayerTimesEvent.init(isArabic: isArabic));
 
   Future<void> checkInitialData({bool isArabic = true}) async =>
-      add(PrayerTimesEvent.checkInitialData(isArabic: isArabic));
+      safeAdd(PrayerTimesEvent.checkInitialData(isArabic: isArabic));
 
   Future<void> checkAllPermissions() async =>
-      add(const PrayerTimesEvent.checkAllPermissions());
+      safeAdd(const PrayerTimesEvent.checkAllPermissions());
 
   Future<void> fetchPrayerTimes({bool isArabic = true}) async =>
-      add(PrayerTimesEvent.fetchPrayerTimes(isArabic: isArabic));
+      safeAdd(PrayerTimesEvent.fetchPrayerTimes(isArabic: isArabic));
 
   Future<void> loadNotificationSettings() async =>
-      add(const PrayerTimesEvent.loadNotificationSettings());
+      safeAdd(const PrayerTimesEvent.loadNotificationSettings());
 
   Future<void> togglePrayerNotification(
     PrayerType type, {
     required bool enabled,
   }) async =>
-      add(PrayerTimesEvent.togglePrayerNotification(type: type, enabled: enabled));
+      safeAdd(PrayerTimesEvent.togglePrayerNotification(type: type, enabled: enabled));
 
   Future<void> refreshPrayerTimes({bool isArabic = true}) async =>
-      add(PrayerTimesEvent.refreshPrayerTimes(isArabic: isArabic));
+      safeAdd(PrayerTimesEvent.refreshPrayerTimes(isArabic: isArabic));
 
   @override
   Future<void> close() {

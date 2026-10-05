@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:muslim/core/widgets/base_app_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,7 @@ class AppUpdateService {
   static const String _lastDismissedKey = 'update_last_dismissed';
   static const int _daysBetweenPrompts = 3;
 
-  static final Upgrader _upgrader = Upgrader(debugLogging: true);
+  static final Upgrader _upgrader = Upgrader(debugLogging: kDebugMode);
 
   /// Check for updates and show dialog if available
   static Future<void> checkForUpdate(BuildContext context) async {

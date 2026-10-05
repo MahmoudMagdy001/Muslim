@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/features/surahs_list/data/models/hizb_model.dart';
 import 'package:muslim/features/surahs_list/data/models/juz_model.dart';
@@ -14,7 +14,7 @@ import 'package:quran/quran.dart' as quran;
 
 export 'surahs_list_event.dart';
 
-class SurahListBloc extends Bloc<SurahsListEvent, SurahsListState> {
+class SurahListBloc extends SafeBloc<SurahsListEvent, SurahsListState> {
   SurahListBloc({
     SurahsListRepository? surahRepository,
     QuranSearchService? searchService,
@@ -180,16 +180,16 @@ class SurahListBloc extends Bloc<SurahsListEvent, SurahsListState> {
 
   // Convenience methods
   Future<void> loadSurahs({bool isArabic = true}) async =>
-      add(SurahsListEvent.loadSurahs(isArabic: isArabic));
+      safeAdd(SurahsListEvent.loadSurahs(isArabic: isArabic));
 
   Future<void> searchInQuran(String keyword, {required bool partial}) async =>
-      add(SurahsListEvent.searchInQuran(keyword: keyword, partial: partial));
+      safeAdd(SurahsListEvent.searchInQuran(keyword: keyword, partial: partial));
 
   void changeViewType(QuranViewType viewType) =>
-      add(SurahsListEvent.changeViewType(viewType));
+      safeAdd(SurahsListEvent.changeViewType(viewType));
 
   Future<void> saveLastSurah(int surah, {int lastAyah = 1}) async =>
-      add(SurahsListEvent.saveLastSurah(surah: surah, lastAyah: lastAyah));
+      safeAdd(SurahsListEvent.saveLastSurah(surah: surah, lastAyah: lastAyah));
 
   @override
   Future<void> close() {

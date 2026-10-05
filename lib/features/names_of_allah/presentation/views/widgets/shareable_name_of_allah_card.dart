@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'package:muslim/core/utils/extensions.dart';
 import 'package:muslim/features/names_of_allah/domain/entities/name_of_allah_entity.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 class ShareableNameOfAllahCard extends StatelessWidget {
   const ShareableNameOfAllahCard({
     required this.data,
+    this.isArabic,
+    this.localizations,
     super.key,
   });
 
   final NameOfAllahEntity data;
+  final bool? isArabic;
+  final AppLocalizations? localizations;
 
   @override
   Widget build(BuildContext context) {
-    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    final l10n = context.l10n;
+    final effectiveIsArabic = isArabic ??
+        ((Localizations.maybeLocaleOf(context)?.languageCode ?? 'ar') == 'ar');
+    final l10n = localizations ?? AppLocalizations.of(context);
 
     return Container(
       width: 800,
@@ -58,7 +64,7 @@ class ShareableNameOfAllahCard extends StatelessWidget {
           const SizedBox(height: 20),
 
           // English Translation
-          if (!isArabic) ...[
+          if (!effectiveIsArabic) ...[
             Text(
               data.nameTranslation,
               style: const TextStyle(
@@ -77,7 +83,7 @@ class ShareableNameOfAllahCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.grey[50],
               borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: Colors.grey[200]!),
+              border: Border.all(color: Colors.grey.shade200),
             ),
             child: Column(
               children: [
@@ -91,7 +97,7 @@ class ShareableNameOfAllahCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  isArabic ? data.text : data.textTranslation,
+                  effectiveIsArabic ? data.text : data.textTranslation,
                   style: const TextStyle(
                     fontSize: 16,
                     height: 1.6,

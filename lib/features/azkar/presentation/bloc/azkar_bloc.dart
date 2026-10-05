@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/azkar/domain/entities/azkar_entity.dart';
 import 'package:muslim/features/azkar/domain/repositories/azkar_repository.dart';
 import 'package:muslim/features/azkar/presentation/bloc/azkar_event.dart';
@@ -8,7 +8,7 @@ import 'package:muslim/features/prayer_times/presentation/bloc/prayer_times_stat
 export 'azkar_event.dart';
 export 'azkar_state.dart';
 
-class AzkarBloc extends Bloc<AzkarEvent, AzkarState> {
+class AzkarBloc extends SafeBloc<AzkarEvent, AzkarState> {
   AzkarBloc(this._repository) : super(const AzkarState()) {
     on<AzkarLoadAzkar>(_onLoadAzkar);
     on<AzkarLoadAzkarContent>(_onLoadAzkarContent);
@@ -40,10 +40,7 @@ class AzkarBloc extends Bloc<AzkarEvent, AzkarState> {
       (azkar) {
         final grouped = <String, List<AzkarEntity>>{};
         for (final item in azkar) {
-          if (!grouped.containsKey(item.category)) {
-            grouped[item.category] = [];
-          }
-          grouped[item.category]!.add(item);
+          grouped.putIfAbsent(item.category, () => []).add(item);
         }
 
         emit(
@@ -119,8 +116,9 @@ class AzkarBloc extends Bloc<AzkarEvent, AzkarState> {
     Emitter<AzkarState> emit,
   ) async {
     final counts = Map<int, int>.from(state.currentCounts);
-    if (counts.containsKey(event.index) && counts[event.index]! > 0) {
-      final newCount = counts[event.index]! - 1;
+    final currentCount = counts[event.index];
+    if (currentCount != null && currentCount > 0) {
+      final newCount = currentCount - 1;
       counts[event.index] = newCount;
       emit(state.copyWith(currentCounts: counts));
       await _repository.saveAzkarCount(event.url, event.index, newCount);
@@ -141,11 +139,11 @@ class AzkarBloc extends Bloc<AzkarEvent, AzkarState> {
   }
 
   // Convenience methods
-  Future<void> loadAzkar() async => add(const AzkarEvent.loadAzkar());
+  Future<void> loadAzkar() async => safeAdd(const AzkarEvent.loadAzkar());
   Future<void> loadAzkarContent(String url) async =>
-      add(AzkarEvent.loadAzkarContent(url));
+      safeAdd(AzkarEvent.loadAzkarContent(url));
   Future<void> decrementCount(String url, int index) async =>
-      add(AzkarEvent.decrementCount(url, index));
+      safeAdd(AzkarEvent.decrementCount(url, index));
   Future<void> resetCount(String url, int index) async =>
-      add(AzkarEvent.resetCount(url, index));
+      safeAdd(AzkarEvent.resetCount(url, index));
 }

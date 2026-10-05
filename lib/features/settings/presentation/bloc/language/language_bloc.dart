@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/settings/presentation/bloc/language/language_event.dart';
 import 'package:muslim/features/settings/presentation/bloc/language/language_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'language_event.dart';
 
-class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
+class LanguageBloc extends SafeBloc<LanguageEvent, LanguageState> {
   LanguageBloc([Locale initialLocale = const Locale('ar')])
     : super(LanguageState(initialLocale)) {
     on<LanguageChangeLanguage>(_onChangeLanguage);
@@ -32,5 +32,5 @@ class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
 
   /// تغيير اللغة وتخزينها
   Future<void> changeLanguage(Locale newLocale) async =>
-      add(LanguageEvent.changeLanguage(newLocale));
+      safeAdd(LanguageEvent.changeLanguage(newLocale));
 }

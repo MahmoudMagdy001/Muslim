@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/core/service/periodic_reminder_constants.dart';
 import 'package:muslim/core/service/periodic_reminder_service.dart';
@@ -29,7 +30,7 @@ abstract class PeriodicReminderState with _$PeriodicReminderState {
 // BLOC
 // ─────────────────────────────────────────────────────────────────────────────
 
-class PeriodicReminderBloc extends Bloc<PeriodicReminderEvent, PeriodicReminderState> {
+class PeriodicReminderBloc extends SafeBloc<PeriodicReminderEvent, PeriodicReminderState> {
   PeriodicReminderBloc({
     PeriodicReminderRepository? repository,
     PeriodicReminderService? service,
@@ -169,17 +170,17 @@ class PeriodicReminderBloc extends Bloc<PeriodicReminderEvent, PeriodicReminderS
 
   // Convenience methods
   Future<void> toggleEnabled({required bool enabled}) async =>
-      add(PeriodicReminderEvent.toggleEnabled(enabled: enabled));
+      safeAdd(PeriodicReminderEvent.toggleEnabled(enabled: enabled));
 
   Future<void> setInterval(int minutes) async =>
-      add(PeriodicReminderEvent.setInterval(minutes));
+      safeAdd(PeriodicReminderEvent.setInterval(minutes));
 
   Future<void> rescheduleIfEnabled() async =>
-      add(const PeriodicReminderEvent.rescheduleIfEnabled());
+      safeAdd(const PeriodicReminderEvent.rescheduleIfEnabled());
 
   Future<void> cancelAndReset() async =>
-      add(const PeriodicReminderEvent.cancelAndReset());
+      safeAdd(const PeriodicReminderEvent.cancelAndReset());
 
   Future<void> refresh() async =>
-      add(const PeriodicReminderEvent.refresh());
+      safeAdd(const PeriodicReminderEvent.refresh());
 }

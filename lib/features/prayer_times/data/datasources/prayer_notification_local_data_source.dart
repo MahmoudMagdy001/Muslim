@@ -31,6 +31,12 @@ class PrayerNotificationLocalDataSourceImpl
     _isScheduling = true;
 
     try {
+      final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+      if (!isAllowed) {
+        logInfo('ℹ️ إشعارات الصلاة: التنبيهات غير مفعلة بالنظام، تم تخطي الجدولة لحين تفعيلها.');
+        return;
+      }
+
       final now = DateTime.now();
       await cancelAll();
       logInfo('تم مسح أي إشعارات قديمة...');

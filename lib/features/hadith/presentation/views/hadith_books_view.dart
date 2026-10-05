@@ -206,9 +206,34 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
 
                     if (state.status == HadithBooksStatus.failure) {
                       return Center(
-                        child: Text(
-                          '${localization.hadithBooksError} ${state.errorMessage}',
-                          style: theme.textTheme.bodyMedium,
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline_rounded,
+                                size: 54,
+                                color: theme.colorScheme.error,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '${localization.hadithBooksError} ${state.errorMessage}',
+                                style: theme.textTheme.bodyMedium,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  final bloc = context.read<HadithBooksBloc>();
+                                  unawaited(bloc.loadBooks());
+                                  unawaited(bloc.loadRandomHadith());
+                                },
+                                icon: const Icon(Icons.refresh_rounded),
+                                label: Text(localization.retry),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     } else if (state.books.isEmpty) {
@@ -276,10 +301,10 @@ class _HadithBooksViewContentState extends State<_HadithBooksViewContent> {
                                 : convertToArabicNumbers(book.id);
                             final name = !isArabic
                                 ? book.bookName
-                                : booksArabic[book.bookName]!;
+                                : (booksArabic[book.bookName] ?? book.bookName);
                             final writer = !isArabic
                                 ? book.writerName
-                                : writersArabic[book.writerName]!;
+                                : (writersArabic[book.writerName] ?? book.writerName);
                             final chpaterCount = !isArabic
                                 ? book.chapterCount
                                 : convertToArabicNumbers(book.chapterCount);

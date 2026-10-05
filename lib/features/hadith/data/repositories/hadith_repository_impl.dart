@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:muslim/core/error/failures.dart';
 import 'package:muslim/features/hadith/data/datasources/hadith_local_data_source.dart';
@@ -11,6 +12,90 @@ import 'package:muslim/features/hadith/domain/entities/chapter_of_book_entity.da
 import 'package:muslim/features/hadith/domain/entities/hadith_book_entity.dart';
 import 'package:muslim/features/hadith/domain/entities/hadith_entity.dart';
 import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
+
+const List<HadithBookEntity> defaultHadithBooks = [
+  HadithBookEntity(
+    id: '1',
+    bookName: 'Sahih Bukhari',
+    writerName: 'Imam Bukhari',
+    hadithCount: '7276',
+    chapterCount: '99',
+    writerDeath: '256 هـ',
+    bookSlug: 'sahih-bukhari',
+  ),
+  HadithBookEntity(
+    id: '2',
+    bookName: 'Sahih Muslim',
+    writerName: 'Imam Muslim',
+    hadithCount: '7564',
+    chapterCount: '56',
+    writerDeath: '261 هـ',
+    bookSlug: 'sahih-muslim',
+  ),
+  HadithBookEntity(
+    id: '4',
+    bookName: "Jami' Al-Tirmidhi",
+    writerName: 'Abu `Isa Muhammad at-Tirmidhi',
+    hadithCount: '3956',
+    chapterCount: '50',
+    writerDeath: '279',
+    bookSlug: 'al-tirmidhi',
+  ),
+  HadithBookEntity(
+    id: '5',
+    bookName: 'Sunan Abu Dawood',
+    writerName: "Imam Abu Dawud Sulayman ibn al-Ash'ath as-Sijistani",
+    hadithCount: '5274',
+    chapterCount: '43',
+    writerDeath: '275',
+    bookSlug: 'abu-dawood',
+  ),
+  HadithBookEntity(
+    id: '6',
+    bookName: 'Sunan Ibn-e-Majah',
+    writerName: 'Imam Muhammad bin Yazid Ibn Majah al-Qazvini',
+    hadithCount: '4341',
+    chapterCount: '39',
+    writerDeath: '273',
+    bookSlug: 'ibn-e-majah',
+  ),
+  HadithBookEntity(
+    id: '7',
+    bookName: 'Sunan An-Nasa`i',
+    writerName: 'Imam Ahmad an-Nasa`i',
+    hadithCount: '5761',
+    chapterCount: '52',
+    writerDeath: '303',
+    bookSlug: 'sunan-nasai',
+  ),
+  HadithBookEntity(
+    id: '8',
+    bookName: 'Mishkat Al-Masabih',
+    writerName: 'Imam Khatib at-Tabrizi',
+    hadithCount: '6293',
+    chapterCount: '29',
+    writerDeath: '741',
+    bookSlug: 'mishkat',
+  ),
+  HadithBookEntity(
+    id: '9',
+    bookName: 'Musnad Ahmad',
+    writerName: 'Imam Ahmad ibn Hanbal',
+    hadithCount: '0',
+    chapterCount: '14',
+    writerDeath: '241',
+    bookSlug: 'musnad-ahmad',
+  ),
+  HadithBookEntity(
+    id: '10',
+    bookName: 'Al-Silsila Sahiha',
+    writerName: 'Allama Muhammad Nasir Uddin Al-Bani',
+    hadithCount: '0',
+    chapterCount: '28',
+    writerDeath: 'October 2, 1999',
+    bookSlug: 'al-silsila-sahiha',
+  ),
+];
 
 class HadithRepositoryImpl implements HadithRepository {
   const HadithRepositoryImpl({
@@ -26,24 +111,37 @@ class HadithRepositoryImpl implements HadithRepository {
     try {
       final cached = await localDataSource.getCachedBooks();
       if (cached != null && cached.isNotEmpty) {
-        return Right(
-          cached
-              .map(
-                (json) =>
-                    HadithBookModel.fromJson(json as Map<String, dynamic>).toEntity(),
-              )
-              .toList(),
-        );
+        final books = cached
+            .map(
+              (json) => HadithBookModel.fromJson(
+                Map<String, dynamic>.from(json as Map),
+              ).toEntity(),
+            )
+            .toList();
+        if (books.isNotEmpty) {
+          return Right(books);
+        }
       }
-
-      final books = await remoteDataSource.fetchBooks();
-      await localDataSource.saveCachedBooks(
-        books.map((e) => e.toJson()).toList(),
-      );
-      return Right(books.map((e) => e.toEntity()).toList());
-    } on Object catch (_) {
-      return const Left(ServerFailure('Failed to load books'));
+    } on Object catch (e) {
+      debugPrint('Error reading cached books: $e');
     }
+
+    try {
+      final books = await remoteDataSource.fetchBooks();
+      if (books.isNotEmpty) {
+        try {
+          await localDataSource.saveCachedBooks(
+            books.map((e) => e.toJson()).toList(),
+          );
+        } on Object catch (_) {}
+        return Right(books.map((e) => e.toEntity()).toList());
+      }
+    } on Object catch (e) {
+      debugPrint('Error fetching remote books: $e');
+    }
+
+    // Fallback to bundled standard books if network fails
+    return const Right(defaultHadithBooks);
   }
 
   @override
@@ -53,24 +151,33 @@ class HadithRepositoryImpl implements HadithRepository {
     try {
       final cached = await localDataSource.getCachedChapters(bookSlug);
       if (cached != null && cached.isNotEmpty) {
-        return Right(
-          cached
-              .map(
-                (json) =>
-                    ChapterOfBookModel.fromJson(json as Map<String, dynamic>).toEntity(),
-              )
-              .toList(),
-        );
+        final chapters = cached
+            .map(
+              (json) => ChapterOfBookModel.fromJson(
+                Map<String, dynamic>.from(json as Map),
+              ).toEntity(),
+            )
+            .toList();
+        if (chapters.isNotEmpty) {
+          return Right(chapters);
+        }
       }
+    } on Object catch (e) {
+      debugPrint('Error reading cached chapters for $bookSlug: $e');
+    }
 
+    try {
       final chapters = await remoteDataSource.fetchChapters(bookSlug);
-      await localDataSource.saveCachedChapters(
-        bookSlug,
-        chapters.map((e) => e.toJson()).toList(),
-      );
+      try {
+        await localDataSource.saveCachedChapters(
+          bookSlug,
+          chapters.map((e) => e.toJson()).toList(),
+        );
+      } on Object catch (_) {}
       return Right(chapters.map((e) => e.toEntity()).toList());
-    } on Object catch (_) {
-      return Left(ServerFailure('Failed to load chapters for book $bookSlug'));
+    } on Object catch (e) {
+      debugPrint('Error fetching remote chapters for $bookSlug: $e');
+      return Left(ServerFailure('Failed to load chapters: $e'));
     }
   }
 
@@ -80,13 +187,42 @@ class HadithRepositoryImpl implements HadithRepository {
     String chapterNumber,
   ) async {
     try {
+      final cached = await localDataSource.getCachedHadiths(
+        bookSlug,
+        chapterNumber,
+      );
+      if (cached != null && cached.isNotEmpty) {
+        final hadiths = cached
+            .map(
+              (json) => HadithModel.fromJson(
+                Map<String, dynamic>.from(json as Map),
+              ).toEntity(),
+            )
+            .toList();
+        if (hadiths.isNotEmpty) {
+          return Right(hadiths);
+        }
+      }
+    } on Object catch (e) {
+      debugPrint('Error reading cached hadiths for $bookSlug/$chapterNumber: $e');
+    }
+
+    try {
       final hadiths = await remoteDataSource.fetchHadithsForChapter(
         bookSlug: bookSlug,
         chapterNumber: chapterNumber,
       );
+      try {
+        await localDataSource.saveCachedHadiths(
+          bookSlug,
+          chapterNumber,
+          hadiths.map((e) => e.toJson()).toList(),
+        );
+      } on Object catch (_) {}
       return Right(hadiths.map((e) => e.toEntity()).toList());
-    } on Object catch (_) {
-      return const Left(ServerFailure('Failed to load hadiths'));
+    } on Object catch (e) {
+      debugPrint('Error fetching remote hadiths for $bookSlug/$chapterNumber: $e');
+      return Left(ServerFailure('Failed to load hadiths: $e'));
     }
   }
 
@@ -96,8 +232,10 @@ class HadithRepositoryImpl implements HadithRepository {
       final cachedHadith = await localDataSource.getRandomHadith();
       if (cachedHadith != null) {
         try {
-          final hadithMap = cachedHadith['hadith'] as Map<String, dynamic>;
-          cachedHadith['hadith'] = HadithModel.fromJson(hadithMap);
+          final hadithMap =
+              Map<String, dynamic>.from(cachedHadith['hadith'] as Map);
+          cachedHadith['hadith'] =
+              HadithModel.fromJson(hadithMap).toEntity();
           return Right(cachedHadith);
         } on Object catch (_) {
           // If parsing fails, proceed to fetch a new one
@@ -168,7 +306,7 @@ class HadithRepositoryImpl implements HadithRepository {
       final hadith = HadithModel.fromJson(hadithJson as Map<String, dynamic>);
 
       final result = {
-        'hadith': hadith,
+        'hadith': hadith.toEntity(),
         'bookSlug': bookSlug,
         'bookName': bookName,
         'chapterNumber': chapterNumber,

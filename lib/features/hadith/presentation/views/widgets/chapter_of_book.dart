@@ -210,7 +210,38 @@ class _ChapterOfBookContentState extends State<_ChapterOfBookContent> {
   );
 
   Widget _buildErrorWidget(AppLocalizations localization, Object? error) =>
-      Center(child: Text('${localization.errorMain}: $error'));
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                size: 54,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${localization.errorMain}: $error',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {
+                  unawaited(
+                    context
+                        .read<ChapterOfBookBloc>()
+                        .loadChapters(widget.bookSlug),
+                  );
+                },
+                icon: const Icon(Icons.refresh_rounded),
+                label: Text(localization.retry),
+              ),
+            ],
+          ),
+        ),
+      );
 
   Widget _buildEmptyWidget(AppLocalizations localization) =>
       Center(child: Text(localization.chaptersEmpty));

@@ -111,6 +111,8 @@ class QuickToolsRow extends StatelessWidget {
                                   child: Image.asset(
                                     tool.asset,
                                     fit: BoxFit.contain,
+                                    cacheWidth: 88,
+                                    cacheHeight: 88,
                                     errorBuilder: (context, error, stackTrace) =>
                                         Icon(
                                           Icons.star_rounded,

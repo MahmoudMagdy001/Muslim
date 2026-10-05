@@ -71,12 +71,22 @@ class _NamesOfAllahContentState extends State<_NamesOfAllahContent> {
     sharingIndexNotifier.value = index;
 
     final l10n = context.l10n;
+    final isArabic =
+        Localizations.maybeLocaleOf(context)?.languageCode == 'ar';
+    final cardWidget = ShareableNameOfAllahCard(
+      data: data,
+      isArabic: isArabic,
+      localizations: l10n,
+    );
 
     try {
       // Small delay to ensure UI updates before capture
       await Future<void>.delayed(const Duration(milliseconds: 50));
+      if (!mounted) return;
+
       final imageBytes = await WidgetCapture.captureFromWidget(
-        ShareableNameOfAllahCard(data: data),
+        cardWidget,
+        context: context,
         delay: const Duration(milliseconds: 10),
       );
 

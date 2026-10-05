@@ -65,7 +65,11 @@ class ZakatCardWidget extends StatelessWidget {
                 ],
               ),
             ),
-            Image.asset('assets/home/img_zakah.png', height: 80.toH),
+            Image.asset(
+              'assets/home/img_zakah.png',
+              height: 80.toH,
+              cacheHeight: 240,
+            ),
           ],
         ),
       ),

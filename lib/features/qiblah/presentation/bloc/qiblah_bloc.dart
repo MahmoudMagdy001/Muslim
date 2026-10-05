@@ -1,11 +1,9 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/core/di/service_locator.dart';
 import 'package:muslim/core/service/location_service.dart';
 import 'package:muslim/features/qiblah/domain/entities/qiblah_direction_entity.dart';
@@ -17,7 +15,7 @@ import 'package:rxdart/rxdart.dart';
 export 'qiblah_event.dart';
 export 'qiblah_state.dart';
 
-class QiblahBloc extends Bloc<QiblahEvent, QiblahState> {
+class QiblahBloc extends SafeBloc<QiblahEvent, QiblahState> {
   QiblahBloc({
     QiblahRepository? repository,
     LocationService? locationService,
@@ -60,10 +58,10 @@ class QiblahBloc extends Bloc<QiblahEvent, QiblahState> {
   void _setupLocationServiceListener() {
     _locationSubscription = locationService.serviceStatusStream.listen(
       (status) {
-        add(QiblahEvent.locationStatusChanged(status));
+        safeAdd(QiblahEvent.locationStatusChanged(status));
       },
       onError: (Object error) {
-        add(QiblahEvent.errorOccurred('خطأ في خدمة الموقع: $error'));
+        safeAdd(QiblahEvent.errorOccurred('خطأ في خدمة الموقع: $error'));
       },
     );
   }
@@ -180,7 +178,7 @@ class QiblahBloc extends Bloc<QiblahEvent, QiblahState> {
   }
 
   // Convenience method
-  Future<void> init() async => add(const QiblahEvent.init());
+  Future<void> init() async => safeAdd(const QiblahEvent.init());
 
   @override
   Future<void> close() async {

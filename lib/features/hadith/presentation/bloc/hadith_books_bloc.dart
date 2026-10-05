@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 import 'package:muslim/features/hadith/presentation/bloc/hadith_books_event.dart';
@@ -7,7 +7,7 @@ import 'package:muslim/features/hadith/presentation/bloc/hadith_books_state.dart
 export 'hadith_books_event.dart';
 export 'hadith_books_state.dart';
 
-class HadithBooksBloc extends Bloc<HadithBooksEvent, HadithBooksState> {
+class HadithBooksBloc extends SafeBloc<HadithBooksEvent, HadithBooksState> {
   HadithBooksBloc({
     required this.repository,
   }) : super(const HadithBooksState()) {
@@ -15,8 +15,8 @@ class HadithBooksBloc extends Bloc<HadithBooksEvent, HadithBooksState> {
     on<HadithBooksLoadRandomHadith>(_onLoadRandomHadith);
     on<HadithBooksUpdateSearchText>(_onUpdateSearchText);
 
-    add(const HadithBooksEvent.loadBooks());
-    add(const HadithBooksEvent.loadRandomHadith());
+    safeAdd(const HadithBooksEvent.loadBooks());
+    safeAdd(const HadithBooksEvent.loadRandomHadith());
   }
 
   final HadithRepository repository;
@@ -69,7 +69,7 @@ class HadithBooksBloc extends Bloc<HadithBooksEvent, HadithBooksState> {
   }
 
   // Convenience methods
-  Future<void> loadBooks() async => add(const HadithBooksEvent.loadBooks());
-  Future<void> loadRandomHadith() async => add(const HadithBooksEvent.loadRandomHadith());
-  void updateSearchText(String text) => add(HadithBooksEvent.updateSearchText(text));
+  Future<void> loadBooks() async => safeAdd(const HadithBooksEvent.loadBooks());
+  Future<void> loadRandomHadith() async => safeAdd(const HadithBooksEvent.loadRandomHadith());
+  void updateSearchText(String text) => safeAdd(HadithBooksEvent.updateSearchText(text));
 }

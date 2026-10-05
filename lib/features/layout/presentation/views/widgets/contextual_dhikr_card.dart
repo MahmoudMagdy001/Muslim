@@ -90,6 +90,8 @@ class ContextualDhikrCard extends StatelessWidget {
                     child: Image.asset(
                       'assets/home/azkar.png',
                       fit: BoxFit.contain,
+                      cacheWidth: 104,
+                      cacheHeight: 104,
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.brightness_5_rounded,
                         color: colors.secondary,

@@ -19,11 +19,11 @@ abstract class HadithBookModel with _$HadithBookModel {
 
   factory HadithBookModel.fromJson(Map<String, dynamic> json) =>
       HadithBookModel(
-        id: json['id'].toString(),
+        id: json['id']?.toString() ?? '',
         bookName: json['bookName'] as String? ?? '',
         writerName: json['writerName'] as String? ?? '',
-        hadithCount: json['hadiths_count'].toString(),
-        chapterCount: json['chapters_count'].toString(),
+        hadithCount: (json['hadiths_count'] ?? json['hadithCount'])?.toString() ?? '0',
+        chapterCount: (json['chapters_count'] ?? json['chapterCount'])?.toString() ?? '0',
         writerDeath: json['writerDeath'] as String? ?? '',
         bookSlug: json['bookSlug'] as String? ?? '',
       );

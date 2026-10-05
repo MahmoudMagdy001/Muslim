@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:muslim/core/service/native_battery_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<bool> requestAllPermissions() async {
+Future<bool> requestAllPermissions({bool includeBattery = true}) async {
   try {
     await checkNotificationPermission();
   } on Object catch (e) {
@@ -17,10 +17,12 @@ Future<bool> requestAllPermissions() async {
     debugPrint('Location permission error: $e');
   }
 
-  try {
-    await checkBatteryOptimization();
-  } on Object catch (e) {
-    debugPrint('Battery optimization check error: $e');
+  if (includeBattery) {
+    try {
+      await checkBatteryOptimization();
+    } on Object catch (e) {
+      debugPrint('Battery optimization check error: $e');
+    }
   }
 
   return locationGranted;

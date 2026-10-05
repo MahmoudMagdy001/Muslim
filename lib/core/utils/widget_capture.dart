@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:muslim/l10n/app_localizations.dart';
 
 /// Native widget-to-PNG-bytes capture — replaces the `screenshot` package.
 ///
@@ -24,7 +25,7 @@ abstract final class WidgetCapture {
   ///
   /// [pixelRatio] controls output resolution (default 3.0 for high-DPI).
   /// [delay] gives async widgets (e.g. images) time to settle before capture.
-  /// [context] is optional — if provided, inherits [Theme] and [MediaQuery].
+  /// [context] is optional — if provided, inherits [Theme], [MediaQuery], and [Locale].
   static Future<List<int>> captureFromWidget(
     Widget widget, {
     double pixelRatio = 3.0,
@@ -32,18 +33,39 @@ abstract final class WidgetCapture {
     BuildContext? context,
     Size logicalSize = const Size(1080, 1400),
   }) async {
-    // ignore: omit_local_variable_types
-    Widget child = widget;
+    final themeData = context != null ? Theme.of(context) : ThemeData.light();
+    final mediaQueryData = context != null
+        ? MediaQuery.of(context)
+        : MediaQueryData.fromView(ui.PlatformDispatcher.instance.views.first);
+    final locale = context != null
+        ? (Localizations.maybeLocaleOf(context) ?? const Locale('ar'))
+        : const Locale('ar');
+    final textDirection = context != null
+        ? (Directionality.maybeOf(context) ??
+            (locale.languageCode == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr))
+        : (locale.languageCode == 'ar'
+            ? TextDirection.rtl
+            : TextDirection.ltr);
 
-    if (context != null) {
-      child = Theme(
-        data: Theme.of(context),
-        child: MediaQuery(
-          data: MediaQuery.of(context),
-          child: child,
+    final child = Theme(
+      data: themeData,
+      child: MediaQuery(
+        data: mediaQueryData,
+        child: Localizations(
+          locale: locale,
+          delegates: AppLocalizations.localizationsDelegates,
+          child: Directionality(
+            textDirection: textDirection,
+            child: Material(
+              type: MaterialType.transparency,
+              child: widget,
+            ),
+          ),
         ),
-      );
-    }
+      ),
+    );
 
     final repaintBoundary = RenderRepaintBoundary();
     final renderView = RenderView(
@@ -63,10 +85,7 @@ abstract final class WidgetCapture {
     final buildOwner = BuildOwner(focusManager: FocusManager());
     final rootElement = RenderObjectToWidgetAdapter<RenderBox>(
       container: repaintBoundary,
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: child,
-      ),
+      child: child,
     ).attachToRenderTree(buildOwner);
 
     buildOwner

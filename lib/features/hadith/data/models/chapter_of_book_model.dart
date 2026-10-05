@@ -16,7 +16,7 @@ abstract class ChapterOfBookModel with _$ChapterOfBookModel {
 
   factory ChapterOfBookModel.fromJson(Map<String, dynamic> json) =>
       ChapterOfBookModel(
-        id: json['id'].toString(),
+        id: json['id']?.toString() ?? '',
         chapterNameAr: json['chapterArabic']?.toString() ?? '',
         chapterNameEn: json['chapterEnglish']?.toString() ?? '',
         chapterNumber: json['chapterNumber']?.toString() ?? '',

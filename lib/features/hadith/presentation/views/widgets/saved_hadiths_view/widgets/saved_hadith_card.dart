@@ -95,7 +95,7 @@ class _SavedHadithCardState extends State<SavedHadithCard> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'الكتاب: ${bookSlugArabic[widget.hadith['bookSlug']]}',
+                  'الكتاب: ${bookSlugArabic[widget.hadith['bookSlug']] ?? widget.hadith['bookSlug'] ?? ''}',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: theme.primaryColor,
                     fontWeight: FontWeight.bold,

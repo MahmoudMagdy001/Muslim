@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 import 'package:muslim/features/settings/presentation/bloc/font_size/font_size_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +15,7 @@ abstract class FontSizeState with _$FontSizeState {
 }
 
 // Bloc class
-class FontSizeBloc extends Bloc<FontSizeEvent, FontSizeState> {
+class FontSizeBloc extends SafeBloc<FontSizeEvent, FontSizeState> {
   FontSizeBloc([double initialFontSize = _defaultFontSize])
     : super(FontSizeState(fontSize: initialFontSize)) {
     on<FontSizeSetFontSize>(_onSetFontSize);
@@ -47,5 +47,5 @@ class FontSizeBloc extends Bloc<FontSizeEvent, FontSizeState> {
 
   // Convenience method
   Future<void> setFontSize(double value) async =>
-      add(FontSizeEvent.setFontSize(value));
+      safeAdd(FontSizeEvent.setFontSize(value));
 }

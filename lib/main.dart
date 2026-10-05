@@ -26,18 +26,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // === Phase 1: Critical only — must complete before runApp ===
-  // DI registration (all lazy singletons/factories, effectively sync)
-  await setupServiceLocator();
-  // Required by InternetStateManagerInitializer widget constructor
-  await InternetStateManagerInitializer.initialize();
-  // Initialize notification channels before runApp to prevent scheduling race conditions
-  await _initializeNotificationChannels();
-  // Cached preferences for immediate theme/language/font
-  final prefs = await SharedPreferences.getInstance();
+  // Parallelize critical startup initializations to maximize cold launch speed
+  final (prefs, locationGranted, _, _, _) = await (
+    SharedPreferences.getInstance(),
+    isLocationPermissionGranted(),
+    setupServiceLocator(),
+    InternetStateManagerInitializer.initialize(),
+    _initializeNotificationChannels(),
+  ).wait;
+
   final initialLocale = _getLocaleFromPrefs(prefs);
   final initialMode = _getThemeFromPrefs(prefs);
   final initialFontSize = prefs.getDouble('fontSize') ?? 18.0;
-  final locationGranted = await isLocationPermissionGranted();
 
   // === runApp — show UI as fast as possible ===
   runApp(
@@ -78,8 +78,8 @@ Future<void> main() async {
     try {
       await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-      // Request permissions asynchronously post-frame if not already granted
-      final isLocationGrantedNow = await requestAllPermissions();
+      // Request contextual startup permissions (notifications & location, omitting battery optimization until needed)
+      final isLocationGrantedNow = await requestAllPermissions(includeBattery: false);
 
       // Only refresh prayer times if location permission was NOT granted initially,
       // but was newly granted after user interaction in this session.

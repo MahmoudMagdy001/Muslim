@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim/core/bloc/safe_bloc.dart';
 
 import 'package:muslim/features/hadith/domain/repositories/hadith_repository.dart';
 import 'package:muslim/features/hadith/presentation/bloc/chapter_of_book_event.dart';
@@ -7,7 +7,7 @@ import 'package:muslim/features/hadith/presentation/bloc/chapter_of_book_state.d
 export 'chapter_of_book_event.dart';
 export 'chapter_of_book_state.dart';
 
-class ChapterOfBookBloc extends Bloc<ChapterOfBookEvent, ChapterOfBookState> {
+class ChapterOfBookBloc extends SafeBloc<ChapterOfBookEvent, ChapterOfBookState> {
   ChapterOfBookBloc(this.repository)
     : super(const ChapterOfBookState()) {
     on<ChapterOfBookLoadChapters>(_onLoadChapters);
@@ -46,7 +46,7 @@ class ChapterOfBookBloc extends Bloc<ChapterOfBookEvent, ChapterOfBookState> {
 
   // Convenience methods
   Future<void> loadChapters(String bookSlug) async =>
-      add(ChapterOfBookEvent.loadChapters(bookSlug));
+      safeAdd(ChapterOfBookEvent.loadChapters(bookSlug));
   void updateSearchText(String text) =>
-      add(ChapterOfBookEvent.updateSearchText(text));
+      safeAdd(ChapterOfBookEvent.updateSearchText(text));
 }
